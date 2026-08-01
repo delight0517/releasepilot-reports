@@ -1,0 +1,127 @@
+<meta charset="UTF-8">
+<title>ReleasePilot 사용 가이드 + 작업 일지</title><style>  @font-face { font-family: 'Fraunces-fallback'; src: local('Georgia'); }
+  :root {
+    --ink: #1c2333; --ink-soft: #2a3348; --parchment: #f6f1e6; --parchment-card: #fffdf7;
+    --line: #ded2b8; --accent: #4f7cac; --accent-strong: #34597a; --sage: #5f7d5f;
+    --ready: #3e7d5f; --ready-bg: #e3efe6; --warn: #b2632a; --warn-bg: #f7e9d8;
+    --info: #3a5f8a; --info-bg: #e6edf5; --text: #241f14; --text-soft: #5c5644; --text-faint: #8b8368;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink: #0f1420; --parchment: #171c26; --parchment-card: #1f2532; --line: #333c4d;
+      --accent: #7fa8d6; --accent-strong: #a9c6e8; --sage: #7fa17f; --ready: #6bbf94; --ready-bg: #16302a;
+      --warn: #e0a05e; --warn-bg: #3a2b1a; --info: #7fa8d6; --info-bg: #1b2c3f;
+      --text: #ece6d8; --text-soft: #b8b19c; --text-faint: #7b7663;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ink: #0f1420; --parchment: #171c26; --parchment-card: #1f2532; --line: #333c4d;
+    --accent: #7fa8d6; --accent-strong: #a9c6e8; --sage: #7fa17f; --ready: #6bbf94; --ready-bg: #16302a;
+    --warn: #e0a05e; --warn-bg: #3a2b1a; --info: #7fa8d6; --info-bg: #1b2c3f;
+    --text: #ece6d8; --text-soft: #b8b19c; --text-faint: #7b7663;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--parchment); color: var(--text); font-family: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", "Segoe UI", sans-serif; line-height: 1.55; }
+  .page { max-width: 680px; margin: 0 auto; padding: 0 0 64px; }
+  .masthead { background: linear-gradient(180deg, var(--ink) 0%, var(--ink-soft) 100%); color: #eef3f8; padding: 28px 20px 24px; }
+  .eyebrow { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #c3d3e6; margin: 0 0 6px; font-weight: 600; }
+  .masthead h1 { font-family: Georgia, 'Fraunces-fallback', serif; font-size: 28px; margin: 0 0 8px; }
+  .masthead p.sub { margin: 0; font-size: 14px; color: #c9d6e4; max-width: 50ch; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .meta-chip { font-size: 12px; padding: 5px 10px; border-radius: 999px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.16); color: #e3ecf5; }
+  section { padding: 22px 20px 4px; }
+  .section-label { display: flex; align-items: baseline; gap: 8px; margin-bottom: 12px; }
+  .section-label .num { font-size: 12px; color: var(--accent-strong); font-weight: 700; letter-spacing: 0.06em; }
+  .section-label h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-soft); margin: 0; font-weight: 700; }
+  .card { background: var(--parchment-card); border: 1px solid var(--line); border-radius: 14px; padding: 18px; }
+  .card + .card { margin-top: 12px; }
+  .thesis { font-family: Georgia, 'Fraunces-fallback', serif; font-size: 17px; line-height: 1.5; margin: 0 0 14px; }
+  .thesis em { color: var(--accent-strong); font-style: normal; }
+  .flow-steps { display: grid; gap: 10px; counter-reset: step; }
+  .flow-step { display: flex; gap: 12px; align-items: flex-start; }
+  .flow-step .n { counter-increment: step; content: counter(step); width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+  .flow-step .n::before { content: counter(step); }
+  .flow-step .body h4 { margin: 0 0 2px; font-size: 14px; }
+  .flow-step .body p { margin: 0; font-size: 13px; color: var(--text-soft); }
+  .screen-card { border-left: 3px solid var(--sage); padding: 4px 0 4px 12px; margin-top: 12px; }
+  .screen-card:first-of-type { margin-top: 0; }
+  .screen-card h4 { margin: 0 0 3px; font-size: 14px; }
+  .screen-card p { margin: 0; font-size: 13px; color: var(--text-soft); }
+  .worklog-day { margin-bottom: 16px; }
+  .worklog-day h4 { font-size: 13px; color: var(--accent-strong); margin: 0 0 8px; }
+  .worklog-day ul { margin: 0; padding-left: 20px; }
+  .worklog-day li { font-size: 13px; color: var(--text-soft); margin-bottom: 4px; }
+  .todo-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  .todo-list li { display: flex; gap: 8px; align-items: flex-start; font-size: 13.5px; }
+  .todo-list .chk { width: 16px; height: 16px; border-radius: 4px; border: 2px solid var(--line); flex-shrink: 0; margin-top: 2px; }
+  .todo-list .chk.done { background: var(--ready); border-color: var(--ready); }
+  .todo-list .label.done-text { text-decoration: line-through; color: var(--text-faint); }
+  footer { padding: 24px 20px 0; font-size: 11.5px; color: var(--text-faint); text-align: center; }
+</style><div class="page"><div class="masthead">
+  <p class="eyebrow">ReleasePilot · 사용법 기획서 + 작업 일지</p>
+  <h1>ReleasePilot 사용 가이드</h1>
+  <p class="sub">이 앱을 어떻게 쓰는지, 그리고 지금까지/앞으로 뭘 했는지를 한 문서에서 계속 갱신한다.</p>
+  <div class="meta-row"><span class="meta-chip">v0.5.0</span><span class="meta-chip">살아있는 문서 — 매 작업 세션마다 개정판 갱신</span></div>
+</div><section>
+  <div class="section-label"><span class="num">01</span><h2>개요 — 이 앱은 무엇을 위한 것인가</h2></div>
+  <div class="card">
+  <p class="thesis">앱 폴더를 <em>드롭하고, 진행해 누르고, 복붙하고, 출시 시작을 누르는</em> 것 —
+  App Store/Play Console 출시 준비의 반복 작업을 최소화하는 게 이 앱의 유일한 목적이다.</p>
+  <p style="font-size:13px; color:var(--text-soft); margin:0;">코드네임 ReleasePilot, 실제 이름은
+  대화에서 "23 앱 데브"/"23AppdeveloperReleaser". Windows의 자매 앱 LaunchPad.App과
+  사실상 같은 제품 — ios/android 트랙은 이 Flutter 앱이, 나머지 트랙(chrome/firefox/macos)은
+  Windows LaunchPad.App이 담당한다.</p>
+</div>
+</section><section>
+  <div class="section-label"><span class="num">02</span><h2>핵심 사용 흐름</h2></div>
+  <div class="card">
+  <div class="flow-steps">
+    <div class="flow-step"><span class="n"></span><div class="body"><h4>앱 등록</h4><p>App Vault(첫 화면)에 앱 프로젝트 폴더를 드래그하거나 "앱 폴더 추가"로 선택 — 영구 등록됨.</p></div></div>
+    <div class="flow-step"><span class="n"></span><div class="body"><h4>"진행해" — 프로젝트 분석</h4><p>등록한 앱 카드를 열면 Project Analysis 화면으로 이동 — "진행해" 버튼을 누르면 로컬 Claude CLI가 있으면 자동 분석, 없으면 프롬프트 복사 + 수동 답변 붙여넣기.</p></div></div>
+    <div class="flow-step"><span class="n"></span><div class="body"><h4>Draft Studio — MVP 패키지</h4><p>분석 통과 시 자동으로(또는 수동으로) Draft Studio로 이동 — App Store/Play Console에 바로 복붙 가능한 메타데이터 패키지 생성, 필수 필드 누락 시 제출 차단.</p></div></div>
+    <div class="flow-step"><span class="n"></span><div class="body"><h4>(선택) 마케팅 게임 · CTR 계산기</h4><p>🎯 아이콘으로 진입 — 실제 마케팅 이론 기반 스토리 모드 + 내 앱 수치 계산기.</p></div></div>
+    <div class="flow-step"><span class="n"></span><div class="body"><h4>(선택) 전략 리포트</h4><p>📊 아이콘으로 진입 — 지역/타겟/CTR 전략, 성장 배수 법칙, 미래 가능성, 법적 리스크를 담은 리포트 보관함. 이 문서 자체도 여기 저장된다.</p></div></div>
+    <div class="flow-step"><span class="n"></span><div class="body"><h4>출시 진행 시작</h4><p>MVP 체크리스트가 초록불이면 뜨는 버튼 — App Store Connect/Play Console을 열고 콘솔 열기→로그인 대기→제출 진행→완료 4단계를 추적. 로그인/제출은 항상 사람이 직접 확인.</p></div></div>
+  </div>
+</div>
+</section><section>
+  <div class="section-label"><span class="num">03</span><h2>화면별 사용법</h2></div>
+  <div class="card">
+  <div class="screen-card"><h4>App Vault (첫 화면)</h4><p>등록된 앱 목록, 상태 배지(등록됨/분석중/위험발견/준비완료/진행중/완료/반려), 각 카드에 🎯(마케팅게임)/📊(리포트) 아이콘.</p></div>
+  <div class="screen-card"><h4>Project Analysis</h4><p>"진행해" 버튼, 분석 결과 카드(요약/위험항목/누락정보/다음할일), 통과 시 자동으로 Draft Studio 이동.</p></div>
+  <div class="screen-card"><h4>Draft Studio (MVP 패키지)</h4><p>필드별 편집, 스토어별 복붙 패키지, 체크리스트가 초록불이면 "출시 진행 시작" 버튼 노출.</p></div>
+  <div class="screen-card"><h4>마케팅 감각 게임</h4><p>스토리 모드(5막) / 내 앱에 적용(실시간 계산기) 탭.</p></div>
+  <div class="screen-card"><h4>전략 리포트 보관함</h4><p>프로젝트별 리포트 목록, 버전·개정판·의도 표시, 열기/삭제.</p></div>
+  <div class="screen-card"><h4>Automation Run (출시 진행)</h4><p>단계 인디케이터 + 실시간 로그, "로그인 완료"/"제출 완료" 버튼(항상 사람이 누름).</p></div>
+</div>
+</section><section>
+  <div class="section-label"><span class="num">04</span><h2>작업 일지</h2></div>
+  <div class="card">
+  <div class="worklog-day">
+    <h4>2026-08-01</h4>
+    <ul>
+      <li>전략 리포트 보관함 신설(버전 고정 + 개정판 자동 추적 + 저비용 템플릿 빌더)</li>
+      <li>1psygame 전략 리포트: STP 세그먼트 → 실제 채널/지역 데이터 → 성장 배수 법칙 → 미래 가능성 분석 → 국가 적합도 스코어카드(6개국) → Top3+최악지역+영어글로벌권 → 법적 리스크 섹션까지 반복 개정</li>
+      <li>게임 기획서(블루프린트) 생성 기능 — 리포트 보관함 구조 재사용</li>
+      <li>35Closer Timer: OS 레벨 전원 예약(pmset) 조회/관리 기능, 원격 전용 안전망 sleep-cycle 명령</li>
+      <li>LaunchPadSync(Windows↔Mac) 최초 연동 — ios/android 트랙, 실제 상태 파일 쓰기/읽기 end-to-end 검증</li>
+      <li>크로스 플랫폼 공동 빌드 시스템 설계 — 기능을 만들 때마다 플랫폼 무관 명세 파일을 남겨 이식 비용을 낮추는 구조</li>
+      <li>Windows 이식 코드 초안(C#/WPF, 미검증) 작성해 handoff 폴더에 배치</li>
+      <li>Milestone 7(Agentic Project Analysis) 문서-실제 불일치 발견 및 정정, 자동 라우팅 로직 실제로 구현</li>
+      <li>Milestone 8(Agentic Browser Automation) 프로토타입 구현 — 콘솔 열기/단계 추적/사람 핸드오프/pipelineStatus 갱신</li>
+    </ul>
+  </div>
+</div>
+</section><section>
+  <div class="section-label"><span class="num">05</span><h2>TODO — 아직 안 된 것</h2></div>
+  <div class="card">
+  <ul class="todo-list">
+    <li><span class="chk"></span><span class="label">Milestone 5 — 핵심 플로우 통합 테스트, 정책 룰 버전 관리, 에러 추적/로그 대시보드, 베타 피드백 반영</span></li>
+    <li><span class="chk"></span><span class="label">Milestone 9 — 반려 피드백 입력 화면, FeedbackLoopService, 재분석 병합, Vault 상태 추적</span></li>
+    <li><span class="chk"></span><span class="label">실제 스토어 폼 필드 자동 채움 (브라우저 자동화 레이어 연동 필요, 4VPN Blocker 해제 후 의미있는 테스트 가능)</span></li>
+    <li><span class="chk"></span><span class="label">Windows 이식 코드(handoff/strategy-report-library) 컴파일/검증 — Windows 세션 필요</span></li>
+    <li><span class="chk"></span><span class="label">LaunchPadSync 요청 2건 응답 대기 (requests/open/)</span></li>
+    <li><span class="chk"></span><span class="label">이 문서 자체를 앞으로 매 작업 세션마다 갱신 — 새 작업일지 항목 추가, 완료된 TODO는 체크 표시로 전환</span></li>
+  </ul>
+</div>
+</section><footer>ReleasePilot 자동 생성 · 사용법 기획서 + 작업 일지 · 매 작업 세션마다 개정판으로 갱신됨</footer></div>

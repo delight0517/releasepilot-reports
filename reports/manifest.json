@@ -1,1 +1,52 @@
-[]
+[
+ {
+  "id": "1785553200000000",
+  "file": "사계기록-game_design_blueprint-1785553200000000.html",
+  "appName": "사계기록",
+  "intent": "카드 배틀 게임 기획 아틀라스 — 8개 모드/스킨 컨셉·비주얼·시스템 현황",
+  "version": "2.5.1",
+  "reportKind": "game_design_blueprint",
+  "reportRevision": 1,
+  "publishedAt": "2026-08-01T12:00:00.000"
+ },
+ {
+  "id": "1785546000000000",
+  "file": "releasepilot-usage_guide_worklog-1785546000000000.html",
+  "appName": "ReleasePilot",
+  "intent": "사용법 기획서(핵심 흐름·화면별 가이드) + 작업 일지 + TODO — 매 작업 세션마다 갱신되는 살아있는 문서",
+  "version": "0.5.0",
+  "reportKind": "usage_guide_worklog",
+  "reportRevision": 1,
+  "publishedAt": "2026-08-01T10:00:00.000"
+ },
+ {
+  "id": "1785524400000000",
+  "file": "사계기록-region_target_ctr-1785524400000000.html",
+  "appName": "사계기록",
+  "intent": "Top3 후보(세부지역+대상+이유+현재/향후 흥행) + 최악 지역·문화권 + 영어 글로벌권 버킷 + 법적 리스크·분쟁 사항 섹션 추가",
+  "version": "2.5.1",
+  "reportKind": "region_target_ctr",
+  "reportRevision": 1,
+  "publishedAt": "2026-08-01T04:00:00.000"
+ },
+ {
+  "id": "1785556800000000",
+  "file": "releasepilot-usage_guide_worklog-1785556800000000.html",
+  "appName": "ReleasePilot",
+  "intent": "사용법 기획서 개정 2 — 각 단계를 펼치면 화면 그림+쉬운 말 설명, 앞으로 나올 기능까지 포함",
+  "version": "0.5.0",
+  "reportKind": "usage_guide_worklog",
+  "reportRevision": 2,
+  "publishedAt": "2026-08-01T13:00:00.000"
+ },
+ {
+  "id": "1785585133889339",
+  "file": "releasepilot-usage_guide_worklog-1785585133889339.html",
+  "appName": "ReleasePilot",
+  "intent": "사용법 기획서(핵심 흐름·화면별 가이드·작업 일지·TODO) — 매 작업 세션마다 갱신되는 살아있는 문서",
+  "version": "0.5.0",
+  "reportKind": "usage_guide_worklog",
+  "reportRevision": 3,
+  "publishedAt": "2026-08-01T20:52:13.891531"
+ }
+]

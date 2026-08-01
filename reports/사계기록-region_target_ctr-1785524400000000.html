@@ -1,0 +1,1429 @@
+<meta charset="UTF-8">
+<title>사계기록 · 타겟·지역·CTR 전략 리포트</title>
+<style>
+  @font-face {
+    font-family: 'Fraunces-fallback';
+    src: local('Georgia');
+  }
+
+  :root {
+    --ink: #1c2333;
+    --ink-soft: #2a3348;
+    --parchment: #f6f1e6;
+    --parchment-card: #fffdf7;
+    --line: #ded2b8;
+    --accent: #b9812f;
+    --accent-strong: #8f6321;
+    --sage: #5f7d5f;
+    --ready: #3e7d5f;
+    --ready-bg: #e3efe6;
+    --warn: #b2632a;
+    --warn-bg: #f7e9d8;
+    --info: #3a5f8a;
+    --info-bg: #e6edf5;
+    --text: #241f14;
+    --text-soft: #5c5644;
+    --text-faint: #8b8368;
+  }
+
+  :root[data-theme="dark"] {
+    --ink: #0f1420;
+    --parchment: #171c26;
+    --parchment-card: #1f2532;
+    --line: #333c4d;
+    --accent: #d9a24f;
+    --accent-strong: #e8b768;
+    --sage: #7fa17f;
+    --ready: #6bbf94;
+    --ready-bg: #16302a;
+    --warn: #e0a05e;
+    --warn-bg: #3a2b1a;
+    --info: #7fa8d6;
+    --info-bg: #1b2c3f;
+    --text: #ece6d8;
+    --text-soft: #b8b19c;
+    --text-faint: #7b7663;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink: #0f1420;
+      --parchment: #171c26;
+      --parchment-card: #1f2532;
+      --line: #333c4d;
+      --accent: #d9a24f;
+      --accent-strong: #e8b768;
+      --sage: #7fa17f;
+      --ready: #6bbf94;
+      --ready-bg: #16302a;
+      --warn: #e0a05e;
+      --warn-bg: #3a2b1a;
+      --info: #7fa8d6;
+      --info-bg: #1b2c3f;
+      --text: #ece6d8;
+      --text-soft: #b8b19c;
+      --text-faint: #7b7663;
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--parchment);
+    color: var(--text);
+    font-family: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", "Segoe UI", sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 0 0 64px;
+  }
+
+  /* -- Masthead: ledger-header feel, seasons motif -- */
+  .masthead {
+    background: linear-gradient(180deg, var(--ink) 0%, var(--ink-soft) 100%);
+    color: #f3ecd9;
+    padding: 28px 20px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .masthead::after {
+    content: "";
+    position: absolute;
+    right: -40px;
+    top: -40px;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+    opacity: 0.35;
+  }
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #c9bd97;
+    margin: 0 0 6px;
+    font-weight: 600;
+  }
+  .masthead h1 {
+    font-family: Georgia, 'Fraunces-fallback', serif;
+    font-size: 30px;
+    line-height: 1.15;
+    margin: 0 0 8px;
+    text-wrap: balance;
+    letter-spacing: -0.01em;
+  }
+  .masthead p.sub {
+    margin: 0;
+    font-size: 14px;
+    color: #cfc6a8;
+    max-width: 46ch;
+  }
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+    position: relative;
+    z-index: 1;
+  }
+  .meta-chip {
+    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.14);
+    color: #e6dfc7;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* -- Section shell -- */
+  section {
+    padding: 22px 20px 4px;
+  }
+  .section-label {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .section-label .num {
+    font-size: 12px;
+    color: var(--accent-strong);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+  }
+  .section-label h2 {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-soft);
+    margin: 0;
+    font-weight: 700;
+  }
+
+  .card {
+    background: var(--parchment-card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 18px;
+  }
+  .card + .card { margin-top: 12px; }
+
+  /* -- Readiness status -- */
+  .status-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .status-dot {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--warn-bg);
+    color: var(--warn);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+    border: 2px solid var(--warn);
+  }
+  .status-text h3 {
+    margin: 0 0 2px;
+    font-size: 16px;
+  }
+  .status-text p {
+    margin: 0;
+    font-size: 13px;
+    color: var(--text-soft);
+  }
+
+  .field-list {
+    list-style: none;
+    margin: 14px 0 0;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+  }
+  .field-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 13.5px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: var(--parchment);
+  }
+  .field-list .field-name { color: var(--text-soft); }
+  .field-list .field-val { font-weight: 600; }
+  .pill {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .pill.missing { background: var(--warn-bg); color: var(--warn); }
+  .pill.ok { background: var(--ready-bg); color: var(--ready); }
+
+  /* -- Business direction -- */
+  .thesis {
+    font-family: Georgia, 'Fraunces-fallback', serif;
+    font-size: 18px;
+    line-height: 1.5;
+    color: var(--text);
+    margin: 0 0 16px;
+    text-wrap: balance;
+  }
+  .thesis em { color: var(--accent-strong); font-style: normal; }
+
+  .pillar-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .pillar {
+    border-left: 3px solid var(--sage);
+    padding: 4px 0 4px 12px;
+  }
+  .pillar h4 {
+    margin: 0 0 3px;
+    font-size: 14px;
+  }
+  .pillar p {
+    margin: 0;
+    font-size: 13px;
+    color: var(--text-soft);
+  }
+
+  /* -- Expandable country cards -- */
+  .country-card {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    margin-top: 12px;
+    overflow: hidden;
+  }
+  .country-card summary {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    background: var(--parchment);
+    font-weight: 600;
+  }
+  .country-card summary::-webkit-details-marker { display: none; }
+  .country-card summary::after {
+    content: '▾';
+    margin-left: auto;
+    color: var(--text-faint);
+  }
+  .country-rank {
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: var(--accent);
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .country-name { font-size: 14px; }
+  .country-hint {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-faint);
+    margin-left: auto;
+    margin-right: 8px;
+  }
+  .country-card[open] summary::after { content: '▴'; }
+  .country-body { padding: 4px 16px 16px; }
+  .pillar-lead {
+    font-size: 13px;
+    color: var(--text-soft);
+    margin: 8px 0 14px;
+    padding-left: 12px;
+    border-left: 3px solid var(--sage);
+  }
+  .country-body h5 {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent-strong);
+    margin: 14px 0 6px;
+  }
+  .country-body h5:first-of-type { margin-top: 0; }
+  .rank-mini {
+    margin: 0;
+    padding-left: 20px;
+    display: grid;
+    gap: 6px;
+  }
+  .rank-mini li {
+    font-size: 12.5px;
+    color: var(--text-soft);
+    line-height: 1.5;
+  }
+  .rank-mini b { color: var(--text); }
+  .country-body > p {
+    font-size: 12.5px;
+    color: var(--text-soft);
+    line-height: 1.55;
+    margin: 0;
+  }
+  .target-region {
+    background: var(--info-bg);
+    color: var(--info);
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin: 0 0 14px !important;
+    font-size: 12.5px !important;
+    line-height: 1.55;
+  }
+  .target-region b { color: inherit; }
+
+  /* -- Country fit scorecard -- */
+  .fit-table {
+    display: grid;
+    gap: 5px;
+    margin-top: 10px;
+    overflow-x: auto;
+  }
+  .fit-row {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr 0.9fr 1fr 1fr 0.8fr;
+    gap: 4px;
+    font-size: 11.5px;
+    padding: 8px 8px;
+    border-radius: 8px;
+    background: var(--parchment);
+    align-items: center;
+    white-space: nowrap;
+  }
+  .fit-row.fit-head {
+    background: transparent;
+    color: var(--text-faint);
+    font-size: 9.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    font-weight: 700;
+    white-space: normal;
+  }
+  .fit-row.fit-highlight {
+    background: var(--ready-bg);
+    font-weight: 600;
+  }
+
+  /* -- Now/next trend pair -- */
+  .trend-pair {
+    display: grid;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .trend-now, .trend-next {
+    border-radius: 8px;
+    padding: 9px 11px;
+    font-size: 12.5px;
+    line-height: 1.5;
+  }
+  .trend-now { background: var(--ready-bg); color: var(--ready); }
+  .trend-next { background: var(--info-bg); color: var(--info); }
+  .trend-label {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 3px;
+    opacity: 0.85;
+  }
+
+  /* -- Worst-fit card -- */
+  .country-card.worst-fit summary { background: var(--warn-bg); }
+  .rank-worst { background: var(--warn) !important; }
+
+  /* -- Persona cards -- */
+  .persona-card { padding-top: 14px; padding-bottom: 14px; }
+  .persona-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+  .persona-tag {
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: var(--sage);
+    color: #fff;
+    opacity: 0.9;
+  }
+  .persona-tag.b { background: var(--accent-strong); }
+  .persona-tag.c { background: var(--info); }
+  .persona-head h4 { margin: 0; font-size: 15px; }
+  .persona-desc { margin: 0 0 10px; font-size: 13px; color: var(--text-soft); }
+  .persona-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 12px;
+    color: var(--text-faint);
+    border-top: 1px dashed var(--line);
+    padding-top: 8px;
+  }
+  .persona-meta span:first-child { color: var(--accent-strong); font-weight: 600; }
+
+  /* -- Persona CTR table -- */
+  .persona-stat-table {
+    display: grid;
+    gap: 6px;
+    margin-top: 10px;
+  }
+  .pst-row {
+    display: grid;
+    grid-template-columns: 1.6fr 0.8fr 0.9fr 0.9fr;
+    gap: 6px;
+    font-size: 12.5px;
+    padding: 9px 10px;
+    border-radius: 8px;
+    background: var(--parchment);
+    align-items: center;
+    font-variant-numeric: tabular-nums;
+  }
+  .pst-row.pst-head {
+    background: transparent;
+    color: var(--text-faint);
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 0 10px;
+    font-weight: 700;
+  }
+  .pst-strong { font-weight: 700; color: var(--ready); }
+
+  /* -- Sourcing / transparency -- */
+  .source-line {
+    font-size: 12px;
+    color: var(--text-faint);
+    background: var(--parchment);
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-top: 10px;
+    line-height: 1.55;
+  }
+  .source-line b { color: var(--text-soft); }
+  .source-line a, .persona-desc a, .caveat a {
+    color: var(--info);
+    text-decoration: underline;
+    text-decoration-color: var(--line);
+    text-underline-offset: 2px;
+  }
+  .link-unverified {
+    display: inline-block;
+    margin-top: 4px;
+    font-style: italic;
+  }
+
+  /* -- Formula / interactive box -- */
+  .formula-box {
+    background: var(--info-bg);
+    border-radius: 10px;
+    padding: 14px;
+    margin-top: 6px;
+  }
+  .formula-line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    font-size: 13.5px;
+    color: var(--info);
+    font-variant-numeric: tabular-nums;
+  }
+  .formula-line b { font-size: 15px; }
+  .formula-result { color: var(--ready) !important; }
+  input[type="range"] {
+    accent-color: var(--accent);
+    width: 120px;
+    vertical-align: middle;
+  }
+
+  /* -- Ranked comparison bars -- */
+  .rank-list { display: grid; gap: 8px; margin-top: 8px; }
+  .rank-row {
+    display: grid;
+    grid-template-columns: 100px 1fr 50px;
+    align-items: center;
+    gap: 8px;
+    font-size: 12.5px;
+  }
+  .rank-label { color: var(--text-soft); }
+  .rank-bar-track {
+    background: var(--parchment);
+    border-radius: 999px;
+    height: 10px;
+    overflow: hidden;
+  }
+  .rank-bar {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 999px;
+  }
+  .rank-val {
+    text-align: right;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* -- Beginner/intermediate mode toggle -- */
+  .mode-toggle {
+    display: flex;
+    gap: 4px;
+    background: var(--parchment);
+    border-radius: 10px;
+    padding: 4px;
+    margin-bottom: 14px;
+  }
+  .mode-btn {
+    flex: 1;
+    border: none;
+    background: transparent;
+    color: var(--text-soft);
+    font-size: 13px;
+    font-weight: 700;
+    padding: 9px 0;
+    border-radius: 7px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .mode-btn.active {
+    background: var(--parchment-card);
+    color: var(--accent-strong);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  .mode-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .mode-view { display: none; }
+  .mode-view.active { display: block; }
+  .analogy-card {
+    border-left: 3px solid var(--sage);
+    padding: 4px 0 4px 12px;
+    margin-bottom: 14px;
+  }
+  .analogy-card:last-child { margin-bottom: 0; }
+  .analogy-card h4 { margin: 0 0 4px; font-size: 14px; }
+  .analogy-card p { margin: 0; font-size: 13.5px; color: var(--text-soft); }
+  .analogy-card .applied {
+    display: inline-block;
+    margin-top: 6px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ready);
+    background: var(--ready-bg);
+    padding: 4px 9px;
+    border-radius: 7px;
+  }
+
+  .calc-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 13px;
+    padding: 8px 0;
+    border-bottom: 1px dashed var(--line);
+  }
+  .calc-row:last-of-type { border-bottom: none; }
+  .calc-row .calc-label { color: var(--text-soft); flex-shrink: 0; }
+  .calc-row .calc-out {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--ready);
+    text-align: right;
+  }
+
+  /* -- Growth math section -- */
+  .mini-h {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent-strong);
+    margin: 18px 0 6px;
+  }
+  .card > .mini-h:first-child { margin-top: 0; }
+  .rule72-table, .r72-row {
+    font-variant-numeric: tabular-nums;
+  }
+  .rule72-table {
+    display: grid;
+    gap: 6px;
+    margin: 10px 0 4px;
+  }
+  .r72-row {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 6px;
+    font-size: 12.5px;
+    padding: 9px 10px;
+    border-radius: 8px;
+    background: var(--parchment);
+    align-items: center;
+  }
+  .r72-row.r72-head {
+    background: transparent;
+    color: var(--text-faint);
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 0 10px;
+    font-weight: 700;
+  }
+  .r72-row.featured {
+    background: var(--ready-bg);
+    color: var(--ready);
+    font-weight: 700;
+  }
+
+  /* -- MVP simulation timeline -- */
+  .timeline { display: grid; gap: 16px; }
+  .tl-item {
+    border-left: 3px solid var(--accent);
+    padding-left: 14px;
+  }
+  .tl-stage {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--accent-strong);
+    margin-bottom: 6px;
+  }
+  .tl-row {
+    display: grid;
+    grid-template-columns: 68px 1fr;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text);
+    padding: 4px 0;
+  }
+  .tl-row .tl-label {
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-faint);
+    padding-top: 2px;
+  }
+  .tl-row.problem .tl-label { color: var(--warn); }
+  .tl-row.problem span:last-child { color: var(--text-soft); }
+  .tl-row.strategy .tl-label { color: var(--info); }
+  .tl-row.strategy span:last-child { color: var(--text); font-weight: 500; }
+
+  .stat-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .stat-box {
+    background: var(--info-bg);
+    color: var(--info);
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+  .stat-box .n {
+    font-size: 20px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    display: block;
+  }
+  .stat-box .l {
+    font-size: 11.5px;
+    opacity: 0.85;
+    margin-top: 2px;
+  }
+  .caveat {
+    font-size: 12px;
+    color: var(--text-faint);
+    margin-top: 12px;
+    line-height: 1.5;
+  }
+
+  /* -- Action checklist -- */
+  .action-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  .action-list li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 13.5px;
+  }
+  .action-list .chk {
+    width: 18px;
+    height: 18px;
+    border-radius: 5px;
+    border: 2px solid var(--line);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .action-list .chk.urgent { border-color: var(--warn); }
+  .action-list b { color: var(--text); }
+  .action-list span.detail { color: var(--text-soft); display: block; margin-top: 1px; }
+
+  /* -- Legal risk items -- */
+  .legal-item {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-top: 12px;
+  }
+  .legal-item:first-of-type { margin-top: 0; }
+  .legal-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .legal-num {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--warn);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .legal-head h4 { margin: 0; font-size: 14px; }
+  .legal-item p { font-size: 12.5px; color: var(--text-soft); line-height: 1.55; margin: 0 0 6px; }
+  .legal-item p:last-child { margin-bottom: 0; }
+  .legal-fix { color: var(--ready) !important; }
+
+  /* -- Future-viability: hype cycle marker -- */
+  .hype-track { position: relative; height: 70px; margin: 16px 0 8px; }
+  .hype-curve { position: absolute; bottom: 18px; left: 0; width: 100%; height: 48px; }
+  .hype-marker { position: absolute; bottom: 18px; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); border: 3px solid var(--parchment-card); box-shadow: 0 0 0 1px var(--accent); transform: translate(-50%, 50%); }
+  .hype-labels { display: flex; justify-content: space-between; font-size: 9.5px; color: var(--text-faint); margin-top: 4px; }
+  .hype-labels span { flex: 1; text-align: center; }
+
+  /* -- Future-viability: scenario cards -- */
+  .scenario-grid { display: grid; gap: 10px; }
+  .scenario-card { border-radius: 12px; padding: 14px; }
+  .scenario-card.optimistic { background: var(--ready-bg); }
+  .scenario-card.base { background: var(--info-bg); }
+  .scenario-card.pessimistic { background: var(--warn-bg); }
+  .scenario-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .scenario-head h4 { margin: 0; font-size: 14px; }
+  .scenario-prob { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: rgba(255,255,255,0.5); }
+  .scenario-card p { margin: 0; font-size: 13px; color: var(--text-soft); }
+  .scenario-card .move { margin-top: 8px; font-size: 12.5px; font-weight: 600; color: var(--text); }
+
+  footer {
+    padding: 24px 20px 0;
+    font-size: 11.5px;
+    color: var(--text-faint);
+    text-align: center;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .card, .masthead { animation: rise 0.5s ease both; }
+    section:nth-of-type(2) .card { animation-delay: 0.05s; }
+    section:nth-of-type(3) .card { animation-delay: 0.1s; }
+    section:nth-of-type(4) .card { animation-delay: 0.15s; }
+  }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+
+<div class="page">
+  <div class="masthead">
+    <p class="eyebrow">ReleasePilot · 시장·타겟·CTR 전략</p>
+    <h1>사계기록</h1>
+    <p class="sub">어느 지역에서, 누구에게, 어떤 문구로 먼저 보여줄 것인가 — 출시 전략의 세 가지 질문에 대한 답.</p>
+    <div class="meta-row">
+      <span class="meta-chip">1차 지역 · 대한민국</span>
+      <span class="meta-chip">언어 · 한국어 전용</span>
+      <span class="meta-chip">v2.5.1</span>
+    </div>
+  </div>
+
+  <section>
+    <div class="section-label"><span class="num">01</span><h2>지역 전략 — 어느 나라, 어느 지역인가</h2></div>
+    <div class="card">
+      <p class="thesis">언어는 <em>나중에 AI 번역으로 해결 가능</em>하다고 전제하면, 진짜 기준은 언어가 아니라 <em>이 앱의 핵심 메커닉(기록 습관·수집형 게임·자기이해 콘텐츠·신앙/영성 문항)과 얼마나 문화적으로 맞는가</em>다. 그 기준으로 한국/일본/영어권을 넘어 후보를 넓혀 재평가했다.</p>
+
+      <h4 class="mini-h">적합도 스코어카드 — 6개국 비교</h4>
+      <div class="fit-table">
+        <div class="fit-row fit-head">
+          <span>국가</span><span>기록 문화</span><span>수집형 게임</span><span>자기이해 콘텐츠</span><span>신앙·영성 적합</span><span>시장 기회</span>
+        </div>
+        <div class="fit-row fit-highlight">
+          <span>🇰🇷 한국</span><span>●●●</span><span>●●●</span><span>●●●</span><span>●●</span><span>●●</span>
+        </div>
+        <div class="fit-row fit-highlight">
+          <span>🇵🇭 필리핀</span><span>●●</span><span>●●●</span><span>●●●</span><span>●●●</span><span>●●●</span>
+        </div>
+        <div class="fit-row fit-highlight">
+          <span>🇹🇼 대만</span><span>●●●</span><span>●●</span><span>●●●</span><span>●●</span><span>●●●</span>
+        </div>
+        <div class="fit-row">
+          <span>🇯🇵 일본</span><span>●●●</span><span>●●</span><span>●●</span><span>●</span><span>●●</span>
+        </div>
+        <div class="fit-row">
+          <span>🇺🇸 미국</span><span>●●●</span><span>●●</span><span>●●</span><span>●●</span><span>●</span>
+        </div>
+        <div class="fit-row">
+          <span>🇩🇪 독일</span><span>●●</span><span>●●</span><span>●</span><span>●</span><span>●●</span>
+        </div>
+      </div>
+      <p class="caveat" style="margin-top:10px;">점수는 통계가 아니라 이 세션의 정성적 판단(각 항목 최대 ●●●) — 특히 "신앙·영성 적합"은 앱의 체크인 문항이 그대로 통할지를 기준으로 매겼다. <b>일본이 기록 문화는 최상위인데도 전체 순위에서 밀린 이유</b>가 바로 이 항목 — 세속화 정도가 높아 "신앙/영성" 카테고리 자체가 낯설게 느껴질 위험이 큼. <b>미국은 시장 기회 점수가 가장 낮은데</b>, 저널링 앱 카테고리가 이미 포화 상태이기 때문. 반면 <b>필리핀·대만은 기존 후보(일본/미국)보다 총점이 높다</b> — 특히 필리핀은 압도적 가톨릭 인구 비중 덕에 "신앙/영성" 문항이 오히려 강점이 될 수 있고, 영어가 공용어라 <em>AI 번역조차 필요 없는 유일한 신규 후보</em>다.</p>
+
+      <details class="country-card" open>
+        <summary>
+          <span class="country-rank">1차</span>
+          <span class="country-name">🇰🇷 대한민국</span>
+          <span class="country-hint">지금 — 펼쳐서 더 보기</span>
+        </summary>
+        <div class="country-body">
+          <p class="pillar-lead">체크인 카테고리(학업/수면/신앙·영성/피로도 등)와 태그 문구가 한국 생활 맥락에 맞춰 설계됨 — 로컬라이징 비용 없이 바로 시작 가능한 유일한 시장.</p>
+          <h5>타겟 지역 — 어디를 노려야 하는가</h5>
+          <p class="target-region"><b>대상:</b> 서울 강남 3구(강남·서초·송파) + 마포·연남동 거주 20~30대<br><b>이유:</b> 강남 3구는 사교육·자기계발 학원 밀집도가 전국에서 가장 높은 지역으로 잘 알려져 있어 "학업/피로도" 체크인 문항에 대한 공감대가 가장 클 것으로 예상되고, 마포·연남동 일대는 다이어리 꾸미기(#다꾸)·독립서점·자기계발 카페 문화가 밀집한 지역으로 SNS에서 자주 언급됨 — 다만 이 지역 밀집도에 대한 정량 통계는 확인하지 않았고 일반적으로 알려진 정성적 관찰에 근거한 추정이라, 실제 광고 타겟팅 전 검색 트렌드로 재확인 필요.</p>
+          <div class="trend-pair">
+            <div class="trend-now"><span class="trend-label">지금 흥행 중</span>챌린저스·마이루틴 같은 습관 인증 앱, "갓생 브이로그" 유튜브 콘텐츠</div>
+            <div class="trend-next"><span class="trend-label">앞으로 뜰 것으로 예상</span>AI가 내 기록을 분석해서 "요즘 나"를 요약해주는 콘텐츠 — MBTI식 정적 유형 분류에서 시계열 변화 추적으로 관심이 옮겨가는 흐름</div>
+          </div>
+          <h5>지금 유행 TOP 3</h5>
+          <ol class="rank-mini">
+            <li><b>"갓생" 트렌드</b> — 아침 기상 인증, 미라클모닝, 절제된 자기관리 루틴을 SNS에 기록·공유하는 문화. 챌린저스·마이루틴 같은 습관 인증 앱이 이 흐름을 타고 성장.</li>
+            <li><b>MBTI 기반 자기이해 콘텐츠</b> — 성격유형을 매개로 한 자기분석 콘텐츠가 예능·SNS 밈까지 확산돼 "나를 분석하는" 콘텐츠 자체에 대한 소비 저항이 낮음.</li>
+            <li><b>번아웃 담론의 공론화</b> — 과거엔 숨기던 정신건강 이야기가 최근 몇 년 새 유튜브·언론에서 공개적으로 다뤄지기 시작 — 심리 앱에 대한 진입장벽이 이전보다 낮아진 배경.</li>
+          </ol>
+          <h5>인기 앱/채널 TOP 3</h5>
+          <ol class="rank-mini">
+            <li><b>카카오톡</b> — 메신저 절대 강자, 대부분의 바이럴·공유가 이 안에서 발생.</li>
+            <li><b>네이버(블로그/카페)</b> — 구글보다 네이버 검색·블로그 생태계 영향력이 큼 — 이 카테고리의 "검색 채널" 전략은 구글 단독이 아니라 네이버 키워드도 함께 봐야 함(현재 리포트는 구글 기준만 계산돼 있어 보강 필요).</li>
+            <li><b>챌린저스 / 마이루틴</b> — 습관 인증형 자기계발 앱의 직접 레퍼런스, 이미 검증된 카테고리 수요.</li>
+          </ol>
+          <h5>국가적 정세·역사 배경</h5>
+          <p>세계 최저 수준 출산율과 급속한 고령화, 입시·취업 경쟁이 극심한 사회 구조 속에서 "번아웃"과 "갓생"이 동시에 유행하는 역설적 상황 — 경쟁 압박에 대한 반작용으로 자기관리·자기이해 콘텐츠 수요가 구조적으로 크다.</p>
+        </div>
+      </details>
+
+      <details class="country-card">
+        <summary>
+          <span class="country-rank">신규 후보</span>
+          <span class="country-name">🇵🇭 필리핀</span>
+          <span class="country-hint">펼쳐서 더 보기</span>
+        </summary>
+        <div class="country-body">
+          <p class="pillar-lead">기존 3개국 후보엔 없었지만 스코어카드 상 총점 최상위권 — 영어 공용어라 번역 없이도 바로 진입 가능하고, 압도적 종교 인구 비중이 "신앙/영성" 문항과 정확히 맞아떨어짐.</p>
+          <h5>타겟 지역 — 어디를 노려야 하는가</h5>
+          <p class="target-region"><b>대상:</b> 메트로 마닐라(Metro Manila) 광역권 거주 젊은 층<br><b>이유:</b> 필리핀은 인구와 경제활동이 메트로 마닐라 광역권에 매우 높은 비중으로 집중돼 있는 것으로 널리 알려진 국가 구조라, 초기 마케팅 예산을 전국에 분산하지 않고 이 광역권 하나에 집중하는 게 효율적일 가능성이 큼 — 다만 정확한 인구 집중 비율은 확인하지 않았고(링크 미확인, 검증 필요), 방향성 판단으로만 참고할 것.</p>
+          <div class="trend-pair">
+            <div class="trend-now"><span class="trend-label">지금 흥행 중</span>MBTI/성격유형 콘텐츠, Mobile Legends류 캐주얼 모바일 게임</div>
+            <div class="trend-next"><span class="trend-label">앞으로 뜰 것으로 예상</span>동남아 전반의 모바일 결제·구독 인프라 성숙 — 지금은 광고 기반 무료 앱이 대세지만 소액 구독 결제 저항이 낮아지는 흐름</div>
+          </div>
+          <h5>지금 유행 TOP 3</h5>
+          <ol class="rank-mini">
+            <li><b>MBTI/성격유형 열풍</b> — 동남아시아 중에서도 필리핀은 MBTI·성격유형 콘텐츠 소비가 특히 활발한 시장으로 자주 언급됨 — 자기이해 콘텐츠에 대한 문화적 친숙도가 이미 높음.</li>
+            <li><b>모바일 게임 시장의 규모</b> — 동남아시아 최대 모바일 게임 소비 시장 중 하나로 꼽힘 — 수집형 캐주얼 게이머 세그먼트의 절대 모수가 큼.</li>
+            <li><b>가톨릭 신앙 실천 문화</b> — 개인 기도·묵상을 일상적으로 기록하는 문화가 실제 생활에 깊이 자리잡아, "신앙/영성" 체크인 문항이 낯설지 않고 오히려 자연스러움.</li>
+          </ol>
+          <h5>인기 앱/채널 TOP 3</h5>
+          <ol class="rank-mini">
+            <li><b>Facebook / Messenger</b> — 필리핀은 전 세계에서 페이스북 이용 시간이 가장 높은 국가군으로 자주 언급됨 — 메타 피드 채널의 효율이 다른 나라보다 클 가능성.</li>
+            <li><b>TikTok</b> — 젊은 인구 비중이 높아 숏폼 콘텐츠 소비가 매우 활발.</li>
+            <li><b>모바일 게임(캐주얼/수집형)</b> — Mobile Legends 등 모바일 게임 문화가 생활 깊숙이 자리잡음 — 수집형 게이머 세그먼트 공략에 유리한 토양.</li>
+          </ol>
+          <h5>국가적 정세·역사 배경</h5>
+          <p>인구 대다수가 가톨릭을 믿는 아시아의 몇 안 되는 국가(스페인·미국 식민 지배의 역사적 영향), 평균 연령이 매우 낮은 젊은 인구 구조, 영어를 공용어로 쓰는 몇 안 되는 아시아 국가라 별도 번역 비용 없이 바로 테스트 가능 — 이번 슬라이스에서 유일하게 "언어 장벽 자체가 없는" 후보.</p>
+        </div>
+      </details>
+
+      <details class="country-card">
+        <summary>
+          <span class="country-rank">신규 후보</span>
+          <span class="country-name">🇹🇼 대만</span>
+          <span class="country-hint">펼쳐서 더 보기</span>
+        </summary>
+        <div class="country-body">
+          <p class="pillar-lead">한자문화권으로 한국·일본과 정서적 유사성이 높으면서도, 신규 앱 카테고리에 대한 시장 포화도는 더 낮은 것으로 평가됨.</p>
+          <h5>타겟 지역 — 어디를 노려야 하는가</h5>
+          <p class="target-region"><b>대상:</b> 타이베이 다안구(大安區)·신이구(信義區) 거주 20~30대 화이트칼라·학생<br><b>이유:</b> 두 지역 모두 대학·오피스 밀집 지역으로 20~30대 화이트칼라·학생 인구 비중이 높다고 알려져 있어, 저널링 습관러·자기계발 소비자 세그먼트와 인구통계학적으로 겹칠 가능성이 큼 — 다만 구 단위 정밀 데이터는 확인하지 않았고, 일반적으로 알려진 도시 구조에 기반한 추정.</p>
+          <div class="trend-pair">
+            <div class="trend-now"><span class="trend-label">지금 흥행 중</span>손글씨 다이어리(手帳) 커뮤니티, 타로·사주 등 전통 점술 기반 자기이해 콘텐츠</div>
+            <div class="trend-next"><span class="trend-label">앞으로 뜰 것으로 예상</span>한국·일본 콘텐츠 트렌드가 시차를 두고 유입되는 경향 — 한국의 "갓생"류 습관 인증 트렌드가 뒤따라 확산될 가능성</div>
+          </div>
+          <h5>지금 유행 TOP 3</h5>
+          <ol class="rank-mini">
+            <li><b>손글씨 다이어리(手帳) 문화</b> — 일본 手帳 문화의 영향을 받아 대만에서도 손글씨 다이어리·플래너 커뮤니티가 활발한 것으로 알려짐.</li>
+            <li><b>MBTI/타로 등 자기이해 콘텐츠</b> — 성격유형뿐 아니라 타로·사주 같은 전통 점술 콘텐츠도 자기이해 콘텐츠 소비의 한 축 — "패턴을 통해 나를 이해한다"는 이 앱의 컨셉과 정서적으로 맞닿아 있음.</li>
+            <li><b>인디게임 팬층</b> — 스팀 등 글로벌 인디게임 커뮤니티 참여도가 높은 편으로 알려짐.</li>
+          </ol>
+          <h5>인기 앱/채널 TOP 3</h5>
+          <ol class="rank-mini">
+            <li><b>LINE</b> — 일본과 마찬가지로 메신저 강자.</li>
+            <li><b>Instagram / Threads</b> — 젊은 세대의 라이프스타일 콘텐츠 소비 채널로 활발.</li>
+            <li><b>Dcard</b> — 대만 대학생·청년층 중심의 대형 커뮤니티 플랫폼 — 한국의 에브리타임과 유사한 포지션으로 알려짐, 자기계발/연애/고민 상담 콘텐츠가 활발한 채널.</li>
+          </ol>
+          <h5>국가적 정세·역사 배경</h5>
+          <p>한국·일본과 유사한 유교 문화권 학업 경쟁 구조를 공유하면서도 인구 규모가 작아 큰 플랫폼들의 마케팅 경쟁이 상대적으로 덜 치열한 것으로 평가됨 — "틈새시장" 성격의 진입 기회.</p>
+        </div>
+      </details>
+
+      <details class="country-card">
+        <summary>
+          <span class="country-rank">하향 조정</span>
+          <span class="country-name">🇯🇵 일본</span>
+          <span class="country-hint">펼쳐서 더 보기 — 신앙 문항 부적합 우려</span>
+        </summary>
+        <div class="country-body">
+          <p class="pillar-lead">수첩형 다이어리 문화(手帳)는 최상위권이지만, 스코어카드상 "신앙·영성" 적합도가 가장 낮아 후순위로 조정 — 문항 재설계 없이는 위화감이 클 수 있음.</p>
+          <h5>지금 유행 TOP 3</h5>
+          <ol class="rank-mini">
+            <li><b>手帳(테초) 문화</b> — 디지털 이전부터 수십 년 이어진 종이 다이어리·플래너 문화.</li>
+            <li><b>습관 인증 앱 붐</b> — "みんチャレ"(민찰레) 같은 그룹 습관 인증 앱이 이미 널리 쓰임.</li>
+            <li><b>익명 기반 소통 선호</b> — 실명·얼굴 노출보다 익명 커뮤니티(5ch 등) 선호 경향이 강함.</li>
+          </ol>
+          <h5>인기 앱/채널 TOP 3</h5>
+          <ol class="rank-mini">
+            <li><b>LINE</b> — 메신저 절대 강자.</li>
+            <li><b>X(트위터)</b> — 전 세계에서 X 이용률이 유독 높은 시장으로 알려짐.</li>
+            <li><b>Study Plus</b> — 학습 기록 앱 카테고리의 강자.</li>
+          </ol>
+          <h5>국가적 정세·역사 배경</h5>
+          <p>세속화 정도가 매우 높은 사회라 "신앙/영성" 카테고리 자체를 문항으로 넣는 것 자체가 낯설게 느껴질 위험 — 진출하려면 이 문항만 별도 재설계가 필요.</p>
+        </div>
+      </details>
+
+      <details class="country-card">
+        <summary>
+          <span class="country-rank">영어 글로벌권</span>
+          <span class="country-name">🇺🇸🇬🇧🇨🇦🇦🇺 영미권 (미국/영국/캐나다/호주)</span>
+          <span class="country-hint">펼쳐서 더 보기 — 미국 하나로 퉁치지 않음</span>
+        </summary>
+        <div class="country-body">
+          <p class="pillar-lead">언어 장벽은 없지만 미국·영국·캐나다·호주는 문화가 서로 다르다 — 하나로 묶어 판단하지 않고 각각의 결을 짚는다. 공통적으로 저널링 앱 카테고리 자체가 이미 포화 상태라는 게 스코어카드상 "시장 기회" 최하위의 이유.</p>
+          <h5>국가별 결 차이</h5>
+          <ol class="rank-mini">
+            <li><b>🇺🇸 미국</b> — 웰니스 산업 규모 자체는 최대지만 그만큼 경쟁도 최대. "That Girl" 트렌드로 저널링 붐이 이미 한 차례 지나감.</li>
+            <li><b>🇬🇧 영국</b> — 미국보다 정신건강 담론에 더 절제된 톤 선호(과장된 "자기계발 허슬" 문화에 대한 반감이 상대적으로 있는 것으로 알려짐) — 마케팅 톤을 미국식 그대로 가져가면 위화감 가능성.</li>
+            <li><b>🇨🇦 캐나다</b> — 미국과 유사하지만 개인정보 규제(PIPEDA)가 있어 데이터 처리 방식 검토 필요.</li>
+            <li><b>🇦🇺 호주</b> — 인구 규모가 작아 큰 예산 투입보다 니치 커뮤니티(레딧 등) 중심 저비용 침투가 더 현실적.</li>
+          </ol>
+          <div class="trend-pair">
+            <div class="trend-now"><span class="trend-label">지금 흥행 중</span>"That Girl" 웰니스 루틴, 테라피 용어의 일상화("바운더리", "트리거")</div>
+            <div class="trend-next"><span class="trend-label">앞으로 뜰 것으로 예상</span>구독 피로(Subscription Fatigue) 반작용으로 "가볍고 무료인" 저널링 도구에 대한 재평가 — 무겁고 비싼 웰니스 앱보다 단순한 도구 선호로 회귀할 가능성</div>
+          </div>
+          <h5>인기 앱/채널 TOP 3 (미국 기준)</h5>
+          <ol class="rank-mini">
+            <li><b>Day One</b> — 유료 저널링 앱 카테고리의 사실상 표준, 직접 경쟁자.</li>
+            <li><b>Notion</b> — 카테고리 자체를 잠식할 수 있는 범용 도구 위협.</li>
+            <li><b>Duolingo</b> — 게임화된 습관 형성 앱의 성공 벤치마크.</li>
+          </ol>
+        </div>
+      </details>
+
+      <details class="country-card worst-fit">
+        <summary>
+          <span class="country-rank rank-worst">최악 지역·문화권</span>
+          <span class="country-name">🇩🇪 독일/중부유럽 (서유럽 세속·고privacy 규제권 대표)</span>
+          <span class="country-hint">펼쳐서 더 보기 — 왜 피해야 하는지</span>
+        </summary>
+        <div class="country-body">
+          <p class="pillar-lead">스코어카드 6개국 중 총점 최하위 — 개별 요인이 아니라 여러 약점이 동시에 겹치는 구조적 부적합.</p>
+          <h5>왜 최악인가 — 근거 3가지</h5>
+          <ol class="rank-mini">
+            <li><b>세속화 + 낮은 자기개시(self-disclosure) 문화</b> — 사적인 감정·신앙을 앱에 기록해 공유하는 것에 대한 문화적 거부감이 상대적으로 큰 것으로 알려짐 — "신앙/영성" 문항은 물론 감정 기록 자체에 대한 진입장벽이 있음.</li>
+            <li><b>GDPR 등 강한 개인정보 규제권</b> — 심리·신앙 데이터는 EU GDPR상 "특별 범주 개인정보(Special Category Data)"에 해당할 가능성이 높아, 진출 시 동의 절차·데이터 처리 근거를 별도로 마련해야 함 — 작은 팀에게 규제 대응 비용이 상대적으로 큼.</li>
+            <li><b>이미 견고한 로컬 경쟁자</b> — 독일어권은 자체 생산성/웰니스 앱 생태계가 발달해 있어 외부 앱의 침투가 상대적으로 어려운 시장으로 평가됨.</li>
+          </ol>
+          <p class="caveat" style="margin-top:0;">이건 "독일 시장이 나쁘다"는 뜻이 아니라, <b>이 앱의 지금 형태(신앙/영성 문항 포함, 감정 데이터 수집 전제)와 구조적으로 안 맞는다</b>는 뜻 — 카테고리를 크게 재설계하지 않는 한 진출 우선순위에서 제외하는 게 합리적.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-label"><span class="num">02</span><h2>타겟 고객 — 세 부류의 사람들</h2></div>
+    <div class="card">
+      <p class="thesis">모두에게 팔려는 앱은 다 놓친다 — 처음 겨냥할 사람들을 <em>이름으로 부를 수 있게</em> 나눠서 어디서 반응이 오는지부터 확인한다.</p>
+    </div>
+    <div class="card persona-card">
+      <div class="persona-head">
+        <span class="persona-tag">습관형</span>
+        <h4>저널링 습관러</h4>
+      </div>
+      <p class="persona-desc">Day One·하루의 질문 등 기존 다이어리 앱 사용자, 20~30대 여성 비중 높음. 이미 "매일 기록하는" 습관이 있어 온보딩 저항이 가장 낮다.</p>
+      <div class="persona-meta">
+        <span>채널 · 유기적 숏폼(틱톡/릴스)</span>
+        <span>포지셔닝 · "당신의 하루가 카드가 되는 다이어리"</span>
+      </div>
+      <p class="caveat" style="margin-top:12px;">📍 서울·경기 등 수도권과 지방 광역시에 고르게 분포. 인스타그램 #다꾸(다이어리 꾸미기)·#버킷저널 해시태그, 네이버 블로그 자기계발 카테고리, <a href="https://dayoneapp.com" target="_blank" rel="noopener">Day One</a>·모트모트·텐미닛다이어리 등 기존 다이어리 앱, 유튜브 "다이어리 브이로그" 채널.<br><span class="link-unverified">※ 정확한 설문 통계가 아니라 실제 존재하는 커뮤니티·앱 기반 리서치 방향 — 캠페인 전 직접 소규모 확인 필요.</span></p>
+      <div class="analogy-card" style="margin-top:12px; margin-bottom:0;">
+        <h4>가상 시나리오 · 서울, 27세, 마케터 — Day One 사용 중</h4>
+        <p>"처음엔 '또 다른 습관 관리 앱인가' 싶었는데, 어제 쓴 일기가 카드 한 장으로 바뀐 걸 보고 신기했어요. 근데 이 카드가 정확히 뭘 하는 건지는 아직 잘 모르겠어요 — 그냥 예쁜 스티커인가?"</p>
+        <span class="applied">시사점: 온보딩에서 "카드 = 내 기록의 요약"이라는 설명이 부족함</span>
+      </div>
+    </div>
+    <div class="card persona-card">
+      <div class="persona-head">
+        <span class="persona-tag b">게이머형</span>
+        <h4>감성 수집형 캐주얼 게이머</h4>
+      </div>
+      <p class="persona-desc">산나비·산책류 감성 인디게임 팬층. 승패보다 수집·서사 경험을 중시 — "승패 없는 게임"이라는 이 앱의 특징이 오히려 이 부류엔 강점이 된다.</p>
+      <div class="persona-meta">
+        <span>채널 · 메타 피드(인스타그램)</span>
+        <span>포지셔닝 · "그림자와 마주하는 감정 카드게임"</span>
+      </div>
+      <p class="caveat" style="margin-top:12px;">📍 전국, 20대 남녀 고루 분포. <a href="https://store.steampowered.com" target="_blank" rel="noopener">스팀(Steam)</a> 인디게임 커뮤니티, <a href="https://www.dcinside.com" target="_blank" rel="noopener">디시인사이드</a> 인디게임 갤러리, 트위터(X) 게임 스크린샷/팬아트 계정, 산나비·디스코 엘리시움·언패킹 같은 감성 인디게임 위시리스트 보유층.<br><span class="link-unverified">※ 정확한 설문 통계가 아니라 실제 존재하는 커뮤니티·앱 기반 리서치 방향 — 캠페인 전 직접 소규모 확인 필요.</span></p>
+      <div class="analogy-card" style="margin-top:12px; margin-bottom:0;">
+        <h4>가상 시나리오 · 대전, 24세, 대학원생 — 산나비 팬</h4>
+        <p>"그림자랑 싸우는 게 아니라 '마주한다'는 컨셉은 좋았어요. 근데 승패가 없으니까 뭘 목표로 계속해야 하는지 헷갈려요 — 그냥 일기만 쓰다 끝나는 느낌?"</p>
+        <span class="applied">시사점: 승패 없는 루프에서 "다음 목표"가 명확히 안 보이면 이탈 위험</span>
+      </div>
+    </div>
+    <div class="card persona-card">
+      <div class="persona-head">
+        <span class="persona-tag c">탐구형</span>
+        <h4>자기계발 콘텐츠 소비자</h4>
+      </div>
+      <p class="persona-desc">MBTI·습관 트래커·자기이해 콘텐츠를 능동적으로 검색하는 층. 구매 의도가 명확해 검색 채널에서 전환율이 가장 높게 나올 것으로 예상.</p>
+      <div class="persona-meta">
+        <span>채널 · 구글 검색광고</span>
+        <span>포지셔닝 · "패턴 분석 기반 자기이해 도구"</span>
+      </div>
+      <p class="caveat" style="margin-top:12px;">📍 전국, 20~40대. MBTI 오픈채팅방·인스타그램 밈 계정 팔로워, <a href="https://class101.net" target="_blank" rel="noopener">클래스101</a>·그로우 같은 자기계발 플랫폼 이용자, <a href="https://www.chlngers.com" target="_blank" rel="noopener">챌린저스</a> 등 습관 트래커 앱 사용자, 자기계발 유튜브 채널 구독자.<br><span class="link-unverified">※ 정확한 설문 통계가 아니라 실제 존재하는 커뮤니티·앱 기반 리서치 방향 — 캠페인 전 직접 소규모 확인 필요.</span></p>
+      <div class="analogy-card" style="margin-top:12px; margin-bottom:0;">
+        <h4>가상 시나리오 · 부산, 33세, 직장인 — 챌린저스 사용 중</h4>
+        <p>"MBTI처럼 결과가 딱 나오는 줄 알았는데, 며칠은 써야 뭐가 보이나 봐요. 첫 화면에서 '얼마나 써야 결과가 나오는지' 미리 알려주면 좋겠어요."</p>
+        <span class="applied">시사점: 콜드스타트 기간에 대한 기대치 설정이 부족함</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-label"><span class="num">03</span><h2>고객별 CTR · 설치 예상</h2></div>
+    <div class="card">
+      <p class="caveat" style="margin-top:0;">가정: 부류별 노출 15,000회, iOS 스토어 전환율 26% 동일 적용. TAM은 각 부류의 국내 추정 인구 규모(직접 조사 필요 — 아래서 숫자를 바꿔보며 감을 잡을 수 있다).</p>
+      <div class="persona-stat-table">
+        <div class="pst-row pst-head">
+          <span>고객</span><span>CTR</span><span>클릭</span><span>설치</span>
+        </div>
+        <div class="pst-row">
+          <span>저널링 습관러</span><span>1.0~3.0%</span><span>150~450</span><span class="pst-strong">39~117</span>
+        </div>
+        <div class="pst-row">
+          <span>수집형 게이머</span><span>0.8~1.2%</span><span>120~180</span><span class="pst-strong">31~46</span>
+        </div>
+        <div class="pst-row">
+          <span>자기계발 소비자</span><span>3.0~4.0%</span><span>450~600</span><span class="pst-strong">117~156</span>
+        </div>
+      </div>
+      <p class="source-line">📎 출처 · CTR 범위는 업계 채널 벤치마크(WordStream 등 광고 플랫폼 집계 리포트) 기준 — 매체·업종·시기별로 실제 값은 크게 다를 수 있는 <b>확정치가 아닌 사전 감 잡기용 추정치</b>다. 실제 캠페인 전 소규모 테스트로 반드시 검증할 것.</p>
+
+      <h4 class="mini-h">27,000명은 어디서 나왔나</h4>
+      <div class="formula-box">
+        <div class="formula-line">
+          TAM <input type="range" id="tamSlider" min="50000" max="500000" step="10000" value="200000" oninput="updateTam(this.value)">
+          <b id="tamValue">200,000</b>명 × 13.5% = <b id="tamResult" class="formula-result">27,000</b>명
+        </div>
+        <p class="caveat" style="margin-top:8px;">13.5%는 Rogers의 혁신 확산 이론에서 "초기 수용자"로 분류되는 비율 — 신제품은 전체 시장이 아니라 이 사람들부터 공략해야 한다는 원칙. 슬라이더로 자기계발 소비자의 시장 규모(TAM) 추정을 바꿔보면 이 숫자가 어떻게 변하는지 바로 보인다.</p>
+      </div>
+
+      <h4 class="mini-h">"1위 채널"이라는 결론은 어떻게 나왔나</h4>
+      <div class="rank-list">
+        <div class="rank-row">
+          <span class="rank-label">자기계발 소비자<br>(구글 검색광고)</span>
+          <div class="rank-bar-track"><div class="rank-bar" style="width:100%; background:var(--ready);"></div></div>
+          <span class="rank-val">156건</span>
+        </div>
+        <div class="rank-row">
+          <span class="rank-label">저널링 습관러<br>(유기적 숏폼)</span>
+          <div class="rank-bar-track"><div class="rank-bar" style="width:75%;"></div></div>
+          <span class="rank-val">117건</span>
+        </div>
+        <div class="rank-row">
+          <span class="rank-label">수집형 게이머<br>(메타 피드)</span>
+          <div class="rank-bar-track"><div class="rank-bar" style="width:29%;"></div></div>
+          <span class="rank-val">46건</span>
+        </div>
+      </div>
+      <p class="caveat" style="margin-bottom:14px;">같은 노출(15,000회) 기준으로 예상 설치 수를 나란히 놓으면 검색광고가 가장 크다.</p>
+
+      <h4 class="mini-h">근본적으로 왜 검색이 이기는가 — Pull vs Push</h4>
+      <p class="persona-desc" style="font-size:13px; color:var(--text-soft); margin:0 0 10px;">마케팅에는 <b>Pull(견인) 마케팅</b>과 <b>Push(주입) 마케팅</b>이라는 오래된 구분이 있다. 검색광고는 Pull이다 — 사용자가 <em>이미 스스로 문제를 인지하고</em> "자기계발 앱", "습관 기록" 같은 말을 직접 검색창에 쳐 넣은 다음에 등장한다. 반면 숏폼·피드 광고는 Push다 — 그 문제를 생각하고 있지도 않던 사람의 타임라인에 <em>끼어들어</em> 관심을 만들어내야 한다.</p>
+      <p class="persona-desc" style="font-size:13px; color:var(--text-soft); margin:0 0 10px;">퍼널(구매 여정) 이론으로 보면 이 둘은 <b>같은 지점에 있지 않다</b>: 검색은 "이미 해결책을 찾는 중"인 <b>퍼널 하단(Bottom-of-Funnel)</b>, 숏폼/피드는 "문제 인식조차 안 된" <b>퍼널 상단(Top-of-Funnel)</b> 사용자를 겨냥한다. CTR이 다른 건 우연이 아니라 <b>애초에 다른 단계의 사람을 상대하기 때문</b> — 검색 CTR이 높은 건 "검색이 더 좋은 채널"이어서가 아니라 "이미 사려는 사람만 걸러져서 오기 때문"이다.</p>
+      <div class="rank-list" style="margin-bottom:10px;">
+        <div class="rank-row" style="grid-template-columns: 1fr;">
+          <span class="rank-label" style="font-weight:600; color:var(--text);">검색광고 (Pull, 퍼널 하단) → "습관 앱 추천" 검색 → 이미 살 준비가 된 소수</span>
+        </div>
+        <div class="rank-row" style="grid-template-columns: 1fr;">
+          <span class="rank-label" style="font-weight:600; color:var(--text);">숏폼/피드 (Push, 퍼널 상단) → 무심코 스크롤하다 발견 → 아직 필요성도 모르는 다수</span>
+        </div>
+      </div>
+      <p class="caveat">그래서 이 결론엔 숨은 전제가 있다 — 검색 채널의 "모수" 자체가 이 카테고리에선 아직 작다는 것. 퍼널 하단 사람은 전환은 잘 되지만 <b>절대 숫자가 적다</b>(아직 아무도 "카드가 되는 다이어리 앱"을 검색해본 적이 없으니까). 그래서 실행 순서는 숏폼(Push)으로 퍼널 상단 인지도를 먼저 만들고, 그렇게 생긴 "습관 앱을 검색하는 사람들"을 검색(Pull)으로 거둬들이는 2단계 구조를 권장한 것이다 — 검색을 1번으로 추천한 게 아니라, 검색은 "나중에 회수하는 그물"이라는 뜻이다.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-label"><span class="num">04</span><h2>성장 배수 법칙 — 왜 숫자가 더해지지 않고 곱해지는가</h2></div>
+    <div class="card">
+      <div class="mode-toggle" role="tablist" aria-label="설명 난이도">
+        <button class="mode-btn active" data-target="growth" data-mode="beginner" onclick="setMode('growth','beginner')">초보자 모드</button>
+        <button class="mode-btn" data-target="growth" data-mode="intermediate" onclick="setMode('growth','intermediate')">중급자 모드</button>
+      </div>
+
+      <div class="mode-view active" data-view="growth-beginner">
+        <div class="analogy-card">
+          <h4>🪣 문 5개 vs 문 1개</h4>
+          <p>노출→클릭→가입→활성화→추천, 사용자가 통과해야 하는 문이 5개 있다. 문 하나만 활짝 여는 것보다, 문 5개를 다 조금씩 넓히는 게 결과적으로 더 많은 사람을 통과시킨다.</p>
+          <span class="applied">적용: 저널링 습관러 설치 39~117명 → 문 5개 조금씩 넓히면 63~188명 정도로</span>
+        </div>
+        <div class="analogy-card">
+          <h4>💰 적금이 두 배 되는 시간</h4>
+          <p>매달 조금씩 느는 이자율을 살짝만 올려도, "원금이 두 배가 되는 날"이 훨씬 빨리 온다. 성장률 5%면 두 배 되는 데 14개월 걸리지만, 15%면 5개월도 안 걸린다.</p>
+          <span class="applied">적용: 성장률을 5%→15%로 올리면 배가 시점이 9개월 이상 당겨짐</span>
+        </div>
+        <div class="analogy-card">
+          <h4>👥 친구가 친구를 데려오는 순간</h4>
+          <p>한 사람이 평균 0.3명한테만 추천하고 그중 20%만 설치하면, 광고 없이는 성장이 멈춘다. 한 사람이 2명한테 추천하고 60%가 설치하면, 광고 한 푼 안 써도 사용자가 저절로 계속 늘어난다.</p>
+          <span class="applied">적용: 지금 1psygame은 전자(광고 필요) — 추천 기능이 아직 없음</span>
+        </div>
+      </div>
+
+      <div class="mode-view" data-view="growth-intermediate">
+        <p class="thesis">개별 지표를 조금씩 개선하는 것과 "두 배로 키우는 것"은 다른 게임이다 — 후자는 <em>더하기가 아니라 곱하기</em>로 작동하는 지점을 찾는 일이다.</p>
+
+        <h4 class="mini-h">1) 퍼널 복합 효과 — 계산해보기</h4>
+        <p class="persona-desc">노출→클릭→가입→활성화→추천, 5단계 퍼널의 각 단계를 <b id="funnelPctLabel">10</b>%씩 개선하면 전체는 10%×5=50%가 아니라 곱으로 이어져 커진다.</p>
+        <div class="formula-box">
+          <div class="formula-line">단계당 개선율 <input type="range" id="funnelSlider" min="1" max="30" step="1" value="10" oninput="updateFunnel(this.value)"> <b id="funnelPctLabel2">10</b>%</div>
+          <div class="calc-row"><span class="calc-label">단순 합산 (10%×5)</span><span class="calc-out" id="funnelLinear">50%</span></div>
+          <div class="calc-row"><span class="calc-label">실제 복합 효과 (1.10⁵−1)</span><span class="calc-out" id="funnelCompound">61%</span></div>
+          <div class="calc-row"><span class="calc-label">저널링 습관러 설치 39~117명 적용 시</span><span class="calc-out" id="funnelApplied">63~188명</span></div>
+        </div>
+
+        <h4 class="mini-h">2) 배(倍)의 법칙 — 72의 법칙(Rule of 72)</h4>
+        <p class="persona-desc">월간 성장률이 <b>r%</b>면, 사용자 수가 두 배가 되는 데 걸리는 개월 수는 대략 <b>72 ÷ r</b>이다.</p>
+        <div class="formula-box">
+          <div class="formula-line">월 성장률 <input type="range" id="growthSlider" min="1" max="30" step="1" value="8" oninput="updateGrowth(this.value)"> <b id="growthPctLabel">8</b>%/월</div>
+          <div class="calc-row"><span class="calc-label">두 배가 되는 시점</span><span class="calc-out" id="doubleMonths">9.0개월</span></div>
+        </div>
+        <div class="rule72-table">
+          <div class="r72-row r72-head"><span>월 성장률</span><span>배가 되는 시점</span></div>
+          <div class="r72-row"><span>5%/월 (숏폼 단독, 보수적)</span><span>약 14.4개월</span></div>
+          <div class="r72-row"><span>8%/월 (숏폼 + 검색 병행)</span><span>약 9.0개월</span></div>
+          <div class="r72-row featured"><span>15%/월 (추천 루프 가동 시)</span><span>약 4.8개월</span></div>
+        </div>
+
+        <h4 class="mini-h">3) K-factor — 추천이 자가발전을 만드는 지점</h4>
+        <p class="persona-desc">사용자당 평균 초대 수 × 초대 전환율 = K. <b>K &lt; 1</b>이면 유료/오가닉 채널 없이는 성장이 멈추고, <b>K &gt; 1</b>이면 추천만으로 사용자가 스스로 배가된다.</p>
+        <div class="formula-box">
+          <div class="formula-line">초대 수 <input type="range" id="inviteSlider" min="0" max="3" step="0.1" value="0.3" oninput="updateKFactor()"> <b id="inviteLabel">0.3</b>명</div>
+          <div class="formula-line">전환율 <input type="range" id="convSlider" min="0" max="100" step="5" value="20" oninput="updateKFactor()"> <b id="convLabel">20</b>%</div>
+          <div class="calc-row"><span class="calc-label">K-factor</span><span class="calc-out" id="kfactorResult">0.06 — 채널 의존</span></div>
+        </div>
+        <p class="caveat">지금 1psygame엔 추천 유도 기능이 없다 — G(체임버) 결과 공유나 F/B 모드의 "운명 카드" 결말을 친구에게 보내는 기능이 K를 0.06에서 1.2 쪽으로 옮길 수 있는 가장 현실적인 지렛대다.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-label"><span class="num">05</span><h2>MVP 생산 시뮬레이션 — 단계별 반응·문제·전략</h2></div>
+    <div class="card">
+      <div class="mode-toggle" role="tablist" aria-label="설명 난이도">
+        <button class="mode-btn active" data-target="mvp" data-mode="beginner" onclick="setMode('mvp','beginner')">초보자 모드</button>
+        <button class="mode-btn" data-target="mvp" data-mode="intermediate" onclick="setMode('mvp','intermediate')">중급자 모드</button>
+      </div>
+
+      <div class="mode-view active timeline" data-view="mvp-beginner">
+        <div class="tl-item">
+          <div class="tl-stage">1단계 · 가족·지인한테 먼저 보여주는 시기 (사용자 0→100명)</div>
+          <div class="tl-row"><span class="tl-label">무슨 일</span><span>저널링 습관러부터 설치해서 며칠 써봄.</span></div>
+          <div class="tl-row problem"><span class="tl-label">걱정거리</span><span>처음 쓰는 사람은 예전 기록이 없어서 카드가 1~2장뿐 — 심심해서 그만둘 수 있음.</span></div>
+          <div class="tl-row strategy"><span class="tl-label">할 일</span><span>사계기록에 예전에 써둔 일기가 있으면 자동으로 불러와서 카드부터 여러 장 만들어줌.</span></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-stage">2단계 · 처음으로 광고를 조금 써보는 시기 (100→1,000명)</div>
+          <div class="tl-row"><span class="tl-label">무슨 일</span><span>숏폼 광고로 저널링 습관러를, 검색광고로 자기계발 소비자를 동시에 테스트.</span></div>
+          <div class="tl-row problem"><span class="tl-label">걱정거리</span><span>광고 보고 눌러본 사람 중 "이게 뭔지 모르겠다"며 그냥 나가는 비율이 높을 수 있음.</span></div>
+          <div class="tl-row strategy"><span class="tl-label">할 일</span><span>광고 문구를 "카드게임"에서 "당신의 하루가 카드가 되는 다이어리"로 바꿔서 낯선 느낌을 줄임.</span></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-stage">3단계 · 진짜 좋아하는지 물어보는 시기 (1,000→10,000명)</div>
+          <div class="tl-row"><span class="tl-label">무슨 일</span><span>사용자들한테 "이 앱이 갑자기 사라지면 어떨 것 같아요?"라고 직접 물어봄.</span></div>
+          <div class="tl-row problem"><span class="tl-label">걱정거리</span><span>"별로 안 아쉬울 것 같다"는 답이 많으면, 지금 광고비를 더 써도 남는 사람이 적어 돈만 날림.</span></div>
+          <div class="tl-row strategy"><span class="tl-label">할 일</span><span>아쉽다는 답이 적으면 광고를 잠깐 멈추고, 핵심 기능(그림자-카드 매칭, 최근에 고침)부터 다시 점검.</span></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-stage">4단계 · 입소문이 나기 시작하는 시기 (10,000명+)</div>
+          <div class="tl-row"><span class="tl-label">무슨 일</span><span>수집형 게이머들이 많이 들어오고, 친구 추천으로도 사람들이 들어오기 시작.</span></div>
+          <div class="tl-row problem"><span class="tl-label">걱정거리</span><span>아직 "친구한테 추천하기" 기능이 없어서, 입소문이 나도 실제로 퍼지는 속도는 느림.</span></div>
+          <div class="tl-row strategy"><span class="tl-label">할 일</span><span>결과 화면을 친구한테 공유하는 기능을 넣어서, 입소문이 실제 설치로 더 잘 이어지게 함.</span></div>
+        </div>
+      </div>
+
+      <div class="mode-view timeline" data-view="mvp-intermediate">
+        <div class="tl-item">
+          <div class="tl-stage">STAGE 1 · 0→100명 (출시 직후)</div>
+          <div class="tl-row"><span class="tl-label">고객 반응</span><span>저널링 습관러 위주로 설치, 초반 리텐션 확인 단계.</span></div>
+          <div class="tl-row problem"><span class="tl-label">문제</span><span>신규 유저는 사계기록 이력이 없어 카드가 1~2장뿐 — "콜드스타트" 이탈 위험.</span></div>
+          <div class="tl-row strategy"><span class="tl-label">전략</span><span>GitHub 동기화로 harugirok 기존 이력 즉시 백필 — 이미 구현된 경로를 온보딩 첫 화면에 노출.</span></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-stage">STAGE 2 · 100→1,000명 (첫 유료 채널 테스트)</div>
+          <div class="tl-row"><span class="tl-label">고객 반응</span><span>저널링 습관러 대상 숏폼 CTR 실측, 자기계발 소비자 대상 검색 병행 시작.</span></div>
+          <div class="tl-row problem"><span class="tl-label">문제</span><span>실측 CTR이 벤치마크(1~3%) 하단에 걸릴 가능성 — 카테고리 자체가 생소해 "이게 뭔지 모르겠다"는 반응.</span></div>
+          <div class="tl-row strategy"><span class="tl-label">전략</span><span>포지셔닝 문구를 "카드게임"에서 "당신의 하루가 카드가 되는 다이어리"로 재조정 — 낯선 장르보다 익숙한 습관(다이어리) 프레임으로 진입장벽을 낮춤.</span></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-stage">STAGE 3 · 1,000→10,000명 (PMF 확인)</div>
+          <div class="tl-row"><span class="tl-label">고객 반응</span><span>Sean Ellis 설문("이 앱이 사라지면?") 실행.</span></div>
+          <div class="tl-row problem"><span class="tl-label">문제</span><span>'매우 실망' 응답이 40% 미달 시, 지금 유료 확장은 CAC만 태우는 결과.</span></div>
+          <div class="tl-row strategy"><span class="tl-label">전략</span><span>미달 시 광고 중단 → 핵심 루프(그림자-카드 매칭, 최근 수정 완료)부터 재점검. 통과 시에만 4단계로 예산 확대.</span></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-stage">STAGE 4 · 10,000명+ (확장)</div>
+          <div class="tl-row"><span class="tl-label">고객 반응</span><span>수집형 게이머 본격 유입, 자연 추천 발생 시작.</span></div>
+          <div class="tl-row problem"><span class="tl-label">문제</span><span>K-factor가 여전히 0.06대면 유료 채널 의존이 심해져 CAC 부담 누적.</span></div>
+          <div class="tl-row strategy"><span class="tl-label">전략</span><span>위 성장 배수 법칙대로 추천 유도 기능을 넣어 K를 1 이상으로 — 그 시점부터 72의 법칙상 배가 주기가 9개월대에서 5개월대로 단축.</span></div>
+        </div>
+      </div>
+      <p class="caveat" style="margin-top:14px;">고객군의 실제 거주지·채널·가상 반응 시나리오는 위 <b>02. 타겟 고객</b> 섹션의 각 카드에 함께 정리돼 있다.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-label"><span class="num">06</span><h2>실행 순서</h2></div>
+    <div class="card">
+      <ul class="action-list">
+        <li><span class="chk urgent"></span><div><b>1주차 — 저널링 습관러 대상 숏폼 소규모 테스트</b><span class="detail">저항이 가장 낮은 고객군으로 먼저 반응 확인, 실측 CTR로 위 추정치 검증.</span></div></li>
+        <li><span class="chk"></span><div><b>2주차 — 자기계발 소비자 대상 검색광고 병행</b><span class="detail">1주차에서 확보한 초기 사용자 후기/스크린샷을 검색광고 소재로 재사용.</span></div></li>
+        <li><span class="chk"></span><div><b>Privacy Policy / Support URL 확보</b><span class="detail">MVP 패키지 제출 차단 사유 — 캠페인 시작 전 필수 선결.</span></div></li>
+        <li><span class="chk"></span><div><b>일본 진출은 보류</b><span class="detail">국내 고객군별 실측 CTR·리텐션 확인 후 재검토 — 지금은 자원 분산 금지.</span></div></li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-label"><span class="num">07</span><h2>미래 가능성 — 2026년 지금, 어디에 서 있나</h2></div>
+    <div class="card">
+      <p class="thesis">"일기+AI 패턴 분석" 카테고리는 <em>이미 한 번 과대평가를 겪고 지금은 옥석이 가려지는 국면</em>이다 — 완전히 새로운 시장이 아니라, 이미 산이 하나 지나간 시장에 늦게 들어가는 것에 가깝다.</p>
+      <div class="hype-track">
+        <svg class="hype-curve" viewBox="0 0 300 48" preserveAspectRatio="none">
+          <path d="M0,44 C40,44 55,4 75,4 C95,4 100,40 130,42 C170,44 200,30 300,10"
+                fill="none" stroke="var(--line)" stroke-width="2"/>
+        </svg>
+        <div class="hype-marker" style="left:44%;"></div>
+      </div>
+      <div class="hype-labels">
+        <span>촉발</span><span>과열 기대</span><span>환멸 저점</span><span>회복기</span><span>주류 안착</span>
+      </div>
+      <p class="caveat" style="margin-top:2px;">Gartner의 하이프 사이클 프레임을 빌리면, "AI 저널링/자기이해 앱"은 2022~2023년 생성형 AI 붐과 함께 과열 기대를 지났고, 지금(2026)은 실제 리텐션이 증명 안 된 앱들이 걸러지는 <b>환멸 저점 근처</b>에 있다고 보는 게 냉정한 진단이다. 이 위치의 의미: 화려한 스토리로 투자·바이럴을 노리기보다, <b>작더라도 실제로 남는 소수</b>를 만드는 게 지금 국면에 맞는 전략.</p>
+      <p class="source-line">📎 출처 · Gartner Hype Cycle 프레임워크(일반 개념, 특정 리포트 링크는 유료 구독 필요 — <a href="https://en.wikipedia.org/wiki/Gartner_hype_cycle" target="_blank" rel="noopener">위키피디아 개요</a>). 이 카테고리에 대한 Gartner의 공식 곡선 위치는 확인하지 않았음 — 위 진단은 이 세션의 정성적 판단.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-label"><span class="num">08</span><h2>향후 5~10년, 이 앱에 영향을 줄 세 가지 흐름</h2></div>
+    <div class="card">
+      <div class="pillar-grid">
+        <div class="pillar">
+          <h4>① OS가 기본 기능으로 흡수하는 흐름 (가장 큰 위협)</h4>
+          <p>Apple Journal, Google의 온디바이스 요약 기능처럼, "일기 쓰고 AI가 패턴을 짚어주는" 기초 기능은 향후 5년 내 운영체제 기본 앱으로 무료 제공될 가능성이 높다. 기초 기능만으로 경쟁하면 이 흐름에 잠식된다 — 카드게임화·"운명 선택" 서사처럼 OS가 절대 안 넣을 <b>게임/서사 레이어</b>가 유일한 방어선이다.</p>
+        </div>
+        <div class="pillar">
+          <h4>② 온디바이스 소형 AI 모델의 보편화 (기회 요인)</h4>
+          <p>2026~2030년 사이 스마트폰에서 직접 돌아가는 소형 언어모델이 빨라지고 저렴해지면서, "내 심리 데이터를 클라우드로 안 보내고도" 개인화 서사를 만들 수 있게 된다. 심리 데이터를 다루는 이 앱에게는 <b>"프라이버시 우선 AI 저널링"</b>이라는 포지셔닝이 지금은 기술적으로 어렵지만 3~5년 내 오히려 표준이 될 방향과 일치한다 — 지금부터 그 방향으로 설계해두면 유리.</p>
+        </div>
+        <div class="pillar">
+          <h4>③ AI 컴패니언 앱 시장의 팽창 (경쟁이자 검증)</h4>
+          <p>Replika류의 AI 동반자 앱 시장이 커지는 것은 위협이자 검증이기도 하다 — "사람들이 AI와 심리적 상호작용에 돈을 쓸 의향이 있다"는 시장 검증이 이미 진행 중이라는 뜻. 다만 그쪽은 "관계/애착"이 핵심이고 이 앱은 "자기 이해/패턴 학습"이 핵심이라 직접 경쟁이 아니라 인접 시장 — 카테고리를 흐리지 않고 차별점을 계속 좁혀 말하는 게 중요.</p>
+        </div>
+      </div>
+      <p class="caveat">규제 변수: EU AI Act류의 AI 규제가 "정신건강 인접 AI"를 별도 고위험군으로 분류하는 흐름이 이미 진행 중 — 정확한 국내 적용 시점은 확인 안 됨(링크 미확인, 직접 검색 필요). 심리 데이터를 다루는 이 앱은 이 흐름을 미리 인지하고 있는 것이 안전.</p>
+
+      <h4 class="mini-h">마케팅 이론으로 본 생존 가능성</h4>
+      <p class="persona-desc" style="font-size:13px; color:var(--text-soft); margin:0 0 10px;"><b>캐즘(Chasm) —</b> 무어(Geoffrey Moore)의 이론상 초기수용자와 주류 시장 사이엔 건너기 어려운 균열이 있다. 지금 1psygame은 아직 캐즘 이전, 즉 <b>얼리어답터 검증조차 안 끝난 단계</b>다. 이 단계에서 주류 시장(수집형 게이머 같은 넓은 층)에 광고비를 쓰는 건 캐즘을 건너뛰려는 시도라 실패 확률이 높다 — 저널링 습관러(얼리어답터에 가장 가까운 층) 검증을 먼저 끝내야 한다는 결론이 여기서도 다시 나온다.</p>
+      <p class="persona-desc" style="font-size:13px; color:var(--text-soft); margin:0;"><b>확산 이론 —</b> Rogers의 혁신 확산 이론에서, "상대적 이점이 한눈에 안 보이는 혁신"은 확산 속도가 느리다. "일기가 카드가 된다"는 개념은 새로워서 흥미롭지만, 그 이점(왜 카드여야 하는가)을 매번 설명해야 하는 비용이 있다 — 포지셔닝 문구가 "설명 없이 바로 이해되는 수준"까지 계속 단순해져야 한다는 뜻.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-label"><span class="num">09</span><h2>냉정한 결론 — 세 가지 시나리오와 지켜볼 신호</h2></div>
+    <div class="card">
+      <div class="scenario-grid">
+        <div class="scenario-card optimistic">
+          <div class="scenario-head"><h4>🟢 낙관적 시나리오</h4><span class="scenario-prob">추정 20~30%</span></div>
+          <p>저널링 습관러 세그먼트에서 PMF 확인, 온디바이스 AI 흐름에 일찍 올라타 "프라이버시 우선" 포지셔닝 선점. 니치 카테고리 리더로 안정적 유지.</p>
+          <div class="move">→ 지금 할 일: 온디바이스 처리 가능한 부분부터 설계에 반영</div>
+        </div>
+        <div class="scenario-card base">
+          <div class="scenario-head"><h4>🔵 기본 시나리오</h4><span class="scenario-prob">추정 40~50%</span></div>
+          <p>소규모 마니아층(수백~수천 명) 확보 후 정체. OS 기본 기능 확산으로 신규 유입은 둔화되지만, 게임/서사 레이어 덕에 기존 사용자는 유지.</p>
+          <div class="move">→ 지금 할 일: 사이드 프로젝트 규모로 자원 배분 최적화</div>
+        </div>
+        <div class="scenario-card pessimistic">
+          <div class="scenario-head"><h4>🔴 비관적 시나리오</h4><span class="scenario-prob">추정 25~35%</span></div>
+          <p>OS 기본 기능·AI 컴패니언 앱에 관심을 뺏기고, PMF 확인 전에 자원이 소진돼 정체 없이 하락.</p>
+          <div class="move">→ 조기 경고 신호: 3단계 PMF 설문(40% 룰) 미달이 반복되면 즉시 재점검</div>
+        </div>
+      </div>
+      <p class="caveat" style="margin-bottom:14px;">위 확률은 통계적으로 검증된 수치가 아니라 이 세션의 정성적 판단 — 실제 PMF·리텐션 데이터가 쌓이면 반드시 갱신해야 한다.</p>
+      <ul class="action-list">
+        <li><span class="chk urgent"></span><div><b>지금 — 캐즘 이전 단계에 맞게 행동</b><span class="detail">저널링 습관러 얼리어답터 검증 없이 넓은 채널에 광고비 쓰지 않기.</span></div></li>
+        <li><span class="chk"></span><div><b>지금 — 온디바이스 처리 가능한 로직 우선 설계</b><span class="detail">PatternEngine처럼 이미 로컬에서 도는 로직은 그대로 강점 — 클라우드 의존을 늘리지 않는 방향 유지.</span></div></li>
+        <li><span class="chk"></span><div><b>지켜볼 신호 — Apple/Google이 저널링+AI 패턴 기능을 OS 기본으로 넣는지</b><span class="detail">넣히면 기초 기능 경쟁은 포기하고 게임/서사 레이어로 완전히 이동.</span></div></li>
+        <li><span class="chk"></span><div><b>지켜볼 신호 — 심리 데이터 관련 AI 규제 동향</b><span class="detail">국내 규제가 구체화되면 데이터 처리 방식(로컬 우선)을 미리 준비해둔 게 그대로 규제 대응이 됨.</span></div></li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-label"><span class="num">10</span><h2>법적 리스크 · 분쟁 사항</h2></div>
+    <div class="card">
+      <p class="thesis">지금은 법률 자문 없이 진행 중인 초기 단계 — 해외 진출 전에 반드시 짚어야 할 3가지를 미리 표시해둔다.</p>
+
+      <div class="legal-item">
+        <div class="legal-head"><span class="legal-num">1</span><h4>저작권 리스크</h4></div>
+        <p><b>문제:</b> 이 리포트에 인용한 이론(Rogers 확산이론, Gartner 하이프 사이클, Pull/Push 마케팅 등)은 개념 인용이라 문제 없지만, 향후 실제 업계 리포트의 <b>수치·그래프를 원문 그대로 캡처·복사</b>해서 마케팅 자료에 쓰면 저작권/이용약관 위반 소지가 있다.</p>
+        <p class="legal-fix"><b>개선 제안:</b> 모든 외부 통계는 요약·재해석해서 쓰고, 원문 링크로 출처를 대신한다(이미 이 리포트의 규칙 8이 이 원칙을 따르고 있음) — 스토어 마케팅 자료·앱스토어 스크린샷 제작 시에도 같은 원칙 유지.</p>
+      </div>
+
+      <div class="legal-item">
+        <div class="legal-head"><span class="legal-num">2</span><h4>개인정보·규제 리스크</h4></div>
+        <p><b>문제:</b> 이 앱이 다루는 카테고리(신앙·영성, 감정 상태, 수면 등)는 각국 개인정보보호법상 <b>민감정보(Sensitive/Special Category Data)</b>로 분류될 가능성이 높다. 특히 EU GDPR은 이런 데이터에 별도의 명시적 동의·처리 근거를 요구하고, 위반 시 과징금 규모가 크다 — 앞서 "최악 지역"으로 짚은 독일/중부유럽권이 특히 해당.</p>
+        <p class="legal-fix"><b>개선 제안:</b> (a) 개인정보처리방침에 "민감정보 수집 근거"를 명시하는 문구를 진출 전 미리 준비, (b) GDPR 적용권 진출은 이번 슬라이스 범위 밖으로 유지, (c) 국내(한국) 개인정보보호법상 민감정보 조항도 별도로 재확인.</p>
+      </div>
+
+      <div class="legal-item">
+        <div class="legal-head"><span class="legal-num">3</span><h4>상표·네이밍 리스크</h4></div>
+        <p><b>문제:</b> "사계기록"/"1psygame" 브랜드명이 타겟국에 이미 등록된 상표와 충돌하는지 확인된 바 없다 — 특히 영어권/필리핀/대만처럼 신규 진출을 검토하는 국가에서 동일·유사 명칭의 앱이나 서비스가 있는지 조사되지 않음.</p>
+        <p class="legal-fix"><b>개선 제안:</b> 정식 다국가 출시 전, 진출 예정국 각각에서 앱스토어·상표 데이터베이스 기준의 간단한 명칭 중복 검색을 체크리스트로 수행. 특히 로고·아이콘도 함께 확인.</p>
+      </div>
+
+      <p class="caveat" style="margin-top:4px;">이 섹션은 법률 자문을 대체하지 않는다 — 실제 다국가 출시가 확정되는 시점에는 반드시 각 진출국 변호사 검토를 거칠 것을 권장.</p>
+    </div>
+  </section>
+
+  <footer>ReleasePilot 자동 생성 · 1psygame (com.rogan.psygame1) 기준 · CTR/전망 수치는 업계 벤치마크·정성적 판단 기반 추정치 · 법적 리스크 섹션은 법률 자문을 대체하지 않음</footer>
+</div>
+
+<script>
+  function setMode(target, mode) {
+    var toggles = document.querySelectorAll('.mode-btn[data-target="' + target + '"]');
+    toggles.forEach(function (btn) {
+      btn.classList.toggle('active', btn.getAttribute('data-mode') === mode);
+    });
+    var views = document.querySelectorAll('[data-view^="' + target + '-"]');
+    views.forEach(function (view) {
+      view.classList.toggle('active', view.getAttribute('data-view') === target + '-' + mode);
+    });
+  }
+
+  function formatCount(n) {
+    return Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+
+  function updateTam(value) {
+    var tam = Number(value);
+    document.getElementById('tamValue').textContent = formatCount(tam);
+    document.getElementById('tamResult').textContent = formatCount(tam * 0.135);
+  }
+
+  function updateFunnel(value) {
+    var pct = Number(value) / 100;
+    var gainCompound = (Math.pow(1 + pct, 5) - 1) * 100;
+    var gainLinear = Number(value) * 5;
+    document.getElementById('funnelPctLabel').textContent = value;
+    document.getElementById('funnelPctLabel2').textContent = value;
+    document.getElementById('funnelLinear').textContent = Math.round(gainLinear) + '%';
+    document.getElementById('funnelCompound').textContent = Math.round(gainCompound) + '%';
+    var lowBase = 39, highBase = 117;
+    var factor = 1 + gainCompound / 100;
+    document.getElementById('funnelApplied').textContent =
+      Math.round(lowBase * factor) + '~' + Math.round(highBase * factor) + '명';
+  }
+
+  function updateGrowth(value) {
+    var r = Number(value);
+    document.getElementById('growthPctLabel').textContent = value;
+    document.getElementById('doubleMonths').textContent = (72 / r).toFixed(1) + '개월';
+  }
+
+  function updateKFactor() {
+    var invites = Number(document.getElementById('inviteSlider').value);
+    var conv = Number(document.getElementById('convSlider').value);
+    document.getElementById('inviteLabel').textContent = invites.toFixed(1);
+    document.getElementById('convLabel').textContent = conv;
+    var k = invites * (conv / 100);
+    var status = k >= 1 ? '자가 성장' : '채널 의존';
+    document.getElementById('kfactorResult').textContent = k.toFixed(2) + ' — ' + status;
+  }
+</script>
+

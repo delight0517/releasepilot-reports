@@ -1,0 +1,292 @@
+<meta charset="UTF-8">
+<title>ReleasePilot 사용 가이드</title><style>  @font-face { font-family: 'Fraunces-fallback'; src: local('Georgia'); }
+  :root {
+    --ink: #1c2333; --ink-soft: #2a3348; --parchment: #f6f1e6; --parchment-card: #fffdf7;
+    --line: #ded2b8; --accent: #4f7cac; --accent-strong: #34597a; --sage: #5f7d5f;
+    --ready: #3e7d5f; --ready-bg: #e3efe6; --warn: #b2632a; --warn-bg: #f7e9d8;
+    --info: #3a5f8a; --info-bg: #e6edf5; --text: #241f14; --text-soft: #5c5644; --text-faint: #8b8368;
+    --future: #8a5fa8; --future-bg: #efe6f4;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink: #0f1420; --parchment: #171c26; --parchment-card: #1f2532; --line: #333c4d;
+      --accent: #7fa8d6; --accent-strong: #a9c6e8; --sage: #7fa17f; --ready: #6bbf94; --ready-bg: #16302a;
+      --warn: #e0a05e; --warn-bg: #3a2b1a; --info: #7fa8d6; --info-bg: #1b2c3f;
+      --text: #ece6d8; --text-soft: #b8b19c; --text-faint: #7b7663;
+      --future: #c79fe0; --future-bg: #2a2036;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ink: #0f1420; --parchment: #171c26; --parchment-card: #1f2532; --line: #333c4d;
+    --accent: #7fa8d6; --accent-strong: #a9c6e8; --sage: #7fa17f; --ready: #6bbf94; --ready-bg: #16302a;
+    --warn: #e0a05e; --warn-bg: #3a2b1a; --info: #7fa8d6; --info-bg: #1b2c3f;
+    --text: #ece6d8; --text-soft: #b8b19c; --text-faint: #7b7663;
+    --future: #c79fe0; --future-bg: #2a2036;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--parchment); color: var(--text); font-family: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", "Segoe UI", sans-serif; line-height: 1.6; }
+  .page { max-width: 680px; margin: 0 auto; padding: 0 0 64px; }
+  .masthead { background: linear-gradient(180deg, var(--ink) 0%, var(--ink-soft) 100%); color: #eef3f8; padding: 28px 20px 24px; }
+  .eyebrow { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #c3d3e6; margin: 0 0 6px; font-weight: 600; }
+  .masthead h1 { font-family: Georgia, 'Fraunces-fallback', serif; font-size: 27px; margin: 0 0 8px; }
+  .masthead p.sub { margin: 0; font-size: 14px; color: #c9d6e4; max-width: 50ch; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .meta-chip { font-size: 12px; padding: 5px 10px; border-radius: 999px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.16); color: #e3ecf5; }
+  section { padding: 22px 20px 4px; }
+  .section-label { display: flex; align-items: baseline; gap: 8px; margin-bottom: 12px; }
+  .section-label .num { font-size: 12px; color: var(--accent-strong); font-weight: 700; letter-spacing: 0.06em; }
+  .section-label h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-soft); margin: 0; font-weight: 700; }
+  .card { background: var(--parchment-card); border: 1px solid var(--line); border-radius: 14px; padding: 18px; }
+  .card + .card { margin-top: 12px; }
+  .thesis { font-family: Georgia, 'Fraunces-fallback', serif; font-size: 17px; line-height: 1.5; margin: 0 0 14px; }
+  .thesis em { color: var(--accent-strong); font-style: normal; }
+
+  /* -- Expandable flow steps -- */
+  .flow-step-card { border: 1px solid var(--line); border-radius: 12px; margin-top: 10px; overflow: hidden; }
+  .flow-step-card:first-of-type { margin-top: 0; }
+  .flow-step-card summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: var(--parchment); }
+  .flow-step-card summary::-webkit-details-marker { display: none; }
+  .flow-step-card summary::after { content: '더 보려면 눌러보세요 ▾'; margin-left: auto; color: var(--text-faint); font-size: 11px; font-weight: 500; white-space: nowrap; }
+  .flow-step-card[open] summary::after { content: '접기 ▴'; }
+  .flow-step-card.future summary { background: var(--future-bg); }
+  .step-n { width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+  .flow-step-card.future .step-n { background: var(--future); }
+  .step-title { font-size: 14.5px; font-weight: 700; }
+  .step-badge { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 999px; background: var(--future); color: #fff; margin-left: 6px; }
+  .step-body { padding: 4px 16px 16px; }
+  .step-oneliner { font-size: 13px; color: var(--text-soft); margin: 8px 0 14px; padding-left: 12px; border-left: 3px solid var(--sage); }
+
+  /* -- Screen mockup (wireframe, no real screenshots) -- */
+  .mockup { background: #ffffff; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  .mockup-bar { background: #eef1f4; padding: 8px 12px; font-size: 11px; color: #667; border-bottom: 1px solid #dde2e7; font-weight: 600; }
+  .mockup-body { padding: 14px; display: grid; gap: 8px; }
+  .mockup-row { background: #f6f7f9; border: 1px dashed #ccd3da; border-radius: 6px; padding: 8px 10px; font-size: 11.5px; color: #556; }
+  .mockup-btn { display: inline-block; background: var(--accent); color: #fff; border-radius: 6px; padding: 6px 12px; font-size: 11.5px; font-weight: 700; width: fit-content; }
+  .mockup-tap { position: relative; }
+  .mockup-tap::after { content: '👆 여기'; font-size: 10px; color: var(--accent-strong); font-weight: 700; margin-left: 8px; }
+
+  h5.mini { font-size: 12px; font-weight: 700; color: var(--accent-strong); margin: 14px 0 6px; }
+  h5.mini:first-of-type { margin-top: 0; }
+  .plain-steps { margin: 0; padding-left: 18px; display: grid; gap: 6px; }
+  .plain-steps li { font-size: 13px; color: var(--text-soft); }
+  .plain-steps b { color: var(--text); }
+
+  footer { padding: 24px 20px 0; font-size: 11.5px; color: var(--text-faint); text-align: center; }
+</style><div class="page"><div class="masthead">
+  <p class="eyebrow">ReleasePilot · 사용법 기획서 + 작업 일지</p>
+  <h1>ReleasePilot 사용 가이드</h1>
+  <p class="sub">이 앱을 처음 보는 사람도 화면을 눌러가며 이해할 수 있게 — 전문 용어 없이, 무슨 화면이 뜨고 뭘 누르면 뭐가 되는지 하나씩.</p>
+  <div class="meta-row"><span class="meta-chip">v0.5.0</span><span class="meta-chip">개정판 3 — 화면별 사용법·작업 일지·TODO 추가</span></div>
+</div><section>
+  <div class="section-label"><span class="num">01</span><h2>개요 — 이 앱은 무엇을 위한 것인가</h2></div>
+  <div class="card">
+  <p class="thesis">스마트폰 게임 앱을 만들었으면, 그걸 실제로 앱스토어에 올리기까지 해야 할
+  귀찮은 서류 작업이 많다 — 이 앱은 <em>그 서류 작업을 최대한 대신 해주는 비서</em>다.</p>
+  <p style="font-size:13px; color:var(--text-soft); margin:0;">앱 폴더를 넣으면 앱을 읽어서
+  분석해주고, 스토어에 올릴 설명글을 자동으로 만들어주고, 실제로 스토어 사이트를 열어
+  제출하는 순서까지 같이 따라가 준다. 로그인이나 최종 제출처럼 실수하면 안 되는 부분은
+  항상 사람이 직접 누르게 되어 있다 — 앱이 마음대로 결제하거나 제출해버리지 않는다.</p>
+</div>
+</section><section>
+  <div class="section-label"><span class="num">02</span><h2>핵심 사용 흐름 — 눌러서 하나씩 펼쳐보세요</h2></div>
+  <div class="card" style="padding:12px;"><details class="flow-step-card" open>
+  <summary>
+    <span class="step-n">1</span>
+    <span class="step-title">앱 등록하기</span>
+  </summary>
+  <div class="step-body">
+    <p class="step-oneliner">맨 처음 화면 — 여기다 내 앱 폴더를 갖다 놓으면 끝.</p>
+    <h5 class="mini">이 화면은 이렇게 생겼어요</h5>
+    <div class="mockup">
+  <div class="mockup-bar">앱 보관함</div>
+  <div class="mockup-body"><div class="mockup-row mockup-tap">여기에 폴더를 끌어다 놓으세요 (또는 "폴더 추가" 버튼)</div>
+<div class="mockup-row">📱 내가 만든 게임 A — 등록됨</div>
+<div class="mockup-row">📱 내가 만든 게임 B — 진행 중</div>
+</div>
+</div>
+    <h5 class="mini">이렇게 쓰면 돼요</h5>
+    <ol class="plain-steps"><li>컴퓨터에서 내 앱 프로젝트가 들어있는 <b>폴더</b>를 찾는다.</li><li>그 폴더를 화면 위로 <b>끌어다 놓거나</b>, "폴더 추가" 버튼을 눌러 고른다.</li><li>한 번 등록하면 없어지지 않는다 — 나중에 다시 열려면 목록에서 카드만 누르면 됨.</li></ol>
+  </div>
+</details><details class="flow-step-card">
+  <summary>
+    <span class="step-n">2</span>
+    <span class="step-title">"진행해" 누르기 — 내 앱 점검받기</span>
+  </summary>
+  <div class="step-body">
+    <p class="step-oneliner">등록한 앱을 열면 나오는 화면 — 버튼 하나로 앱을 대신 읽어봐 준다.</p>
+    <h5 class="mini">이 화면은 이렇게 생겼어요</h5>
+    <div class="mockup">
+  <div class="mockup-bar">내 앱 점검</div>
+  <div class="mockup-body"><div class="mockup-row">지금 이 앱: 게임 A</div>
+<div class="mockup-btn mockup-tap">진행해</div>
+<div class="mockup-row">✅ 요약: 습관 기록 카드 게임입니다</div>
+<div class="mockup-row">⚠️ 빠진 것: 개인정보처리방침 링크</div>
+</div>
+</div>
+    <h5 class="mini">이렇게 쓰면 돼요</h5>
+    <ol class="plain-steps"><li>"진행해" 버튼을 누른다.</li><li>컴퓨터에 이미 Claude라는 프로그램이 깔려 있으면, 자동으로 내 앱 코드를 읽고 정리해준다.</li><li>없으면 "이 글을 복사해서 붙여넣어 주세요"라는 안내가 나온다 — 시키는 대로 복사→붙여넣기만 하면 됨.</li><li>결과로 "이 앱이 뭘 하는지", "뭐가 빠졌는지", "다음에 뭘 해야 하는지"를 보여준다.</li></ol>
+  </div>
+</details><details class="flow-step-card">
+  <summary>
+    <span class="step-n">3</span>
+    <span class="step-title">Draft Studio — 스토어에 올릴 글 만들기</span>
+  </summary>
+  <div class="step-body">
+    <p class="step-oneliner">앱스토어/플레이스토어에 필요한 설명글·이름·키워드를 자동으로 초안 잡아주는 화면.</p>
+    <h5 class="mini">이 화면은 이렇게 생겼어요</h5>
+    <div class="mockup">
+  <div class="mockup-bar">스토어 제출 준비</div>
+  <div class="mockup-body"><div class="mockup-row">앱 이름: 게임 A</div>
+<div class="mockup-row">한 줄 소개: 매일 기록하며 성장하는 습관 게임</div>
+<div class="mockup-row">⚠️ 아직 못 채운 칸: 2개</div>
+<div class="mockup-btn mockup-tap">전체 복사</div>
+</div>
+</div>
+    <h5 class="mini">이렇게 쓰면 돼요</h5>
+    <ol class="plain-steps"><li>앱이 이미 채워둔 글들을 훑어보고, 마음에 안 들면 직접 고친다.</li><li>빨간 표시가 있는 칸은 <b>스토어가 꼭 요구하는 필수 칸</b>이라 반드시 채워야 한다.</li><li>다 채우면 "복사" 버튼으로 앱스토어/플레이스토어 사이트에 그대로 붙여넣을 수 있다.</li></ol>
+  </div>
+</details><details class="flow-step-card">
+  <summary>
+    <span class="step-n">4</span>
+    <span class="step-title">(선택) 마케팅 감각 게임 · 계산기</span>
+  </summary>
+  <div class="step-body">
+    <p class="step-oneliner">🎯 아이콘 — "얼마나 광고하면 몇 명이 설치할까"를 실제 공식으로 미리 가늠해보는 화면.</p>
+    <h5 class="mini">이 화면은 이렇게 생겼어요</h5>
+    <div class="mockup">
+  <div class="mockup-bar">마케팅 감각 게임</div>
+  <div class="mockup-body"><div class="mockup-row">1막. 광고를 넓게 뿌릴까, 좁게 뿌릴까?</div>
+<div class="mockup-row mockup-tap">선택지 A: 넓게 뿌리기</div>
+<div class="mockup-row mockup-tap">선택지 B: 좁게 뿌리기</div>
+<div class="mockup-row">→ 결과: 클릭 수, 왜 그런지 설명</div>
+</div>
+</div>
+    <h5 class="mini">이렇게 쓰면 돼요</h5>
+    <ol class="plain-steps"><li>앱 카드의 🎯 아이콘을 누른다.</li><li>"이야기 모드"에서는 선택지를 고르면 실제 광고 이론에 따른 결과를 바로 보여준다 — 게임처럼 재미있게 배우는 코너.</li><li>"내 앱에 적용" 탭에서는 내 예산·목표 숫자를 직접 넣어서 예상 설치 수를 계산해볼 수 있다.</li></ol>
+  </div>
+</details><details class="flow-step-card">
+  <summary>
+    <span class="step-n">5</span>
+    <span class="step-title">(선택) 전략 리포트</span>
+  </summary>
+  <div class="step-body">
+    <p class="step-oneliner">📊 아이콘 — "어느 나라, 어떤 사람들에게 먼저 보여줄까"를 정리해주는 보고서 서랍.</p>
+    <h5 class="mini">이 화면은 이렇게 생겼어요</h5>
+    <div class="mockup">
+  <div class="mockup-bar">전략 리포트 보관함</div>
+  <div class="mockup-body"><div class="mockup-row">📄 지역·타겟 전략 (v1, 2026-08-01)</div>
+<div class="mockup-row">📄 사용법 가이드 (v1, 개정 2)</div>
+<div class="mockup-btn mockup-tap">열기</div>
+</div>
+</div>
+    <h5 class="mini">이렇게 쓰면 돼요</h5>
+    <ol class="plain-steps"><li>앱 카드의 📊 아이콘을 누르면 이제까지 만든 보고서 목록이 나온다.</li><li>"열기"를 누르면 브라우저로 그 보고서가 열린다 — 지금 보고 있는 이 문서도 바로 여기 저장된 것.</li><li>더 이상 필요 없으면 "삭제"로 지울 수 있다.</li></ol>
+  </div>
+</details><details class="flow-step-card">
+  <summary>
+    <span class="step-n">6</span>
+    <span class="step-title">출시 진행 시작</span>
+  </summary>
+  <div class="step-body">
+    <p class="step-oneliner">준비가 다 끝나면(칸이 전부 초록불이면) 나타나는 마지막 버튼 — 실제 제출 사이트로 데려다준다.</p>
+    <h5 class="mini">이 화면은 이렇게 생겼어요</h5>
+    <div class="mockup">
+  <div class="mockup-bar">출시 진행</div>
+  <div class="mockup-body"><div class="mockup-row">① 콘솔 열기 → ② 로그인 대기 → ③ 제출 진행 → ④ 완료</div>
+<div class="mockup-row">지금 단계: ② 로그인 대기 중</div>
+<div class="mockup-btn mockup-tap">로그인 완료했어요</div>
+</div>
+</div>
+    <h5 class="mini">이렇게 쓰면 돼요</h5>
+    <ol class="plain-steps"><li>"App Store Connect 제출 진행" 또는 "Play Console 제출 진행" 버튼을 누른다.</li><li>앱이 브라우저를 열어 실제 스토어 로그인 페이지로 데려간다.</li><li><b>로그인은 내가 직접 한다</b> — 다 하고 나면 "로그인 완료" 버튼을 눌러 앱에게 알려준다.</li><li>실제로 스토어에 제출까지 마치면 "제출 완료" 버튼을 누른다 — 이것도 앱이 대신 눌러주지 않는다, 항상 내가 직접.</li><li>완료를 누르면 처음 화면 카드에 "완료" 표시가 붙는다.</li></ol>
+  </div>
+</details><details class="flow-step-card future">
+  <summary>
+    <span class="step-n">7</span>
+    <span class="step-title">반려됐을 때 다시 고치기<span class="step-badge">앞으로 추가</span></span>
+  </summary>
+  <div class="step-body">
+    <p class="step-oneliner">스토어 심사에서 반려당하면, 그 사유를 넣어서 다시 점검받는 기능 — 아직 안 만들어짐.</p>
+    <h5 class="mini">이 화면은 이렇게 생겼어요</h5>
+    <div class="mockup">
+  <div class="mockup-bar">반려 사유 입력 (예정)</div>
+  <div class="mockup-body"><div class="mockup-row">스토어가 보낸 반려 사유를 여기 붙여넣으세요</div>
+<div class="mockup-btn">다시 점검하기</div>
+</div>
+</div>
+    <h5 class="mini">이렇게 쓰면 돼요</h5>
+    <ol class="plain-steps"><li>스토어에서 온 반려 이메일 내용을 그대로 복사해서 넣는다.</li><li>앱이 그 내용을 보고 "진행해"(2번) 단계를 자동으로 다시 돌려준다.</li><li>뭐가 문제였는지, 뭘 고쳐야 하는지 다시 정리해서 보여준다.</li></ol>
+  </div>
+</details><details class="flow-step-card future">
+  <summary>
+    <span class="step-n">8</span>
+    <span class="step-title">스토어 화면 자동으로 채우기<span class="step-badge">앞으로 추가</span></span>
+  </summary>
+  <div class="step-body">
+    <p class="step-oneliner">지금은 "복사해서 붙여넣기"만 되는데, 나중엔 앱이 브라우저에서 직접 칸을 채워주는 것까지 하려고 함 — 아직 안 만들어짐.</p>
+    <h5 class="mini">이 화면은 이렇게 생겼어요</h5>
+    <div class="mockup">
+  <div class="mockup-bar">자동 입력 (예정)</div>
+  <div class="mockup-body"><div class="mockup-row">브라우저에서 자동으로 칸이 채워지는 중...</div>
+<div class="mockup-row">⚠️ 결제·최종 제출 버튼은 여전히 사람이 직접 누름</div>
+</div>
+</div>
+    <h5 class="mini">이렇게 쓰면 돼요</h5>
+    <ol class="plain-steps"><li>지금처럼 복사·붙여넣기 하지 않아도, 앱이 브라우저의 빈 칸을 알아서 채워준다.</li><li>단, <b>돈이 오가거나 되돌릴 수 없는 버튼은 여전히 사람이 직접 누른다</b> — 이 원칙은 앞으로도 안 바뀜.</li></ol>
+  </div>
+</details><details class="flow-step-card future">
+  <summary>
+    <span class="step-n">9</span>
+    <span class="step-title">여러 앱 한 번에 관리하기 / 문제 생기면 바로 알기<span class="step-badge">앞으로 추가</span></span>
+  </summary>
+  <div class="step-body">
+    <p class="step-oneliner">앱을 여러 개 등록했을 때 한 번에 점검하고, 뭔가 잘못됐을 때 바로 알려주는 기능 — 아직 안 만들어짐.</p>
+    <h5 class="mini">이 화면은 이렇게 생겼어요</h5>
+    <div class="mockup">
+  <div class="mockup-bar">한눈에 보기 (예정)</div>
+  <div class="mockup-body"><div class="mockup-row">게임 A — 정상</div>
+<div class="mockup-row">게임 B — ⚠️ 오류 발생</div>
+</div>
+</div>
+    <h5 class="mini">이렇게 쓰면 돼요</h5>
+    <ol class="plain-steps"><li>등록한 앱이 많아지면, 한 화면에서 전체 상태를 한눈에 볼 수 있게 된다.</li><li>뭔가 실패하면 조용히 넘어가지 않고 바로 표시해준다.</li></ol>
+  </div>
+</details></div>
+</section><section>
+  <div class="section-label"><span class="num">03</span><h2>화면별 사용법 — 빠른 레퍼런스</h2></div>
+  <div class="card">
+    <h5 class="mini">앱 보관함 (App Vault)</h5>
+    <p style="font-size:13px;color:var(--text-soft);margin:0 0 12px;">앱을 열면 항상 여기부터 시작한다. 등록한 앱들이 카드로 쌓이고, 카드마다 지금 상태(등록됨/분석중/위험발견/준비완료/진행중/완료/반려)가 배지로 붙는다. 카드를 누르면 그 앱으로 다시 들어간다.</p>
+    <h5 class="mini">내 앱 점검 (Project Analysis)</h5>
+    <p style="font-size:13px;color:var(--text-soft);margin:0 0 12px;">"진행해" 버튼 하나로 끝. 컴퓨터에 Claude가 깔려 있으면 자동으로, 없으면 복사·붙여넣기 안내로 앱을 읽고 요약·위험요소·다음 할 일을 정리해준다.</p>
+    <h5 class="mini">Draft Studio (스토어 제출 패키지)</h5>
+    <p style="font-size:13px;color:var(--text-soft);margin:0 0 12px;">App Store Connect·Google Play Console에 그대로 붙여넣을 홍보 문구·키워드·설명을 자동 초안으로 잡아준다. 필수/권장/선택 배지로 뭐가 꼭 필요한지 보여주고, 빠진 필수 항목은 빨간색으로 먼저 눈에 띄게 한다.</p>
+    <h5 class="mini">🎯 마케팅 감각 게임 + CTR 계산기</h5>
+    <p style="font-size:13px;color:var(--text-soft);margin:0 0 12px;">App Vault 상단 아이콘 또는 앱 카드의 🎯로 진입. 5막 스토리 모드로 타겟팅·PMF·퍼널·K-factor·CAC:LTV를 실제 마케팅 공식으로 체험하고, "내 앱에 적용" 탭에서는 예산·전환율을 직접 넣어 예상 설치 수를 계산해준다.</p>
+    <h5 class="mini">📊 리포트 보관함 (전략 리포트 · 게임/사용법 기획서)</h5>
+    <p style="font-size:13px;color:var(--text-soft);margin:0 0 12px;">앱 카드의 📊로 진입. 이 문서를 포함해, 지역·타겟 전략 리포트나 게임 기획서 아틀라스처럼 한 번 만든 문서들이 버전·개정판과 함께 여기 영구 보관된다. 다시 만들 필요 없이 "열기"로 언제든 재확인.</p>
+    <h5 class="mini">출시 진행 (Release Wizard → Automation Run)</h5>
+    <p style="font-size:13px;color:var(--text-soft);margin:0 0 12px;">MVP 체크리스트가 전부 초록불이면 뜨는 버튼. App Store Connect/Play Console을 실제로 열고 콘솔 열기→로그인 대기→제출 진행→완료 4단계를 추적한다. 로그인과 최종 제출은 항상 사람이 직접 버튼을 눌러 확인 — 앱이 대신 결제하거나 제출하지 않는다.</p>
+  </div>
+</section>
+<section>
+  <div class="section-label"><span class="num">04</span><h2>작업 일지</h2></div>
+  <div class="card">
+    <h5 class="mini">2026-07-31</h5>
+    <p style="font-size:13px;color:var(--text-soft);margin:0 0 12px;">전략 리포트 보관함 신설 — STP 기반 리포트를 프로젝트별로 영구 저장. 마케팅 감각 게임을 Windows LaunchPad에서 이식.</p>
+    <h5 class="mini">2026-08-01</h5>
+    <p style="font-size:13px;color:var(--text-soft);margin:0 0 12px;">리포트에 버전 고정 + 개정판 자동 추적 추가. 게임 기획서(블루프린트) 저장 기능 신설 — 1psygame 아틀라스를 실제로 시드. 이 사용법 기획서 자체도 처음 생성. Windows LaunchPad와의 동기화 폴더(LaunchPadSync) 연결. 오늘 화면별 사용법·작업 일지·TODO 세 섹션이 누락돼 있던 걸 채워 개정판 3으로 갱신.</p>
+  </div>
+</section>
+<section>
+  <div class="section-label"><span class="num">05</span><h2>TODO</h2></div>
+  <div class="card">
+    <ul class="plain-steps" style="padding-left:18px;">
+      <li>☐ 반려 피드백 재투입 화면 (플로우 6단계) — 반려 사유 입력 → 재분석 → Draft Studio 갱신</li>
+      <li>☐ 스토어 화면 자동 입력 (브라우저 자동화로 폼 필드까지 채우기, 결제/최종 제출은 계속 사람이 직접)</li>
+      <li>☐ 여러 앱 한 번에 상태 모니터링 + 오류 발생 시 알림</li>
+      <li>☐ 핵심 플로우 통합 테스트, 정책 룰 버전 관리, 에러 추적 대시보드 (Milestone 5 잔여)</li>
+    </ul>
+  </div>
+</section>
+<footer>ReleasePilot 자동 생성 · 사용법 기획서(개정 3) · 화면은 실제 촬영이 아니라 이해를 돕기 위한 간단한 그림임</footer></div>

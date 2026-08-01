@@ -1,0 +1,478 @@
+<meta charset="UTF-8">
+<title>같은 눈으로, 여덟 개의 다른 땅을 본다</title>
+<style>
+  :root {
+    --shell-bg: #07080d; --shell-bg-2: #0c0e16; --shell-ink: #eee7d6;
+    --shell-ink-dim: #a9a394; --shell-gold: #cda449;
+    --shell-gold-soft: rgba(205, 164, 73, 0.14); --shell-line: rgba(238, 231, 214, 0.12);
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Noto Serif KR", serif;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--shell-bg); color: var(--shell-ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  a { color: inherit; }
+  .nav { position: sticky; top: 0; z-index: 40; display: flex; gap: 6px; overflow-x: auto; padding: 12px 16px; background: #0a0b11; border-bottom: 1px solid var(--shell-line); }
+  .hero { position: relative; padding: 56px 22px 48px; text-align: center; }
+  .hero .eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--shell-gold); margin: 0 0 16px; }
+  .hero h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(28px, 7vw, 40px); line-height: 1.15; text-wrap: balance; margin: 0 0 18px; color: var(--shell-gold); }
+  @supports (background-clip: text) or (-webkit-background-clip: text) {
+    .hero h1 { background: linear-gradient(180deg, #f6efd9 0%, var(--shell-gold) 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  }
+  .hero blockquote { font-family: var(--serif); font-style: italic; font-size: 14px; line-height: 1.7; color: var(--shell-ink-dim); max-width: 30em; margin: 0 auto; }
+  .loop { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 6px; margin: 32px auto 0; max-width: 620px; }
+  .loop .stage { font-family: var(--mono); font-size: 12px; color: var(--shell-ink); border: 1px solid var(--shell-gold); border-radius: 999px; padding: 7px 12px; background: var(--shell-gold-soft); }
+  .loop .arrow { color: var(--shell-gold); font-size: 13px; opacity: 0.7; }
+  .status-strip { max-width: 640px; margin: 32px auto 0; padding: 14px 18px; border: 1px solid var(--shell-line); border-radius: 12px; background: var(--shell-bg-2); font-size: 13px; line-height: 1.7; color: var(--shell-ink-dim); text-align: left; }
+  section.world { padding: 64px 20px; background: var(--w-bg); color: var(--w-ink); }
+  .world-inner { max-width: 620px; margin: 0 auto; }
+  .world-kicker { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+  .world-glyph { font-family: var(--mono); font-size: 12px; color: var(--w-accent); border: 1px solid var(--w-accent); border-radius: 6px; padding: 3px 8px; }
+  .world-status { font-family: var(--mono); font-size: 11px; color: var(--w-ink-dim); display: inline-flex; align-items: center; gap: 6px; }
+  .world-status .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .world-status.live { color: #7fd88f; }
+  .world h2 { font-family: var(--serif); font-weight: 400; font-size: clamp(24px, 6vw, 32px); margin: 0 0 6px; }
+  .world .subtitle { font-size: 13px; color: var(--w-ink-dim); margin: 0 0 22px; }
+  .illustration { width: 100%; height: auto; aspect-ratio: 600 / 220; display: block; margin: 0 0 10px; border-radius: 12px; overflow: hidden; border: 1px solid var(--w-line); box-shadow: 0 18px 40px -20px rgba(0,0,0,0.6); }
+  .illustration-caption { font-family: var(--mono); font-size: 10px; color: var(--w-ink-dim); margin: 0 0 26px; }
+  .world .flavor { font-family: var(--serif); font-style: italic; font-size: 15px; line-height: 1.75; border-left: 2px solid var(--w-accent); padding-left: 16px; margin: 0 0 28px; }
+  .world .facts { display: grid; gap: 12px; margin: 0 0 24px; }
+  .world .fact { display: grid; grid-template-columns: 80px 1fr; gap: 12px; padding: 12px 0; border-top: 1px solid var(--w-line); }
+  .world .fact dt { font-family: var(--mono); font-size: 10px; text-transform: uppercase; color: var(--w-accent); }
+  .world .fact dd { margin: 0; font-size: 13.5px; line-height: 1.6; }
+  .refs { padding-top: 18px; border-top: 1px solid var(--w-line); }
+  .refs-label { font-family: var(--mono); font-size: 10px; text-transform: uppercase; color: var(--w-ink-dim); margin: 0 0 12px; }
+  .ref-grid { display: grid; gap: 10px; }
+  .ref-card { display: block; text-decoration: none; color: var(--w-ink); border: 1px solid var(--w-line); border-radius: 10px; padding: 13px 15px; }
+  .ref-head { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+  .ref-name { font-weight: 600; font-size: 13.5px; }
+  .ref-tag { font-family: var(--mono); font-size: 9px; text-transform: uppercase; color: var(--w-accent); border: 1px solid var(--w-accent); border-radius: 5px; padding: 2px 6px; }
+  .ref-desc { font-size: 12px; line-height: 1.55; color: var(--w-ink-dim); }
+  .ref-see { display: inline-block; margin-top: 6px; font-family: var(--mono); font-size: 10px; color: var(--w-accent); }
+  .swatches { display: flex; gap: 8px; margin-top: 26px; }
+  .swatch { width: 20px; height: 20px; border-radius: 50%; border: 1px solid var(--w-line); }
+  footer { padding: 40px 20px 64px; text-align: center; background: var(--shell-bg); }
+  footer p { font-size: 12px; color: var(--shell-ink-dim); line-height: 1.7; max-width: 32em; margin: 0 auto; }
+
+  section#a { --w-bg:#05060a; --w-ink:#efe7d0; --w-ink-dim:#7c7663; --w-accent:#d4af37; --w-line:rgba(212,175,55,0.22); }
+  section#f { --w-bg:#2a1c11; --w-ink:#f1e3cc; --w-ink-dim:#b99a76; --w-accent:#c1622b; --w-line:rgba(193,98,43,0.28); }
+  section#b2 { --w-bg:#0e1720; --w-ink:#dceef2; --w-ink-dim:#6f8b96; --w-accent:#7fd1e0; --w-line:rgba(127,209,224,0.2); }
+  section#d { --w-bg:#2b2015; --w-ink:#f2e6cc; --w-ink-dim:#a88f6c; --w-accent:#c4703f; --w-line:rgba(196,112,63,0.25); }
+  section#c1 { --w-bg:#150f22; --w-ink:#efe4fb; --w-ink-dim:#8b7ba3; --w-accent:#e356a6; --w-line:rgba(227,86,166,0.24); }
+  section#c2 { --w-bg:#3a2b1c; --w-ink:#f2e6cd; --w-ink-dim:#ab8f6c; --w-accent:#b8895a; --w-line:rgba(184,137,90,0.28); }
+  section#c3 { --w-bg:#0f1e33; --w-ink:#e7eefb; --w-ink-dim:#7690b3; --w-accent:#e0b354; --w-line:rgba(224,179,84,0.22); }
+  section#g { --w-bg:#f7f1e2; --w-ink:#3a3324; --w-ink-dim:#8c7f5f; --w-accent:#b5862f; --w-accent-ink:#6b5220; --w-line:rgba(181,134,47,0.28); }
+</style>
+<nav class="nav" aria-label="세계 이동"></nav>
+<header class="hero">
+  <p class="eyebrow">기획 아틀라스 · 여덟 개의 세계</p>
+  <h1>같은 눈으로, 여덟 개의 다른 땅을 본다</h1>
+  <blockquote>"It's about landscape. It's about plan. It's about investing. It's about scanning enemy — going out and seeing what the enemy is actually preparing so that you can see and prepare."</blockquote>
+  <div class="loop"><span class="stage">정찰</span><span class="arrow">→</span><span class="stage">파악</span><span class="arrow">→</span><span class="stage">계획</span><span class="arrow">→</span><span class="stage">투자·기동</span><span class="arrow">→</span><span class="stage">결과</span></div>
+  <div class="status-strip">스킨은 여덟 가지로 다르지만, 모든 세계는 이 한 줄의 순환을 공유한다. <strong>이기는 게 목적이 아니라 정보 우위를 얻고 그에 맞게 행동하면 자연히 이기는 구조</strong> — 지금은 <strong>A(일상)</strong>만 실제로 구현돼 있고, 나머지 일곱은 기획이 확정된 채 코드 착수를 기다리는 중이다.</div>
+</header>
+<section class="world" id="a">
+  <div class="world-inner">
+    <div class="world-kicker">
+      <span class="world-glyph">A</span>
+      <span class="world-status live"><span class="dot"></span>구현됨 — 지금 플레이 가능</span>
+    </div>
+    <h2>일상의 밤</h2>
+    <p class="subtitle">사계기록 연동 · 매일 밤의 정찰</p>
+    <svg class="illustration" width="600" height="220" viewBox="0 0 600 220" role="img" aria-label="검은 밤하늘과 금빛 별자리, 카드 세 장이 놓인 어두운 테이블">
+      <rect width="600" height="220" fill="#05060a"/>
+      <g stroke="#d4af37" stroke-width="1" opacity="0.85">
+        <line x1="90" y1="50" x2="150" y2="30"/>
+        <line x1="150" y1="30" x2="210" y2="55"/>
+        <line x1="210" y1="55" x2="180" y2="100"/>
+        <line x1="180" y1="100" x2="90" y2="50"/>
+        <line x1="380" y1="40" x2="440" y2="70"/>
+        <line x1="440" y1="70" x2="500" y2="45"/>
+        <line x1="500" y1="45" x2="470" y2="20"/>
+      </g>
+      <g fill="#f0e2ac">
+        <circle cx="90" cy="50" r="2.6"/><circle cx="150" cy="30" r="3.2"/>
+        <circle cx="210" cy="55" r="2.4"/><circle cx="180" cy="100" r="2.8"/>
+        <circle cx="380" cy="40" r="2.4"/><circle cx="440" cy="70" r="3"/>
+        <circle cx="500" cy="45" r="2.4"/><circle cx="470" cy="20" r="2"/>
+        <circle cx="60" cy="140" r="1.6"/><circle cx="530" cy="130" r="1.8"/>
+        <circle cx="300" cy="25" r="1.6"/><circle cx="250" cy="90" r="1.4"/>
+      </g>
+      <g transform="translate(255,120)">
+        <rect x="-46" y="0" width="82" height="118" rx="8" fill="#0b0d14" stroke="#d4af37" stroke-width="1.4" transform="rotate(-8)"/>
+        <rect x="-6" y="10" width="82" height="118" rx="8" fill="#0e1018" stroke="#d4af37" stroke-width="1.4"/>
+        <rect x="34" y="20" width="82" height="118" rx="8" fill="#0b0d14" stroke="#d4af37" stroke-width="1.4" transform="rotate(8)"/>
+        <circle cx="35" cy="69" r="14" fill="none" stroke="#d4af37" stroke-width="1.2"/>
+      </g>
+    </svg>
+    <p class="illustration-caption">MOOD · 검은 밤하늘과 금빛 별자리, 카드 세 장이 놓인 어두운 테이블</p>
+    <p class="flavor">주인공은 없다. 화면 위에는 나 대신 카드만 있다 — 검은 밤하늘에 금빛 별자리가 뜨듯, 포커 테이블처럼 절제되고 집중된 시선만 남는다.</p>
+    <dl class="facts"><div class="fact"><dt>카드</dt><dd>일기 기록 1건 = 카드 1장. 여러 카테고리에 답했어도 가장 극단적인 점수 하나가 대표 속성이 된다.</dd></div><div class="fact"><dt>그림자</dt><dd>실제로 자주 힘든 하루로 이어진 태그, 계속 건너뛴 질문에서 계산된 적 — 강요해서 만들지 않는다.</dd></div><div class="fact"><dt>승패</dt><dd>없음. 목표는 이기는 것이 아니라 오늘 무엇을 파악하고 무엇을 놓쳤는지 보여주는 것.</dd></div><div class="fact"><dt>팔레트</dt><dd>검은색 + 금색 별자리. 영적 세계를 상징하는 대비 — 그림자는 어둠에 녹아들고, 카드는 그 위에 금빛으로 떠오른다.</dd></div></dl>
+    <div class="refs">
+      <p class="refs-label">참고 · 이 게임의 진행 방식을 보고 온 것들</p>
+      <div class="ref-grid">        <a class="ref-card" href="https://en.wikipedia.org/wiki/Inscryption" target="_blank" rel="noopener noreferrer">
+          <div class="ref-head"><span class="ref-name">Inscryption</span><span class="ref-tag">디지털 카드게임</span></div>
+          <p class="ref-desc">촛불 켜진 어두운 오두막에서 혼자 카드를 뽑고 내려놓는 절차 자체가 게임의 전부다 — 화려한 필드나 캐릭터 없이 "카드와 나"만 남는 진행 방식이 A의 "주인공 없는 포커 테이블" 무드와 정확히 같은 지점을 겨냥한다.</p>
+          <span class="ref-see">실제 화면/보드 보기 ↗</span>
+        </a>        <a class="ref-card" href="https://en.wikipedia.org/wiki/Slay_the_Spire" target="_blank" rel="noopener noreferrer">
+          <div class="ref-head"><span class="ref-name">Slay the Spire</span><span class="ref-tag">디지털 카드게임</span></div>
+          <p class="ref-desc">한 턴에 손패를 내고, 결과를 확인하고, 다음 턴으로 넘어가는 반복 루프 — A의 "카드를 쌓고 밤에 정찰 결과를 확인"하는 진행 리듬과 같은 턴 구조를 참고했다.</p>
+          <span class="ref-see">실제 화면/보드 보기 ↗</span>
+        </a>        <a class="ref-card" href="https://ko.wikipedia.org/wiki/%ED%83%80%EB%A1%9C" target="_blank" rel="noopener noreferrer">
+          <div class="ref-head"><span class="ref-name">타로 카드 리딩</span><span class="ref-tag">실물 의식</span></div>
+          <p class="ref-desc">카드를 늘어놓고, 각 카드가 상징하는 바를 해석하는 절차 — 승패 판정이 아니라 "지금 무엇을 알게 됐는가"로 끝난다는 점에서 A의 정찰 결과 화면과 목적이 같다.</p>
+          <span class="ref-see">실제 화면/보드 보기 ↗</span>
+        </a></div>
+    </div>
+    <div class="swatches"><span class="swatch" style="background:#05060a"></span><span class="swatch" style="background:#d4af37"></span><span class="swatch" style="background:#efe7d0"></span></div>
+  </div>
+</section><section class="world" id="f">
+  <div class="world-inner">
+    <div class="world-kicker">
+      <span class="world-glyph">F</span>
+      <span class="world-status planned"><span class="dot"></span>기획 확정 — 다음 착수 대상</span>
+    </div>
+    <h2>개척지의 셈법</h2>
+    <p class="subtitle">지역개발 · 운명 선택 (구 B-1 "부자 되기" 흡수)</p>
+    <svg class="illustration" width="600" height="220" viewBox="0 0 600 220" role="img" aria-label="흙빛 노을 아래 유전탑, 철도, 목장 울타리, 풍차가 늘어선 서부 개척지 실루엣">
+      <defs>
+        <linearGradient id="fsky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#4a2d18"/>
+          <stop offset="1" stop-color="#c1622b"/>
+        </linearGradient>
+      </defs>
+      <rect width="600" height="220" fill="url(#fsky)"/>
+      <circle cx="480" cy="70" r="34" fill="#f1c98a" opacity="0.9"/>
+      <g fill="#1c1108">
+        <rect x="0" y="170" width="600" height="50"/>
+        <rect x="60" y="90" width="10" height="90"/>
+        <polygon points="40,100 90,100 65,60"/>
+        <rect x="58" y="60" width="14" height="10"/>
+        <rect x="150" y="140" width="60" height="34"/>
+        <polygon points="145,140 215,140 180,112"/>
+        <g stroke="#1c1108" stroke-width="3">
+          <line x1="240" y1="180" x2="240" y2="150"/>
+          <line x1="270" y1="180" x2="270" y2="150"/>
+          <line x1="300" y1="180" x2="300" y2="150"/>
+          <line x1="330" y1="180" x2="330" y2="150"/>
+          <line x1="240" y1="158" x2="330" y2="158"/>
+          <line x1="240" y1="172" x2="330" y2="172"/>
+        </g>
+        <g transform="translate(420,150)">
+          <line x1="0" y1="0" x2="0" y2="70" stroke="#1c1108" stroke-width="4"/>
+          <line x1="-24" y1="4" x2="24" y2="4" stroke="#1c1108" stroke-width="3"/>
+          <line x1="-20" y1="-8" x2="20" y2="16" stroke="#1c1108" stroke-width="3"/>
+          <line x1="20" y1="-8" x2="-20" y2="16" stroke="#1c1108" stroke-width="3"/>
+        </g>
+        <rect x="0" y="196" width="600" height="4"/>
+        <g stroke="#1c1108" stroke-width="2">
+          <line x1="20" y1="200" x2="20" y2="188"/><line x1="20" y1="188" x2="60" y2="188"/><line x1="60" y1="188" x2="60" y2="200"/>
+          <line x1="100" y1="200" x2="100" y2="188"/><line x1="100" y1="188" x2="140" y2="188"/><line x1="140" y1="188" x2="140" y2="200"/>
+          <line x1="480" y1="200" x2="480" y2="188"/><line x1="480" y1="188" x2="520" y2="188"/><line x1="520" y1="188" x2="520" y2="200"/>
+          <line x1="540" y1="200" x2="540" y2="188"/><line x1="540" y1="188" x2="580" y2="188"/><line x1="580" y1="188" x2="580" y2="200"/>
+        </g>
+      </g>
+    </svg>
+    <p class="illustration-caption">MOOD · 흙빛 노을 아래 유전탑, 철도, 목장 울타리, 풍차가 늘어선 서부 개척지 실루엣</p>
+    <p class="flavor">총싸움은 없다. 마을과 철도, 유전탑과 목장이 늘어선 흙빛 땅 위에서 땅값과 상권, 복리와 레버리지를 배운다. 이기고 지는 게임이 아니라 "선언한 대로 살았는가"만 돌아보는 게임이다.</p>
+    <dl class="facts"><div class="fact"><dt>경로</dt><dd>평민 / 사업가 / 은둔형을 선언. "사업가"를 고르면 안정 축적형·레버리지형·은퇴 지향형 중 자본 운용 스타일을 다시 고른다.</dd></div><div class="fact"><dt>자원</dt><dd>예지(시장을 몇 턴 앞서 봄) · 자본(복리로 불어남) · 영향력(닿을 수 있는 인구 비율).</dd></div><div class="fact"><dt>공식</dt><dd>땅값은 헤도닉 가격 모형, 상권 흡인력은 라일리의 소매 중력법칙, 유정 산출은 Hubbert형 감쇠 — 전부 실제 이론.</dd></div><div class="fact"><dt>결말</dt><dd>순자산 랭킹 없이 다섯 갈래 서사로 귀결 — "확장하다 무너진 자"부터 "아무것도 하지 않기로 한 자"까지.</dd></div></dl>
+    <div class="refs">
+      <p class="refs-label">참고 · 이 게임의 진행 방식을 보고 온 것들</p>
+      <div class="ref-grid">        <a class="ref-card" href="https://en.wikipedia.org/wiki/Railroad_Tycoon" target="_blank" rel="noopener noreferrer">
+          <div class="ref-head"><span class="ref-name">Railroad Tycoon</span><span class="ref-tag">경영 시뮬레이션</span></div>
+          <p class="ref-desc"><strong>진행 방식</strong>: 철도 노선을 깔아 도시 간 화물·승객을 실어 나르며 자본을 불린다. 노선을 어디에 먼저 깔지 정하는 것이 곧 확장 전략이다 — F의 "땅/철도/유전탑에 투자해 지역을 개발한다"는 진행 방식이 이 게임의 19세기 철도 붐 배경과 그대로 맞닿아 있다.</p>
+          <span class="ref-see">실제 화면/보드 보기 ↗</span>
+        </a>        <a class="ref-card" href="https://en.wikipedia.org/wiki/Red_Dead_Redemption_2" target="_blank" rel="noopener noreferrer">
+          <div class="ref-head"><span class="ref-name">Red Dead Redemption 2</span><span class="ref-tag">오픈월드 액션</span></div>
+          <p class="ref-desc">서부 개척시대 말기의 마을·목장·황무지를 사실적으로 재현한 비주얼 레퍼런스 — F는 총싸움 대신 경제만 가져오지만, "이 시대가 실제로 어떻게 생겼는지"는 이 게임의 배경을 참고했다.</p>
+          <span class="ref-see">실제 화면/보드 보기 ↗</span>
+        </a>        <a class="ref-card" href="https://ko.wikipedia.org/wiki/%EC%84%9C%EB%B6%80_%EA%B0%9C%EC%B2%99%EC%8B%9C%EB%8C%80" target="_blank" rel="noopener noreferrer">
+          <div class="ref-head"><span class="ref-name">서부 개척시대</span><span class="ref-tag">실제 역사</span></div>
+          <p class="ref-desc">19세기 미국의 토지 불하, 철도 건설, 유전 개발이 실제로 이 순서로 얽혀 지역 경제를 만들었던 시기 — F의 땅값·상권·유정 산출 공식들이 참고한 실제 시대 배경.</p>
+          <span class="ref-see">실제 화면/보드 보기 ↗</span>
+        </a></div>
+    </div>
+    <div class="swatches"><span class="swatch" style="background:#2a1c11"></span><span class="swatch" style="background:#c1622b"></span><span class="swatch" style="background:#f1e3cc"></span></div>
+  </div>
+</section><section class="world" id="b2">
+  <div class="world-inner">
+    <div class="world-kicker">
+      <span class="world-glyph">B-2</span>
+      <span class="world-status planned"><span class="dot"></span>기획 확정</span>
+    </div>
+    <h2>피오르의 총성</h2>
+    <p class="subtitle">중세 화기전 · 실행력·보급 인과 시뮬레이션</p>
+    <svg class="illustration" width="600" height="220" viewBox="0 0 600 220" role="img" aria-label="설산과 피오르 위로 롱쉽이 항해하는 북유럽 겨울 풍경 실루엣">
+      <defs>
+        <linearGradient id="bsky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#1c2b38"/>
+          <stop offset="1" stop-color="#0e1720"/>
+        </linearGradient>
+      </defs>
+      <rect width="600" height="220" fill="url(#bsky)"/>
+      <circle cx="120" cy="55" r="26" fill="#dceef2" opacity="0.5"/>
+      <polygon points="0,150 90,60 130,110 220,40 300,150" fill="#26414f"/>
+      <polygon points="60,150 120,90 180,150" fill="#33566a"/>
+      <polygon points="90,62 110,86 70,86" fill="#dceef2"/>
+      <polygon points="222,42 240,68 204,68" fill="#dceef2"/>
+      <rect x="0" y="150" width="600" height="70" fill="#0b1319"/>
+      <g stroke="#7fd1e0" stroke-width="1" opacity="0.5">
+        <path d="M0,165 Q150,155 300,168 T600,162" fill="none"/>
+        <path d="M0,185 Q150,178 300,188 T600,182" fill="none"/>
+      </g>
+      <g transform="translate(400,150)">
+        <path d="M-70,20 Q0,45 70,20 L60,26 Q0,42 -60,26 Z" fill="#101c24" stroke="#7fd1e0" stroke-width="1.4"/>
+        <line x1="0" y1="20" x2="0" y2="-46" stroke="#7fd1e0" stroke-width="2.4"/>
+        <path d="M0,-40 Q30,-30 34,0 Q10,-6 0,-8 Z" fill="#7fd1e0" opacity="0.85"/>
+        <polygon points="-38,4 -30,20 -46,20" fill="#7fd1e0" opacity="0.7"/>
+        <polygon points="38,4 30,20 46,20" fill="#7fd1e0" opacity="0.7"/>
+      </g>
+    </svg>
+    <p class="illustration-caption">MOOD · 설산과 피오르 위로 롱쉽이 항해하는 북유럽 겨울 풍경 실루엣</p>
+    <p class="flavor">설산과 피오르, 침엽수림 사이로 바이킹이 머스킷을 든다. 시대고증이 아니라 스타일화된 크로스오버 — 계획은 훌륭했는데 왜 실패했는가를 몸으로 겪는 냉정한 인과의 땅이다.</p>
+    <dl class="facts"><div class="fact"><dt>핵심</dt><dd>좋은 카드를 냈어도 매 턴 보급선 판정이 실패하면 카드 효과가 반토막 — "전략은 맞았는데 실행이 안 됐다"를 체감시킨다.</dd></div><div class="fact"><dt>유닛</dt><dd>정찰대 · 화승총병 · 방패열 전사 · 순록 보급대 · 룬 정찰관, 그리고 스파이 까마귀·혼동 유닛(전투 돌입 시에만 발동)·전략적 감시자(스파이 2~3명 분대).</dd></div><div class="fact"><dt>이론</dt><dd>클라우제비츠의 "전장의 마찰", 치아-꼬리 비율, 나폴레옹 러시아 원정의 실제 실패 원인 — 보급선 붕괴.</dd></div></dl>
+    <div class="refs">
+      <p class="refs-label">참고 · 이 게임의 진행 방식을 보고 온 것들</p>
+      <div class="ref-grid">        <a class="ref-card" href="https://en.wikipedia.org/wiki/Northgard" target="_blank" rel="noopener noreferrer">
+          <div class="ref-head"><span class="ref-name">Northgard</span><span class="ref-tag">전략 시뮬레이션</span></div>
+          <p class="ref-desc"><strong>진행 방식</strong>: 바이킹 씨족이 새 땅에 정착해 자원을 채집하고 영토를 넓히는데, 겨울(기후)과 정찰이 부족하면 병력이 굶주려 붕괴한다 — B-2의 "보급선 판정이 실패하면 카드 효과가 반토막"이라는 규칙이 이 게임의 자원 압박 메커닉을 그대로 참고했다.</p>
+          <span class="ref-see">실제 화면/보드 보기 ↗</span>
+        </a>        <a class="ref-card" href="https://en.wikipedia.org/wiki/Mount_%26_Blade" target="_blank" rel="noopener noreferrer">
+          <div class="ref-head"><span class="ref-name">Mount &amp; Blade</span><span class="ref-tag">전술 RPG</span></div>
+          <p class="ref-desc">전투 결과가 병력 수만이 아니라 부대 편성·사기·보급 상태에 따라 갈리는 진행 방식 — B-2가 "좋은 카드를 냈어도 보급선이 무너지면 진다"는 원칙을 세울 때 참고한 전투 논리다.</p>
+          <span class="ref-see">실제 화면/보드 보기 ↗</span>
+        </a>        <a class="ref-card" href="https://ko.wikipedia.org/wiki/%EB%B0%94%EC%9D%B4%ED%82%B9" target="_blank" rel="noopener noreferrer">
+          <div class="ref-head"><span class="ref-name">바이킹 시대</span><span class="ref-tag">실제 역사</span></div>
+          <p class="ref-desc">북유럽 산악·피오르 지형에서 실제로 항해·정착·교역을 했던 시기 — B-2의 지형 스킨(설산/피오르/침엽수림)이 참고한 실제 배경. 유닛의 머스킷은 시대고증이 아니라 의도된 스타일화다.</p>
+          <span class="ref-see">실제 화면/보드 보기 ↗</span>
+        </a></div>
+    </div>
+    <div class="swatches"><span class="swatch" style="background:#0e1720"></span><span class="swatch" style="background:#7fd1e0"></span><span class="swatch" style="background:#dceef2"></span></div>
+  </div>
+</section><section class="world" id="d">
+  <div class="world-inner">
+    <div class="world-kicker">
+      <span class="world-glyph">D</span>
+      <span class="world-status planned"><span class="dot"></span>기획 확정</span>
+    </div>
+    <h2>실로 엮은 방</h2>
+    <p class="subtitle">관계·팀웍 시스템 · 조합 센터</p>
+    <svg class="illustration" width="600" height="220" viewBox="0 0 600 220" role="img" aria-label="원목 코르크보드에 핀으로 꽂힌 카드들이 색색의 실로 연결된 모습">
+      <rect width="600" height="220" fill="#2b2015"/>
+      <rect x="14" y="14" width="572" height="192" rx="6" fill="#382a1c" stroke="#4a3826" stroke-width="2"/>
+      <g stroke="#c4703f" stroke-width="1.6" fill="none" opacity="0.9">
+        <path d="M110,70 L260,55 L360,120"/>
+        <path d="M260,55 L200,150"/>
+      </g>
+      <g stroke="#6f93a8" stroke-width="1.6" fill="none" opacity="0.85">
+        <path d="M110,70 L200,150 L420,90"/>
+        <path d="M360,120 L420,90"/>
+      </g>
+      <g stroke="#c9a24b" stroke-width="1.4" fill="none" opacity="0.8">
+        <path d="M420,90 L480,150 L360,120"/>
+      </g>
+      <g>
+        <g transform="translate(110,70)"><rect x="-16" y="-12" width="32" height="24" rx="3" fill="#f2e6cc"/><circle r="2.4" fill="#c4703f"/></g>
+        <g transform="translate(260,55)"><rect x="-16" y="-12" width="32" height="24" rx="3" fill="#f2e6cc"/><circle r="2.4" fill="#c4703f"/></g>
+        <g transform="translate(360,120)"><rect x="-16" y="-12" width="32" height="24" rx="3" fill="#f2e6cc"/><circle r="2.4" fill="#c4703f"/></g>
+        <g transform="translate(200,150)"><rect x="-16" y="-12" width="32" height="24" rx="3" fill="#f2e6cc"/><circle r="2.4" fill="#6f93a8"/></g>
+        <g transform="translate(420,90)"><rect x="-16" y="-12" width="32" height="24" rx="3" fill="#f2e6cc"/><circle r="2.4" fill="#6f93a8"/></g>
+        <g transform="translate(480,150)"><rect x="-16" y="-12" width="32" height="24" rx="3" fill="#f2e6cc"/><circle r="2.4" fill="#c9a24b"/></g>
+      </g>
+    </svg>
+    <p class="illustration-caption">MOOD · 원목 코르크보드에 핀으로 꽂힌 카드들이 색색의 실로 연결된 모습</p>
+    <p class="flavor">원목 코르크보드에 핀을 꽂고 실을 잇는다. 실제로 만난 사람과의 기억이 카드가 되고, 그 카드를 철학·심리학 카드와 엮으면 전장의 팀원이 강해진다 — 따뜻한 서재의 톤으로, 음모론 보드가 아니라 나를 이해하는 지도가 완성된다.</p>
+    <dl class="facts"><div class="fact"><dt>조합</dt><dd>관계 카드 + 철학/심리학 카드를 조합하면 훈련 모드 유닛의 전투력이 바뀐다. 다이얼은 화면 위 슬라이더가 아니라 보드에 붙은 실제 손잡이.</dd></div><div class="fact"><dt>결과</dt><dd>MBTI 같은 타입 분류이되 추측이 아니라 실제 데이터 기반 — 숫자 나열 대신 "지금 무엇을 이해하고 있는지" 상황으로 설명.</dd></div></dl>
+    <div class="refs">
+      <p class="refs-label">참고 · 이 게임의 진행 방식을 보고 온 것들</p>
+      <div class="ref-grid">        <a class="ref-card" href="https://en.wikipedia.org/wiki/Persona_5" target="_blank" rel="noopener noreferrer">
+          <div class="ref-head"><span class="ref-name">Persona 5</span><span class="ref-tag">디지털 RPG</span></div>
+          <p class="ref-desc">주인공이 방과 후 실제 사람들을 만나 "소셜 링크"를 쌓으면, 그 관계가 전투에서 쓰는 페르소나의 능력치를 실제로 강화시킨다 — D의 "관계 카드가 팀원 전투력이 된다"는 메커닉과 구조가 거의 동일한, 가장 가까운 선례.</p>
+          <span class="ref-see">실제 화면/보드 보기 ↗</span>
+        </a>        <a class="ref-card" href="https://en.wikipedia.org/wiki/Dixit_(card_game)" target="_blank" rel="noopener noreferrer">
+          <div class="ref-head"><span class="ref-name">Dixit</span><span class="ref-tag">보드게임</span></div>
+          <p class="ref-desc"><strong>진행 방식</strong>: 플레이어가 카드 한 장을 보고 그 이미지를 은유하는 한 문장을 말하면, 다른 플레이어들은 자기 손패 중 그 문장에 어울리는 카드를 골라 섞는다. 다 같이 원본을 추리한다 — 카드끼리 "이야기로 연결"하는 이 진행 방식이 D의 실 연결 조합과 닮았다.</p>
+          <span class="ref-see">실제 화면/보드 보기 ↗</span>
+        </a>        <a class="ref-card" href="https://en.wikipedia.org/wiki/Mood_board" target="_blank" rel="noopener noreferrer">
+          <div class="ref-head"><span class="ref-name">무드보드(Mood Board)</span><span class="ref-tag">실물 제작 도구</span></div>
+          <p class="ref-desc">디자이너들이 실제로 코르크보드에 이미지·색상 조각을 핀으로 꽂아 하나의 방향성을 완성하는 도구 — D의 "조합 결과 = 성격 지도"가 시각적으로 무엇을 참고했는지 실물로 확인할 수 있다.</p>
+          <span class="ref-see">실제 화면/보드 보기 ↗</span>
+        </a></div>
+    </div>
+    <div class="swatches"><span class="swatch" style="background:#2b2015"></span><span class="swatch" style="background:#c4703f"></span><span class="swatch" style="background:#f2e6cc"></span></div>
+  </div>
+</section><section class="world" id="c1">
+  <div class="world-inner">
+    <div class="world-kicker">
+      <span class="world-glyph">C-1</span>
+      <span class="world-status planned"><span class="dot"></span>기획 확정</span>
+    </div>
+    <h2>도시의 인맥망</h2>
+    <p class="subtitle">경제 시뮬 · 패션업계 스킨</p>
+    <svg class="illustration" width="600" height="220" viewBox="0 0 600 220" role="img" aria-label="네온빛 도시를 진짜 위에서 내려다보는 3D 탑다운 시점, 구역마다 다른 색으로 발전하는 건물들">
+      <rect width="600" height="220" fill="#150f22"/>
+      <g opacity="0.9">
+        <rect x="40" y="40" width="60" height="60" fill="#241a38" stroke="#e356a6" stroke-width="1.4"/>
+        <rect x="110" y="30" width="70" height="70" fill="#2a1d40" stroke="#e356a6" stroke-width="1.4"/>
+        <rect x="190" y="50" width="50" height="50" fill="#241a38" stroke="#8a5fb0" stroke-width="1.2"/>
+        <rect x="260" y="35" width="80" height="80" fill="#2a1d40" stroke="#4fa6e8" stroke-width="1.4"/>
+        <rect x="350" y="55" width="55" height="55" fill="#241a38" stroke="#4fa6e8" stroke-width="1.2"/>
+        <rect x="420" y="40" width="65" height="65" fill="#2a1d40" stroke="#e356a6" stroke-width="1.4"/>
+        <rect x="500" y="30" width="70" height="70" fill="#241a38" stroke="#4fa6e8" stroke-width="1.2"/>
+        <rect x="70" y="130" width="90" height="70" fill="#2a1d40" stroke="#e356a6" stroke-width="1.2"/>
+        <rect x="200" y="140" width="60" height="60" fill="#241a38" stroke="#8a5fb0" stroke-width="1.2"/>
+        <rect x="300" y="125" width="100" height="80" fill="#2a1d40" stroke="#4fa6e8" stroke-width="1.4"/>
+        <rect x="430" y="135" width="75" height="70" fill="#241a38" stroke="#e356a6" stroke-width="1.2"/>
+      </g>
+      <g stroke="#efe4fb" stroke-width="0.7" opacity="0.18">
+        <line x1="0" y1="20" x2="600" y2="20"/><line x1="0" y1="115" x2="600" y2="115"/><line x1="0" y1="210" x2="600" y2="210"/>
+        <line x1="0" y1="0" x2="0" y2="220"/><line x1="150" y1="0" x2="150" y2="220"/><line x1="300" y1="0" x2="300" y2="220"/><line x1="450" y1="0" x2="450" y2="220"/><line x1="600" y1="0" x2="600" y2="220"/>
+      </g>
+      <circle cx="300" cy="115" r="5" fill="#e356a6"/>
+      <circle cx="300" cy="115" r="12" fill="none" stroke="#e356a6" stroke-width="1.4" opacity="0.7"/>
+      <circle cx="300" cy="115" r="20" fill="none" stroke="#e356a6" stroke-width="1" opacity="0.4"/>
+    </svg>
+    <p class="illustration-caption">MOOD · 네온빛 도시를 진짜 위에서 내려다보는 3D 탑다운 시점, 구역마다 다른 색으로 발전하는 건물들</p>
+    <p class="flavor">진짜 위에서 내려다보는 3D 도시. 포켓몬고처럼 진짜 도시 스케일 위에서, 심시티처럼 내가 쌓은 인맥과 기자 활동이 구역의 건물로 자라난다.</p>
+    <dl class="facts"><div class="fact"><dt>시각화</dt><dd>인맥 허브가 생기면 해당 구역에 건물이 들어서거나 발전 — 정찰→계획→투자 루프를 "어느 구역에 투자할지"로 구체화.</dd></div></dl>
+    <div class="refs">
+      <p class="refs-label">참고 · 이 게임의 진행 방식을 보고 온 것들</p>
+      <div class="ref-grid">        <a class="ref-card" href="https://en.wikipedia.org/wiki/Pok%C3%A9mon_Go" target="_blank" rel="noopener noreferrer">
+          <div class="ref-head"><span class="ref-name">Pokémon GO</span><span class="ref-tag">모바일 AR</span></div>
+          <p class="ref-desc">실제 GPS 지도 위에 게임 요소가 그대로 겹쳐 보이고, 플레이어가 진짜 그 위치로 "가야" 진행되는 방식 — C-1의 "진짜 위에서 내려다보는 3D 도시" 시점이 이 게임의 지도 UI를 그대로 참고했다.</p>
+          <span class="ref-see">실제 화면/보드 보기 ↗</span>
+        </a>        <a class="ref-card" href="https://en.wikipedia.org/wiki/SimCity" target="_blank" rel="noopener noreferrer">
+          <div class="ref-head"><span class="ref-name">SimCity</span><span class="ref-tag">경영 시뮬레이션</span></div>
+          <p class="ref-desc"><strong>진행 방식</strong>: 구역을 주거/상업/공업으로 나눠 지정하면 시간이 지나며 그 구역에 건물이 알아서 들어차고 발전한다. C-1의 "인맥 허브가 생기면 구역이 자란다"는 규칙이 이 성장 로직을 그대로 빌렸다.</p>
+          <span class="ref-see">실제 화면/보드 보기 ↗</span>
+        </a></div>
+    </div>
+    <div class="swatches"><span class="swatch" style="background:#150f22"></span><span class="swatch" style="background:#e356a6"></span><span class="swatch" style="background:#4fa6e8"></span></div>
+  </div>
+</section><section class="world" id="c2">
+  <div class="world-inner">
+    <div class="world-kicker">
+      <span class="world-glyph">C-2</span>
+      <span class="world-status planned"><span class="dot"></span>기획 확정</span>
+    </div>
+    <h2>나무판 위의 상권</h2>
+    <p class="subtitle">경제 시뮬 · 마케팅 체인점 확장 스킨</p>
+    <svg class="illustration" width="600" height="220" viewBox="0 0 600 220" role="img" aria-label="나무 보드 위에 육각 타일 지도가 놓이고 미니어처 매장 토큰이 확장되는 모습">
+      <rect width="600" height="220" fill="#3a2b1c"/>
+      <g fill="#4a3624" stroke="#b8895a" stroke-width="1.4">
+        <polygon points="300,26 340,50 340,98 300,122 260,98 260,50"/>
+        <polygon points="220,50 260,74 260,122 220,146 180,122 180,74"/>
+        <polygon points="380,50 420,74 420,122 380,146 340,122 340,74"/>
+        <polygon points="300,98 340,122 340,170 300,194 260,170 260,122"/>
+        <polygon points="140,74 180,98 180,146 140,170 100,146 100,98"/>
+        <polygon points="460,74 500,98 500,146 460,170 420,146 420,98"/>
+      </g>
+      <g fill="#efe0c4">
+        <rect x="290" y="60" width="20" height="20" rx="2"/>
+        <rect x="370" y="90" width="16" height="16" rx="2"/>
+        <rect x="130" y="110" width="16" height="16" rx="2"/>
+      </g>
+      <g stroke="#efe0c4" stroke-width="1" opacity="0.7" fill="none">
+        <path d="M300,70 L378,98"/>
+        <path d="M300,70 L138,118"/>
+      </g>
+    </svg>
+    <p class="illustration-caption">MOOD · 나무 보드 위에 육각 타일 지도가 놓이고 미니어처 매장 토큰이 확장되는 모습</p>
+    <p class="flavor">나무 보드 위에 그려진 지역 지도, 미니어처 매장 토큰. C-1의 차가운 3D 도시와 달리, 여기는 손으로 만지는 보드게임의 물성이다.</p>
+    <dl class="facts"><div class="fact"><dt>타일</dt><dd>각 타일은 인구·소득·경쟁 밀도를 가진 실제 시장 구역. 정찰로 정보를 확인하고 투자로 매장을 확장한다.</dd></div><div class="fact"><dt>판정</dt><dd>확장 성공 여부는 감이 아니라 그 타일의 실제 CAC(고객획득비용)/LTV(생애가치) 계산 결과.</dd></div></dl>
+    <div class="refs">
+      <p class="refs-label">참고 · 이 게임의 진행 방식을 보고 온 것들</p>
+      <div class="ref-grid">        <a class="ref-card" href="https://en.wikipedia.org/wiki/Catan" target="_blank" rel="noopener noreferrer">
+          <div class="ref-head"><span class="ref-name">카탄(Catan)</span><span class="ref-tag">보드게임</span></div>
+          <p class="ref-desc"><strong>진행 방식</strong>: 보드는 육각 타일로 나뉘고, 각 타일마다 산출되는 자원(나무·양·곡물 등)이 다르다. 주사위를 굴려 자원을 얻고, 그 자원으로 타일 경계에 정착지·도시를 짓는다. 좋은 타일 옆을 먼저 차지할수록 유리하다 — C-2의 "타일=시장 데이터, 그 위에 매장을 짓는다"는 규칙이 카탄의 이 진행 방식을 거의 그대로 가져왔다.</p>
+          <span class="ref-see">실제 화면/보드 보기 ↗</span>
+        </a>        <a class="ref-card" href="https://en.wikipedia.org/wiki/Ticket_to_Ride_(board_game)" target="_blank" rel="noopener noreferrer">
+          <div class="ref-head"><span class="ref-name">티켓 투 라이드</span><span class="ref-tag">보드게임</span></div>
+          <p class="ref-desc"><strong>진행 방식</strong>: 카드를 모아 지도 위 두 도시를 잇는 철도 노선을 깐다. 노선이 이어질수록 지도 위 내 영역이 눈에 보이게 넓어진다 — 지도가 곧 진행 상황판이 되는 이 구조가 C-2의 "확장할수록 보드가 채워진다"는 느낌의 기준이 됐다.</p>
+          <span class="ref-see">실제 화면/보드 보기 ↗</span>
+        </a></div>
+    </div>
+    <div class="swatches"><span class="swatch" style="background:#3a2b1c"></span><span class="swatch" style="background:#b8895a"></span><span class="swatch" style="background:#efe0c4"></span></div>
+  </div>
+</section><section class="world" id="c3">
+  <div class="world-inner">
+    <div class="world-kicker">
+      <span class="world-glyph">C-3</span>
+      <span class="world-status planned"><span class="dot"></span>기획 확정</span>
+    </div>
+    <h2>쌓아올린 탑</h2>
+    <p class="subtitle">경제 시뮬 · 취업 포트폴리오·학원 투자 스킨</p>
+    <svg class="illustration" width="600" height="220" viewBox="0 0 600 220" role="img" aria-label="아이소메트릭 시점으로 층층이 쌓아 올린 성장탑, 각 층은 다른 스킬을 상징하는 색">
+      <rect width="600" height="220" fill="#0f1e33"/>
+      <g>
+        <g transform="translate(300,190)"><polygon points="0,0 40,-20 80,0 40,20" fill="#16283f" stroke="#e0b354" stroke-width="1"/></g>
+        <g transform="translate(300,160)"><polygon points="0,0 40,-20 80,0 40,20" fill="#1a2f4a" stroke="#e0b354" stroke-width="1.2"/></g>
+        <g transform="translate(300,130)"><polygon points="0,0 40,-20 80,0 40,20" fill="#1e3554" fill-opacity="1" stroke="#6fa8dc" stroke-width="1.2"/></g>
+        <g transform="translate(300,100)"><polygon points="0,0 40,-20 80,0 40,20" fill="#22395e" stroke="#6fa8dc" stroke-width="1.2"/></g>
+        <g transform="translate(300,70)"><polygon points="0,0 40,-20 80,0 40,20" fill="#263e68" stroke="#e0b354" stroke-width="1.4"/></g>
+        <g transform="translate(300,40)"><polygon points="0,0 40,-20 80,0 40,20" fill="#e0b354" stroke="#f2d896" stroke-width="1.4"/></g>
+      </g>
+      <g transform="translate(470,60)" opacity="0.9">
+        <polygon points="0,0 26,-13 52,0 26,13" fill="#6fa8dc" stroke="#e7eefb" stroke-width="1"/>
+        <line x1="26" y1="13" x2="26" y2="40" stroke="#6fa8dc" stroke-width="1.4"/>
+        <text x="0" y="60" fill="#7690b3" font-size="11" font-family="ui-monospace, monospace">scouting…</text>
+      </g>
+    </svg>
+    <p class="illustration-caption">MOOD · 아이소메트릭 시점으로 층층이 쌓아 올린 성장탑, 각 층은 다른 스킬을 상징하는 색</p>
+    <p class="flavor">작은 대지 위, 아이소메트릭 시점으로 층층이 쌓이는 탑. 다른 세계는 내가 정찰하지만, 여기는 반대로 회사가 탑을 정찰하러 온다.</p>
+    <dl class="facts"><div class="fact"><dt>층</dt><dd>스킬·자격증·경험 하나하나가 탑의 층이 된다. 층 구성에 맞춰 회사가 오퍼를 제시.</dd></div><div class="fact"><dt>학원 투자</dt><dd>비싸고 빠른 학원 vs 저렴하고 느린 독학 — 실제 교육투자의 비용/시간 트레이드오프.</dd></div><div class="fact"><dt>형태</dt><dd>수평으로 확장하는 F·C-2와 대비되는 수직 성장의 은유. 신뢰감 있는 블루·골드 톤.</dd></div></dl>
+    <div class="refs">
+      <p class="refs-label">참고 · 이 게임의 진행 방식을 보고 온 것들</p>
+      <div class="ref-grid">        <a class="ref-card" href="https://en.wikipedia.org/wiki/Santorini_(game)" target="_blank" rel="noopener noreferrer">
+          <div class="ref-head"><span class="ref-name">산토리니(Santorini)</span><span class="ref-tag">보드게임</span></div>
+          <p class="ref-desc"><strong>진행 방식</strong>: 각 칸에 정육면체 블록을 쌓아 건물을 올리고, 내 말이 더 높은 층에 올라서면 유리해진다 — "물리적으로 층을 쌓는다"는 메커닉 자체가 C-3의 성장탑과 그대로 겹치는, 가장 직접적인 보드게임 레퍼런스.</p>
+          <span class="ref-see">실제 화면/보드 보기 ↗</span>
+        </a>        <a class="ref-card" href="https://en.wikipedia.org/wiki/Two_Point_Hospital" target="_blank" rel="noopener noreferrer">
+          <div class="ref-head"><span class="ref-name">Two Point Hospital</span><span class="ref-tag">경영 시뮬레이션</span></div>
+          <p class="ref-desc">방(시설)을 하나씩 지어 넣으며 병원을 키우는 진행 방식 — 무엇을 먼저 짓느냐에 따라 어떤 환자(수요)가 몰리는지가 달라진다. C-3에서 "어떤 층을 먼저 쌓느냐에 따라 어떤 회사가 오는지" 갈리는 구조와 같은 논리다.</p>
+          <span class="ref-see">실제 화면/보드 보기 ↗</span>
+        </a></div>
+    </div>
+    <div class="swatches"><span class="swatch" style="background:#0f1e33"></span><span class="swatch" style="background:#e0b354"></span><span class="swatch" style="background:#6fa8dc"></span></div>
+  </div>
+</section><section class="world" id="g">
+  <div class="world-inner">
+    <div class="world-kicker">
+      <span class="world-glyph">G</span>
+      <span class="world-status planned"><span class="dot"></span>기획 확정</span>
+    </div>
+    <h2>밝은 방</h2>
+    <p class="subtitle">패배 리뷰 · 체임버(Chamber)</p>
+    <svg class="illustration" width="600" height="220" viewBox="0 0 600 220" role="img" aria-label="밝은 크림색 실험실 공간에 과거 사건 카드 하나가 떠 있고 두 갈래 결과가 부드럽게 갈라지는 모습">
+      <rect width="600" height="220" fill="#f7f1e2"/>
+      <circle cx="300" cy="60" r="80" fill="#fffdf6" opacity="0.9"/>
+      <g transform="translate(300,90)">
+        <rect x="-34" y="-46" width="68" height="92" rx="8" fill="#fffdf6" stroke="#b5862f" stroke-width="1.6"/>
+        <line x1="-20" y1="-24" x2="20" y2="-24" stroke="#b5862f" stroke-width="1.4" opacity="0.6"/>
+        <line x1="-20" y1="-10" x2="20" y2="-10" stroke="#b5862f" stroke-width="1.4" opacity="0.6"/>
+        <line x1="-20" y1="4" x2="8" y2="4" stroke="#b5862f" stroke-width="1.4" opacity="0.6"/>
+      </g>
+      <g stroke="#b5862f" stroke-width="1.4" fill="none" opacity="0.7">
+        <path d="M300,140 Q220,175 150,196"/>
+        <path d="M300,140 Q380,175 450,196"/>
+      </g>
+      <g transform="translate(150,196)"><rect x="-30" y="-18" width="60" height="36" rx="6" fill="#fffdf6" stroke="#8a6f2c" stroke-width="1.2"/></g>
+      <g transform="translate(450,196)"><rect x="-30" y="-18" width="60" height="36" rx="6" fill="#fffdf6" stroke="#8a6f2c" stroke-width="1.2"/></g>
+    </svg>
+    <p class="illustration-caption">MOOD · 밝은 크림색 실험실 공간에 과거 사건 카드 하나가 떠 있고 두 갈래 결과가 부드럽게 갈라지는 모습</p>
+    <p class="flavor">여기서만 화면이 밝아진다. 나머지 모든 세계가 어둡거나 흙빛인 것과 의도적으로 다르게 — 히오스 로비 같은 밝고 안전한 실험실. 실패를 다시 불러와도 벌점은 없다.</p>
+    <dl class="facts"><div class="fact"><dt>절차</dt><dd>소환(과거 사건 선택) → 변수 1개만 변경 → 재계산(기존 엔진 재사용) → 단기·장기 비교 → 기록.</dd></div><div class="fact"><dt>말투</dt><dd>항상 "~했다면 ~했을 수도 있다"는 가정형. "네가 틀렸다"류의 단정은 시스템 차원에서 금지.</dd></div></dl>
+    <div class="refs">
+      <p class="refs-label">참고 · 이 게임의 진행 방식을 보고 온 것들</p>
+      <div class="ref-grid">        <a class="ref-card" href="https://en.wikipedia.org/wiki/Heroes_of_the_Storm" target="_blank" rel="noopener noreferrer">
+          <div class="ref-head"><span class="ref-name">히어로즈 오브 더 스톰(히오스)</span><span class="ref-tag">디지털 로비 UI</span></div>
+          <p class="ref-desc">대전 시작 전, 밝고 정돈된 로비에서 대기하는 화면 — 전투의 긴장감과 분리된 "안전 지대"라는 톤을 그대로 참고했다. G가 유일하게 밝은 이유가 바로 이 대기실 감각이다.</p>
+          <span class="ref-see">실제 화면/보드 보기 ↗</span>
+        </a></div>
+    </div>
+    <div class="swatches"><span class="swatch" style="background:#f7f1e2"></span><span class="swatch" style="background:#b5862f"></span><span class="swatch" style="background:#3a3324"></span></div>
+  </div>
+</section>
+<footer>
+  <p>이 문서는 BLUEPRINT_CARD_GAME_DESIGN.md를 2026-08-01 세션 기준으로 시각화한 게임 기획서입니다. 세부 수치·확정 이력·남은 확인 사항은 원본 블루프린트 문서를 참고하세요.</p>
+</footer>
