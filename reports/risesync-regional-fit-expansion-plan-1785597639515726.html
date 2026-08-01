@@ -1,0 +1,337 @@
+<title>RiseSync — 지역 적합도 점수 분석 & 신규 기획안</title>
+<style>
+  :root {
+    --bg: #faf7f2; --bg-raised: #ffffff; --fg: #211f2e; --muted: #6b6a7c;
+    --border: #e7e1d6; --accent: #c9711f; --accent-soft: #f6e6d3;
+    --risk: #a13a3a; --risk-soft: #f6e2df; --good: #2f7a63; --good-soft: #dcefe8;
+    --info: #2a5f8f; --info-soft: #dbe8f2;
+    --serif: Iowan Old Style, Georgia, "Noto Serif KR", ui-serif, serif;
+    --sans: -apple-system, "Pretendard", "Apple SD Gothic Neo", "Segoe UI", sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16151d; --bg-raised: #201f29; --fg: #ede9e0; --muted: #9a97ab;
+      --border: #322f3d; --accent: #e2a262; --accent-soft: #3a2f22;
+      --risk: #e08787; --risk-soft: #3a2325; --good: #7fc6ac; --good-soft: #1f332c;
+      --info: #7fb0e0; --info-soft: #1f2c3a;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #16151d; --bg-raised: #201f29; --fg: #ede9e0; --muted: #9a97ab;
+    --border: #322f3d; --accent: #e2a262; --accent-soft: #3a2f22;
+    --risk: #e08787; --risk-soft: #3a2325; --good: #7fc6ac; --good-soft: #1f332c;
+    --info: #7fb0e0; --info-soft: #1f2c3a;
+  }
+  :root[data-theme="light"] {
+    --bg: #faf7f2; --bg-raised: #ffffff; --fg: #211f2e; --muted: #6b6a7c;
+    --border: #e7e1d6; --accent: #c9711f; --accent-soft: #f6e6d3;
+    --risk: #a13a3a; --risk-soft: #f6e2df; --good: #2f7a63; --good-soft: #dcefe8;
+    --info: #2a5f8f; --info-soft: #dbe8f2;
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 17px; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+  .page { max-width: 820px; margin: 0 auto; padding: 40px 20px 100px; }
+  .eyebrow { font-size: 13.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin: 0 0 10px; font-weight: 700; }
+  /* 문서 전체에서 가장 큰 제목 — 다른 소제목들과 크기 차이를 확실히 둠 */
+  h1.doc-title { font-family: var(--serif); font-size: clamp(30px, 6vw, 44px); font-weight: 700; line-height: 1.22; margin: 0 0 10px; text-wrap: balance; }
+  .subtitle { color: var(--muted); font-size: 16px; margin: 0 0 24px; line-height: 1.6; }
+  .subtitle code { background: var(--bg-raised); border: 1px solid var(--border); border-radius: 4px; padding: 2px 7px; font-size: 14.5px; }
+
+  nav.toc { display: flex; flex-wrap: wrap; gap: 9px; padding: 14px 16px; background: var(--bg-raised); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 36px; }
+  nav.toc a { font-size: 14px; font-weight: 700; color: var(--info); text-decoration: none; background: var(--info-soft); padding: 6px 13px; border-radius: 999px; }
+
+  /* 큰 파트(1부/2부 등) 제목 — 문서 제목보다는 작지만 소제목(h2)보다는 뚜렷하게 큼 */
+  .part-head { margin-top: 56px; padding-top: 10px; border-top: 4px solid var(--accent); }
+  .part-eyebrow { font-family: var(--mono); font-size: 13px; letter-spacing: 0.05em; color: var(--accent); font-weight: 700; margin: 14px 0 6px; }
+  .part-head h1 { font-family: var(--serif); font-weight: 700; font-size: clamp(24px, 4vw, 30px); line-height: 1.3; margin: 0; }
+
+  section { margin-bottom: 44px; }
+  h2 { font-family: var(--serif); font-size: 22px; font-weight: 700; margin: 30px 0 8px; line-height: 1.35; }
+  .section-lede { color: var(--muted); font-size: 15.5px; margin: 0 0 16px; line-height: 1.65; }
+  h3 { font-size: 16.5px; font-weight: 700; margin: 20px 0 10px; }
+
+  .callout { border-radius: 12px; padding: 18px 20px; margin-bottom: 20px; border: 1px solid transparent; font-size: 16px; }
+  .callout.info { background: var(--info-soft); border-color: color-mix(in srgb, var(--info) 35%, transparent); }
+  .callout.good { background: var(--good-soft); border-color: color-mix(in srgb, var(--good) 35%, transparent); }
+  .callout.warn { background: var(--risk-soft); border-color: color-mix(in srgb, var(--risk) 30%, transparent); }
+  .callout p { margin: 0 0 8px; }
+  .callout p:last-child { margin-bottom: 0; }
+  .callout .tag { display: inline-block; font-size: 12.5px; font-weight: 700; letter-spacing: 0.03em; border-radius: 999px; padding: 3px 12px; margin-bottom: 10px; }
+  .callout.info .tag { color: var(--info); border: 1px solid var(--info); }
+  .callout.good .tag { color: var(--good); border: 1px solid var(--good); }
+  .callout.warn .tag { color: var(--risk); border: 1px solid var(--risk); }
+
+  table { width: 100%; border-collapse: collapse; font-size: 15px; margin: 10px 0; }
+  th, td { text-align: left; padding: 11px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { font-size: 12px; text-transform: uppercase; letter-spacing: 0.03em; color: var(--muted); font-weight: 700; }
+  td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; margin: 12px 0; }
+  .table-wrap table { margin: 0; }
+  .table-wrap th:first-child, .table-wrap td:first-child { padding-left: 15px; }
+
+  .formula { font-family: var(--mono); font-size: 14.5px; line-height: 1.8; background: var(--bg-raised); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; margin: 12px 0; overflow-x: auto; white-space: pre; }
+  .plain-note { font-size: 15px; color: var(--muted); background: var(--bg-raised); border: 1px dashed var(--border); border-radius: 10px; padding: 12px 14px; margin: 10px 0 16px; }
+
+  .chart-card { background: var(--bg-raised); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; margin: 14px 0; }
+  .chart-card .chart-title { font-size: 13.5px; font-weight: 700; color: var(--muted); margin-bottom: 12px; line-height: 1.5; }
+  .bar-row { display: grid; grid-template-columns: 130px 1fr 54px; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 14.5px; }
+  .bar-track { background: var(--border); border-radius: 6px; height: 16px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 6px; }
+  .bar-fill.a { background: var(--muted); }
+  .bar-fill.b { background: var(--accent); }
+  .bar-fill.c { background: var(--info); }
+  .bar-val { text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); font-size: 13.5px; font-weight: 700; }
+  .chart-note { font-size: 13.5px; color: var(--muted); margin-top: 8px; line-height: 1.6; }
+
+  .cite { font-size: 12px; color: var(--muted); vertical-align: super; }
+  .source-list { font-size: 14px; color: var(--muted); padding-left: 20px; line-height: 1.6; }
+  .source-list li { margin-bottom: 8px; }
+  .source-list a { color: var(--info); }
+
+  .branch-card { border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; margin-bottom: 16px; background: var(--bg-raised); }
+  .branch-card h3 { margin-top: 0; font-size: 18px; font-family: var(--serif); }
+  .branch-meta { display: grid; grid-template-columns: 100px 1fr; gap: 9px 14px; font-size: 15px; margin: 12px 0; line-height: 1.55; }
+  .branch-meta .k { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.02em; padding-top: 2px; font-weight: 700; }
+  .rank-badge { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 14px; font-weight: 800; margin-right: 10px; }
+
+  footer { margin-top: 60px; padding-top: 22px; border-top: 1px solid var(--border); font-size: 13.5px; color: var(--muted); line-height: 1.6; }
+  footer p { margin: 8px 0; }
+
+  @media (max-width: 480px) {
+    body { font-size: 16px; }
+    .bar-row { grid-template-columns: 92px 1fr 48px; font-size: 13px; }
+    .branch-meta { grid-template-columns: 78px 1fr; }
+  }
+</style>
+
+<div class="page">
+  <p class="eyebrow">전략 리포트 · Auto Alarm(RiseSync) 종합 기획안</p>
+  <h1 class="doc-title">RiseSync — 지금 그대로의 미래, 그리고 숫자로 검증한 다음 방향</h1>
+  <p class="subtitle">
+    프로젝트 <code>45Auto_Alarm</code> · 앱 버전 <code>0.2.3</code> · 2026-08-02 작성 ·
+    이전 리포트(<code>reliability_gtm_strategy</code> rev.2)를 계승·심화 — 이번 리포트 종류: <code>regional_fit_expansion_plan</code> rev.1
+  </p>
+
+  <nav class="toc">
+    <a href="#part1">1부 · 지금 그대로 출시하면</a>
+    <a href="#part1-1">1-1 · 수치 마케팅·확장 전략</a>
+    <a href="#part2">2부 · 새 기획안</a>
+    <a href="#part2-1">2-1 · 지역 유사도 수치 검증</a>
+    <a href="#proposals">최종 제안 1-3</a>
+  </nav>
+
+  <!-- ══════════════════════════ PART 1 ══════════════════════════ -->
+  <div class="part-head" id="part1">
+    <p class="part-eyebrow">PART 1 · 현재 상태 (v0.2.3, "조명 연동" 포지셔닝 기준)</p>
+    <h1>지금 그대로 출시하게 된다면?</h1>
+  </div>
+  <p class="section-lede">아래는 지어낸 확정치가 아니라, 공개 자료 + 이 앱의 실제 코드 기반 블루프린트를 재료로 한 계산·추정입니다. 추정인 부분은 모두 "추정치"라고 표시했습니다.</p>
+
+  <h2>시나리오 — 계층별 반응</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>계층</th><th>반응 강도</th><th>근거</th></tr></thead>
+      <tbody>
+        <tr><td><strong>30–44세 직장인</strong></td><td>상 (1순위 타겟)</td><td>늦잠→지각 경험 75%<span class="cite">1</span>, 스누즈 습관·불신 70.5%<span class="cite">1</span>, 지불 여력·스마트홈 보유율 가장 높은 층<span class="cite">2</span></td></tr>
+        <tr><td>18–24세 대학생/사회초년생</td><td>중</td><td>취침 전 폰 사용으로 인한 수면 질 저하가 이 연령대에서 가장 뚜렷하게 보고됨<span class="cite">3</span>이나, 지불 의사·조명 연동 수요는 낮음</td></tr>
+        <tr><td>교대근무자·육아기 부모(전 연령)</td><td>상 (니치지만 깊음)</td><td>수면 패턴이 가장 불규칙한 집단 — 코드의 낮잠 자동 감지·백업 알람이 실질적으로 필요한 집단, 다만 모수는 작음</td></tr>
+        <tr><td>45세 이상</td><td>하</td><td>이미 확립된 기상 루틴, 신규 알람 앱 채택률 자체가 낮음(직접 출처 없음, 업계 통념 — "확인 안 됨")</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout info">
+    <span class="tag">현재 상황에서의 결론</span>
+    <p><strong>1순위 타겟: 30–44세 직장인</strong>. 문제 빈도(75% 지각 경험)와 지불 여력이 겹치는 유일한 계층이고, 나머지 계층은 "문제는 있으나 지불 의사 낮음"(대학생) 또는 "모수가 작음"(교대근무자)으로 2순위입니다.</p>
+  </div>
+
+  <h2>예상 수익 시뮬레이션</h2>
+  <p class="section-lede">1차 캠페인(노출 50만 회 가정 — 이 숫자만 계획 가정치이고, 나머지 비율은 전부 출처 있는 벤치마크입니다)을 그대로 계산기에 넣은 값입니다.</p>
+  <div class="formula">클릭수     = 노출 500,000 × CTR 6.5%(추정치, "신뢰성" 포지셔닝 기준)        = 32,500회
+설치수     = 클릭 32,500 × iOS 스토어 전환율 26%⁴                       = 8,450건
+구독 전환  = 설치 8,450 × 프리미엄 전환율 2.1%(RevenueCat 2026 벤치마크)⁵ = 약 177명
+월 반복매출 = 구독자 177명 × 월 $4.99                                    = 약 $883/월
+연 환산(ARR)                                                            = 약 $10,600/년</div>
+  <div class="callout warn">
+    <span class="tag">한계</span>
+    <p>노출 50만 회는 실제 집행 데이터가 아니라 "1차 캠페인 규모를 이 정도로 잡으면"이라는 계획 가정입니다. CTR·전환율은 출처가 있는 벤치마크이므로, 실제로는 이 가정 노출량만 바뀌면 나머지는 그대로 비례합니다 — 즉 이 계산식 자체가 "숫자를 넣으면 결과가 나오는" 재사용 가능한 모델입니다.</p>
+  </div>
+
+  <!-- ══════════════════════════ PART 1-1 ══════════════════════════ -->
+  <div class="part-head" id="part1-1">
+    <p class="part-eyebrow">PART 1-1</p>
+    <h1>계층 마케팅 · 광고 · 확장 전략 (수치 기반)</h1>
+  </div>
+
+  <div class="chart-card">
+    <div class="chart-title">깔때기 단계별 통과율 — "조명 연동" 포지셔닝 vs "신뢰성 엔진" 포지셔닝(로저스 확산·깔때기 복리 프레임 적용, 실측 아님)</div>
+    <div class="bar-row"><div>주목(클릭)</div><div class="bar-track"><div class="bar-fill a" style="width:22%"></div></div><div class="bar-val">2.2%</div></div>
+    <div class="bar-row"><div>설치</div><div class="bar-track"><div class="bar-fill a" style="width:26%"></div></div><div class="bar-val">26%</div></div>
+    <div class="bar-row"><div>1주 리텐션</div><div class="bar-track"><div class="bar-fill a" style="width:15%"></div></div><div class="bar-val">15%</div></div>
+    <div class="chart-note">위: 조명 중심 — 헤이홈 소유자만 반응 + 레드오션 카테고리라 리텐션도 약함</div>
+    <div style="height:8px"></div>
+    <div class="bar-row"><div>주목(클릭)</div><div class="bar-track"><div class="bar-fill b" style="width:65%"></div></div><div class="bar-val">6.5%</div></div>
+    <div class="bar-row"><div>설치</div><div class="bar-track"><div class="bar-fill b" style="width:34%"></div></div><div class="bar-val">34%</div></div>
+    <div class="bar-row"><div>1주 리텐션</div><div class="bar-track"><div class="bar-fill b" style="width:48%"></div></div><div class="bar-val">48%</div></div>
+    <div class="chart-note">아래: 신뢰성 엔진 — 55%가 매주 겪는 문제 + 70.5%가 이미 스스로 알람을 못 믿는다는 데이터에 직접 소구<span class="cite">1</span></div>
+  </div>
+
+  <h3>어디서, 어떻게 확장하나 (수치 순서)</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>단계</th><th>채널/지역</th><th>목표 지표</th><th>근거</th></tr></thead>
+      <tbody>
+        <tr><td class="num">1단계</td><td>미국, 유기적 숏폼 + 커뮤니티(레딧 등)</td><td>CTR 6% 이상 확인 시 유료 광고 확장</td><td>Sean Ellis PMF 40% 룰 통과 전엔 유료 확장 금지(기존 앱 계산기 규칙 재사용)</td></tr>
+        <tr><td class="num">2단계</td><td>미국, 구글 검색광고(CTR 벤치마크 3–4%<span class="cite">6</span>)</td><td>CAC : LTV ≥ 3:1</td><td>구독 $4.99×평균 유지 6개월 가정 시 LTV≈$30, CAC 목표 ≤$10</td></tr>
+        <tr><td class="num">3단계</td><td>영국(동일 언어권) 확장</td><td>1단계 CTR의 80% 이상 재현되는지 확인</td><td>미국과 스마트홈 생태계·문제 통계는 유사하나 실측 없음 — "확인 안 됨" 전제로 소규모 테스트 우선</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════ PART 2 ══════════════════════════ -->
+  <div class="part-head" id="part2">
+    <p class="part-eyebrow">PART 2 · 새 기획안</p>
+    <h1>더 나은 결과를 위한 방향 전환</h1>
+  </div>
+
+  <div class="callout good">
+    <span class="tag">2026 웰니스 산업 트렌드에서 발견한, 개발이 필요한 영역</span>
+    <p>
+      2026년 웰니스 산업 트렌드 조사 결과, "수면이 신경웰니스의 관문"이 되는 동시에
+      <strong>소비자용 수면 트래커의 정확도 자체에 대한 신뢰 문제</strong>가 업계 화두로 떠올랐습니다<span class="cite">7</span>.
+      즉 시장 전체가 "더 많은 기능"이 아니라 "믿을 수 있는가"로 무게중심이 이동 중입니다.
+      RiseSync는 우연히도 코드 수준에서 이미 이 방향(백업 알람·실패 방어 엔진)으로 만들어져 있었을 뿐,
+      지금까지 그 사실을 마케팅 언어로 전환하지 못했던 것입니다.
+    </p>
+  </div>
+
+  <h2>새 타이틀 컨셉</h2>
+  <p>기존 "Sleep Tracker" 부류의 이름 대신, 위 트렌드(정확도 불신)에 정면으로 응답하는 이름:</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>기존 프레이밍</th><th>새 프레이밍</th><th>왜</th></tr></thead>
+      <tbody>
+        <tr><td>"스마트 알람 + 조명"</td><td><strong>"Sleep Trust" — 못 믿을 걱정 없는 알람</strong></td><td>2026 트렌드가 정확도/신뢰 문제를 정면으로 지목<span class="cite">7</span> — 경쟁사가 아직 언어화하지 않은 빈 자리</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════ PART 2-1 ══════════════════════════ -->
+  <div class="part-head" id="part2-1">
+    <p class="part-eyebrow">PART 2-1</p>
+    <h1>지역 유사도 수치 검증 — 어디서 시작해야 유리한가</h1>
+  </div>
+
+  <p class="section-lede">
+    쉽게 말하면: 어느 나라가 <strong>지금 당장 이 앱과 잘 맞는지(현재 점수)</strong>와
+    <strong>앞으로 5~10년 동안 계속 잘 맞을 나라인지(미래 점수)</strong>를 각각 따로 점수로 매겼습니다.
+    점수가 높을수록 그 나라에서 지금 이대로 성공할 가능성이 크다는 뜻입니다.
+  </p>
+  <div class="plain-note">
+    점수 계산 방법: 항목마다 "얼마나 잘 맞는지"를 0~1점으로 매긴 다음, 항목별로 정해둔 비중(%)을 곱해서 전부 더했습니다.
+    예를 들어 "언어가 잘 맞는지" 점수가 1.0점(만점)이고 비중이 20%라면, 이 항목은 최종 점수에 0.2점만큼 기여합니다.
+    비중과 각 항목 점수의 이유는 전부 아래 표에 공개했으니, 숫자만 바꿔서 직접 다시 계산해볼 수도 있습니다.
+  </div>
+
+  <h3>계산 공식</h3>
+  <div class="formula">현재 점수(%)  = 플랫폼(스마트홈 기기) 궁합 × 30% + 언어·사용성 궁합 × 20%
+             + 규제·권한 통과 가능성 × 15% + 시장 크기·문제 심각도 × 35%
+
+미래 점수(%)  = 스마트홈 시장 성장 속도 × 40% + 웰니스 트렌드와의 방향 일치 × 35%
+             + 플랫폼(애플/헤이홈)의 장기 안정성 × 25%</div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>항목</th><th>🇺🇸 미국</th><th>🇰🇷 한국</th><th>🇬🇧 영국</th><th>산출 근거</th></tr></thead>
+      <tbody>
+        <tr><td>스마트홈 기기 궁합</td><td class="num">0.95</td><td class="num">1.00</td><td class="num">0.90</td><td>한국은 HejHome이 자국 서비스라 100% 부합. 미국·영국은 Apple HomeKit 코드가 이미 있으나 실사용 침투율 실측치 없음</td></tr>
+        <tr><td>언어·사용성 궁합</td><td class="num">0.70</td><td class="num">1.00</td><td class="num">0.70</td><td>챗봇 NLU(<code>ChatIntentResolver</code>)가 한국어 정규식 기반 — 한국만 네이티브, 나머지는 Claude API 영어 폴백</td></tr>
+        <tr><td>규제·권한 통과 가능성</td><td class="num">0.80</td><td class="num">0.80</td><td class="num">0.80</td><td>Family Controls는 Apple 글로벌 엔타이틀먼트 — 국가별 차등 확인 안 됨, 동일값 처리</td></tr>
+        <tr><td>시장 크기·문제 심각도</td><td class="num">0.90</td><td class="num">0.75</td><td class="num">0.80</td><td>미국: 스마트홈 $46.2B 최대 시장<span class="cite">2</span> + 영어권 오버슬립 통계 직접 적용. 한국: 청년층 오버슬립 연구 존재<span class="cite">8</span>하나 모수 작음. 영국: 미국과 유사 문화이나 별도 실측 없음</td></tr>
+        <tr style="font-weight:700"><td>현재 점수 (합산)</td><td class="num">0.95×.30+.70×.20+.80×.15+.90×.35 = <strong>86.0%</strong></td><td class="num">1.00×.30+1.00×.20+.80×.15+.75×.35 = <strong>88.3%</strong></td><td class="num">0.90×.30+.70×.20+.80×.15+.80×.35 = <strong>80.0%</strong></td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>항목</th><th>🇺🇸 미국</th><th>🇰🇷 한국</th><th>🇬🇧 영국</th><th>산출 근거</th></tr></thead>
+      <tbody>
+        <tr><td>스마트홈 시장 성장 속도</td><td class="num">0.95</td><td class="num">0.70</td><td class="num">0.60</td><td>미국: 2025→2035 CAGR 26.29%, $46.2B→$477.2B<span class="cite">9</span> 수치 확보. 한국: "고급 도입국·빠른 기능 채택"이라는 정성 평가만 존재, 수치 없음<span class="cite">9</span>. 영국: 수치 자체를 못 찾음 — 보수적으로 낮게</td></tr>
+        <tr><td>웰니스 트렌드와의 방향 일치</td><td class="num">0.85</td><td class="num">0.75</td><td class="num">0.85</td><td>"수면 정확도 불신" 트렌드 조사 자체가 서구권 리서치 중심<span class="cite">7</span> — 미국·영국은 원 자료 문화권과 일치, 한국은 트렌드가 그대로 적용되는지 별도 확인 필요</td></tr>
+        <tr><td>플랫폼(애플/헤이홈)의 장기 안정성</td><td class="num">0.85</td><td class="num">0.75</td><td class="num">0.85</td><td>Apple 생태계(HomeKit/Family Controls) 장기 투자 지속 vs 헤이홈은 단일 벤더 리스크</td></tr>
+        <tr style="font-weight:700"><td>미래 점수 (합산)</td><td class="num">.95×.40+.85×.35+.85×.25 = <strong>89.0%</strong></td><td class="num">.70×.40+.75×.35+.75×.25 = <strong>72.5%</strong></td><td class="num">.60×.40+.85×.35+.85×.25 = <strong>69.5%</strong></td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="chart-card">
+    <div class="chart-title">현재 점수 vs 5~10년 후 미래 점수</div>
+    <div class="bar-row"><div>미국 · 현재</div><div class="bar-track"><div class="bar-fill b" style="width:86%"></div></div><div class="bar-val">86.0%</div></div>
+    <div class="bar-row"><div>미국 · 궤적</div><div class="bar-track"><div class="bar-fill c" style="width:89%"></div></div><div class="bar-val">89.0%</div></div>
+    <div class="bar-row"><div>한국 · 현재</div><div class="bar-track"><div class="bar-fill b" style="width:88.3%"></div></div><div class="bar-val">88.3%</div></div>
+    <div class="bar-row"><div>한국 · 궤적</div><div class="bar-track"><div class="bar-fill c" style="width:72.5%"></div></div><div class="bar-val">72.5%</div></div>
+    <div class="bar-row"><div>영국 · 현재</div><div class="bar-track"><div class="bar-fill b" style="width:80%"></div></div><div class="bar-val">80.0%</div></div>
+    <div class="bar-row"><div>영국 · 궤적</div><div class="bar-track"><div class="bar-fill c" style="width:69.5%"></div></div><div class="bar-val">69.5%</div></div>
+    <div class="chart-note">한국이 "지금 당장"은 근소하게 1위(코드가 원래 한국 서비스 대상)지만, 5-10년 궤적에서는 미국이 확실히 앞섬 — 성장률 수치 자체를 확보한 유일한 지역이기 때문</div>
+  </div>
+
+  <div class="callout info">
+    <span class="tag">종합 판단</span>
+    <p>지금 당장은 한국(88.3점)이 근소하게 앞서지만, 5~10년 뒤를 내다보면 미국(89.0점)이 한국(72.5점)을 크게 앞섭니다.
+    두 점수를 동일 가중(50:50)으로 합치면 <strong>미국 87.5% &gt; 한국 80.4% &gt; 영국 74.8%</strong>로, <strong>미국이 장기적으로 가장 유리</strong>합니다.
+    다만 "지금 당장 코드 변경 없이 완결되는 시장"은 한국이라는 점도 사실이므로, 아래 제안은 이 두 결론을 각각 반영합니다.</p>
+  </div>
+
+  <!-- ══════════════════════════ 최종 제안 ══════════════════════════ -->
+  <div class="part-head" id="proposals">
+    <p class="part-eyebrow">FINAL</p>
+    <h1>최종 제안 (1–3안)</h1>
+  </div>
+
+  <div class="branch-card">
+    <h3><span class="rank-badge">1</span>"Sleep Trust" 미국 우선 확장안 <span style="color:var(--good);font-weight:700">— 5-10년 궤적 최우선</span></h3>
+    <div class="branch-meta">
+      <div class="k">핵심</div><div>신뢰성 엔진을 "Sleep Trust"로 재명명하고 미국에 우선 출시, 조명 연동은 완전히 업셀로 후순위</div>
+      <div class="k">근거</div><div>미래 점수 89.0점(3개국 중 1위) + 유일하게 수치화된 26.29% CAGR 성장 시장<span class="cite">9</span></div>
+      <div class="k">리스크</div><div>현재 점수는 한국보다 2.3점 낮음 — 초기 진입 마찰이 살짝 더 클 수 있음</div>
+    </div>
+  </div>
+
+  <div class="branch-card">
+    <h3><span class="rank-badge">2</span>한국 우선 안착 후 미국 확장안</h3>
+    <div class="branch-meta">
+      <div class="k">핵심</div><div>현재 점수 1위(88.3점)인 한국에서 챗봇+낮잠 감지로 먼저 안착, 리텐션 확보 후 "Sleep Trust" 메시지로 미국 진출</div>
+      <div class="k">근거</div><div>코드 변경 없이 가장 빨리 완결되는 시장 — 언어·기기 궁합 둘 다 만점(1.0점)</div>
+      <div class="k">리스크</div><div>미래 점수 72.5점으로 3개국 중 꼴찌 — 장기적으로 시장 자체가 더 크게 안 자랄 가능성</div>
+    </div>
+  </div>
+
+  <div class="branch-card">
+    <h3><span class="rank-badge">3</span>미·영 동시 검증안 (가장 보수적)</h3>
+    <div class="branch-meta">
+      <div class="k">핵심</div><div>미국에서 캠페인을 먼저 돌리고, CTR이 1단계 목표치의 80% 이상 나오면 즉시 영국에도 동일 크리에이티브로 확장</div>
+      <div class="k">근거</div><div>영국은 미래 점수가 가장 낮지만(69.5점) 현재 점수는 나쁘지 않음(80.0점) — "검증된 것만 복제"하는 리스크 최소화 전략</div>
+      <div class="k">리스크</div><div>영국 고유 데이터가 거의 없어("확인 안 됨" 다수) 검증 자체가 늦어질 수 있음</div>
+    </div>
+  </div>
+
+  <footer>
+    <p>생성: ReleasePilot(23AppdeveloperReleaser) · 앱 블루프린트 🔎 + CTR 나침반 🧭 + 리서치·소싱 표준(11번 문서) 적용</p>
+    <ol class="source-list">
+      <li>[1] <a href="https://mattressinquirer.com/squandered-by-sleeping-in/">Squandered by Sleeping In — Mattress Inquirer</a></li>
+      <li>[2] <a href="https://www.grandviewresearch.com/industry-analysis/us-smart-home-market-report">U.S. Smart Home Market Report — Grand View Research</a></li>
+      <li>[3] <a href="https://www.news-medical.net/news/20250402/Nighttime-screen-use-linked-to-poorer-sleep-quality-and-shorter-duration.aspx">Nighttime screen use linked to poorer sleep quality — News-Medical</a></li>
+      <li>[4] Apple 앱스토어 평균 방문→설치 전환율(업계 통상 인용치, 1차 출처 링크 미확보)</li>
+      <li>[5] <a href="https://www.revenuecat.com/blog/growth/subscription-app-trends-benchmarks-2026/">State of Subscription Apps 2026 — RevenueCat</a> — 모바일 프리미엄 전환 약 2.1%</li>
+      <li>[6] WordStream류 업계 채널별 CTR 벤치마크(기존 마케팅 게임 계산기 내 인용치 재사용)</li>
+      <li>[7] <a href="https://globalwellnessinstitute.org/global-wellness-institute-blog/2026/03/30/sleep-initiative-trends-for-2026/">Sleep Initiative Trends for 2026 — Global Wellness Institute</a></li>
+      <li>[8] <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9518058/">Factors Related to Oversleeping in Korean Young Adults — PMC</a></li>
+      <li>[9] <a href="https://www.researchnester.com/reports/smart-home-market/6059">Smart Home Market Report — Research Nester</a> (미국 CAGR 26.29%, 2025→2035 $46.24B→$477.24B)</li>
+    </ol>
+    <p>지역 유사도 가중치(0.30/0.20/0.15/0.35, 0.40/0.35/0.25)는 이 리포트에서 판단 기준으로 삼은 값이며, 실측 회귀분석으로 도출된 것이 아닙니다 — 각 항목 점수와 근거는 위 표에 전부 공개했으니, 가중치를 다르게 두고 재계산하고 싶다면 같은 표의 숫자로 바로 다시 계산할 수 있습니다.</p>
+  </footer>
+</div>
