@@ -1,0 +1,28 @@
+<!doctype html>
+<meta charset="UTF-8">
+<title>ReleasePilot 리포트</title>
+<style>
+  body { font-family: -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif; max-width: 640px; margin: 40px auto; padding: 0 20px; background:#171c26; color:#ece6d8; }
+  h1 { font-size: 20px; }
+  ul { list-style: none; padding: 0; }
+  li { border: 1px solid #333c4d; border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; }
+  a { color: #7fa8d6; text-decoration: none; font-weight: 600; }
+  .meta { font-size: 12px; color: #b8b19c; margin-top: 4px; }
+</style>
+<h1>ReleasePilot 리포트</h1>
+<p class="meta">ReleasePilot 앱에서 "게시" 버튼으로 올린 사용법 기획서·전략 리포트 목록입니다.</p>
+<ul id="list"></ul>
+<p class="meta" id="empty">아직 게시된 리포트가 없습니다.</p>
+<script>
+fetch('reports/manifest.json').then(r => r.ok ? r.json() : []).then(items => {
+  const list = document.getElementById('list');
+  const empty = document.getElementById('empty');
+  if (items.length) empty.style.display = 'none';
+  items.slice().reverse().forEach(it => {
+    const li = document.createElement('li');
+    li.innerHTML = `<a href="reports/${it.file}">${it.appName} · ${it.intent}</a>
+      <div class="meta">v${it.version} · rev.${it.reportRevision} · ${it.reportKind} · ${it.publishedAt}</div>`;
+    list.appendChild(li);
+  });
+}).catch(() => {});
+</script>
