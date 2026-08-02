@@ -249,6 +249,7 @@ const KIND_LABELS = {
   'game_design_blueprint': '게임 기획서',
   'usage_guide_worklog': '사용법 기획서',
   'future_viability': '미래 가능성 분석',
+  'feature_concept_blueprint': '신규 기능 블루프린트',
 };
 // Intuitive, "이게 뭐 하는 리포트인지" 한눈에 알 수 있는 설명 — 메뉴판의
 // 요리 설명처럼, 전문용어 대신 실제로 뭘 얻는지로 씀.
@@ -268,6 +269,7 @@ const KIND_DESC = {
   'game_design_blueprint': '게임의 세계관·모드·진행 방식과 승패 조건까지 담은 기획서.',
   'usage_guide_worklog': '이 앱을 처음 보는 사람도 화면별로 어떻게 쓰는지 알 수 있게 만든 사용설명서 겸 작업 일지.',
   'future_viability': '지금 방향으로 계속 갔을 때 1~3년 뒤 이 앱이 살아남을지에 대한 장기 전망.',
+  'feature_concept_blueprint': '아직 코드가 없는 신규 기능/모듈을 위해 먼저 정리한 개념 정의 — 이후 리포트는 이 문서를 근거로 작성됨.',
 };
 const KIND_GLYPH = {
   'app_blueprint': '🔎',
@@ -280,6 +282,7 @@ const KIND_GLYPH = {
   'game_design_blueprint': '🎮',
   'usage_guide_worklog': '📘',
   'future_viability': '🔭',
+  'feature_concept_blueprint': '🧪',
 };
 // 관계도에 쓰는, 자연스러운 기획 흐름 — 실제로는 앱마다 순서가 다를 수 있지만
 // "보통 이렇게 이어진다"는 기본 경로를 보여줌.
@@ -359,10 +362,24 @@ function coverCard(it, color) {
 // 여러 개정판이 있으면 혼동되므로, 앱마다 "가장 최근 것"만 위에 하나처럼
 // 보여주고 나머지는 토글로 펼쳐서 본다 — 아래 앱별 모아보기 섹션의
 // kind-block/older-toggle과 동일한 규칙을 여기(종류별 상세)에도 그대로 적용.
+// kind === '__beta__'는 reportKind가 아니라 manifest 항목의 beta:true 플래그로
+// 걸러내는 특수 카테고리 — "종류"가 아니라 "상태"로 묶는 유일한 목차라서
+// 별도 분기로 처리한다. 관리자가 게시할 때 beta:true만 붙이면 리포트 종류에
+// 상관없이 여기 모인다.
 function openDetail(kind, allItems) {
-  const matches = allItems.filter(it => it.reportKind === kind);
+  const isBeta = kind === '__beta__';
+  const matches = isBeta
+    ? allItems.filter(it => it.beta === true)
+    : allItems.filter(it => it.reportKind === kind);
 
-  document.getElementById('detailHero').innerHTML = `
+  document.getElementById('detailHero').innerHTML = isBeta
+    ? `
+    <div class="glyph-badge" style="background:#fdf0d8;color:#a3690a">🧪</div>
+    <div>
+      <h3>베타 기능</h3>
+      <p>아직 정식 기능이 아니라 실험 중인 컨셉/모듈 — 블루프린트와 GTM 리포트를 한곳에 모아 관리·열람하기 쉽게 묶었습니다.</p>
+    </div>`
+    : `
     <div class="glyph-badge" style="background:#e7edf6;color:var(--accent)">${kindGlyph(kind)}</div>
     <div>
       <h3>${kindLabel(kind)}</h3>
@@ -381,10 +398,14 @@ function openDetail(kind, allItems) {
   }
 
   // 같은 앱의 같은 종류 리포트를 하나로 묶고, 최신 개정판만 대표로 노출.
+  // 베타 목차는 reportKind가 서로 다른 문서들을 한데 모으므로, appName만으로
+  // 묶으면 서로 다른 종류의 리포트가 "같은 것의 이전 버전"처럼 잘못 합쳐진다
+  // — appName+reportKind를 묶음 키로 써서 이 문제를 피한다.
   const byApp = new Map();
   matches.forEach(it => {
-    if (!byApp.has(it.appName)) byApp.set(it.appName, []);
-    byApp.get(it.appName).push(it);
+    const key = isBeta ? `${it.appName}::${it.reportKind}` : it.appName;
+    if (!byApp.has(key)) byApp.set(key, []);
+    byApp.get(key).push(it);
   });
 
   let i = 0;
@@ -435,8 +456,26 @@ fetch('reports/manifest.json').then(r => r.ok ? r.json() : []).then(items => {
   buildFlow();
 
   // 리포트 메뉴 — 실제로 존재하는 종류만 보여주되, 하나도 없는 경우는 숨김.
-  const kindsPresent = [...new Set(items.map(it => it.reportKind))].sort((a, b) => kindRank(a) - kindRank(b));
   const menuGrid = document.getElementById('menuGrid');
+
+  // 베타 기능은 reportKind가 아니라 상태(beta:true)로 묶는 카테고리라서
+  // 항상 메뉴 맨 앞에 고정 — 종류가 늘어도 관리자가 찾기 쉽게.
+  const betaItems = items.filter(it => it.beta === true);
+  if (betaItems.length) {
+    const betaCard = document.createElement('button');
+    betaCard.className = 'menu-card';
+    betaCard.innerHTML = `
+      <div class="top">
+        <div class="glyph-badge" style="background:#fdf0d8;color:#a3690a">🧪</div>
+        <span class="count-pill">${betaItems.length}건</span>
+      </div>
+      <p class="title">베타 기능</p>
+      <p class="desc">아직 실험 중인 컨셉/모듈 리포트 모음</p>`;
+    betaCard.addEventListener('click', () => openDetail('__beta__', items));
+    menuGrid.appendChild(betaCard);
+  }
+
+  const kindsPresent = [...new Set(items.map(it => it.reportKind))].sort((a, b) => kindRank(a) - kindRank(b));
   kindsPresent.forEach((kind, i) => {
     const count = items.filter(it => it.reportKind === kind).length;
     const color = PALETTE[i % PALETTE.length];
