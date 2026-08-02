@@ -9,186 +9,218 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="리포트 허브">
-<meta name="theme-color" content="#f2f2f7">
+<meta name="theme-color" content="#fbfaf7">
 <style>
   /* Light, high-contrast theme by deliberate choice — not tied to system
      dark mode. A previous dark version was reported hard to focus on and
-     read, especially on mobile, so this page always stays light. */
+     read, especially on mobile, so this page always stays light. Palette
+     shares the amber accent + serif-headline identity used across every
+     published report page, so the hub reads as the same product family. */
   :root {
-    --bg: #f2f2f7; --card: #ffffff; --line: #e3e3e8;
-    --ink: #1c1c1e; --ink-dim: #6e6e73; --ink-faint: #9a9aa2;
-    --accent: #3a6bb5;
+    --bg: #fbfaf7; --card: #ffffff; --card-2: #f6f3ec; --line: #e9e3d6;
+    --ink: #1d1b17; --ink-dim: #6b6a5f; --ink-faint: #a3a091;
+    --accent: #c9711f; --accent-soft: #f6e6d3; --accent-ink: #7a4413;
+    --good: #2f7a63; --good-soft: #dcefe8;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Noto Serif KR", serif;
+    --sans: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, monospace;
+    --shadow-1: 0 1px 2px rgba(29,27,23,0.05), 0 1px 1px rgba(29,27,23,0.03);
+    --shadow-2: 0 12px 28px -12px rgba(29,27,23,0.16), 0 2px 6px rgba(29,27,23,0.05);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
   }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html { scroll-behavior: smooth; }
   body {
     margin: 0; background: var(--bg); color: var(--ink);
-    font-family: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", sans-serif;
-    line-height: 1.45; -webkit-font-smoothing: antialiased;
+    font-family: var(--sans); line-height: 1.5; -webkit-font-smoothing: antialiased;
+    background-image: radial-gradient(circle at 12% 0%, #fdf6ea 0%, transparent 45%);
   }
-  .wrap { max-width: 680px; margin: 0 auto; padding: 20px 16px 80px; }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 20px 96px; }
 
-  .hero { padding: 8px 4px 20px; }
+  /* ── Hero — the "Apple product page" opener: huge serif headline, quiet
+     supporting copy, generous air above/below ─────────────────────────── */
+  .hero {
+    padding: 76px 4px 44px; text-align: center; max-width: 620px; margin: 0 auto;
+  }
   .eyebrow {
-    font-family: ui-monospace, "SF Mono", Menlo, monospace;
-    font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--ink-faint); margin: 0 0 6px;
+    display: inline-block; font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--accent-ink); background: var(--accent-soft);
+    border-radius: 999px; padding: 5px 14px; margin: 0 0 22px;
   }
-  h1 { font-size: 24px; font-weight: 800; margin: 0 0 6px; letter-spacing: -0.02em; }
-  .hero p { margin: 0; font-size: 13px; color: var(--ink-dim); max-width: 56ch; }
+  h1 {
+    font-family: var(--serif); font-weight: 400; font-size: clamp(38px, 8vw, 56px);
+    line-height: 1.08; letter-spacing: -0.01em; margin: 0 0 18px; text-wrap: balance;
+    color: var(--ink);
+  }
+  .hero p { margin: 0 auto; font-size: 16px; line-height: 1.65; color: var(--ink-dim); max-width: 42ch; }
 
-  /* ── Section: 리포트 종류 (menu) ─────────────────────────────────── */
-  .section-head { display: flex; align-items: baseline; justify-content: space-between; padding: 0 4px 10px; margin-top: 30px; }
-  .section-head h2 { font-size: 15px; font-weight: 800; margin: 0; }
-  .section-head .hint { font-size: 11px; color: var(--ink-faint); }
+  /* ── Section headers ──────────────────────────────────────────────── */
+  .section-head { display: flex; align-items: baseline; justify-content: space-between; padding: 0 2px 16px; margin-top: 64px; }
+  .section-head h2 { font-family: var(--serif); font-weight: 400; font-size: 24px; margin: 0; letter-spacing: -0.005em; }
+  .section-head .hint { font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.06em; }
 
-  /* Relationship diagram — a simple left-to-right pipeline, scrolls on mobile */
+  /* Relationship diagram — nodes on a connecting rail, like a transit map */
   .flow {
-    display: flex; align-items: stretch; gap: 0; overflow-x: auto;
-    padding: 6px 2px 14px; -webkit-overflow-scrolling: touch;
+    display: flex; align-items: flex-start; gap: 0; overflow-x: auto;
+    padding: 10px 2px 18px; -webkit-overflow-scrolling: touch; position: relative;
   }
   .flow-node {
-    flex: none; width: 108px; display: flex; flex-direction: column; align-items: center;
-    text-align: center; gap: 6px; padding: 12px 8px; background: var(--card);
-    border-radius: 14px; box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    flex: none; width: 122px; display: flex; flex-direction: column; align-items: center;
+    text-align: center; gap: 8px; padding: 18px 10px; background: var(--card);
+    border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow-1);
+    transition: transform 0.18s cubic-bezier(.2,.8,.2,1), box-shadow 0.18s ease;
   }
-  .flow-node .glyph { font-size: 22px; }
-  .flow-node .label { font-size: 11px; font-weight: 700; line-height: 1.25; }
-  .flow-node .desc { font-size: 9.5px; color: var(--ink-faint); line-height: 1.3; }
-  .flow-arrow { flex: none; width: 26px; display: flex; align-items: center; justify-content: center; color: var(--ink-faint); font-size: 15px; }
+  .flow-node:hover { transform: translateY(-3px); box-shadow: var(--shadow-2); }
+  .flow-node .glyph {
+    font-size: 24px; width: 44px; height: 44px; display: flex; align-items: center;
+    justify-content: center; background: var(--accent-soft); border-radius: 12px;
+  }
+  .flow-node .label { font-size: 12px; font-weight: 700; line-height: 1.3; }
+  .flow-node .desc { font-family: var(--mono); font-size: 9px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--accent-ink); }
+  .flow-arrow { flex: none; width: 30px; display: flex; align-items: center; justify-content: center; color: var(--ink-faint); font-size: 16px; margin-top: 32px; }
 
-  /* Menu cards — like a food menu / magazine cover grid */
-  .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  /* Menu cards — magazine cover grid, lift-on-hover like an App Store shelf */
+  .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
   .menu-card {
-    background: var(--card); border-radius: 16px; padding: 14px 14px 12px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.04); text-align: left; border: none; cursor: pointer;
-    font-family: inherit; color: inherit; display: flex; flex-direction: column; gap: 6px;
-    transition: transform 0.12s ease, box-shadow 0.12s ease;
+    background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 20px 20px 18px;
+    box-shadow: var(--shadow-1); text-align: left; cursor: pointer;
+    font-family: inherit; color: inherit; display: flex; flex-direction: column; gap: 10px;
+    transition: transform 0.18s cubic-bezier(.2,.8,.2,1), box-shadow 0.18s ease, border-color 0.18s ease;
   }
-  .menu-card:active { transform: scale(0.97); }
+  .menu-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-2); border-color: color-mix(in srgb, var(--accent) 30%, var(--line)); }
+  .menu-card:active { transform: translateY(-1px) scale(0.99); }
   .menu-card .top { display: flex; align-items: center; justify-content: space-between; }
   .menu-card .glyph-badge {
-    width: 38px; height: 38px; border-radius: 11px; display: flex; align-items: center;
-    justify-content: center; font-size: 19px; flex: none;
+    width: 44px; height: 44px; border-radius: 13px; display: flex; align-items: center;
+    justify-content: center; font-size: 21px; flex: none;
   }
   .menu-card .count-pill {
-    font-size: 10px; font-weight: 700; color: var(--ink-faint); background: var(--bg);
-    border-radius: 999px; padding: 2px 8px;
+    font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--ink-faint);
+    background: var(--card-2); border-radius: 999px; padding: 3px 10px;
   }
-  .menu-card .title { font-size: 13.5px; font-weight: 700; margin: 2px 0 0; }
-  .menu-card .desc { font-size: 11.5px; color: var(--ink-dim); }
+  .menu-card .title { font-family: var(--serif); font-size: 17px; font-weight: 400; margin: 0; line-height: 1.3; }
+  .menu-card .desc { font-size: 12.5px; line-height: 1.55; color: var(--ink-dim); }
 
   /* ── Detail (magazine spread) view ───────────────────────────────── */
   .detail-view { display: none; }
-  .detail-view.open { display: block; animation: slideIn 0.18s ease; }
-  @keyframes slideIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  .detail-view.open { display: block; animation: slideIn 0.28s cubic-bezier(.2,.8,.2,1); }
+  @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   .back-btn {
     display: inline-flex; align-items: center; gap: 5px; background: none; border: none;
-    font-family: inherit; font-size: 13px; font-weight: 700; color: var(--accent);
-    cursor: pointer; padding: 6px 2px; margin-bottom: 6px;
+    font-family: var(--sans); font-size: 13.5px; font-weight: 700; color: var(--accent-ink);
+    cursor: pointer; padding: 8px 2px; margin: 24px 0 6px; transition: gap 0.15s ease;
   }
+  .back-btn:hover { gap: 8px; }
   .detail-hero {
-    background: var(--card); border-radius: 16px; padding: 18px 18px 16px; margin-bottom: 16px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.04); display: flex; gap: 14px; align-items: flex-start;
+    background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 26px 26px 22px; margin-bottom: 20px;
+    box-shadow: var(--shadow-1); display: flex; gap: 18px; align-items: flex-start;
   }
-  .detail-hero .glyph-badge { width: 52px; height: 52px; border-radius: 14px; font-size: 26px; }
-  .detail-hero h3 { font-size: 16px; font-weight: 800; margin: 0 0 6px; }
-  .detail-hero p { font-size: 12.5px; color: var(--ink-dim); margin: 0; }
+  .detail-hero .glyph-badge { width: 58px; height: 58px; border-radius: 16px; font-size: 28px; }
+  .detail-hero h3 { font-family: var(--serif); font-weight: 400; font-size: 22px; margin: 0 0 8px; }
+  .detail-hero p { font-size: 13.5px; line-height: 1.65; color: var(--ink-dim); margin: 0; }
 
-  .cover-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+  .cover-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
   .cover-card {
-    display: flex; gap: 12px; align-items: center; background: var(--card); border-radius: 14px;
-    padding: 12px 14px; text-decoration: none; color: inherit; box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    display: flex; gap: 14px; align-items: center; background: var(--card); border: 1px solid var(--line); border-radius: 16px;
+    padding: 14px 16px; text-decoration: none; color: inherit; box-shadow: var(--shadow-1);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
   }
-  .cover-card .glyph-badge { width: 42px; height: 42px; border-radius: 12px; font-size: 20px; flex: none; }
+  .cover-card:hover { transform: translateX(2px); box-shadow: var(--shadow-2); }
+  .cover-card .glyph-badge { width: 46px; height: 46px; border-radius: 13px; font-size: 21px; flex: none; }
   .cover-card .body { flex: 1; min-width: 0; }
-  .cover-card .app-name { font-size: 11px; font-weight: 700; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.02em; }
-  .cover-card .title { font-size: 14px; font-weight: 700; margin: 2px 0 3px; }
+  .cover-card .app-name { font-family: var(--mono); font-size: 10.5px; font-weight: 700; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.04em; }
+  .cover-card .title { font-size: 14.5px; font-weight: 600; margin: 3px 0 4px; }
   .cover-card .meta { font-size: 11px; color: var(--ink-faint); }
-  .cover-card .chev { color: var(--ink-faint); font-size: 15px; flex: none; }
+  .cover-card .chev { color: var(--ink-faint); font-size: 16px; flex: none; }
 
   /* 같은 앱의 여러 개정판을 하나로 묶는 컨테이너 — 최신판(cover-card) 아래에
      "이전 버전 N개 보기" 토글, 펼치면 older-list가 나타난다. */
-  .cover-group { margin-bottom: 10px; }
-  .cover-group .cover-card { border-radius: 14px 14px 0 0; margin-bottom: 0; }
+  .cover-group { margin-bottom: 12px; }
+  .cover-group .cover-card { border-radius: 16px 16px 0 0; margin-bottom: 0; }
   .cover-group .older-toggle {
-    width: 100%; text-align: left; background: var(--card); border: none;
-    border-top: 1px solid var(--line); padding: 8px 14px; font-size: 12px;
-    color: var(--accent); font-weight: 600; cursor: pointer; font-family: inherit;
+    width: 100%; text-align: left; background: var(--card-2); border: 1px solid var(--line); border-top: none;
+    padding: 9px 16px; font-family: var(--sans); font-size: 12px;
+    color: var(--accent-ink); font-weight: 700; cursor: pointer;
   }
-  .cover-group .older-list { display: none; background: var(--card); border-radius: 0 0 14px 14px; overflow: hidden; }
+  .cover-group .older-list { display: none; background: var(--card); border: 1px solid var(--line); border-top: none; border-radius: 0 0 16px 16px; overflow: hidden; }
   .cover-group .older-list.open { display: block; }
   .cover-group .older-list .cover-card {
-    border-radius: 0; box-shadow: none; border-top: 1px solid var(--line);
-    padding: 10px 14px 10px 24px; opacity: 0.85;
+    border: none; border-radius: 0; box-shadow: none; border-top: 1px solid var(--line);
+    padding: 11px 16px 11px 26px; opacity: 0.85;
   }
   .cover-group .older-list .cover-card .title { font-size: 13px; font-weight: 500; }
 
   /* ── Existing per-app grouped view ───────────────────────────────── */
-  .apps { display: flex; gap: 18px; overflow-x: auto; padding: 4px 4px 4px; margin-bottom: 6px; -webkit-overflow-scrolling: touch; }
+  .apps { display: flex; gap: 22px; overflow-x: auto; padding: 6px 4px 8px; margin-bottom: 4px; -webkit-overflow-scrolling: touch; }
   .app-tile {
-    display: flex; flex-direction: column; align-items: center; gap: 6px;
-    text-decoration: none; color: inherit; flex: none; width: 64px;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    text-decoration: none; color: inherit; flex: none; width: 72px;
+    transition: transform 0.15s ease;
   }
+  .app-tile:hover { transform: translateY(-2px); }
   .app-icon {
-    width: 56px; height: 56px; border-radius: 15px;
+    width: 62px; height: 62px; border-radius: 18px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 26px; box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+    font-size: 28px; box-shadow: var(--shadow-2);
   }
-  .app-tile .name { font-size: 11px; text-align: center; color: var(--ink); font-weight: 600; }
-  .app-tile .count { font-size: 10px; color: var(--ink-faint); }
+  .app-tile .name { font-size: 11.5px; text-align: center; color: var(--ink); font-weight: 600; }
+  .app-tile .count { font-family: var(--mono); font-size: 10px; color: var(--ink-faint); }
 
-  .app-group { margin-top: 28px; }
-  .app-group-head { display: flex; align-items: center; gap: 10px; padding: 0 4px 8px; }
-  .app-group-head .app-icon { width: 28px; height: 28px; font-size: 14px; border-radius: 8px; }
-  .app-group-head h2 { font-size: 13px; font-weight: 700; margin: 0; text-transform: uppercase; letter-spacing: 0.02em; color: var(--ink-dim); }
+  .app-group { margin-top: 36px; }
+  .app-group-head { display: flex; align-items: center; gap: 12px; padding: 0 2px 12px; }
+  .app-group-head .app-icon { width: 32px; height: 32px; font-size: 15px; border-radius: 9px; box-shadow: none; }
+  .app-group-head h2 { font-family: var(--serif); font-size: 18px; font-weight: 400; margin: 0; color: var(--ink); }
 
   .kind-block {
-    background: var(--card); border-radius: 14px; overflow: hidden;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
-    margin-bottom: 10px;
+    background: var(--card); border: 1px solid var(--line); border-radius: 16px; overflow: hidden;
+    box-shadow: var(--shadow-1);
+    margin-bottom: 12px;
   }
   .kind-label {
-    font-size: 10.5px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
-    color: var(--accent); padding: 10px 14px 0;
+    font-family: var(--mono); font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--accent-ink); padding: 14px 16px 0;
   }
   .report-row {
-    display: flex; align-items: center; gap: 10px; padding: 10px 14px 12px;
-    text-decoration: none; color: inherit;
+    display: flex; align-items: center; gap: 10px; padding: 12px 16px 14px;
+    text-decoration: none; color: inherit; transition: background 0.15s ease;
   }
+  .report-row:hover { background: var(--card-2); }
   .report-row + .report-row { border-top: 1px solid var(--line); padding-top: 12px; }
   .report-row .body { flex: 1; min-width: 0; }
   .report-title { font-size: 14.5px; font-weight: 600; color: var(--ink); margin: 0 0 3px; }
-  .report-meta { font-size: 11.5px; color: var(--ink-faint); }
-  .chev { color: var(--ink-faint); font-size: 15px; flex: none; }
+  .report-meta { font-family: var(--mono); font-size: 11px; color: var(--ink-faint); }
+  .chev { color: var(--ink-faint); font-size: 16px; flex: none; }
 
   .older-toggle {
     width: 100%; text-align: left; background: none; border: none; border-top: 1px solid var(--line);
-    padding: 9px 14px; font-size: 12px; color: var(--accent); font-weight: 600;
-    cursor: pointer; font-family: inherit;
+    padding: 10px 16px; font-family: var(--sans); font-size: 12px; color: var(--accent-ink); font-weight: 700;
+    cursor: pointer;
   }
   .older-list { display: none; }
   .older-list.open { display: block; }
-  .older-list .report-row { padding: 8px 14px 8px 24px; }
+  .older-list .report-row { padding: 9px 16px 9px 26px; }
   .older-list .report-title { font-size: 13px; font-weight: 500; color: var(--ink-dim); }
 
-  .empty { font-size: 13px; color: var(--ink-faint); padding: 24px 4px; }
-  footer { margin-top: 40px; font-size: 10.5px; color: var(--ink-faint); text-align: center; }
+  .empty { font-size: 14px; color: var(--ink-faint); padding: 40px 4px; text-align: center; }
+  footer { margin-top: 72px; padding-top: 24px; border-top: 1px solid var(--line); font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint); text-align: center; letter-spacing: 0.02em; }
 </style>
 
 <div class="wrap">
   <div class="hero">
-    <p class="eyebrow">Cross-project · GitHub Pages</p>
-    <h1>리포트 허브</h1>
-    <p>ReleasePilot의 "게시" 버튼으로 올린 사용법 기획서·전략 리포트를 앱별로 모아봅니다.
-       각 항목은 최신판만 보이고, 이전 버전은 펼쳐서 볼 수 있어요.</p>
+    <p class="eyebrow">ReleasePilot · Cross-Project Report Hub</p>
+    <h1>모든 앱의 결정이,<br>한곳에 쌓입니다.</h1>
+    <p>CTR 분석부터 MVP 결정, 출시 전략까지 — ReleasePilot이 만든 리포트를 앱별로 모아봅니다.
+       가장 최근 것만 보이고, 지난 버전은 펼쳐서 확인할 수 있어요.</p>
   </div>
 
   <!-- 리포트 종류 메뉴 + 관계도 -->
   <div id="menuView">
-    <div class="section-head"><h2>리포트가 만들어지는 순서</h2><span class="hint">← 옆으로 스크롤</span></div>
+    <div class="section-head"><h2>어떻게 이어지나</h2><span class="hint">Scroll →</span></div>
     <div class="flow" id="flow"></div>
 
-    <div class="section-head"><h2>🍽️ 리포트 메뉴 — 종류별로 골라보기</h2></div>
+    <div class="section-head"><h2>리포트 종류</h2><span class="hint">Tap to explore</span></div>
     <div class="menu-grid" id="menuGrid"></div>
   </div>
 
@@ -200,13 +232,13 @@
   </div>
 
   <div id="appsView">
-    <div class="section-head"><h2>앱별로 모아보기</h2></div>
+    <div class="section-head"><h2>앱별로 보기</h2><span class="hint">By App</span></div>
     <div class="apps" id="apps"></div>
     <div id="groups"></div>
   </div>
 
   <p class="empty" id="empty" style="display:none;">아직 게시된 리포트가 없습니다.</p>
-  <footer>ReleasePilot 리포트 허브 · 정적 페이지, 빌드 없음</footer>
+  <footer>ReleasePilot Report Hub · Static page, no build step</footer>
 </div>
 
 <script>
@@ -336,7 +368,7 @@ function buildFlow() {
     node.className = 'flow-node';
     node.innerHTML = `<div class="glyph">${kindGlyph(kind)}</div>
       <div class="label">${kindLabel(kind)}</div>
-      <div class="desc">${i === 0 ? '먼저' : i === FLOW.length - 1 ? '마지막' : ''}</div>`;
+      <div class="desc">${i === 0 ? 'START' : i === FLOW.length - 1 ? 'END' : ''}</div>`;
     flowEl.appendChild(node);
     if (i < FLOW.length - 1) {
       const arrow = document.createElement('div');
