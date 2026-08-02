@@ -106,6 +106,23 @@
   .cover-card .meta { font-size: 11px; color: var(--ink-faint); }
   .cover-card .chev { color: var(--ink-faint); font-size: 15px; flex: none; }
 
+  /* 같은 앱의 여러 개정판을 하나로 묶는 컨테이너 — 최신판(cover-card) 아래에
+     "이전 버전 N개 보기" 토글, 펼치면 older-list가 나타난다. */
+  .cover-group { margin-bottom: 10px; }
+  .cover-group .cover-card { border-radius: 14px 14px 0 0; margin-bottom: 0; }
+  .cover-group .older-toggle {
+    width: 100%; text-align: left; background: var(--card); border: none;
+    border-top: 1px solid var(--line); padding: 8px 14px; font-size: 12px;
+    color: var(--accent); font-weight: 600; cursor: pointer; font-family: inherit;
+  }
+  .cover-group .older-list { display: none; background: var(--card); border-radius: 0 0 14px 14px; overflow: hidden; }
+  .cover-group .older-list.open { display: block; }
+  .cover-group .older-list .cover-card {
+    border-radius: 0; box-shadow: none; border-top: 1px solid var(--line);
+    padding: 10px 14px 10px 24px; opacity: 0.85;
+  }
+  .cover-group .older-list .cover-card .title { font-size: 13px; font-weight: 500; }
+
   /* ── Existing per-app grouped view ───────────────────────────────── */
   .apps { display: flex; gap: 18px; overflow-x: auto; padding: 4px 4px 4px; margin-bottom: 6px; -webkit-overflow-scrolling: touch; }
   .app-tile {
@@ -215,6 +232,7 @@ const KIND_ORDER = [
   'route_candidates',
   'mvp_consultation',
   'reliability_gtm_strategy',
+  'regional_fit_expansion_plan',
   'feedback_loop',
   'game_design_blueprint',
   'usage_guide_worklog',
@@ -226,6 +244,7 @@ const KIND_LABELS = {
   'route_candidates': 'CTR 루트 후보',
   'mvp_consultation': 'MVP 상담',
   'reliability_gtm_strategy': '출시 반응 예측 · GTM 전략',
+  'regional_fit_expansion_plan': '지역 적합도 점수 + 확장 기획안',
   'feedback_loop': '반려 피드백 기록',
   'game_design_blueprint': '게임 기획서',
   'usage_guide_worklog': '사용법 기획서',
@@ -233,12 +252,18 @@ const KIND_LABELS = {
 };
 // Intuitive, "이게 뭐 하는 리포트인지" 한눈에 알 수 있는 설명 — 메뉴판의
 // 요리 설명처럼, 전문용어 대신 실제로 뭘 얻는지로 씀.
+//
+// 규칙: 새 리포트 종류(reportKind)가 생기면, "설명이 아직 없습니다" 같은
+// 빈 메시지로 방치하지 말고 이 자리에 실제 설명을 채워 넣는다. 코드에서
+// 자동 생성하는 kindDesc()의 폴백은 사람이 채우기 전까지의 임시 방편일
+// 뿐, 최종 상태가 아니다.
 const KIND_DESC = {
   'app_blueprint': '이 앱의 실제 코드를 읽어서 "이게 빠지면 앱이 성립 안 하는" 핵심 기능 하나와 부가 기능, 숨은 제약사항을 정리한 조사 결과.',
   'region_target_ctr': '어떤 지역·타겟에게 광고했을 때 클릭이 잘 나올지, 근거 있는 벤치마크로 계산한 첫 시장 진단.',
   'route_candidates': 'CTR로 비교해본 여러 타겟·채널 조합 후보들 — 그중 하나를 골라 집중 개발할 수 있게 나란히 모아둔 목록.',
   'mvp_consultation': '핵심 기능부터 홍보 문구까지, 대화로 하나씩 정해나간 MVP 결정 사항 모음.',
   'reliability_gtm_strategy': '지금 그대로 출시하면 어떤 반응이 예상되는지, 그리고 어디서·누구에게·어떤 기능을 강조해야 성공 확률이 가장 높은지에 대한 심층 조사.',
+  'regional_fit_expansion_plan': '계층별 반응·예상 수익까지 계산한 "지금 그대로" 진단에 이어서, 후보 지역들이 지금 코드와 얼마나 잘 맞는지·5~10년 뒤에도 잘 맞을지를 점수로 매기고, 그 결과로 어디서 먼저 출시할지 1~3가지 안을 제시하는 확장 기획안.',
   'feedback_loop': '스토어 반려 사유를 접수하고, 고친 버전·근거와 함께 해결 여부를 추적한 기록.',
   'game_design_blueprint': '게임의 세계관·모드·진행 방식과 승패 조건까지 담은 기획서.',
   'usage_guide_worklog': '이 앱을 처음 보는 사람도 화면별로 어떻게 쓰는지 알 수 있게 만든 사용설명서 겸 작업 일지.',
@@ -250,6 +275,7 @@ const KIND_GLYPH = {
   'route_candidates': '🧭',
   'mvp_consultation': '🗒️',
   'reliability_gtm_strategy': '📈',
+  'regional_fit_expansion_plan': '🌍',
   'feedback_loop': '🚦',
   'game_design_blueprint': '🎮',
   'usage_guide_worklog': '📘',
@@ -262,8 +288,17 @@ const FLOW = ['app_blueprint', 'region_target_ctr', 'route_candidates', 'mvp_con
 function iconFor(appName) {
   return ICONS[appName.toLowerCase()] || appName.trim().charAt(0).toUpperCase() || '·';
 }
-function kindLabel(kind) { return KIND_LABELS[kind] || kind; }
-function kindDesc(kind) { return KIND_DESC[kind] || '설명이 아직 등록되지 않은 리포트 종류입니다.'; }
+// "region_target_ctr" → "Region Target Ctr" — 등록 안 된 새 종류라도 코드만
+// 보고 방치하지 않도록, 최소한 사람이 읽을 만한 이름·설명을 즉석에서 만든다.
+// 사람이 KIND_LABELS/KIND_DESC를 채우기 전까지의 임시 표시일 뿐이다.
+function humanizeKind(kind) {
+  return kind.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+}
+function kindLabel(kind) { return KIND_LABELS[kind] || humanizeKind(kind); }
+function kindDesc(kind) {
+  if (KIND_DESC[kind]) return KIND_DESC[kind];
+  return `"${humanizeKind(kind)}" 종류의 리포트입니다 (자세한 소개 문구는 아직 준비 중 — 아래에서 실제 리포트를 열어 내용을 확인할 수 있어요).`;
+}
 function kindGlyph(kind) { return KIND_GLYPH[kind] || '📄'; }
 function kindRank(kind) {
   const i = KIND_ORDER.indexOf(kind);
@@ -305,9 +340,27 @@ function buildFlow() {
   });
 }
 
+function coverCard(it, color) {
+  const date = (it.publishedAt || '').slice(0, 10);
+  const a = document.createElement('a');
+  a.className = 'cover-card';
+  a.href = 'reports/' + it.file;
+  a.innerHTML = `
+    <div class="glyph-badge" style="background:${color.bg};color:${color.fg}">${iconFor(it.appName)}</div>
+    <div class="body">
+      <div class="app-name">${it.appName}</div>
+      <div class="title">${it.intent}</div>
+      <div class="meta">v${it.version} · rev.${it.reportRevision} · ${date}</div>
+    </div>
+    <span class="chev">›</span>`;
+  return a;
+}
+
+// 여러 개정판이 있으면 혼동되므로, 앱마다 "가장 최근 것"만 위에 하나처럼
+// 보여주고 나머지는 토글로 펼쳐서 본다 — 아래 앱별 모아보기 섹션의
+// kind-block/older-toggle과 동일한 규칙을 여기(종류별 상세)에도 그대로 적용.
 function openDetail(kind, allItems) {
-  const matches = allItems.filter(it => it.reportKind === kind)
-    .sort((a, b) => (b.publishedAt || '').localeCompare(a.publishedAt || ''));
+  const matches = allItems.filter(it => it.reportKind === kind);
 
   document.getElementById('detailHero').innerHTML = `
     <div class="glyph-badge" style="background:#e7edf6;color:var(--accent)">${kindGlyph(kind)}</div>
@@ -320,24 +373,49 @@ function openDetail(kind, allItems) {
   grid.innerHTML = '';
   if (!matches.length) {
     grid.innerHTML = '<p class="empty">아직 이 종류로 게시된 리포트가 없습니다.</p>';
-  } else {
-    matches.forEach((it, i) => {
-      const color = PALETTE[i % PALETTE.length];
-      const date = (it.publishedAt || '').slice(0, 10);
-      const a = document.createElement('a');
-      a.className = 'cover-card';
-      a.href = 'reports/' + it.file;
-      a.innerHTML = `
-        <div class="glyph-badge" style="background:${color.bg};color:${color.fg}">${iconFor(it.appName)}</div>
-        <div class="body">
-          <div class="app-name">${it.appName}</div>
-          <div class="title">${it.intent}</div>
-          <div class="meta">v${it.version} · rev.${it.reportRevision} · ${date}</div>
-        </div>
-        <span class="chev">›</span>`;
-      grid.appendChild(a);
-    });
+    document.getElementById('menuView').style.display = 'none';
+    document.getElementById('appsView').style.display = 'none';
+    document.getElementById('detailView').classList.add('open');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
   }
+
+  // 같은 앱의 같은 종류 리포트를 하나로 묶고, 최신 개정판만 대표로 노출.
+  const byApp = new Map();
+  matches.forEach(it => {
+    if (!byApp.has(it.appName)) byApp.set(it.appName, []);
+    byApp.get(it.appName).push(it);
+  });
+
+  let i = 0;
+  byApp.forEach((list, appName) => {
+    list.sort((a, b) => b.reportRevision - a.reportRevision);
+    const [latest, ...older] = list;
+    const color = PALETTE[i % PALETTE.length];
+    i++;
+
+    const card = coverCard(latest, color);
+    if (older.length) {
+      const wrap = document.createElement('div');
+      wrap.className = 'cover-group';
+      wrap.appendChild(card);
+      const toggle = document.createElement('button');
+      toggle.className = 'older-toggle';
+      toggle.textContent = `이전 버전 ${older.length}개 보기 ▾`;
+      const olderList = document.createElement('div');
+      olderList.className = 'older-list';
+      older.forEach(it => olderList.appendChild(coverCard(it, color)));
+      toggle.addEventListener('click', () => {
+        const open = olderList.classList.toggle('open');
+        toggle.textContent = open ? '이전 버전 접기 ▴' : `이전 버전 ${older.length}개 보기 ▾`;
+      });
+      wrap.appendChild(toggle);
+      wrap.appendChild(olderList);
+      grid.appendChild(wrap);
+    } else {
+      grid.appendChild(card);
+    }
+  });
 
   document.getElementById('menuView').style.display = 'none';
   document.getElementById('appsView').style.display = 'none';
