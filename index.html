@@ -55,6 +55,11 @@
     color: var(--ink);
   }
   .hero p { margin: 0 auto; font-size: 16px; line-height: 1.65; color: var(--ink-dim); max-width: 42ch; }
+  .privacy-note {
+    margin: 16px auto 0 !important; max-width: 38ch !important; font-size: 12px !important;
+    line-height: 1.55 !important; color: var(--ink-faint) !important;
+    background: var(--card-2); border-radius: 12px; padding: 10px 16px;
+  }
 
   /* ── Section headers ──────────────────────────────────────────────── */
   .section-head { display: flex; align-items: baseline; justify-content: space-between; padding: 0 2px 16px; margin-top: 64px; }
@@ -224,6 +229,8 @@
     <h1>모든 앱의 결정이,<br>한곳에 쌓입니다.</h1>
     <p>시장 분석부터 MVP 결정, 출시 전략까지 — 앱별 리포트 저장소.
        최신 버전만 표시, 이전 버전은 펼쳐서 확인.</p>
+    <p class="privacy-note">현재는 개발자 개인 전용 도구 — 외부 공개 시 자신의 Claude로
+       직접 실행하는 방식(개발자 서버 미경유)을 먼저 제공할 예정.</p>
   </div>
 
   <!-- 리포트 종류 메뉴 + 관계도 -->
