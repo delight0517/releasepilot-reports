@@ -63,6 +63,22 @@
   section#c2 { --w-bg:#3a2b1c; --w-ink:#f2e6cd; --w-ink-dim:#ab8f6c; --w-accent:#b8895a; --w-line:rgba(184,137,90,0.28); }
   section#c3 { --w-bg:#0f1e33; --w-ink:#e7eefb; --w-ink-dim:#7690b3; --w-accent:#e0b354; --w-line:rgba(224,179,84,0.22); }
   section#g { --w-bg:#f7f1e2; --w-ink:#3a3324; --w-ink-dim:#8c7f5f; --w-accent:#b5862f; --w-accent-ink:#6b5220; --w-line:rgba(181,134,47,0.28); }
+
+  /* ── 모바일 안전망 (2026-08-02 추가) ─────────────────────────────────
+     이 블록이 없던 리포트에서 "글자가 박스 밖으로 새어나간다"는 문제이
+     실제로 발생해서, 앞으로 만드는 모든 리포트에 공통으로 넣는 최소 안전망.
+     표는 억지로 줄바꿈시켜 글자를 깨뜨리는 대신 가로 스크롤로 통째로 보여주고,
+     긴 단어/URL은 overflow-wrap으로 감싸서 박스를 뚫고 나가지 않게 한다. */
+  * { overflow-wrap: break-word; }
+  img, svg { max-width: 100%; height: auto; }
+  table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: nowrap; }
+  @media (max-width: 640px) {
+    body { font-size: 15px; }
+    .page { padding: 32px 16px 80px; }
+    .branch-meta { grid-template-columns: 1fr !important; }
+    .bar-row { grid-template-columns: 1fr !important; row-gap: 4px; }
+    .region-card, .branch-card, .callout { padding: 14px 16px !important; }
+  }
 </style>
 <nav class="nav" aria-label="세계 이동"></nav>
 <header class="hero">

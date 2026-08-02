@@ -44,7 +44,23 @@
   .ug-desc { font-size: 13px; color: var(--text-soft); margin: 0 0 10px; }
   .ug-done { color: var(--text-faint); }
   footer { padding: 24px 20px 0; font-size: 11.5px; color: var(--text-faint); text-align: center; }
-  </style><div class="page"><div class="masthead">
+  
+  /* ── 모바일 안전망 (2026-08-02 추가) ─────────────────────────────────
+     이 블록이 없던 리포트에서 "글자가 박스 밖으로 새어나간다"는 문제이
+     실제로 발생해서, 앞으로 만드는 모든 리포트에 공통으로 넣는 최소 안전망.
+     표는 억지로 줄바꿈시켜 글자를 깨뜨리는 대신 가로 스크롤로 통째로 보여주고,
+     긴 단어/URL은 overflow-wrap으로 감싸서 박스를 뚫고 나가지 않게 한다. */
+  * { overflow-wrap: break-word; }
+  img, svg { max-width: 100%; height: auto; }
+  table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: nowrap; }
+  @media (max-width: 640px) {
+    body { font-size: 15px; }
+    .page { padding: 32px 16px 80px; }
+    .branch-meta { grid-template-columns: 1fr !important; }
+    .bar-row { grid-template-columns: 1fr !important; row-gap: 4px; }
+    .region-card, .branch-card, .callout { padding: 14px 16px !important; }
+  }
+</style><div class="page"><div class="masthead">
   <p class="eyebrow">35Closer Timer · 사용법 기획서 + 작업 일지</p>
   <h1>35Closer Timer 사용 가이드</h1>
   <p class="sub">이 앱을 처음 보는 사람도 화면을 눌러가며 이해할 수 있게 — 전문 용어 없이, 무슨 화면이 뜨고 뭘 누르면 뭐가 되는지 하나씩.</p>
