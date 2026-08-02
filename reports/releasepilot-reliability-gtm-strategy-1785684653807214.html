@@ -1,0 +1,283 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ReleasePilot — 지금 이대로 (더 넓게) 쓰이면 어떤 반응일까</title>
+<style>
+  :root {
+    --bg: #faf7f2; --bg-raised: #ffffff; --fg: #211f2e; --muted: #6b6a7c;
+    --border: #e7e1d6; --accent: #c9711f; --accent-soft: #f6e6d3;
+    --risk: #a13a3a; --risk-soft: #f6e2df; --good: #2f7a63; --good-soft: #dcefe8;
+    --info: #2a5f8f; --info-soft: #dbe8f2;
+    --serif: Iowan Old Style, Georgia, "Noto Serif KR", ui-serif, serif;
+    --sans: -apple-system, "Pretendard", "Apple SD Gothic Neo", "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16151d; --bg-raised: #201f29; --fg: #ede9e0; --muted: #9a97ab;
+      --border: #322f3d; --accent: #e2a262; --accent-soft: #3a2f22;
+      --risk: #e08787; --risk-soft: #3a2325; --good: #7fc6ac; --good-soft: #1f332c;
+      --info: #7fb0e0; --info-soft: #1f2c3a;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #16151d; --bg-raised: #201f29; --fg: #ede9e0; --muted: #9a97ab;
+    --border: #322f3d; --accent: #e2a262; --accent-soft: #3a2f22;
+    --risk: #e08787; --risk-soft: #3a2325; --good: #7fc6ac; --good-soft: #1f332c;
+    --info: #7fb0e0; --info-soft: #1f2c3a;
+  }
+  :root[data-theme="light"] {
+    --bg: #faf7f2; --bg-raised: #ffffff; --fg: #211f2e; --muted: #6b6a7c;
+    --border: #e7e1d6; --accent: #c9711f; --accent-soft: #f6e6d3;
+    --risk: #a13a3a; --risk-soft: #f6e2df; --good: #2f7a63; --good-soft: #dcefe8;
+    --info: #2a5f8f; --info-soft: #dbe8f2;
+  }
+  * { box-sizing: border-box; }
+  body { background: var(--bg); color: var(--fg); font-family: var(--sans); line-height: 1.65; -webkit-font-smoothing: antialiased; }
+  .page { max-width: 800px; margin: 0 auto; padding: 56px 24px 96px; }
+  .eyebrow { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; }
+  h1 { font-family: var(--serif); font-size: clamp(26px, 5vw, 38px); font-weight: 600; line-height: 1.18; margin: 0 0 6px; text-wrap: balance; }
+  .subtitle { color: var(--muted); font-size: 14px; margin: 0 0 32px; }
+  .subtitle code { background: var(--bg-raised); border: 1px solid var(--border); border-radius: 4px; padding: 1px 6px; font-size: 12.5px; }
+  section { margin-bottom: 44px; }
+  h2 { font-family: var(--serif); font-size: 21px; font-weight: 600; margin: 0 0 6px; }
+  .section-lede { color: var(--muted); font-size: 14px; margin: 0 0 16px; }
+  h3 { font-size: 15px; font-weight: 700; margin: 20px 0 8px; }
+  .callout { border-radius: 12px; padding: 18px 20px; margin-bottom: 20px; border: 1px solid transparent; }
+  .callout.info { background: var(--info-soft); border-color: color-mix(in srgb, var(--info) 35%, transparent); }
+  .callout.good { background: var(--good-soft); border-color: color-mix(in srgb, var(--good) 35%, transparent); }
+  .callout.risk { background: var(--risk-soft); border-color: color-mix(in srgb, var(--risk) 35%, transparent); }
+  .callout p { margin: 0; }
+  .callout .tag { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.04em; border-radius: 999px; padding: 2px 10px; margin-bottom: 8px; }
+  .callout.info .tag { color: var(--info); border: 1px solid var(--info); }
+  .callout.good .tag { color: var(--good); border: 1px solid var(--good); }
+  .callout.risk .tag { color: var(--risk); border: 1px solid var(--risk); }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; margin: 12px 0; }
+  th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.03em; color: var(--muted); font-weight: 700; }
+  td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; }
+  .table-wrap table { margin: 0; }
+  .table-wrap th:first-child, .table-wrap td:first-child { padding-left: 14px; }
+  .chart-card { background: var(--bg-raised); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; margin: 14px 0; }
+  .chart-card .chart-title { font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 10px; }
+  .bar-row { display: grid; grid-template-columns: 150px 1fr 56px; align-items: center; gap: 10px; margin-bottom: 9px; font-size: 13px; }
+  .bar-track { background: var(--border); border-radius: 5px; height: 14px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 5px; }
+  .bar-fill.a { background: var(--muted); }
+  .bar-fill.b { background: var(--accent); }
+  .bar-fill.c { background: var(--good); }
+  .bar-val { text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); font-size: 12px; }
+  .chart-note { font-size: 12px; color: var(--muted); margin-top: 8px; }
+  .branch-card { border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; margin-bottom: 16px; background: var(--bg-raised); }
+  .branch-card h3 { margin-top: 0; font-size: 16px; font-family: var(--serif); }
+  .branch-meta { display: grid; grid-template-columns: 110px 1fr; gap: 8px 14px; font-size: 13.5px; margin: 10px 0; }
+  .branch-meta .k { color: var(--muted); font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.02em; padding-top: 1px; }
+  .branch-score { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 9px; border-radius: 999px; margin-left: 6px; }
+  .branch-score.high { background: var(--good-soft); color: var(--good); }
+  .branch-score.mid { background: var(--accent-soft); color: var(--accent); }
+  .cite { font-size: 11px; color: var(--muted); vertical-align: super; }
+  .source-list { font-size: 12.5px; color: var(--muted); padding-left: 18px; }
+  .source-list li { margin-bottom: 6px; }
+  .source-list a { color: var(--info); }
+  .caveat { background: var(--risk-soft); border: 1px solid color-mix(in srgb, var(--risk) 30%, transparent); border-radius: 10px; padding: 12px 16px; font-size: 13px; margin: 14px 0; }
+  footer { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted); }
+  footer p { margin: 6px 0; }
+
+  /* ── 매거진 스타일 출처 인용 (09번 문서 규칙 17) ── */
+  .quote-wall { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 16px 0 4px; }
+  @media (max-width: 640px) { .quote-wall { grid-template-columns: 1fr; } }
+  .pull-quote { margin: 0; padding: 14px 8px 14px 18px; border-left: 3px solid var(--accent); background: var(--bg-raised); border-radius: 0 10px 10px 0; }
+  .pull-quote p { font-family: var(--serif); font-style: italic; font-size: 16px; line-height: 1.4; margin: 0 0 8px; color: var(--fg); }
+  .pull-quote cite { font-style: normal; font-size: 11.5px; color: var(--muted); font-weight: 600; }
+
+  /* ── 모바일 안전망 (09번 문서 Rule 15) */
+  * { overflow-wrap: break-word; }
+  img, svg { max-width: 100%; height: auto; }
+  table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: nowrap; }
+  @media (max-width: 640px) {
+    body { font-size: 15px; }
+    .page { padding: 32px 16px 80px; }
+    .branch-meta { grid-template-columns: 1fr !important; }
+    .bar-row { grid-template-columns: 1fr !important; row-gap: 4px; }
+    .region-card, .branch-card, .callout { padding: 14px 16px !important; }
+  }
+</style>
+
+<div class="page">
+  <p class="eyebrow">전략 리포트 · 출시 반응 예측</p>
+  <h1>ReleasePilot — 지금 형태 그대로 더 넓게 쓰이면 어떤 반응일까</h1>
+  <p class="subtitle">
+    프로젝트 <code>23AppdeveloperReleaser</code> · 버전 <code>0.17.0</code> · 2026-08-03 개정 ·
+    실제 앱스토어 심사·개발자 도구 시장 공개 데이터를 검색해 근거로 삼아 재작성, 출처마다 핵심 문장을
+    매거진 스타일로 인용(rev.3)
+  </p>
+
+  <div class="callout info">
+    <span class="tag">이 리포트가 근거로 삼은 것</span>
+    <p>
+      (1) ReleasePilot이 실제로 구현한 기능 목록(App Vault·프로젝트 분석·Draft Studio·전략 리포트
+      보관함·마케팅 감각 게임·웹→iOS 변환), (2) 앱스토어 심사/반려·모바일 CI/CD 도구 시장·인디 개발자
+      지출 습관에 대해 이번에 새로 검색한 공개 자료(각주 표기, 09번 문서 규칙 16), (3) 이 앱은 아직
+      App Store/Play Console에 등록된 적 없는 <strong>제작자 본인 전용 로컬 도구</strong>라는 사실 —
+      그래서 "지금 형태 그대로 출시"가 아니라 "지금 형태 그대로 더 넓게(다른 인디 개발자에게) 쓰이면"을
+      예측 대상으로 삼는다.
+    </p>
+  </div>
+
+  <section>
+    <h2>1. 시장 배경 — 이 도구가 건드리는 고통이 실제로 존재하는가</h2>
+    <p class="section-lede">"스토어 서류 작업 비서"라는 포지셔닝이 성립하려면, 그 서류 작업이 실제로 얼마나 고통스러운지부터 확인해야 한다.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>지표</th><th>수치</th><th>의미</th></tr></thead>
+        <tbody>
+          <tr><td>2026년 앱스토어 심사 반려율</td><td class="num">약 25%(전체), 첫 제출 기준 40~60%<span class="cite">1</span></td><td>첫 출시하는 개발자일수록 반려를 겪을 확률이 매우 높다 — Draft Studio의 "필수 항목 사전 점검"이 정확히 이 지점을 겨냥</td></tr>
+          <tr><td>연간 최소 1회 반려 경험</td><td class="num">개발자의 63%<span class="cite">1</span></td><td>반려는 예외가 아니라 대부분의 개발자가 겪는 표준 경험 — 니치가 아니라 보편적 페인포인트</td></tr>
+          <tr><td>2026년 반려 건수(전체)</td><td class="num">약 1.93M건(리뷰 약 7.77M건 중)<span class="cite">2</span></td><td>주 사유는 메타데이터 오류·개인정보 고지 누락·스크린샷 규정 위반 — 전부 "제출 전 체크리스트"로 예방 가능한 종류</td></tr>
+          <tr><td>Fastlane GitHub 스타 · 기여자 · 절약 시간</td><td class="num">39,000+ ★ · 700+ 기여자 · 3,800만 개발자시간 절약<span class="cite">3,4</span></td><td>"배포 자동화" 카테고리에 이미 압도적 표준 도구가 있음 — 정면 승부는 불리, ReleasePilot은 배포 스크립트가 아니라 그 앞뒤(분석·문구·전략)를 채우는 포지셔닝이 현실적</td></tr>
+          <tr><td>모바일 CI/CD 툴 시장 규모</td><td class="num">$13.2B(2026)→$22.9B(2033), CAGR 8.2%<span class="cite">5</span></td><td>배포 자동화 자체는 이미 성숙 시장 — 신규 진입은 도구 대체가 아니라 인접 니치(분석·전략·문구) 공략이 유리함을 뒷받침</td></tr>
+          <tr><td>1인 개발자 월 평균 툴 지출</td><td class="num">$20 미만(기본) ~ $40~80(스케일 후)<span class="cite">6</span></td><td>인디 개발자는 가격에 민감 — 무료+로컬 우선 구조(API 호출 최소화)가 실제 지불 습관과 맞아떨어짐</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>출처가 직접 말한 것</h3>
+    <div class="quote-wall">
+      <blockquote class="pull-quote">
+        <p>"개발자의 63%가 매년 최소 한 번은 반려를 겪는다"</p>
+        <cite>— Rentamac.io, 2026 iOS 개발자 설문<span class="cite">1</span></cite>
+      </blockquote>
+      <blockquote class="pull-quote">
+        <p>"반려 사유는 주로 메타데이터 오류, 개인정보 고지 누락, 스크린샷 규정 위반"</p>
+        <cite>— AppScreenshotStudio, 2026 출시 체크리스트<span class="cite">2</span></cite>
+      </blockquote>
+      <blockquote class="pull-quote">
+        <p>"iOS에서 가장 인기 있는 배포 자동화 도구"</p>
+        <cite>— fastlane.tools<span class="cite">3</span></cite>
+      </blockquote>
+      <blockquote class="pull-quote">
+        <p>"누적 3,800만 시간이 넘는 개발자 시간을 절약했다"</p>
+        <cite>— Emerge Tools, Fastlane 소개<span class="cite">4</span></cite>
+      </blockquote>
+      <blockquote class="pull-quote">
+        <p>"2026년 132억 달러 규모로 평가된다"</p>
+        <cite>— Persistence Market Research, CI/CD 툴 시장<span class="cite">5</span></cite>
+      </blockquote>
+      <blockquote class="pull-quote">
+        <p>"월 총비용 20달러 미만이 표준 1인 개발자 툴셋이다"</p>
+        <cite>— SaaSRanger / BigIdeasDB, 2026 인디 개발자 스택<span class="cite">6</span></cite>
+      </blockquote>
+    </div>
+  </section>
+
+  <section>
+    <h2>2. 깔때기 예측 — "만능 올인원 툴" vs "반려 예방 비서" 포지셔닝</h2>
+    <p class="section-lede">지금 앱은 분석·문구·전략·게임까지 다 담고 있어 "만능 툴"로 보이기 쉽다. 이를 "반려율 40~60%를 미리 막아주는 비서" 한 줄로 좁혔을 때와 비교한다.</p>
+    <div class="chart-card">
+      <div class="chart-title">단계별 통과율 추정치 (반려율·CI/CD 시장 데이터를 깔때기 복리효과 프레임에 대입 — 실측 아님)</div>
+      <div class="bar-row"><div>주목(클릭)</div><div class="bar-track"><div class="bar-fill a" style="width:20%"></div></div><div class="bar-val">2.0%</div></div>
+      <div class="bar-row"><div>설치/설정</div><div class="bar-track"><div class="bar-fill a" style="width:18%"></div></div><div class="bar-val">18%</div></div>
+      <div class="bar-row"><div>2주 리텐션</div><div class="bar-track"><div class="bar-fill a" style="width:12%"></div></div><div class="bar-val">12%</div></div>
+      <div class="chart-note">위: "만능 출시 비서" 범용 포지셔닝 — 무엇을 위한 툴인지 첫 인상에서 명확하지 않아 클릭·설치 모두 약함</div>
+      <div style="height:10px"></div>
+      <div class="bar-row"><div>주목(클릭)</div><div class="bar-track"><div class="bar-fill b" style="width:58%"></div></div><div class="bar-val">5.8%</div></div>
+      <div class="bar-row"><div>설치/설정</div><div class="bar-track"><div class="bar-fill b" style="width:31%"></div></div><div class="bar-val">31%</div></div>
+      <div class="bar-row"><div>2주 리텐션</div><div class="bar-track"><div class="bar-fill b" style="width:36%"></div></div><div class="bar-val">36%</div></div>
+      <div class="chart-note">아래: "반려 예방 비서" 특화 포지셔닝 — 63%가 매년 겪는 반려 경험에 정확히 소구, 첫 인상에서 "이게 뭐 하는 툴인지" 즉시 이해됨</div>
+    </div>
+    <div class="caveat">
+      <strong>정직하게 말씀드리는 한계</strong> — 위 퍼센트는 실제 ReleasePilot 캠페인 데이터가 아니라
+      위 표의 공개 통계(반려 경험률, CI/CD 시장 성숙도)를 깔때기 복리 프레임에 대입한 <strong>추정
+      시나리오</strong>다. 방향성(좁은 포지셔닝이 유리하다)만 신뢰하고, 절대값은 실제로 2~3명의 개발자에게
+      보여준 뒤 검증해야 한다.
+    </div>
+  </section>
+
+  <section>
+    <h2>3. 공개 범위별 GTM 조합 3가지</h2>
+    <p class="section-lede">"누구에게, 무엇을 강조해서" 좁혀 보여줄지 세 갈래로 나눠 비교했다.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>조합</th><th>1차 채널</th><th>타겟</th><th>강조 기능</th><th>근거</th><th>종합 판단</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>① 반려 예방 비서</strong></td>
+            <td>인디 개발자 커뮤니티(Reddit r/iOSProgramming, 국내 개발자 오픈채팅)</td>
+            <td>첫 출시 준비 중인 1인 개발자</td>
+            <td>Draft Studio 필수 항목 사전 점검 + "진행해" 분석</td>
+            <td>첫 제출 반려율 40~60%<span class="cite">1</span>, 주 반려 사유(메타데이터·개인정보·스크린샷)<span class="cite">2</span>가 전부 Draft Studio 체크리스트 범위 안</td>
+            <td><span class="branch-score high">가장 유망</span></td>
+          </tr>
+          <tr>
+            <td><strong>② Fastlane 사용자 대상 "그 다음 단계"</strong></td>
+            <td>Fastlane/CI 관련 커뮤니티, GitHub 이슈·토론</td>
+            <td>이미 배포 자동화는 하고 있는 중급 개발자</td>
+            <td>전략 리포트 보관함 + 마케팅 감각 게임(배포 이후 영역)</td>
+            <td>Fastlane이 이미 배포 자동화 표준(39K★)<span class="cite">3</span>이라 그 영역에서 경쟁하지 않고, "배포 다음엔 뭘 해야 하나"라는 미해결 질문을 공략</td>
+            <td><span class="branch-score mid">2순위</span></td>
+          </tr>
+          <tr>
+            <td><strong>③ 예산 민감 1인 개발자용 무료 로컬 툴</strong></td>
+            <td>인디 해커 뉴스레터/디스코드</td>
+            <td>월 툴 지출 $20 미만인 극초기 solo builder</td>
+            <td>API 호출 0건 구조(웹→iOS 변환 등) 전면 강조</td>
+            <td>1인 개발자 평균 툴 지출이 매우 낮음<span class="cite">6</span> — "무료+로컬"이 가격 저항을 없애는 유일한 방법</td>
+            <td><span class="branch-score mid">2순위</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">조합별 점수 분해 (문제 보편성 / 코드와의 적합도 / 경쟁 강도, 5점 만점 — 판단 근거는 위 표)</div>
+      <div class="bar-row"><div>① 반려 예방</div><div class="bar-track"><div class="bar-fill b" style="width:88%"></div></div><div class="bar-val">4.4</div></div>
+      <div class="bar-row"><div>② Fastlane 다음 단계</div><div class="bar-track"><div class="bar-fill a" style="width:64%"></div></div><div class="bar-val">3.2</div></div>
+      <div class="bar-row"><div>③ 예산 민감 로컬 툴</div><div class="bar-track"><div class="bar-fill a" style="width:60%"></div></div><div class="bar-val">3.0</div></div>
+      <div class="chart-note">①이 가장 높은 이유: 반려 경험 63%로 문제가 가장 보편적이고, Draft Studio 코드가 이미 이 문제를 정확히 풀고 있으며, 이 좁은 영역에서는 직접 경쟁하는 전용 툴이 뚜렷하지 않음</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>4. 실행 우선순위 — 세 갈래 중 어디부터</h2>
+    <p class="section-lede">동시에 세 방향을 다 밀지 말고, ①의 반응을 먼저 확인한 뒤 ②·③ 진행 여부를 정하는 순서를 권장한다.</p>
+    <div class="branch-card">
+      <h3>① "반려 예방 비서"로 좁혀 공개 <span class="branch-score high">1순위</span></h3>
+      <div class="branch-meta">
+        <div class="k">핵심 메시지</div><div>"제출 전에 반려 사유부터 미리 잡아드립니다" 한 줄 — Draft Studio의 필수/권장/선택 배지 UI를 스크린샷으로 전면에</div>
+        <div class="k">타겟</div><div>첫 출시를 준비 중인 1인 개발자(가장 반려를 많이 겪는 집단)</div>
+        <div class="k">배포 전 필요조건</div><div>최소 노터라이즈(공증) 처리, "설치 방법" 안내 문서 정비</div>
+        <div class="k">근거</div><div>첫 제출 반려율 40~60%<span class="cite">1</span> — 이 앱의 실제 기능(Draft Studio 필수 항목 점검)이 정확히 이 문제를 풀도록 이미 설계돼 있음</div>
+        <div class="k">리스크</div><div>"반려 예방"이라는 좁은 약속만 하면, 전략 리포트·마케팅 게임 같은 다른 기능의 존재가 묻힐 수 있음 — 온보딩에서 2단계로 자연스럽게 노출 필요</div>
+      </div>
+    </div>
+    <div class="branch-card">
+      <h3>② Fastlane 사용자에게 "배포 다음 단계"로 노출 <span class="branch-score mid">2순위</span></h3>
+      <div class="branch-meta">
+        <div class="k">핵심 메시지</div><div>"배포는 이미 자동화했다면, 그다음(전략·문구·마케팅 감각)은 여기서"</div>
+        <div class="k">타겟</div><div>Fastlane/CI 커뮤니티에 있는 중급 이상 개발자</div>
+        <div class="k">근거</div><div>Fastlane의 압도적 시장 지위<span class="cite">3</span>를 정면 경쟁 대상이 아니라 보완 관계로 포지셔닝</div>
+        <div class="k">리스크</div><div>이미 자기 방식이 있는 중급 개발자는 새 도구 도입 장벽이 1순위 타겟보다 높음</div>
+      </div>
+    </div>
+    <div class="branch-card">
+      <h3>③ "무료·로컬 우선"을 전면에 내세운 예산 민감층 공략 <span class="branch-score mid">3순위</span></h3>
+      <div class="branch-meta">
+        <div class="k">핵심 메시지</div><div>"API 호출 0건 — 내 코드도, 내 돈도 외부로 안 나간다"</div>
+        <div class="k">타겟</div><div>극초기 solo builder, 월 툴 예산 $20 미만<span class="cite">6</span></div>
+        <div class="k">근거</div><div>웹→iOS 변환 기능이 이미 이 원칙(네트워크 호출 없는 로컬 생성)을 실증 사례로 보여줄 수 있음</div>
+        <div class="k">리스크</div><div>"무료"만으로는 차별화가 약함 — 오픈소스 대안들과 비교당하기 쉬워 ①·②보다 후순위로 미룸</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>생성: ReleasePilot(23AppdeveloperReleaser) · 리서치·소싱 표준(11번 문서) + 리포트 표준 규칙 16(09번 문서) 적용</p>
+    <ol class="source-list">
+      <li>[1] <a href="https://rentamac.io/ios-app-development-statistics/" target="_blank" rel="noopener noreferrer">iOS App Development Statistics: 2026 Survey & Data — Rentamac.io</a> — 404명 iOS 개발자 설문, 첫 제출 반려율 40~60%, 연 1회 이상 반려 경험 63%</li>
+      <li>[2] <a href="https://appscreenshotstudio.com/blog/indie-developer-app-launch-checklist-2026" target="_blank" rel="noopener noreferrer">App Launch Checklist 2026 — AppScreenshotStudio</a> — 2026년 약 1.93M건 반려(리뷰 약 7.77M건 중, 약 25%), 주 사유는 메타데이터·개인정보·스크린샷</li>
+      <li>[3] <a href="https://fastlane.tools/" target="_blank" rel="noopener noreferrer">fastlane — App automation done right</a> — GitHub 39,000+ 스타, 700+ 기여자</li>
+      <li>[4] <a href="https://www.emergetools.com/glossary/fastlane" target="_blank" rel="noopener noreferrer">What is fastlane? — Emerge Tools</a> — 누적 3,800만 개발자시간 절약 추산</li>
+      <li>[5] <a href="https://www.persistencemarketresearch.com/market-research/continuous-integration-and-delivery-ci-cd-tools-market.asp" target="_blank" rel="noopener noreferrer">CI/CD Tools Market — Persistence Market Research</a> — $13.2B(2026)→$22.9B(2033), CAGR 8.2%</li>
+      <li>[6] <a href="https://saasranger.com/blog/indie-hacker-tool-stack-what-successful-solo-founders-actually-use/" target="_blank" rel="noopener noreferrer">Indie Hacker Tool Stack — SaaSRanger</a> · <a href="https://bigideasdb.com/solopreneur-saas-toolkit-2026" target="_blank" rel="noopener noreferrer">The Solopreneur SaaS Toolkit for 2026 — BigIdeasDB</a> — 1인 개발자 월 툴 지출 기본 $20 미만, 스케일 후 $40~80</li>
+    </ol>
+    <p>ReleasePilot 자체의 실사용 반응 데이터(외부 사용자 대상 광고 클릭률·전환율 등)는 아직 존재하지 않는다 — 위 표 2·3번의 퍼센트는 실측이 아니라 공개 통계를 프레임에 대입한 추정 시나리오이며, "확인 안 됨"인 값은 지어내지 않고 이 각주에 명시한다.</p>
+  </footer>
+</div>
