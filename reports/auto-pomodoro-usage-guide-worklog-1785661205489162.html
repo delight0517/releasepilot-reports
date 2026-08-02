@@ -1,0 +1,87 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Auto Pomodoro 사용 가이드</title><style>  :root {
+    --ink: #1c2333; --ink-soft: #2a3348; --parchment: #f6f1e6; --parchment-card: #fffdf7;
+    --line: #ded2b8; --accent: #4f7cac; --accent-strong: #34597a;
+    --text: #241f14; --text-soft: #5c5644; --text-faint: #8b8368;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink: #0f1420; --parchment: #171c26; --parchment-card: #1f2532; --line: #333c4d;
+      --accent: #7fa8d6; --accent-strong: #a9c6e8;
+      --text: #ece6d8; --text-soft: #b8b19c; --text-faint: #7b7663;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ink: #0f1420; --parchment: #171c26; --parchment-card: #1f2532; --line: #333c4d;
+    --accent: #7fa8d6; --accent-strong: #a9c6e8;
+    --text: #ece6d8; --text-soft: #b8b19c; --text-faint: #7b7663;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--parchment); color: var(--text); font-family: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", "Segoe UI", sans-serif; line-height: 1.6; }
+  .page { max-width: 680px; margin: 0 auto; padding: 0 0 64px; }
+  .masthead { background: linear-gradient(180deg, var(--ink) 0%, var(--ink-soft) 100%); color: #eef3f8; padding: 28px 20px 24px; }
+  .eyebrow { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #c3d3e6; margin: 0 0 6px; font-weight: 600; }
+  .masthead h1 { font-family: Georgia, serif; font-size: 27px; margin: 0 0 8px; }
+  .masthead p.sub { margin: 0; font-size: 14px; color: #c9d6e4; max-width: 50ch; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .meta-chip { font-size: 12px; padding: 5px 10px; border-radius: 999px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.16); color: #e3ecf5; }
+  section { padding: 22px 20px 4px; }
+  .section-label { display: flex; align-items: baseline; gap: 8px; margin-bottom: 12px; }
+  .section-label .num { font-size: 12px; color: var(--accent-strong); font-weight: 700; letter-spacing: 0.06em; }
+  .section-label h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-soft); margin: 0; font-weight: 700; }
+  .card { background: var(--parchment-card); border: 1px solid var(--line); border-radius: 14px; padding: 18px; }
+  .ug-step { border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin-top: 10px; }
+  .ug-step:first-child { margin-top: 0; }
+  .ug-step-head { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+  .ug-step-n { width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+  .ug-step-title { font-size: 14px; font-weight: 700; }
+  .ug-step-oneliner { font-size: 12.5px; color: var(--text-soft); margin: 0 0 8px; padding-left: 10px; border-left: 3px solid var(--accent); }
+  .ug-plain-list { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+  .ug-plain-list li { font-size: 12.5px; color: var(--text-soft); }
+  .ug-mini { font-size: 12px; font-weight: 700; color: var(--accent-strong); margin: 14px 0 4px; }
+  .ug-mini:first-of-type { margin-top: 0; }
+  .ug-desc { font-size: 13px; color: var(--text-soft); margin: 0 0 10px; }
+  .ug-done { color: var(--text-faint); }
+  footer { padding: 24px 20px 0; font-size: 11.5px; color: var(--text-faint); text-align: center; }
+  </style><div class="page"><div class="masthead">
+  <p class="eyebrow">Auto Pomodoro · 사용법 기획서 + 작업 일지</p>
+  <h1>Auto Pomodoro 사용 가이드</h1>
+  <p class="sub">이 앱을 처음 보는 사람도 화면을 눌러가며 이해할 수 있게 — 전문 용어 없이, 무슨 화면이 뜨고 뭘 누르면 뭐가 되는지 하나씩.</p>
+  <div class="meta-row"><span class="meta-chip">v1.0.1</span><span class="meta-chip">개정판 1</span></div>
+</div><section>
+  <div class="section-label"><span class="num">01</span><h2>개요 — 이 앱은 무엇을 위한 것인가</h2></div>
+  <div class="card"><p class="ug-desc">macOS용 빈티지 스타일 포모도로 타이머. 항상 최상단에 떠있는 미니 위젯(120×120), 전체화면 휴식 오버레이, 학습 로그/통계를 제공하며, 시간대별로 다른 집중/휴식 길이(예: 새벽 2~10시는 10분 집중/5분 휴식)를 자동 적용한다. 특정 시간대엔 화면을 잠그는 lock 모드도 있다.</p><p class="ug-desc">iOS 컴패니언 앱(PomodoroCage, <code>ios/PomodoroCage.xcodeproj</code>)과 로컬 서버(<code>server/pomodoro-api.js</code>, 포트 8787)를 통해 세션 상태를 실시간 동기화한다 — Mac과 iPhone 중 어느 쪽에서 시작해도 같은 세션이 양쪽에 반영된다.</p></div>
+</section><section>
+  <div class="section-label"><span class="num">02</span><h2>핵심 사용 흐름</h2></div>
+  <div class="card"><div class="ug-step">
+  <div class="ug-step-head"><span class="ug-step-n">1</span><span class="ug-step-title">집중 세션 시작</span></div>
+  <p class="ug-step-oneliner">대시보드(renderer/dashboard)에서 집중/휴식 시간을 정하고 타이머를 시작한다.</p>
+  <ol class="ug-plain-list"><li>대시보드를 열어 집중(focusMin)·휴식(breakMin)·긴휴식(longBreakMin) 시간을 확인/수정한다.</li><li>"시작"을 누르면 세션이 즉시 시작되고 미니 위젯에 반영된다.</li></ol>
+</div><div class="ug-step">
+  <div class="ug-step-head"><span class="ug-step-n">2</span><span class="ug-step-title">미니 위젯으로 진행 상황 확인</span></div>
+  <p class="ug-step-oneliner">항상 최상단에 떠있는 작은 위젯에서 남은 시간을 보고 재생/일시정지/정지를 조작한다.</p>
+  <ol class="ug-plain-list"><li>작업 중에도 위젯이 다른 창 위에 항상 보인다.</li><li>"타이머 보기" 버튼은 진행 중인 세션을 리셋하지 않고 그대로 열기만 한다(2026-07-28 버그 수정됨).</li></ol>
+</div><div class="ug-step">
+  <div class="ug-step-head"><span class="ug-step-n">3</span><span class="ug-step-title">휴식 전환 및 전체화면 오버레이</span></div>
+  <p class="ug-step-oneliner">집중 시간이 끝나면 휴식 오버레이(renderer/break)가 전체화면으로 뜬다.</p>
+  <ol class="ug-plain-list"><li>진짜 사용자 각성과 macOS의 배경 유지보수용 순간 각성(DarkWake)을 구분해, 뚜껑이 닫힌 채로 잘못 휴식 전환되지 않도록 처리한다(2026-07-29 수정).</li></ol>
+</div><div class="ug-step">
+  <div class="ug-step-head"><span class="ug-step-n">4</span><span class="ug-step-title">시간대별 기본 타이머 설정</span></div>
+  <p class="ug-step-oneliner">설정 탭에서 특정 시간대(예: 새벽)에만 다른 집중/휴식 길이를 지정할 수 있다.</p>
+  <ol class="ug-plain-list"><li>설정 탭 "시간대별 기본 타이머" 섹션에서 시간대를 추가/수정/삭제한다.</li><li>활성 슬롯이 없으면 평소 설정값으로 자연히 폴백한다.</li></ol>
+</div><div class="ug-step">
+  <div class="ug-step-head"><span class="ug-step-n">5</span><span class="ug-step-title">Mac ↔ iOS 동기화</span></div>
+  <p class="ug-step-oneliner">로컬 서버(포트 8787)를 통해 Mac 앱과 iOS PomodoroCage가 같은 세션 상태를 공유한다.</p>
+  <ol class="ug-plain-list"><li>실행 중인 세션이 있으면 그 세션이 항상 우선(규칙 2).</li><li>동시에 시작된 세션은 더 이른 시각을 채택하되, 2020년 이전 같은 손상된 값은 비교에서 제외한다.</li></ol>
+</div></div>
+</section><section>
+  <div class="section-label"><span class="num">03</span><h2>화면별 사용법 — 빠른 레퍼런스</h2></div>
+  <div class="card"><h5 class="ug-mini">대시보드 (renderer/dashboard)</h5><p class="ug-desc">집중/휴식 시간 설정, 시간대별 타이머 관리, 오늘 통계 확인.</p><h5 class="ug-mini">미니 위젯 (renderer/widget)</h5><p class="ug-desc">항상 최상단 120×120 작은 창 — 남은 시간, 재생/일시정지/정지 버튼.</p><h5 class="ug-mini">컴팩트 위젯 (renderer/widget-compact)</h5><p class="ug-desc">더 작은 대안 위젯 레이아웃.</p><h5 class="ug-mini">휴식 오버레이 (renderer/break)</h5><p class="ug-desc">휴식 시간 동안 전체화면으로 표시되는 화면.</p></div>
+</section><section>
+  <div class="section-label"><span class="num">04</span><h2>작업 일지</h2></div>
+  <div class="card"><h5 class="ug-mini">2026-07-29</h5><p class="ug-desc">"뚜껑 열자마자 휴식 중" 원인 진단·수정 — macOS 배경 유지보수용 순간 각성(DarkWake)과 진짜 사용자 각성을 구분하지 못해 생긴 버그. Mac↔Windows 동기화 진단 체계도 보강.</p><h5 class="ug-mini">2026-07-28</h5><p class="ug-desc">잠금 화면이 대낮에 비정상적으로 긴 시간(1070분 등) 풀리지 않는 사고 대응 — 집중/휴식 길이 상한 추가, lock 시간대 검증(0분 거부·최대 7시간 clamp), 손상된 startsAt(0/1) 값이 영원히 정상 세션을 밀어내는 동기화 버그 수정. 서버(server/pomodoro-api.js) 쪽에도 동일한 상한을 추가해 다른 클라이언트도 보호.</p></div>
+</section><section>
+  <div class="section-label"><span class="num">05</span><h2>TODO</h2></div>
+  <div class="card"><ul class="ug-plain-list" style="padding-left:0;list-style:none;"><li>☐ 35Closer의 유휴 감지를 포모도로 세션 상태로 대체/보완할지 검토 — 보류 (포모도로 세션 진행 중이라는 사실이 "사용자가 실제로 자리에 있다"는 보장은 아님: 세션을 시작해두고 자리를 비울 수 있음. 대체가 아니라 참고 신호로만, 새 폴링 없이 기존 파일을 읽는 선에서만 쓰는 방향으로 결론 — [[feedback_no_silent_content_reduction]])</li></ul></div>
+</section><footer>Auto Pomodoro 자동 생성 · 사용법 기획서(개정 1)</footer></div>
