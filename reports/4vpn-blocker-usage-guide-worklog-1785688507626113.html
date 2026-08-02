@@ -1,0 +1,121 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>4VPN Blocker 사용 가이드</title><style>  :root {
+    --ink: #1c2333; --ink-soft: #2a3348; --parchment: #f6f1e6; --parchment-card: #fffdf7;
+    --line: #ded2b8; --accent: #4f7cac; --accent-strong: #34597a;
+    --text: #241f14; --text-soft: #5c5644; --text-faint: #8b8368;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink: #0f1420; --parchment: #171c26; --parchment-card: #1f2532; --line: #333c4d;
+      --accent: #7fa8d6; --accent-strong: #a9c6e8;
+      --text: #ece6d8; --text-soft: #b8b19c; --text-faint: #7b7663;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ink: #0f1420; --parchment: #171c26; --parchment-card: #1f2532; --line: #333c4d;
+    --accent: #7fa8d6; --accent-strong: #a9c6e8;
+    --text: #ece6d8; --text-soft: #b8b19c; --text-faint: #7b7663;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--parchment); color: var(--text); font-family: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", "Segoe UI", sans-serif; line-height: 1.6; }
+  .page { max-width: 680px; margin: 0 auto; padding: 0 0 64px; }
+  .masthead { background: linear-gradient(180deg, var(--ink) 0%, var(--ink-soft) 100%); color: #eef3f8; padding: 28px 20px 24px; }
+  .eyebrow { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #c3d3e6; margin: 0 0 6px; font-weight: 600; }
+  .masthead h1 { font-family: Georgia, serif; font-size: 27px; margin: 0 0 8px; }
+  .masthead p.sub { margin: 0; font-size: 14px; color: #c9d6e4; max-width: 50ch; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .meta-chip { font-size: 12px; padding: 5px 10px; border-radius: 999px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.16); color: #e3ecf5; }
+  section { padding: 22px 20px 4px; }
+  .section-label { display: flex; align-items: baseline; gap: 8px; margin-bottom: 12px; }
+  .section-label .num { font-size: 12px; color: var(--accent-strong); font-weight: 700; letter-spacing: 0.06em; }
+  .section-label h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-soft); margin: 0; font-weight: 700; }
+  .card { background: var(--parchment-card); border: 1px solid var(--line); border-radius: 14px; padding: 18px; }
+  .ug-step { border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin-top: 10px; }
+  .ug-step:first-child { margin-top: 0; }
+  .ug-step-head { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+  .ug-step-n { width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+  .ug-step-title { font-size: 14px; font-weight: 700; }
+  .ug-step-oneliner { font-size: 12.5px; color: var(--text-soft); margin: 0 0 8px; padding-left: 10px; border-left: 3px solid var(--accent); }
+  .ug-plain-list { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+  .ug-plain-list li { font-size: 12.5px; color: var(--text-soft); }
+  .ug-mini { font-size: 12px; font-weight: 700; color: var(--accent-strong); margin: 14px 0 4px; }
+  .ug-mini:first-of-type { margin-top: 0; }
+  .ug-desc { font-size: 13px; color: var(--text-soft); margin: 0 0 10px; }
+  .ug-done { color: var(--text-faint); }
+  footer { padding: 24px 20px 0; font-size: 11.5px; color: var(--text-faint); text-align: center; }
+  
+  /* ── 모바일 안전망 (공용, report_mobile_safety_css.dart) ─────────────
+     표는 억지로 줄바꿈시켜 글자를 깨뜨리는 대신 가로 스크롤로 통째로 보여주고,
+     긴 단어/URL은 overflow-wrap으로 감싸서 박스를 뚫고 나가지 않게 한다. */
+  * { overflow-wrap: break-word; }
+  img, svg { max-width: 100%; height: auto; }
+  table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: nowrap; }
+  @media (max-width: 640px) {
+    body { font-size: 15px; }
+    .page { padding: 32px 16px 80px; }
+    .branch-meta { grid-template-columns: 1fr !important; }
+    .bar-row { grid-template-columns: 1fr !important; row-gap: 4px; }
+    .region-card, .branch-card, .callout { padding: 14px 16px !important; }
+
+    /* ── 지표 표 → 카드 재배치 (규칙 19) ──────────────────────────────
+       가로 스크롤 대신, 행(row) 하나를 카드 하나로 세로 재배치한다.
+       data-label이 헤더 이름을 대신 보여주는 라벨 역할을 한다. */
+    table.stat-table { display: block; white-space: normal; overflow-x: visible; }
+    table.stat-table thead { display: none; }
+    table.stat-table, table.stat-table tbody, table.stat-table tr, table.stat-table td {
+      display: block; width: 100%;
+    }
+    table.stat-table tr {
+      border: 1px solid var(--border, #e7e1d6); border-radius: 12px;
+      padding: 12px 14px; margin-bottom: 10px; background: var(--bg-raised, #fff);
+    }
+    table.stat-table td { border-bottom: none; padding: 6px 0; }
+    table.stat-table td:not(:last-child) { border-bottom: 1px dashed var(--border, #e7e1d6); }
+    table.stat-table td::before {
+      content: attr(data-label); display: block; font-size: 10.5px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted, #6b6a7c);
+      margin-bottom: 3px;
+    }
+  }
+</style><div class="page"><div class="masthead">
+  <p class="eyebrow">4VPN Blocker · 사용법 기획서 + 작업 일지</p>
+  <h1>4VPN Blocker 사용 가이드</h1>
+  <p class="sub">이 앱을 처음 보는 사람도 화면을 눌러가며 이해할 수 있게 — 전문 용어 없이, 무슨 화면이 뜨고 뭘 누르면 뭐가 되는지 하나씩.</p>
+  <div class="meta-row"><span class="meta-chip">v1.0.6</span><span class="meta-chip">개정판 1</span></div>
+</div><section>
+  <div class="section-label"><span class="num">01</span><h2>개요 — 이 앱은 무엇을 위한 것인가</h2></div>
+  <div class="card"><p class="ug-desc">macOS용 자기통제 차단 앱(SwiftUI, 코드명 VeliMac). 한 줄 요약이 아니라 실제로 3중 구조로 막는다 — <b>①/etc/hosts DNS 레벨 차단</b>(전 브라우저에 동시 적용), <b>②브라우저 확장</b>(Chrome·Firefox·Safari, 키워드/유튜브 채널·영상 단위 정밀 차단), <b>③Firefox DoH 무력화</b>(정책으로 강제해 우회 DNS 서버 자체를 막음). 단순 사이트 목록 하나 들고 있는 게 아니라, 우회 경로 하나하나를 실제로 틀어막는 구조로 설계돼 있다.</p></div>
+</section><section>
+  <div class="section-label"><span class="num">02</span><h2>핵심 사용 흐름</h2></div>
+  <div class="card"><div class="ug-step">
+  <div class="ug-step-head"><span class="ug-step-n">1</span><span class="ug-step-title">말로 걸기 — 채팅 한 줄이 곧 차단 규칙</span></div>
+  <p class="ug-step-oneliner">"매일 아침 10시 유튜브 막아줘"처럼 자연어로 말하면 파싱→미리보기→확인→적용 4단계를 거쳐 실제 스케줄이 된다. 확인 없이는 절대 적용되지 않는다.</p>
+  <ol class="ug-plain-list"><li>"매일 아침 10시 유튜브 막아줘" → 매일 10:00부터 24:00까지 스트리밍 카테고리 차단 스케줄로 자동 변환.</li><li>"인스타는 10분 보면 30분 잠기게 하루 40분만" → 세션 10분 제한 + 쿨다운 30분 + 일일 총량 40분 제한을 한 번에 설정.</li><li>"평일 오전 9시부터 오후 6시까지 sns 막아줘" → 월~금 09:00~18:00 SNS 카테고리 차단.</li><li>로컬 파서가 먼저 처리하고, 못 알아들을 때만 AI로 폴백 — 매번 API를 부르지 않아 비용이 거의 안 든다.</li></ol>
+</div><div class="ug-step">
+  <div class="ug-step-head"><span class="ug-step-n">2</span><span class="ug-step-title">프리셋 팩 — 하나 눌러서 수백 개를 한 번에</span></div>
+  <p class="ug-step-oneliner">직접 하나씩 입력할 필요 없이, 미리 만들어진 대량 차단 팩을 스케줄에 연결하기만 하면 된다.</p>
+  <ol class="ug-plain-list"><li>성인 사이트 + YouTube 통합팩 — 약 585개 항목(사이트 200 + 커뮤니티 링크 목록 두 종 185 + 유튜브 채널 200을 병합).</li><li>불법 웹툰 사이트팩 — 41개 항목.</li><li>게임 팩 — 400개 항목(유튜브 게임 채널 200 + 게임 사이트 200).</li><li>스케줄 편집 화면에서 "프리셋 팩 연결" 한 번이면 끝 — 팩은 계속 갱신되고, 연결된 스케줄에도 자동 반영된다.</li></ol>
+</div><div class="ug-step">
+  <div class="ug-step-head"><span class="ug-step-n">3</span><span class="ug-step-title">통합 규칙 입력 — 한 칸에 아무거나 붙여넣기</span></div>
+  <p class="ug-step-oneliner">URL이든 키워드든 유튜브 채널이든, 종류를 고를 필요 없이 붙여넣으면 자동으로 알맞은 규칙으로 분류된다.</p>
+  <ol class="ug-plain-list"><li>도메인을 붙여넣으면 host 규칙으로, 단어를 입력하면 keyword 규칙으로 자동 인식.</li><li>유튜브 채널/영상 링크는 channelURL·videoURL로 각각 분류돼 유튜브 확장 차단에 연결.</li><li>숫자로 우회한 IP나 서브도메인 변형까지 같은 규칙으로 확장 매칭.</li></ol>
+</div><div class="ug-step">
+  <div class="ug-step-head"><span class="ug-step-n">4</span><span class="ug-step-title">브라우저 3종 동시 방어</span></div>
+  <p class="ug-step-oneliner">Chrome·Firefox·Safari 확장이 각각 설치되고, Firefox는 DoH(우회용 DNS)까지 정책으로 잠근다.</p>
+  <ol class="ug-plain-list"><li>확장은 Firefox 소스 하나를 원본으로 두고 앱이 Chrome/Safari용으로 자동 변환해 내보낸다 — 세 브라우저가 항상 같은 규칙을 쓴다.</li><li>Firefox는 DNS-over-HTTPS를 정책으로 강제 비활성화해, hosts 차단을 무력화하는 우회로 자체를 막는다.</li></ol>
+</div><div class="ug-step">
+  <div class="ug-step-head"><span class="ug-step-n">5</span><span class="ug-step-title">동기화·백업·잠금</span></div>
+  <p class="ug-step-oneliner">설정을 스냅샷으로 백업/복원할 수 있고, 전역 잠금 모드(PIN)로 스스로도 쉽게 풀 수 없게 걸어둘 수 있다.</p>
+  <ol class="ug-plain-list"></ol>
+</div></div>
+</section><section>
+  <div class="section-label"><span class="num">03</span><h2>화면별 사용법 — 빠른 레퍼런스</h2></div>
+  <div class="card"><h5 class="ug-mini">규칙(Rules) 화면</h5><p class="ug-desc">도메인·키워드·채널 규칙을 직접 추가/편집. 통합 입력창 지원.</p><h5 class="ug-mini">스케줄(Schedules) 화면</h5><p class="ug-desc">요일·시간대별 차단 스케줄 설정, 프리셋 팩 연결, 채팅 입력창.</p><h5 class="ug-mini">채팅 스케줄 입력 카드</h5><p class="ug-desc">자연어 명령 → 파싱 미리보기 → 확인 후 적용.</p><h5 class="ug-mini">진단(Diagnostics) 화면</h5><p class="ug-desc">hosts 적용 상태, Firefox DoH 설정 상태, 확장 활성화 여부 점검.</p><h5 class="ug-mini">설정(Settings) 화면</h5><p class="ug-desc">잠금 PIN, 백업/복원, 앱 버전·확장 버전 동기화 상태.</p></div>
+</section><section>
+  <div class="section-label"><span class="num">04</span><h2>작업 일지</h2></div>
+  <div class="card"><h5 class="ug-mini">2026-07-22</h5><p class="ug-desc">채팅 기반 스케줄링 기능 작업 — "언제 풀리는지" 상태 질의 응답, 여러 날짜짜리 임시 차단이 날짜 없이 시간만 표시되던 버그 수정, 일일 브라우저 사용량 총합 제한 채팅 명령 추가.</p><h5 class="ug-mini">2026-07-06</h5><p class="ug-desc">채팅 시스템을 4VPN·Cage·모아 3개 앱 공용 단일 명세(SSOT, spec v1.2.0)로 통합 — 표준 인텐트 스키마(ISO 요일, minutes-from-midnight)로 맞추고 각 앱은 GLOSSARY 어댑터로 변환.</p><h5 class="ug-mini">2026-06-18</h5><p class="ug-desc">프리메이드 차단 팩(성인 통합 585개/불법 웹툰 41개/게임 400개) JSON 스키마 정리, 포터블 kind 매핑(host/channelURL/keyword 등) 확정.</p></div>
+</section><section>
+  <div class="section-label"><span class="num">05</span><h2>TODO</h2></div>
+  <div class="card"><ul class="ug-plain-list" style="padding-left:0;list-style:none;"><li>☐ Windows 포팅 완료(Firefox 차단 모델 이식)</li><li>☐ macOS/iOS/Windows 간 GitHub 기반 동기화 완성</li><li>☐ 네이티브 앱 버전 번호 체계 정리(문서마다 다르게 표기됨 — 확인 결과 Xcode 기준 MARKETING_VERSION은 1.0.6)</li></ul></div>
+</section><footer>4VPN Blocker 자동 생성 · 사용법 기획서(개정 1)</footer></div>
