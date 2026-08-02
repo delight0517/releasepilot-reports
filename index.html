@@ -458,9 +458,16 @@ fetch('reports/manifest.json').then(r => r.ok ? r.json() : []).then(items => {
   // 리포트 메뉴 — 실제로 존재하는 종류만 보여주되, 하나도 없는 경우는 숨김.
   const menuGrid = document.getElementById('menuGrid');
 
+  // 베타 항목은 자기 reportKind 메뉴에도 동시에 뜨면 같은 리포트가 두 곳에
+  // 중복 노출돼 헷갈린다("베타 기능" 카드랑 "신규 기능 블루프린트" 카드가
+  // 사실상 같은 1~2건을 따로 보여주던 문제, 2026-08-02 피드백) — 그래서
+  // 베타 항목은 일반 종류별 메뉴/앱별 모아보기에서 완전히 빼고, "베타 기능"
+  // 카드 하나로만 접근하게 합친다. 같은 리포트가 두 목차에 동시에 있지 않다.
+  const betaItems = items.filter(it => it.beta === true);
+  const nonBetaItems = items.filter(it => it.beta !== true);
+
   // 베타 기능은 reportKind가 아니라 상태(beta:true)로 묶는 카테고리라서
   // 항상 메뉴 맨 앞에 고정 — 종류가 늘어도 관리자가 찾기 쉽게.
-  const betaItems = items.filter(it => it.beta === true);
   if (betaItems.length) {
     const betaCard = document.createElement('button');
     betaCard.className = 'menu-card';
@@ -470,14 +477,14 @@ fetch('reports/manifest.json').then(r => r.ok ? r.json() : []).then(items => {
         <span class="count-pill">${betaItems.length}건</span>
       </div>
       <p class="title">베타 기능</p>
-      <p class="desc">아직 실험 중인 컨셉/모듈 리포트 모음</p>`;
+      <p class="desc">아직 실험 중인 컨셉/모듈 리포트 모음 — 정식 종류로 분류되기 전 단계</p>`;
     betaCard.addEventListener('click', () => openDetail('__beta__', items));
     menuGrid.appendChild(betaCard);
   }
 
-  const kindsPresent = [...new Set(items.map(it => it.reportKind))].sort((a, b) => kindRank(a) - kindRank(b));
+  const kindsPresent = [...new Set(nonBetaItems.map(it => it.reportKind))].sort((a, b) => kindRank(a) - kindRank(b));
   kindsPresent.forEach((kind, i) => {
-    const count = items.filter(it => it.reportKind === kind).length;
+    const count = nonBetaItems.filter(it => it.reportKind === kind).length;
     const color = PALETTE[i % PALETTE.length];
     const card = document.createElement('button');
     card.className = 'menu-card';
@@ -488,14 +495,14 @@ fetch('reports/manifest.json').then(r => r.ok ? r.json() : []).then(items => {
       </div>
       <p class="title">${kindLabel(kind)}</p>
       <p class="desc">${kindDesc(kind)}</p>`;
-    card.addEventListener('click', () => openDetail(kind, items));
+    card.addEventListener('click', () => openDetail(kind, nonBetaItems));
     menuGrid.appendChild(card);
   });
 
-  if (!items.length) { document.getElementById('empty').style.display = 'block'; return; }
+  if (!nonBetaItems.length) { document.getElementById('empty').style.display = 'block'; return; }
 
   const byApp = new Map();
-  items.forEach(it => {
+  nonBetaItems.forEach(it => {
     if (!byApp.has(it.appName)) byApp.set(it.appName, []);
     byApp.get(it.appName).push(it);
   });
