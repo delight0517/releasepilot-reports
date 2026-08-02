@@ -476,7 +476,7 @@ function openDetail(kind, allItems) {
 
   let i = 0;
   byApp.forEach((list, appName) => {
-    list.sort((a, b) => b.reportRevision - a.reportRevision);
+    list.sort((a, b) => b.reportRevision - a.reportRevision || (b.publishedAt || '').localeCompare(a.publishedAt || ''));
     const [latest, ...older] = list;
     const color = PALETTE[i % PALETTE.length];
     i++;
@@ -596,7 +596,7 @@ fetch('reports/manifest.json', { cache: 'no-store' }).then(r => r.ok ? r.json() 
       if (!byKind.has(it.reportKind)) byKind.set(it.reportKind, []);
       byKind.get(it.reportKind).push(it);
     });
-    byKind.forEach(list => list.sort((a, b) => b.reportRevision - a.reportRevision));
+    byKind.forEach(list => list.sort((a, b) => b.reportRevision - a.reportRevision || (b.publishedAt || '').localeCompare(a.publishedAt || '')));
     const kinds = [...byKind.keys()].sort((a, b) => kindRank(a) - kindRank(b));
 
     const tile = document.createElement('a');
