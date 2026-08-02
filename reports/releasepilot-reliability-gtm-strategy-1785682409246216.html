@@ -1,0 +1,202 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ReleasePilot — 지금 이대로 (더 넓게) 쓰이면 어떤 반응일까</title>
+<style>
+  :root {
+    --bg: #faf7f2; --bg-raised: #ffffff; --fg: #211f2e; --muted: #6b6a7c;
+    --border: #e7e1d6; --accent: #c9711f; --accent-soft: #f6e6d3;
+    --risk: #a13a3a; --risk-soft: #f6e2df; --good: #2f7a63; --good-soft: #dcefe8;
+    --info: #2a5f8f; --info-soft: #dbe8f2;
+    --serif: Iowan Old Style, Georgia, "Noto Serif KR", ui-serif, serif;
+    --sans: -apple-system, "Pretendard", "Apple SD Gothic Neo", "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16151d; --bg-raised: #201f29; --fg: #ede9e0; --muted: #9a97ab;
+      --border: #322f3d; --accent: #e2a262; --accent-soft: #3a2f22;
+      --risk: #e08787; --risk-soft: #3a2325; --good: #7fc6ac; --good-soft: #1f332c;
+      --info: #7fb0e0; --info-soft: #1f2c3a;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #16151d; --bg-raised: #201f29; --fg: #ede9e0; --muted: #9a97ab;
+    --border: #322f3d; --accent: #e2a262; --accent-soft: #3a2f22;
+    --risk: #e08787; --risk-soft: #3a2325; --good: #7fc6ac; --good-soft: #1f332c;
+    --info: #7fb0e0; --info-soft: #1f2c3a;
+  }
+  :root[data-theme="light"] {
+    --bg: #faf7f2; --bg-raised: #ffffff; --fg: #211f2e; --muted: #6b6a7c;
+    --border: #e7e1d6; --accent: #c9711f; --accent-soft: #f6e6d3;
+    --risk: #a13a3a; --risk-soft: #f6e2df; --good: #2f7a63; --good-soft: #dcefe8;
+    --info: #2a5f8f; --info-soft: #dbe8f2;
+  }
+  * { box-sizing: border-box; }
+  body { background: var(--bg); color: var(--fg); font-family: var(--sans); line-height: 1.65; -webkit-font-smoothing: antialiased; }
+  .page { max-width: 800px; margin: 0 auto; padding: 56px 24px 96px; }
+  .eyebrow { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; }
+  h1 { font-family: var(--serif); font-size: clamp(26px, 5vw, 38px); font-weight: 600; line-height: 1.18; margin: 0 0 6px; text-wrap: balance; }
+  .subtitle { color: var(--muted); font-size: 14px; margin: 0 0 32px; }
+  .subtitle code { background: var(--bg-raised); border: 1px solid var(--border); border-radius: 4px; padding: 1px 6px; font-size: 12.5px; }
+  section { margin-bottom: 44px; }
+  h2 { font-family: var(--serif); font-size: 21px; font-weight: 600; margin: 0 0 6px; }
+  .section-lede { color: var(--muted); font-size: 14px; margin: 0 0 16px; }
+  h3 { font-size: 15px; font-weight: 700; margin: 20px 0 8px; }
+  .callout { border-radius: 12px; padding: 18px 20px; margin-bottom: 20px; border: 1px solid transparent; }
+  .callout.info { background: var(--info-soft); border-color: color-mix(in srgb, var(--info) 35%, transparent); }
+  .callout.good { background: var(--good-soft); border-color: color-mix(in srgb, var(--good) 35%, transparent); }
+  .callout.risk { background: var(--risk-soft); border-color: color-mix(in srgb, var(--risk) 35%, transparent); }
+  .callout p { margin: 0; }
+  .callout .tag { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.04em; border-radius: 999px; padding: 2px 10px; margin-bottom: 8px; }
+  .callout.info .tag { color: var(--info); border: 1px solid var(--info); }
+  .callout.good .tag { color: var(--good); border: 1px solid var(--good); }
+  .callout.risk .tag { color: var(--risk); border: 1px solid var(--risk); }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; margin: 12px 0; }
+  th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.03em; color: var(--muted); font-weight: 700; }
+  td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; }
+  .table-wrap table { margin: 0; }
+  .table-wrap th:first-child, .table-wrap td:first-child { padding-left: 14px; }
+  .chart-card { background: var(--bg-raised); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; margin: 14px 0; }
+  .chart-card .chart-title { font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 10px; }
+  .bar-row { display: grid; grid-template-columns: 160px 1fr 60px; align-items: center; gap: 10px; margin-bottom: 9px; font-size: 13px; }
+  .bar-track { background: var(--border); border-radius: 5px; height: 14px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 5px; }
+  .bar-fill.a { background: var(--muted); }
+  .bar-fill.b { background: var(--accent); }
+  .bar-fill.c { background: var(--good); }
+  .bar-fill.d { background: var(--risk); }
+  .bar-val { text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); font-size: 12px; }
+  .chart-note { font-size: 12px; color: var(--muted); margin-top: 8px; }
+  .branch-card { border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; margin-bottom: 16px; background: var(--bg-raised); }
+  .branch-card h3 { margin-top: 0; font-size: 16px; font-family: var(--serif); }
+  .branch-meta { display: grid; grid-template-columns: 110px 1fr; gap: 8px 14px; font-size: 13.5px; margin: 10px 0; }
+  .branch-meta .k { color: var(--muted); font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.02em; padding-top: 1px; }
+  .branch-score { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 9px; border-radius: 999px; margin-left: 6px; }
+  .branch-score.high { background: var(--good-soft); color: var(--good); }
+  .branch-score.mid { background: var(--accent-soft); color: var(--accent); }
+  .branch-score.low { background: var(--risk-soft); color: var(--risk); }
+  .caveat { background: var(--risk-soft); border: 1px solid color-mix(in srgb, var(--risk) 30%, transparent); border-radius: 10px; padding: 12px 16px; font-size: 13px; margin: 14px 0; }
+  .formula { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 11.5px; background: var(--bg); border: 1px dashed var(--border); border-radius: 8px; padding: 8px 10px; margin: 6px 0 10px; color: var(--muted); }
+  footer { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted); }
+  footer p { margin: 6px 0; }
+
+  /* ── 모바일 안전망 (report_mobile_safety_css.dart와 동일 내용 — 09번 문서 Rule 15) */
+  * { overflow-wrap: break-word; }
+  img, svg { max-width: 100%; height: auto; }
+  table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: nowrap; }
+  @media (max-width: 640px) {
+    body { font-size: 15px; }
+    .page { padding: 32px 16px 80px; }
+    .branch-meta { grid-template-columns: 1fr !important; }
+    .bar-row { grid-template-columns: 1fr !important; row-gap: 4px; }
+    .region-card, .branch-card, .callout { padding: 14px 16px !important; }
+  }
+</style>
+
+<div class="page">
+  <p class="eyebrow">전략 리포트 · 출시 반응 예측</p>
+  <h1>ReleasePilot — 지금 형태 그대로 더 넓게 쓰이면 어떤 반응일까</h1>
+  <p class="subtitle">
+    프로젝트 <code>23AppdeveloperReleaser</code> · 버전 <code>0.17.0</code> · 2026-08-02 작성 ·
+    현재 App Store/Play Console에 등록된 적 없는 <strong>제작자 본인 전용 로컬 데스크톱 도구</strong> 상태를 기준으로,
+    "만약 다른 인디 개발자들에게 공개한다면" 시나리오를 예측한다.
+  </p>
+
+  <div class="callout risk">
+    <span class="tag">가장 먼저 밝히는 한계</span>
+    <p>
+      이 리포트는 실제 사용자 테스트·설문·광고 집행 데이터를 기반으로 하지 않는다. 지금까지 이 앱을 써본
+      사람은 제작자 1명뿐이라 "반응"을 측정할 표본 자체가 없다 <strong>(확인 안 됨)</strong>. 아래 내용은
+      (1) 이 앱이 실제로 구현한 기능 목록, (2) Fastlane·App Store Connect API·Craft 등 공개적으로 잘 알려진
+      동종 카테고리 도구들과의 일반적인 포지셔닝 차이에 대한 이 세션의 판단을 근거로 한 <strong>정성적 추정</strong>이다.
+      숫자로 표현된 항목은 전부 실측이 아니라 상대적 비교를 위한 자체 채점임을 표를 볼 때마다 함께 읽어달라.
+    </p>
+  </div>
+
+  <section>
+    <h2>1. 지금 상태를 있는 그대로 정리하면</h2>
+    <p class="section-lede">"출시 반응"을 예측하기 전에, 예측 대상이 정확히 무엇인지부터 명확히 한다.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>항목</th><th>현재 상태</th></tr></thead>
+        <tbody>
+          <tr><td>배포 형태</td><td>macOS 데스크톱 앱(Flutter) — App Store/Play Console에 등록되지 않음, 소스만 로컬에 존재</td></tr>
+          <tr><td>실사용자</td><td>제작자 본인 1명 — 자신이 개발 중인 다른 앱들(RiseSync, 사계기록, 1psygame 등)의 출시 준비에 실제로 사용 중</td></tr>
+          <tr><td>핵심 기능 완성도</td><td>App Vault·프로젝트 분석·Draft Studio·전략 리포트 보관함·마케팅 감각 게임·Must 현황판·게임 기획서 빌더·웹→iOS 변환까지 코드로 구현되고 테스트가 붙어 있음</td></tr>
+          <tr><td>비교 대상 카테고리</td><td>Fastlane(자동화 스크립트), App Store Connect API 직접 연동 툴, Craft/AppFigures류 ASO 대시보드 — 전부 이미 존재하는 유료/무료 도구들 <strong>(정성적 비교, 정량 벤치마크는 확인 안 됨)</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>2. 강점 — 만약 공개한다면 무엇이 먹힐까</h2>
+    <div class="branch-card">
+      <h3>① API 최소화·로컬 우선 아키텍처 <span class="branch-score high">차별점</span></h3>
+      <div class="branch-meta">
+        <div class="k">근거</div><div>대부분의 CLI(<code>report_cli.dart</code>, <code>blueprint_cli.dart</code> 등)와 웹→iOS 변환 기능이 유료 API 호출 없이 순수 <code>dart:io</code>로 동작 — PNG 아이콘조차 직접 구현한 인코더로 생성</div>
+        <div class="k">왜 먹힐까</div><div>인디 개발자는 대부분 무료/저비용 도구를 선호하고, "내 데이터를 외부 서버로 안 보낸다"는 점이 신뢰 요소가 될 수 있음</div>
+      </div>
+    </div>
+    <div class="branch-card">
+      <h3>② 리포트가 프로젝트에 영구 축적됨 <span class="branch-score high">차별점</span></h3>
+      <div class="branch-meta">
+        <div class="k">근거</div><div>전략 리포트·게임 기획서·사용법 가이드가 버전/개정판과 함께 쌓이고, GitHub Pages 허브에 공개 링크로 남음</div>
+        <div class="k">왜 먹힐까</div><div>대부분의 경쟁 도구는 "한 번 실행하고 끝"인데, 이 앱은 의사결정 이력 자체가 자산으로 남는다 — 특히 여러 앱을 동시에 굴리는 1인 개발자에게 유효</div>
+      </div>
+    </div>
+    <div class="branch-card">
+      <h3>③ 마케팅 이론을 게임으로 체험시킴 <span class="branch-score mid">호불호 갈릴 차별점</span></h3>
+      <div class="branch-meta">
+        <div class="k">근거</div><div>퍼널·K-factor·CAC:LTV를 스토리 모드로 체험하게 하는 마케팅 감각 게임</div>
+        <div class="k">왜 먹힐까/왜 안 먹힐까</div><div>마케팅 지식이 부족한 개발자에겐 학습 도구로 매력적이나, 이미 잘 아는 개발자에겐 "장난스럽다"는 인상을 줄 위험도 있음</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>3. 리스크 — 공개 전에 반드시 검증해야 할 것</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>리스크</th><th>구체적 실패 시나리오</th></tr></thead>
+        <tbody>
+          <tr><td>단일 사용자 검증의 한계</td><td>제작자 본인의 워크플로우에만 맞춰져 있어, 다른 개발자의 프로젝트 구조(다른 언어/프레임워크)에서는 "진행해" 분석·프로젝트 스캔이 제대로 안 될 가능성 — 아직 Flutter/Dart 외 프로젝트로 검증된 적 없음(확인 안 됨)</td></tr>
+          <tr><td>배포 채널 없음</td><td>macOS 데스크톱 전용 + 미서명 상태라, 공개하려면 최소 노터라이즈(공증) 또는 오픈소스 배포 방식부터 정해야 함 — 지금은 "설치해서 써보세요"가 성립하지 않음</td></tr>
+          <tr><td>Claude CLI 의존 기능의 온보딩 장벽</td><td>프로젝트 분석·사용법 기획서 자동 생성 등 일부 기능은 로컬에 Claude CLI가 있을 때 가장 잘 동작 — 없으면 "복사해서 붙여넣기" 폴백으로 체감 품질이 떨어짐</td></tr>
+          <tr><td>포지셔닝 모호성</td><td>"분석 도구"·"출시 마법사"·"전략 리포트 생성기"·"마케팅 학습 게임"이 한 앱 안에 다 있어, 한 문장으로 설명하기 어려움 — 첫 인상에서 "이게 정확히 뭐 하는 앱이지?"라는 반응이 나올 가능성이 가장 큰 리스크로 판단됨</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="caveat">
+      <strong>정직하게 말씀드리는 한계</strong> — 위 리스크들은 코드와 기능 목록을 근거로 한 논리적 추론이며,
+      실제 다른 개발자에게 보여준 뒤 나온 피드백이 아니다. 가장 신뢰도 높은 다음 단계는 시장 예측을 더
+      정교화하는 것이 아니라, <strong>실제로 개발자 2~3명에게 써보게 하고 반응을 관찰하는 것</strong>이다.
+    </div>
+  </section>
+
+  <section>
+    <h2>4. 시나리오별 반응 예측 (정성적 추정 — 실측 아님)</h2>
+    <p class="section-lede">"공개한다면"을 가정한 세 시나리오. 숫자는 실측이 아니라 이 세션이 매긴 상대 점수(10점 만점)다.</p>
+    <div class="chart-card">
+      <div class="chart-title">시나리오별 예상 반응 (근거: 기능 완성도 vs 포지셔닝 명확성 vs 온보딩 난이도, 자체 채점)</div>
+      <div class="bar-row"><div>인디 개발자 커뮤니티 소개</div><div class="bar-track"><div class="bar-fill c" style="width:70%"></div></div><div class="bar-val">7/10</div></div>
+      <div class="chart-note">"공짜로 스토어 등록 서류 작업 도와준다"는 한 줄 소개가 명확할 때 — 니치하지만 실제 페인포인트를 건드림</div>
+      <div style="height:10px"></div>
+      <div class="bar-row"><div>일반 대중 대상 홍보</div><div class="bar-track"><div class="bar-fill d" style="width:15%"></div></div><div class="bar-val">1.5/10</div></div>
+      <div class="chart-note">개발자 도구라 일반 대중 타겟 자체가 성립하지 않음 — 이 축으로 마케팅하면 반응이 거의 없을 것</div>
+      <div style="height:10px"></div>
+      <div class="bar-row"><div>오픈소스로 공개(비영리)</div><div class="bar-track"><div class="bar-fill b" style="width:55%"></div></div><div class="bar-val">5.5/10</div></div>
+      <div class="chart-note">코드 품질(테스트 존재, 문서화 습관)은 긍정적이지만, "왜 Fastlane이 아니라 이걸 써야 하는지"에 대한 답이 아직 약함</div>
+    </div>
+    <div class="caveat">
+      결론: 지금 상태에서 가장 현실적인 다음 걸음은 "출시"가 아니라 <strong>좁은 범위(인디 개발자 커뮤니티 1~2곳)에
+      한정 공개해 실제 반응을 관찰하는 것</strong>이다. 포지셔닝을 "만능 툴"이 아니라 "스토어 서류 작업 비서"
+      한 줄로 좁히는 것이 첫 인상 리스크(위 3번 표 마지막 행)를 줄이는 가장 저비용 수정이다.
+    </div>
+  </section>
+
+  <footer>
+    <p>생성: ReleasePilot(23AppdeveloperReleaser) · 리서치·소싱 표준(11번 문서) 적용 — 이 리포트는 신규 WebSearch/외부 API 호출 없이, 이미 확인된 코드베이스 사실과 이 세션의 정성적 판단만으로 작성됨(문서 09번 "숫자는 출처 없으면 추정치로 명시" 원칙에 따라 전 항목 추정치로 표기)</p>
+  </footer>
+</div>
