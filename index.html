@@ -550,7 +550,11 @@ fetch('reports/manifest.json').then(r => r.ok ? r.json() : []).then(items => {
 
   const kindsPresent = [...new Set(nonBetaItems.map(it => it.reportKind))].sort((a, b) => kindRank(a) - kindRank(b));
   kindsPresent.forEach((kind, i) => {
-    const count = nonBetaItems.filter(it => it.reportKind === kind).length;
+    // 개정판(rev)마다 따로 세면 사실 같은 리포트인데도 "5건"처럼 부풀려
+    // 보인다(2026-08-03 피드백: "중복되거나 쓸모없는 데이터"). 상세보기가
+    // 이미 앱별로 최신 개정판만 대표로 묶어 보여주므로(아래 openDetail),
+    // 여기 배지 숫자도 그 앱 단위로 세어 항상 일치시킨다.
+    const count = new Set(nonBetaItems.filter(it => it.reportKind === kind).map(it => it.appName)).size;
     const color = PALETTE[i % PALETTE.length];
     const card = document.createElement('button');
     card.className = 'menu-card';
@@ -598,7 +602,7 @@ fetch('reports/manifest.json').then(r => r.ok ? r.json() : []).then(items => {
     tile.innerHTML = `
       <div class="app-icon" style="background:${color.bg};color:${color.fg}">${glyph}</div>
       <div class="name">${appName}</div>
-      <div class="count">${reports.length}건</div>`;
+      <div class="count">${kinds.length}종</div>`;
     appsEl.appendChild(tile);
 
     const group = document.createElement('section');
