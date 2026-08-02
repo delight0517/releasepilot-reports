@@ -1,0 +1,87 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>35Closer Timer 사용 가이드</title><style>  :root {
+    --ink: #1c2333; --ink-soft: #2a3348; --parchment: #f6f1e6; --parchment-card: #fffdf7;
+    --line: #ded2b8; --accent: #4f7cac; --accent-strong: #34597a;
+    --text: #241f14; --text-soft: #5c5644; --text-faint: #8b8368;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink: #0f1420; --parchment: #171c26; --parchment-card: #1f2532; --line: #333c4d;
+      --accent: #7fa8d6; --accent-strong: #a9c6e8;
+      --text: #ece6d8; --text-soft: #b8b19c; --text-faint: #7b7663;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ink: #0f1420; --parchment: #171c26; --parchment-card: #1f2532; --line: #333c4d;
+    --accent: #7fa8d6; --accent-strong: #a9c6e8;
+    --text: #ece6d8; --text-soft: #b8b19c; --text-faint: #7b7663;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--parchment); color: var(--text); font-family: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", "Segoe UI", sans-serif; line-height: 1.6; }
+  .page { max-width: 680px; margin: 0 auto; padding: 0 0 64px; }
+  .masthead { background: linear-gradient(180deg, var(--ink) 0%, var(--ink-soft) 100%); color: #eef3f8; padding: 28px 20px 24px; }
+  .eyebrow { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #c3d3e6; margin: 0 0 6px; font-weight: 600; }
+  .masthead h1 { font-family: Georgia, serif; font-size: 27px; margin: 0 0 8px; }
+  .masthead p.sub { margin: 0; font-size: 14px; color: #c9d6e4; max-width: 50ch; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .meta-chip { font-size: 12px; padding: 5px 10px; border-radius: 999px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.16); color: #e3ecf5; }
+  section { padding: 22px 20px 4px; }
+  .section-label { display: flex; align-items: baseline; gap: 8px; margin-bottom: 12px; }
+  .section-label .num { font-size: 12px; color: var(--accent-strong); font-weight: 700; letter-spacing: 0.06em; }
+  .section-label h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-soft); margin: 0; font-weight: 700; }
+  .card { background: var(--parchment-card); border: 1px solid var(--line); border-radius: 14px; padding: 18px; }
+  .ug-step { border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin-top: 10px; }
+  .ug-step:first-child { margin-top: 0; }
+  .ug-step-head { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+  .ug-step-n { width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+  .ug-step-title { font-size: 14px; font-weight: 700; }
+  .ug-step-oneliner { font-size: 12.5px; color: var(--text-soft); margin: 0 0 8px; padding-left: 10px; border-left: 3px solid var(--accent); }
+  .ug-plain-list { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+  .ug-plain-list li { font-size: 12.5px; color: var(--text-soft); }
+  .ug-mini { font-size: 12px; font-weight: 700; color: var(--accent-strong); margin: 14px 0 4px; }
+  .ug-mini:first-of-type { margin-top: 0; }
+  .ug-desc { font-size: 13px; color: var(--text-soft); margin: 0 0 10px; }
+  .ug-done { color: var(--text-faint); }
+  footer { padding: 24px 20px 0; font-size: 11.5px; color: var(--text-faint); text-align: center; }
+  </style><div class="page"><div class="masthead">
+  <p class="eyebrow">35Closer Timer · 사용법 기획서 + 작업 일지</p>
+  <h1>35Closer Timer 사용 가이드</h1>
+  <p class="sub">이 앱을 처음 보는 사람도 화면을 눌러가며 이해할 수 있게 — 전문 용어 없이, 무슨 화면이 뜨고 뭘 누르면 뭐가 되는지 하나씩.</p>
+  <div class="meta-row"><span class="meta-chip">v1.0.0</span><span class="meta-chip">개정판 1</span></div>
+</div><section>
+  <div class="section-label"><span class="num">01</span><h2>개요 — 이 앱은 무엇을 위한 것인가</h2></div>
+  <div class="card"><p class="ug-desc">macOS용 원형 카운트다운 타이머 + 전원 관리 앱. 타이머 종료 시 Sleep/Restart/Shut down/Just notify 중 하나를 실행하고, 무입력 시간 기반 자동 절전(autoIdle)과 화면/시스템 절전 방지(keepAwake)를 제공한다.</p><p class="ug-desc">전원 진단 기능으로 macOS의 절전 타이머·최근 절전 사유·OS 레벨 전원 예약(pmset)을 한 화면에서 확인/조정할 수 있고, 이 세션에서 Claude Code 사용 이력을 3개월치 로그로 남겨 현장(로컬)/원격 세션을 구분하고 사용량 한도 도달 시 안전하게 절전시키는 기능도 갖고 있다.</p></div>
+</section><section>
+  <div class="section-label"><span class="num">02</span><h2>핵심 사용 흐름</h2></div>
+  <div class="card"><div class="ug-step">
+  <div class="ug-step-head"><span class="ug-step-n">1</span><span class="ug-step-title">타이머 설정 및 시작</span></div>
+  <p class="ug-step-oneliner">홈 화면에서 시간을 정하고 시작하면 원형으로 카운트다운된다.</p>
+  <ol class="ug-plain-list"><li>홈 화면에서 시간을 설정한다.</li><li>종료 시 동작(Sleep/Restart/Shut down/알림만)을 고른다.</li></ol>
+</div><div class="ug-step">
+  <div class="ug-step-head"><span class="ug-step-n">2</span><span class="ug-step-title">자동 절전 / 절전 방지</span></div>
+  <p class="ug-step-oneliner">autoIdle은 N시간 무입력 시 자동 절전(Claude/Codex 활동 중이면 보류), keepAwake는 절전을 방지한다.</p>
+  <ol class="ug-plain-list"><li>설정에서 autoIdle 임계 시간을 정한다.</li><li>keepAwake로 원하는 강도의 절전 방지를 켠다.</li></ol>
+</div><div class="ug-step">
+  <div class="ug-step-head"><span class="ug-step-n">3</span><span class="ug-step-title">전원 진단</span></div>
+  <p class="ug-step-oneliner">홈 화면 "전원 진단"에서 pmset 절전 타이머, 실제 절전 사유 로그, OS 레벨 반복/일회성 전원 예약을 본다.</p>
+  <ol class="ug-plain-list"><li>관리자 암호 확인 후 pmset 절전 타이머를 직접 조정할 수 있다.</li><li>"왜 자꾸 절전모드로 들어가"류 문제는 여기서 먼저 확인한다.</li></ol>
+</div><div class="ug-step">
+  <div class="ug-step-head"><span class="ug-step-n">4</span><span class="ug-step-title">Claude 세션 로그 확인</span></div>
+  <p class="ug-step-oneliner">어떤 프롬프트를, 언제, 어디서(현장/원격) 보냈고 어떤 도구를 썼는지 3개월치 기록을 본다.</p>
+  <ol class="ug-plain-list"><li>로그 항목마다 현장(파란색)/원격(보라색) 배지가 붙는다.</li><li>사용량/속도 제한 경고가 감지되면 리마인더가 생기고, 실제 유휴 시에만 안전하게 절전된다.</li></ol>
+</div><div class="ug-step">
+  <div class="ug-step-head"><span class="ug-step-n">5</span><span class="ug-step-title">리마인더 및 Claude 계정 전환</span></div>
+  <p class="ug-step-oneliner">자리에 돌아왔을 때/앱 실행 시 뜨는 대기 리마인더, 여러 Claude 계정 프로필 전환.</p>
+  <ol class="ug-plain-list"><li>리마인더 시트에서 복사-붙여넣기용 본문을 바로 복사한다.</li></ol>
+</div></div>
+</section><section>
+  <div class="section-label"><span class="num">03</span><h2>화면별 사용법 — 빠른 레퍼런스</h2></div>
+  <div class="card"><h5 class="ug-mini">홈 화면</h5><p class="ug-desc">타이머 설정/시작, 각 기능 진입점 배지.</p><h5 class="ug-mini">전원 진단 시트</h5><p class="ug-desc">pmset 절전 타이머·절전 사유 로그·OS 전원 예약.</p><h5 class="ug-mini">Claude 커맨드 로그 시트</h5><p class="ug-desc">프롬프트/도구 사용 이력, 현장·원격 배지, 진행 중 표시.</p><h5 class="ug-mini">대기 리마인더 시트</h5><p class="ug-desc">자리 복귀/앱 실행 시 뜨는 할 일 목록.</p><h5 class="ug-mini">Claude 계정 시트</h5><p class="ug-desc">여러 Claude 계정 프로필 등록/전환.</p></div>
+</section><section>
+  <div class="section-label"><span class="num">04</span><h2>작업 일지</h2></div>
+  <div class="card"><h5 class="ug-mini">2026-08-02</h5><p class="ug-desc">원격/현장 Claude 세션 구분(HID idle time 기반) + 신규 세션 시작 알림 + 사용량 한도 도달 시 안전 절전 기능 추가. 이후 보완: 한도 메시지에서 실제 재충전 시각을 파싱해 정확한 시각에 기상 예약(pmset schedule wake), 파싱 실패 시 임의로 긴 시간을 추측하지 않고 30분 뒤 재확인하는 방식으로 변경.</p><h5 class="ug-mini">2026-08-01</h5><p class="ug-desc">전원 진단 기능 추가(pmset 절전 타이머 직접 조정, 절전 사유 3분 간격 기록), OS 레벨 전원 예약 조회, 원격 전용 안전망 sleep-cycle 명령(유휴 감지는 그대로 두고 기상만 OS 스케줄로 backstop).</p></div>
+</section><section>
+  <div class="section-label"><span class="num">05</span><h2>TODO</h2></div>
+  <div class="card"><ul class="ug-plain-list" style="padding-left:0;list-style:none;"><li>☐ 포모도로 세션 상태를 프레즌스 신호로 보조 활용할지 검토 — 보류(위 Auto Pomodoro TODO와 동일 결론)</li></ul></div>
+</section><footer>35Closer Timer 자동 생성 · 사용법 기획서(개정 1)</footer></div>
