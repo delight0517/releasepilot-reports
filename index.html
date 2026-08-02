@@ -77,12 +77,17 @@
     font-size: 24px; width: 44px; height: 44px; display: flex; align-items: center;
     justify-content: center; background: var(--accent-soft); border-radius: 12px;
   }
-  .flow-node .label { font-size: 12px; font-weight: 700; line-height: 1.3; }
-  .flow-node .desc { font-family: var(--mono); font-size: 9px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--accent-ink); }
+  .flow-node { width: 148px; }
+  .flow-node .label { font-size: 12.5px; font-weight: 700; line-height: 1.3; }
+  .flow-node .tag { font-family: var(--mono); font-size: 8.5px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--accent-ink); }
+  .flow-node .desc { font-size: 10.5px; line-height: 1.4; color: var(--ink-dim); }
   .flow-arrow { flex: none; width: 30px; display: flex; align-items: center; justify-content: center; color: var(--ink-faint); font-size: 16px; margin-top: 32px; }
 
   /* Menu cards — magazine cover grid, lift-on-hover like an App Store shelf */
   .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  @media (max-width: 480px) {
+    .menu-grid { grid-template-columns: 1fr; }
+  }
   .menu-card {
     background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 20px 20px 18px;
     box-shadow: var(--shadow-1); text-align: left; cursor: pointer;
@@ -131,7 +136,10 @@
   .cover-card .glyph-badge { width: 46px; height: 46px; border-radius: 13px; font-size: 21px; flex: none; }
   .cover-card .body { flex: 1; min-width: 0; }
   .cover-card .app-name { font-family: var(--mono); font-size: 10.5px; font-weight: 700; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.04em; }
-  .cover-card .title { font-size: 14.5px; font-weight: 600; margin: 3px 0 4px; }
+  .cover-card .title {
+    font-size: 14.5px; font-weight: 600; line-height: 1.4; margin: 3px 0 4px;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
   .cover-card .meta { font-size: 11px; color: var(--ink-faint); }
   .cover-card .chev { color: var(--ink-faint); font-size: 16px; flex: none; }
 
@@ -189,7 +197,10 @@
   .report-row:hover { background: var(--card-2); }
   .report-row + .report-row { border-top: 1px solid var(--line); padding-top: 12px; }
   .report-row .body { flex: 1; min-width: 0; }
-  .report-title { font-size: 14.5px; font-weight: 600; color: var(--ink); margin: 0 0 3px; }
+  .report-title {
+    font-size: 14.5px; font-weight: 600; line-height: 1.4; color: var(--ink); margin: 0 0 5px;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
   .report-meta { font-family: var(--mono); font-size: 11px; color: var(--ink-faint); }
   .chev { color: var(--ink-faint); font-size: 16px; flex: none; }
 
@@ -201,7 +212,7 @@
   .older-list { display: none; }
   .older-list.open { display: block; }
   .older-list .report-row { padding: 9px 16px 9px 26px; }
-  .older-list .report-title { font-size: 13px; font-weight: 500; color: var(--ink-dim); }
+  .older-list .report-title { font-size: 13px; font-weight: 500; line-height: 1.4; color: var(--ink-dim); }
 
   .empty { font-size: 14px; color: var(--ink-faint); padding: 40px 4px; text-align: center; }
   footer { margin-top: 72px; padding-top: 24px; border-top: 1px solid var(--line); font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint); text-align: center; letter-spacing: 0.02em; }
@@ -209,10 +220,10 @@
 
 <div class="wrap">
   <div class="hero">
-    <p class="eyebrow">ReleasePilot · Cross-Project Report Hub</p>
+    <p class="eyebrow">ReleasePilot · 프로젝트 통합 리포트 허브</p>
     <h1>모든 앱의 결정이,<br>한곳에 쌓입니다.</h1>
-    <p>CTR 분석부터 MVP 결정, 출시 전략까지 — ReleasePilot이 만든 리포트를 앱별로 모아봅니다.
-       가장 최근 것만 보이고, 지난 버전은 펼쳐서 확인할 수 있어요.</p>
+    <p>시장 분석부터 MVP 결정, 출시 전략까지 — 앱별 리포트 저장소.
+       최신 버전만 표시, 이전 버전은 펼쳐서 확인.</p>
   </div>
 
   <!-- 리포트 종류 메뉴 + 관계도 -->
@@ -237,8 +248,8 @@
     <div id="groups"></div>
   </div>
 
-  <p class="empty" id="empty" style="display:none;">아직 게시된 리포트가 없습니다.</p>
-  <footer>ReleasePilot Report Hub · Static page, no build step</footer>
+  <p class="empty" id="empty" style="display:none;">아직 게시된 리포트 없음.</p>
+  <footer>ReleasePilot Report Hub</footer>
 </div>
 
 <script>
@@ -273,11 +284,11 @@ const KIND_ORDER = [
 ];
 const KIND_LABELS = {
   'app_blueprint': '앱 블루프린트',
-  'region_target_ctr': 'CTR · 지역·타겟 전략',
-  'route_candidates': 'CTR 루트 후보',
+  'region_target_ctr': '지역·타겟 클릭률 분석',
+  'route_candidates': '타겟 후보 비교',
   'mvp_consultation': 'MVP 상담',
-  'reliability_gtm_strategy': '출시 반응 예측 · GTM 전략',
-  'regional_fit_expansion_plan': '지역 적합도 점수 + 확장 기획안',
+  'reliability_gtm_strategy': '출시 반응 예측 · 마케팅 전략',
+  'regional_fit_expansion_plan': '지역 적합도 + 확장 기획',
   'must_board': 'Must 현황판',
   'feedback_loop': '반려 피드백 기록',
   'game_design_blueprint': '게임 기획서',
@@ -293,18 +304,18 @@ const KIND_LABELS = {
 // 자동 생성하는 kindDesc()의 폴백은 사람이 채우기 전까지의 임시 방편일
 // 뿐, 최종 상태가 아니다.
 const KIND_DESC = {
-  'app_blueprint': '이 앱의 실제 코드를 읽어서 "이게 빠지면 앱이 성립 안 하는" 핵심 기능 하나와 부가 기능, 숨은 제약사항을 정리한 조사 결과.',
-  'region_target_ctr': '어떤 지역·타겟에게 광고했을 때 클릭이 잘 나올지, 근거 있는 벤치마크로 계산한 첫 시장 진단.',
-  'route_candidates': 'CTR로 비교해본 여러 타겟·채널 조합 후보들 — 그중 하나를 골라 집중 개발할 수 있게 나란히 모아둔 목록.',
-  'mvp_consultation': '핵심 기능부터 홍보 문구까지, 대화로 하나씩 정해나간 MVP 결정 사항 모음.',
-  'reliability_gtm_strategy': '지금 그대로 출시하면 어떤 반응이 예상되는지, 그리고 어디서·누구에게·어떤 기능을 강조해야 성공 확률이 가장 높은지에 대한 심층 조사.',
-  'regional_fit_expansion_plan': '계층별 반응·예상 수익까지 계산한 "지금 그대로" 진단에 이어서, 후보 지역들이 지금 코드와 얼마나 잘 맞는지·5~10년 뒤에도 잘 맞을지를 점수로 매기고, 그 결과로 어디서 먼저 출시할지 1~3가지 안을 제시하는 확장 기획안.',
-  'must_board': '지금 답해야 할 질문(우선순위 순)과, 그 질문에 답해서 확정된 Must 체크리스트를 한곳에 모은 현황판 — LLM이 매번 새로 쓰지 않고, 실제로 기록된 결정만 그대로 보여줌.',
-  'feedback_loop': '스토어 반려 사유를 접수하고, 고친 버전·근거와 함께 해결 여부를 추적한 기록.',
-  'game_design_blueprint': '게임의 세계관·모드·진행 방식과 승패 조건까지 담은 기획서.',
-  'usage_guide_worklog': '이 앱을 처음 보는 사람도 화면별로 어떻게 쓰는지 알 수 있게 만든 사용설명서 겸 작업 일지.',
-  'future_viability': '지금 방향으로 계속 갔을 때 1~3년 뒤 이 앱이 살아남을지에 대한 장기 전망.',
-  'feature_concept_blueprint': '아직 코드가 없는 신규 기능/모듈을 위해 먼저 정리한 개념 정의 — 이후 리포트는 이 문서를 근거로 작성됨.',
+  'app_blueprint': '앱 코드를 직접 읽어 핵심 기능·부가 기능·숨은 제약사항을 정리한 조사 결과.',
+  'region_target_ctr': '어떤 지역·타겟에 광고하면 클릭이 잘 나올지, 클릭률(CTR) 벤치마크로 계산한 첫 시장 진단.',
+  'route_candidates': '클릭률로 비교한 여러 타겟·채널 후보 — 그중 하나를 골라 집중 개발하기 위한 비교표.',
+  'mvp_consultation': '핵심 기능부터 홍보 문구까지, 대화로 하나씩 정한 MVP 결정 모음.',
+  'reliability_gtm_strategy': '지금 그대로 출시하면 반응이 어떨지, 어디서·누구에게·무엇을 강조해야 잘 될지에 대한 예측.',
+  'regional_fit_expansion_plan': '후보 지역이 지금 코드·5~10년 뒤 흐름과 얼마나 맞는지 점수로 매겨, 어디서 먼저 출시할지 제안하는 확장 기획.',
+  'must_board': '지금 결정해야 할 질문과, 이미 확정된 Must 체크리스트를 한곳에 모은 현황판.',
+  'feedback_loop': '스토어 반려 사유와 해결 여부를 추적한 기록.',
+  'game_design_blueprint': '게임의 세계관·모드·진행 방식·승패 조건을 담은 기획서.',
+  'usage_guide_worklog': '처음 보는 사람도 화면별로 어떻게 쓰는지 알 수 있는 사용설명서 겸 작업 일지.',
+  'future_viability': '지금 방향으로 갔을 때 1~3년 뒤 살아남을지에 대한 장기 전망.',
+  'feature_concept_blueprint': '아직 코드 없는 신규 기능의 개념 정의 — 이후 리포트가 근거로 삼는 문서.',
 };
 const KIND_GLYPH = {
   'app_blueprint': '🔎',
@@ -323,6 +334,17 @@ const KIND_GLYPH = {
 // 관계도에 쓰는, 자연스러운 기획 흐름 — 실제로는 앱마다 순서가 다를 수 있지만
 // "보통 이렇게 이어진다"는 기본 경로를 보여줌.
 const FLOW = ['app_blueprint', 'region_target_ctr', 'route_candidates', 'mvp_consultation', 'reliability_gtm_strategy', 'feedback_loop'];
+// 관계도 카드 안 한 줄 설명 — 라벨만 보고는 뭘 하는 단계인지 알기 어려워서
+// (용어를 몰라도) 바로 이해되게 짧게 추가. KIND_DESC 전체 문장 대신 훨씬
+// 짧은 버전을 따로 둔다 — 좁은 카드 안에서 한 줄~두 줄로 끝나야 하므로.
+const FLOW_DESC = {
+  'app_blueprint': '코드로 핵심 기능 파악',
+  'region_target_ctr': '어디서 잘 될지 진단',
+  'route_candidates': '후보 나란히 비교',
+  'mvp_consultation': 'MVP 결정',
+  'reliability_gtm_strategy': '출시 반응 예측',
+  'feedback_loop': '반려 대응·기록',
+};
 
 function iconFor(appName) {
   return ICONS[appName.toLowerCase()] || appName.trim().charAt(0).toUpperCase() || '·';
@@ -367,8 +389,9 @@ function buildFlow() {
     const node = document.createElement('div');
     node.className = 'flow-node';
     node.innerHTML = `<div class="glyph">${kindGlyph(kind)}</div>
+      <div class="tag">${i === 0 ? 'START' : i === FLOW.length - 1 ? 'END' : ''}</div>
       <div class="label">${kindLabel(kind)}</div>
-      <div class="desc">${i === 0 ? 'START' : i === FLOW.length - 1 ? 'END' : ''}</div>`;
+      <div class="desc">${FLOW_DESC[kind] || ''}</div>`;
     flowEl.appendChild(node);
     if (i < FLOW.length - 1) {
       const arrow = document.createElement('div');
@@ -413,7 +436,7 @@ function openDetail(kind, allItems) {
     <div class="glyph-badge" style="background:#fdf0d8;color:#a3690a">🧪</div>
     <div>
       <h3>베타 기능</h3>
-      <p>아직 정식 기능이 아니라 실험 중인 컨셉/모듈 — 블루프린트와 GTM 리포트를 한곳에 모아 관리·열람하기 쉽게 묶었습니다.</p>
+      <p>아직 정식 기능이 아닌 실험 단계 컨셉/모듈 모음 — 종류 상관없이 한곳에 정리.</p>
     </div>`
     : `
     <div class="glyph-badge" style="background:#e7edf6;color:var(--accent)">${kindGlyph(kind)}</div>
