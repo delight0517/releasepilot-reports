@@ -518,7 +518,10 @@ function closeDetail() {
 
 document.getElementById('backBtn').addEventListener('click', closeDetail);
 
-fetch('reports/manifest.json').then(r => r.ok ? r.json() : []).then(items => {
+// cache: 'no-store' — 새 리포트를 올려도 브라우저(특히 iOS Safari)가 이전
+// manifest.json을 캐시에서 그대로 재사용해 "방금 올린 게 안 보인다"는
+// 문제가 반복돼(2026-08-03), 매번 네트워크에서 새로 받도록 강제한다.
+fetch('reports/manifest.json', { cache: 'no-store' }).then(r => r.ok ? r.json() : []).then(items => {
   buildFlow();
 
   // 리포트 메뉴 — 실제로 존재하는 종류만 보여주되, 하나도 없는 경우는 숨김.
