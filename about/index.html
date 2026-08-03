@@ -38,14 +38,20 @@
   html { scroll-behavior: smooth; }
   body {
     margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans);
-    line-height: 1.6; -webkit-font-smoothing: antialiased;
-    /* 등고선(topographic contour) 느낌 — 지도 제작자 모티프를 색상뿐 아니라
-       배경 텍스처로도 실제로 보여줌. 장식일 뿐이라 본문 대비엔 영향 없음. */
-    background-image:
-      repeating-radial-gradient(circle at 12% -6%, transparent 0, transparent 38px, var(--map-line) 39px, var(--map-line) 40px, transparent 41px),
-      repeating-radial-gradient(circle at 96% 30%, transparent 0, transparent 52px, var(--map-line) 53px, var(--map-line) 54px, transparent 55px);
+    line-height: 1.6; -webkit-font-smoothing: antialiased; position: relative;
   }
-  .wrap { max-width: 700px; margin: 0 auto; padding: 0 22px 100px; }
+  /* 등고선(topographic contour) 텍스처 — 처음 버전은 페이지 전체에 촘촘한
+     링을 반복시켜서 정작 글이 안 읽히는 소음이 됐다(스크린샷으로 확인 후
+     즉시 수정). 히어로 뒤쪽에만, 아주 성기고 흐리게, 아래로 갈수록 완전히
+     사라지도록(mask fade) 국한해서 "장식"과 "가독성" 둘 다 잡는다. */
+  body::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 560px; z-index: -1;
+    background-image:
+      repeating-radial-gradient(circle at 15% -10%, transparent 0, transparent 64px, var(--map-line) 65px, var(--map-line) 66px, transparent 67px);
+    -webkit-mask-image: linear-gradient(to bottom, black, transparent);
+    mask-image: linear-gradient(to bottom, black, transparent);
+  }
+  .wrap { max-width: 700px; margin: 0 auto; padding: 0 22px 100px; position: relative; }
 
   /* ── 상단 좌표 내비 — 지도 범례(legend)처럼, 섹션을 좌표 라벨로 ─────── */
   nav.coords {
