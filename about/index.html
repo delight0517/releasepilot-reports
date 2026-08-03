@@ -99,17 +99,47 @@
   }
   h2 { font-family: var(--serif); font-weight: 400; font-size: 21px; margin: 0 0 16px; }
 
-  /* ── Worldview — 예전엔 120단어 프로즈 2문단이었음(방금 지적받은
-     "설명이 많아서 안 읽힌다"를 스스로 반복한 부분). 핵심 한 줄 + 스캔
-     가능한 3개 항목으로 압축. ───────────────────────────────────────── */
+  /* ── Worldview ────────────────────────────────────────────────────── */
   .thesis {
-    font-family: var(--serif); font-size: 19px; line-height: 1.55; margin: 0 0 22px;
+    font-family: var(--serif); font-size: 19px; line-height: 1.55; margin: 0 0 16px;
     padding: 4px 0 4px 18px; border-left: 3px solid var(--seal);
   }
-  .points { display: grid; gap: 10px; }
-  .point {
-    display: flex; gap: 12px; background: var(--paper); border: 1px solid var(--line);
-    border-radius: 12px; padding: 13px 16px; font-size: 13.5px; color: var(--ink-dim); line-height: 1.55;
+  .lede { font-size: 13.5px; color: var(--ink-dim); line-height: 1.65; margin: 0 0 22px; }
+
+  /* ── 사고의 엔진 — "인용 스크랩"이 아니라, 서로 다른 글 3편이 매번 같은
+     4단 구조(사소한 장면→구조로 재정의→같은 지성 인용→신학적 착지)를
+     반복한다는 걸 표로 증명한다. 주장이 아니라 패턴 자체를 보여주는 게
+     목적이라 표 형태를 고름(2026-08-03: "AI 스크랩 같다"는 피드백으로
+     발췌 나열 방식을 폐기하고 이 구조로 교체). ─────────────────────────── */
+  .engine {
+    display: grid; grid-template-columns: 84px repeat(3, 1fr);
+    border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--paper);
+  }
+  .engine-row { display: contents; }
+  .engine-row > div {
+    padding: 12px 13px; font-size: 12px; line-height: 1.5; color: var(--ink-dim);
+    border-bottom: 1px solid var(--line); border-right: 1px solid var(--line);
+  }
+  .engine-row > div:last-child { border-right: none; }
+  .engine-row:last-child > div { border-bottom: none; }
+  .engine-head > div {
+    font-family: var(--mono); font-size: 10.5px; font-weight: 600; color: var(--seal-ink);
+    background: var(--paper-2);
+  }
+  .engine-beat {
+    font-family: var(--mono); font-weight: 700; color: var(--ink); background: var(--paper-2) !important;
+    text-align: center;
+  }
+  .engine-beat span { display: block; font-weight: 400; font-size: 9.5px; color: var(--ink-faint); margin-top: 2px; }
+  .engine-span { grid-column: span 3; font-weight: 600; color: var(--ink); }
+  @media (max-width: 620px) {
+    .engine { grid-template-columns: 1fr; }
+    .engine-row { display: block; border-bottom: 2px solid var(--line); }
+    .engine-row:last-child { border-bottom: none; }
+    .engine-row > div { border-right: none; }
+    .engine-head { display: none; }
+    .engine-beat { text-align: left; background: var(--paper-2) !important; }
+    .engine-span { grid-column: auto; }
   }
   .point b { color: var(--ink); font-weight: 600; }
   .point .tag { font-family: var(--mono); font-size: 10px; color: var(--seal-ink); flex: none; padding-top: 2px; }
@@ -176,11 +206,42 @@
     <p class="section-label">WORLDVIEW</p>
     <h2>구조가 의지를 이긴다</h2>
     <p class="thesis">"자유는 본능을 따를 때가 아니라, 설계된 의지로 그것을 다스릴 때 나온다."</p>
-    <div class="points">
-      <div class="point"><span class="tag">01</span><span><b>카페의 침묵</b>이 손님에게 온전한 공간을 주는 이유 — 「사랑은 오히려 말이 없다」</span></div>
-      <div class="point"><span class="tag">02</span><span><b>동정</b>이 오히려 관계를 위계로 왜곡시키는 이유 — 「동정은 왜 관계를 망가뜨리는가」</span></div>
-      <div class="point"><span class="tag">03</span><span><b>스크린 충동</b>은 의지가 아니라 환경 설계로 풀린다 — 그래서 그가 만드는 앱은 전부 "참는" 앱이 아니라 "구조로 막는" 앱이다.</span></div>
+    <p class="lede">인용 몇 개를 모은 게 아니다. 브런치 글 117편 중 아무 세 편을 뽑아도, 완전히 다른 주제(카페, 동정, 연애)를
+      다루면서 <b>매번 같은 4단 구조</b>를 되풀이한다 — 이건 스타일이 아니라 사고방식 그 자체다.</p>
+
+    <div class="engine">
+      <div class="engine-row engine-head">
+        <div class="engine-beat"></div>
+        <div>사랑은 오히려 말이 없다</div>
+        <div>동정은 왜 관계를 망가뜨리는가</div>
+        <div>아직 어린 나의 관계</div>
+      </div>
+      <div class="engine-row">
+        <div class="engine-beat">01<br><span>사소한 장면</span></div>
+        <div>말 없는 카페 vs 참견하는 카페</div>
+        <div>불쌍히 여겨질 때의 불쾌감</div>
+        <div>전화해야 한다는 의무감</div>
+      </div>
+      <div class="engine-row">
+        <div class="engine-beat">02<br><span>구조로 재정의</span></div>
+        <div>"절제는 자유 의지의 고도화"</div>
+        <div>"감정이 아니라 위계의 문제다"</div>
+        <div>"감정 아닌 예측 가능한 구조"</div>
+      </div>
+      <div class="engine-row">
+        <div class="engine-beat">03<br><span>같은 지성 3인</span></div>
+        <div class="engine-span">루터의 자유론 · 칼 융의 페르소나/그림자 · C.S. 루이스의 사랑론 — <b>세 사람이 거의 모든 글에 반복 등장</b>한다</div>
+      </div>
+      <div class="engine-row">
+        <div class="engine-beat">04<br><span>신학적 착지</span></div>
+        <div>타인에게 공간을 내어주는 자유</div>
+        <div>하나님 앞에서 존재를 인식</div>
+        <div>단독자로 설 수 있는 사람</div>
+      </div>
     </div>
+    <p class="lede" style="margin-top:16px;">그가 만드는 앱도 같은 엔진이다 — <b>①일상의 작은 마찰(스크린 충동)에서 시작해 ②의지가 아니라 구조의
+      문제로 재정의하고 ③원칙을 코드로 옮겨 ④결국 "그 사람다움을 지키는 것"으로 착지</b>한다. 4VPN Blocker와
+      35Closer Timer는 이 4단 엔진을 소프트웨어로 옮긴 결과일 뿐이다.</p>
   </section>
 
   <section id="work">
@@ -213,21 +274,25 @@
 
   <section id="writing">
     <p class="section-label">FROM BRUNCH · 노드의 글</p>
-    <h2>글 세 편으로 보는 사고 방식</h2>
-    <div class="post">
-      <p class="meta">2026.04.30 · 사랑은 오히려 말이 없다</p>
-      <h3>무례한 본능과 위대한 의지의 거리</h3>
-      <p>"절제란 결국, 자신의 권리를 포기함으로써 타인에게 진정한 공간을 내어주는 고도의 자유 의지다."</p>
-    </div>
-    <div class="post">
-      <p class="meta">2026.04.28 · 동정은 왜 관계를 망가뜨리는가</p>
-      <h3>원하지도 않은 동정, 요구한 적도 없는 값싼 동정</h3>
-      <p>"도움이란 상대를 끌어올리는 행위가 아니라, 그의 자리를 침범하지 않는 기술에 가깝다."</p>
-    </div>
-    <div class="post">
-      <p class="meta">2026.05.08 · 인생이 바뀌다, 실제로</p>
-      <h3>나를 보호하는 3단계 디지털 성벽 구축 가이드</h3>
-      <p>"변화는 결심이 아니라 설계에서 온다." 그의 개발자 작업과 가장 직접적으로 이어지는 글.</p>
+    <h2>원문으로 직접 확인하기</h2>
+    <p class="lede">위 표의 근거가 된 세 편 + 같은 엔진이 반복되는 글 두 편을 더 남긴다 — 주장이 아니라 원문으로 검증할 것.</p>
+    <div class="links">
+      <a class="link" href="https://brunch.co.kr/@rogan2534/121" target="_blank" rel="noopener">
+        <div><div class="name">사랑은 오히려 말이 없다</div><div class="desc">2026.04.30</div></div>
+        <span class="arrow">↗</span>
+      </a>
+      <a class="link" href="https://brunch.co.kr/@rogan2534/118" target="_blank" rel="noopener">
+        <div><div class="name">동정은 왜 관계를 망가뜨리는가</div><div class="desc">2026.04.28</div></div>
+        <span class="arrow">↗</span>
+      </a>
+      <a class="link" href="https://brunch.co.kr/@rogan2534/115" target="_blank" rel="noopener">
+        <div><div class="name">아직 어린 나의 관계</div><div class="desc">2026.04.27</div></div>
+        <span class="arrow">↗</span>
+      </a>
+      <a class="link" href="https://brunch.co.kr/@rogan2534" target="_blank" rel="noopener">
+        <div><div class="name">나머지 114편</div><div class="desc">브런치 전체 보기</div></div>
+        <span class="arrow">↗</span>
+      </a>
     </div>
   </section>
 
