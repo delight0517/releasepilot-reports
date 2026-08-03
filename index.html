@@ -111,7 +111,6 @@
     background: var(--card-2); border-radius: 999px; padding: 3px 10px;
   }
   .menu-card .title { font-family: var(--serif); font-size: 17px; font-weight: 400; margin: 0; line-height: 1.3; }
-  .menu-card .desc { font-size: 12.5px; line-height: 1.55; color: var(--ink-dim); }
 
   /* ── Detail (magazine spread) view ───────────────────────────────── */
   .detail-view { display: none; }
@@ -129,7 +128,11 @@
   }
   .detail-hero .glyph-badge { width: 58px; height: 58px; border-radius: 16px; font-size: 28px; }
   .detail-hero h3 { font-family: var(--serif); font-weight: 400; font-size: 22px; margin: 0 0 8px; }
-  .detail-hero p { font-size: 13.5px; line-height: 1.65; color: var(--ink-dim); margin: 0; }
+  .detail-hero .stamp,
+  .menu-card .stamp {
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.03em;
+    color: var(--ink-faint); text-transform: uppercase; margin: 0;
+  }
 
   .cover-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
   .cover-card {
@@ -438,18 +441,28 @@ function openDetail(kind, allItems) {
     ? allItems.filter(it => it.beta === true)
     : allItems.filter(it => it.reportKind === kind);
 
+  // 설명 문장 대신 실제 게시된 데이터로 보이는 스탬프 한 줄 — "생성된 진짜
+  // 보고서" 느낌을 주려는 것이지 소개 문구가 아니므로, 최신 게시일까지
+  // 계산해 문서 메타데이터처럼 보여준다(2026-08-03: 설명 문단이 장황하고
+  // 안 읽힌다는 피드백으로 prose를 전부 걷어냄).
+  const latestDate = matches.reduce((max, it) => {
+    const d = (it.publishedAt || '').slice(0, 10);
+    return d > max ? d : max;
+  }, '');
+  const stamp = `${matches.length}건 게시됨${latestDate ? ' · 최신 ' + latestDate : ''}`;
+
   document.getElementById('detailHero').innerHTML = isBeta
     ? `
     <div class="glyph-badge" style="background:#fdf0d8;color:#a3690a">🧪</div>
     <div>
       <h3>베타 기능</h3>
-      <p>아직 정식 기능이 아닌 실험 단계 컨셉/모듈 모음 — 종류 상관없이 한곳에 정리.</p>
+      <p class="stamp">${stamp}</p>
     </div>`
     : `
     <div class="glyph-badge" style="background:#e7edf6;color:var(--accent)">${kindGlyph(kind)}</div>
     <div>
       <h3>${kindLabel(kind)}</h3>
-      <p>${kindDesc(kind)}</p>
+      <p class="stamp">${stamp}</p>
     </div>`;
 
   const grid = document.getElementById('detailGrid');
@@ -545,8 +558,7 @@ fetch('reports/manifest.json', { cache: 'no-store' }).then(r => r.ok ? r.json() 
         <div class="glyph-badge" style="background:#fdf0d8;color:#a3690a">🧪</div>
         <span class="count-pill">${betaItems.length}건</span>
       </div>
-      <p class="title">베타 기능</p>
-      <p class="desc">아직 실험 중인 컨셉/모듈 리포트 모음 — 정식 종류로 분류되기 전 단계</p>`;
+      <p class="title">베타 기능</p>`;
     betaCard.addEventListener('click', () => openDetail('__beta__', items));
     menuGrid.appendChild(betaCard);
   }
@@ -566,8 +578,7 @@ fetch('reports/manifest.json', { cache: 'no-store' }).then(r => r.ok ? r.json() 
         <div class="glyph-badge" style="background:${color.bg};color:${color.fg}">${kindGlyph(kind)}</div>
         <span class="count-pill">${count}건</span>
       </div>
-      <p class="title">${kindLabel(kind)}</p>
-      <p class="desc">${kindDesc(kind)}</p>`;
+      <p class="title">${kindLabel(kind)}</p>`;
     card.addEventListener('click', () => openDetail(kind, nonBetaItems));
     menuGrid.appendChild(card);
   });
