@@ -168,6 +168,29 @@
   }
   .cover-group .older-list .cover-card .title { font-size: 13px; font-weight: 500; }
 
+  /* "나도 만들어보기" 프롬프트 카드 — 누구나 자기 앱으로 같은 종류의
+     리포트를 직접 시도해볼 수 있게, 복사 가능한 프롬프트를 그대로 보여준다. */
+  .prompt-card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 16px;
+    padding: 16px 18px; margin-bottom: 20px; box-shadow: var(--shadow-1);
+  }
+  .prompt-card .prompt-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+  .prompt-card .prompt-title { font-size: 13.5px; font-weight: 700; color: var(--ink); }
+  .prompt-card .prompt-sub { font-size: 11.5px; color: var(--ink-faint); margin: 2px 0 0; }
+  .prompt-card .copy-btn {
+    flex: none; font-family: var(--sans); font-size: 12.5px; font-weight: 700; color: #fff;
+    background: var(--accent); border: none; border-radius: 999px; padding: 8px 16px;
+    cursor: pointer; transition: opacity 0.15s ease;
+  }
+  .prompt-card .copy-btn:active { opacity: 0.75; }
+  .prompt-card .copy-btn.copied { background: var(--good); }
+  .prompt-card pre {
+    font-family: var(--mono); font-size: 12px; line-height: 1.6; color: var(--ink);
+    background: var(--card-2); border: 1px solid var(--line); border-radius: 10px;
+    padding: 12px 14px; margin: 0; white-space: pre-wrap; word-break: break-word;
+    max-height: 260px; overflow-y: auto;
+  }
+
   /* ── Existing per-app grouped view ───────────────────────────────── */
   .apps { display: flex; gap: 22px; overflow-x: auto; padding: 6px 4px 8px; margin-bottom: 4px; -webkit-overflow-scrolling: touch; }
   .app-tile {
@@ -256,6 +279,7 @@
   <div class="detail-view" id="detailView">
     <button class="back-btn" id="backBtn">‹ 메뉴로</button>
     <div class="detail-hero" id="detailHero"></div>
+    <div class="prompt-card" id="promptCard" style="display:none"></div>
     <div class="cover-grid" id="detailGrid"></div>
   </div>
 
@@ -333,6 +357,92 @@ const KIND_DESC = {
   'usage_guide_worklog': '처음 보는 사람도 화면별로 어떻게 쓰는지 알 수 있는 사용설명서 겸 작업 일지.',
   'future_viability': '지금 방향으로 갔을 때 1~3년 뒤 살아남을지에 대한 장기 전망.',
   'feature_concept_blueprint': '아직 코드 없는 신규 기능의 개념 정의 — 이후 리포트가 근거로 삼는 문서.',
+};
+// "나도 만들어보기" — 각 리포트 종류를 어떤 앱으로든 직접 시도해볼 수 있게,
+// Claude(또는 다른 AI 챗)에 그대로 붙여넣을 수 있는 프롬프트. ReleasePilot
+// 내부 파이프라인(HTML/CSS 규칙)에 의존하지 않고, 마크다운 답변만으로도
+// 완결되도록 일반화해서 썼다 — 누구나 자기 앱 설명만 채워 넣으면 된다.
+const KIND_PROMPT = {
+  'usage_guide_worklog': `당신은 [앱 이름]의 사용법 기획서를 쓰는 기술 문서 작성자입니다.
+실제 앱(또는 앱에 대한 설명)을 참고해서, 처음 보는 사람도 이해할 수 있게 아래 구조로 작성하세요.
+지어내지 말고 실제로 확인되는 내용만 쓰고, 확실하지 않으면 "확인 안 됨"이라고 쓰세요.
+
+1. 개요 — 이 앱이 무엇을 위한 것인지 전문용어 없이 2~3문장
+2. 핵심 사용 흐름 — 처음 열어서 목표를 달성하기까지 5~8단계, 각 단계마다 "무슨 화면이 뜨고 뭘 누르면 뭐가 되는지"
+3. 화면별 사용법 — 주요 화면마다 한 문단짜리 빠른 레퍼런스
+4. 작업 일지 — 오늘 날짜로 첫 항목 하나(이 문서를 왜/어떻게 만들었는지)
+5. TODO — 아직 안 된 것 목록
+
+[여기에 당신의 앱 이름, 핵심 기능, 대상 사용자를 채워 넣으세요]`,
+
+  'reliability_gtm_strategy': `당신은 [앱 이름]이 지금 상태로 더 널리 쓰이면 어떤 반응이 있을지 예측하는 전략 분석가입니다.
+웹 검색으로 관련 시장 규모·경쟁 서비스·타겟 사용자 통계를 실제로 찾아 인용하세요 — 못 찾은 값은 지어내지 말고 "확인 안 됨"이라고 쓰고, 추측이면 "추정치"라고 밝히세요.
+
+1. 시장 배경 — 실제 출처 있는 통계 표
+2. 최소 2개 포지셔닝 시나리오 비교(예: "지금 그대로" vs "메시지를 좁혔을 때")와 그 근거
+3. 타겟 계층·채널 조합 3개 이상 비교, 각각의 근거
+4. 조합별 실행 우선순위(핵심 메시지·타겟·근거·리스크)
+5. 실제 링크가 달린 출처 목록
+
+출처를 인용할 땐 15단어 이내로 짧게 뽑아 그 주장 바로 옆에 놓으세요(따로 모아서 나열하지 마세요).
+
+[여기에 당신의 앱 이름, 핵심 기능, 지금까지의 상태(출시 여부·사용자 수 등)를 채워 넣으세요]`,
+
+  'regional_fit_expansion_plan': `당신은 [앱 이름]을 어느 지역/시장에서 먼저 확장하면 좋을지 분석하는 전략가입니다.
+뻔한 후보(미국/한국/일본)로 좁히지 말고, 이 앱의 핵심 메커닉과 문화적으로 얼마나 맞는지로 폭넓게 평가하세요. 언어 장벽은 번역으로 나중에 해결 가능하다고 가정합니다.
+
+1. Top 3 후보 지역 — 각각 세부 지역(도시 단위까지)·이유·지금 유행하는 것·앞으로 유행할 것을 함께
+2. 최악의 지역/문화권 최소 1개 — 왜 구조적으로 안 맞는지
+3. "영어 사용권"은 미국 하나로 뭉치지 말고 별도 버킷으로 평가(영국·호주·캐나다는 문화가 다름)
+4. 지역별 적합도 점수 — 계산 공식과 함께, 각 점수 옆에 "왜 이 점수인지" 한 줄
+5. 1순위 지역 기준 구체적 실행 계획(채널·타겟층)
+6. 법적 리스크 섹션 — 저작권/개인정보·규제/상표 리스크와 각각의 개선 제안
+
+웹 검색으로 실제 시장 데이터를 찾아 인용하세요.
+
+[여기에 당신의 앱 이름, 핵심 기능, 지금 상태를 채워 넣으세요]`,
+
+  'game_design_blueprint': `당신은 [게임 이름]의 게임 기획서를 쓰는 게임 디자이너입니다.
+아래 구조로, 화면 UI 목업만 넣고 끝내지 말고 반드시 (a)와 (b)를 함께 포함하세요.
+
+1. 세계관/모드 개요 — 이 게임(또는 모드)의 컨셉 한 문단
+(a) 진행 다이어그램 — 입장 → 핵심 액션 → 승패를 가르는 비교 수치(실제 공식) → 승리/패배 조건(없으면 "없음"이라고 명시) → 상점 → 다음 대전까지 6단계를 아이콘 체인으로
+(b) 화면 스토리보드 — 폰 화면 3~4개를 나란히, "홈에서 뭘 탭하고 다음 화면에서 뭘 보고 탭하는지"까지 화면 전환 흐름
+2. 밸런스 근거 — 왜 이 수치인지
+3. 앞으로 추가할 모드/기능 목록
+
+[여기에 게임의 장르, 핵심 재미 요소, 대상 플레이어를 채워 넣으세요]`,
+
+  'mvp_consultation': `당신은 [앱 이름]의 MVP(최소 기능 제품) 범위를 함께 정하는 상담가입니다.
+저에게 아래 순서로 하나씩 질문해서, 제 답을 듣고 다음 질문으로 넘어가세요 — 한 번에 다 묻지 마세요.
+
+1. 이 앱의 핵심 기능 하나만 남긴다면 무엇인가요?
+2. 첫 화면에서 사용자에게 어떤 한 문장으로 가치를 전달하고 싶나요?
+3. 무료로 둘 것과 유료로 둘 것은 무엇인가요?
+4. 지금 당장은 없어도 되는 기능은 무엇인가요?
+5. 출시 전 반드시 있어야 하는 화면은 몇 개인가요?
+
+모든 질문에 답이 끝나면, 지금까지의 답을 근거·우선순위와 함께 MVP 정의 문서로 정리해주세요.
+
+[여기에 당신의 앱 아이디어를 한두 문장으로 채워 넣으세요]`,
+
+  'region_target_ctr': `당신은 [앱 이름]이 어느 지역·타겟에 광고하면 클릭이 잘 나올지 진단하는 마케팅 분석가입니다.
+웹 검색으로 실제 CTR(클릭률) 벤치마크 자료를 찾아 인용하세요.
+
+1. 이 앱의 핵심 타겟 후보 3~5개(지역×연령×관심사 조합)
+2. 각 후보의 예상 CTR과 그 근거(벤치마크 출처)
+3. 종합 순위와 왜 1위가 1위인지
+4. 각 후보에 맞는 광고 문구/채널 제안
+
+[여기에 당신의 앱 이름과 핵심 기능을 채워 넣으세요]`,
+
+  'must_board': `당신은 [프로젝트 이름]의 지금까지 결정 사항을 정리하는 프로젝트 매니저입니다.
+지금까지 저와 나눈 대화(또는 제가 붙여넣는 메모)를 훑어서 아래 두 목록으로 정리해주세요.
+
+1. 아직 답을 안 정한 질문들 — 우선순위 순으로, 왜 중요한지 한 줄씩
+2. 이미 확정된 결정(Must) 체크리스트 — 언제·왜 그렇게 정했는지 한 줄씩
+
+[여기에 정리하고 싶은 대화나 메모를 붙여넣으세요]`,
 };
 const KIND_GLYPH = {
   'app_blueprint': '🔎',
@@ -442,6 +552,48 @@ function coverCard(it, color) {
 // 걸러내는 특수 카테고리 — "종류"가 아니라 "상태"로 묶는 유일한 목차라서
 // 별도 분기로 처리한다. 관리자가 게시할 때 beta:true만 붙이면 리포트 종류에
 // 상관없이 여기 모인다.
+// 이 리포트 종류의 프롬프트가 있으면 "나도 만들어보기" 카드로 보여준다 —
+// 누구나 자기 앱 이름/설명만 채워서 Claude(또는 다른 AI 챗)에 붙여넣으면
+// 같은 구조의 리포트를 직접 만들어볼 수 있게. 없는 종류거나 베타 목차면 숨김.
+function renderPromptCard(kind) {
+  const card = document.getElementById('promptCard');
+  const prompt = kind ? KIND_PROMPT[kind] : null;
+  if (!prompt) {
+    card.style.display = 'none';
+    card.innerHTML = '';
+    return;
+  }
+  card.style.display = 'block';
+  card.innerHTML = `
+    <div class="prompt-head">
+      <div>
+        <div class="prompt-title">📋 나도 만들어보기</div>
+        <p class="prompt-sub">이 프롬프트를 복사해 Claude 등 AI 챗에 붙여넣고, 빈칸을 내 앱 정보로 채우세요.</p>
+      </div>
+      <button class="copy-btn" id="promptCopyBtn">복사</button>
+    </div>
+    <pre id="promptText"></pre>`;
+  // textContent로 넣어 마크다운 특수문자·따옴표가 HTML로 깨지지 않게 한다.
+  document.getElementById('promptText').textContent = prompt;
+  document.getElementById('promptCopyBtn').addEventListener('click', async (e) => {
+    const btn = e.currentTarget;
+    try {
+      await navigator.clipboard.writeText(prompt);
+      btn.textContent = '복사됨 ✓';
+      btn.classList.add('copied');
+    } catch (err) {
+      // 클립보드 API가 막힌 환경(구형 브라우저 등) — 텍스트 선택으로 폴백.
+      const range = document.createRange();
+      range.selectNodeContents(document.getElementById('promptText'));
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      btn.textContent = '선택됨 — Cmd/Ctrl+C';
+    }
+    setTimeout(() => { btn.textContent = '복사'; btn.classList.remove('copied'); }, 2200);
+  });
+}
+
 function openDetail(kind, allItems) {
   const isBeta = kind === '__beta__';
   const matches = isBeta
@@ -471,6 +623,8 @@ function openDetail(kind, allItems) {
       <h3>${kindLabel(kind)}</h3>
       <p class="stamp">${stamp}</p>
     </div>`;
+
+  renderPromptCard(isBeta ? null : kind);
 
   const grid = document.getElementById('detailGrid');
   grid.innerHTML = '';
