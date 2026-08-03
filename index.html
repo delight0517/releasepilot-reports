@@ -224,8 +224,15 @@
 
   .empty { font-size: 14px; color: var(--ink-faint); padding: 40px 4px; text-align: center; }
   footer { margin-top: 72px; padding-top: 24px; border-top: 1px solid var(--line); font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint); text-align: center; letter-spacing: 0.02em; }
+  .about-link {
+    position: fixed; top: 16px; right: 16px; font-family: var(--mono); font-size: 10.5px;
+    letter-spacing: 0.04em; color: var(--ink-faint); text-decoration: none; z-index: 5;
+    background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px;
+  }
+  .about-link:hover { color: var(--accent-ink); border-color: var(--accent); }
 </style>
 
+<a class="about-link" href="about/">만든 사람 ↗</a>
 <div class="wrap">
   <div class="hero">
     <p class="eyebrow">ReleasePilot · 프로젝트 통합 리포트 허브</p>
@@ -259,7 +266,7 @@
   </div>
 
   <p class="empty" id="empty" style="display:none;">아직 게시된 리포트 없음.</p>
-  <footer>ReleasePilot Report Hub</footer>
+  <footer>ReleasePilot Report Hub · <a href="about/" style="color:inherit;">만든 사람</a></footer>
 </div>
 
 <script>

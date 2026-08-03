@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>김근후 · 근성장 — 마음의 지도 제작자</title>
+<meta name="description" content="김근후(Rogan) — 자기통제·자기성장 앱을 만드는 개발자이자, AI·신앙·중독 회복을 주제로 글을 쓰는 브런치 작가.">
+<style>
+  :root {
+    --bg: #14120f; --card: #1c1912; --card-2: #241f16; --line: #34301f;
+    --ink: #f2ead9; --ink-dim: #c8bda3; --ink-faint: #8a8168;
+    --accent: #d9a24f; --accent-soft: rgba(217,162,79,0.14); --accent-ink: #f0c987;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Noto Serif KR", serif;
+    --sans: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: #faf6ee; --card: #ffffff; --card-2: #f3ecdc; --line: #e8ddc3;
+      --ink: #241f16; --ink-dim: #5c5540; --ink-faint: #948c72;
+      --accent: #b8791f; --accent-soft: rgba(184,121,31,0.1); --accent-ink: #8a5a12;
+    }
+  }
+  :root[data-theme="light"] {
+    --bg: #faf6ee; --card: #ffffff; --card-2: #f3ecdc; --line: #e8ddc3;
+    --ink: #241f16; --ink-dim: #5c5540; --ink-faint: #948c72;
+    --accent: #b8791f; --accent-soft: rgba(184,121,31,0.1); --accent-ink: #8a5a12;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans);
+    line-height: 1.6; -webkit-font-smoothing: antialiased;
+    background-image: radial-gradient(circle at 15% -10%, var(--accent-soft) 0%, transparent 45%);
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 0 22px 100px; }
+
+  /* ── Hero ─────────────────────────────────────────────────────────── */
+  .hero { padding: 72px 0 40px; text-align: center; }
+  .photo {
+    width: 96px; height: 96px; border-radius: 50%; object-fit: cover;
+    border: 2px solid var(--accent); margin: 0 auto 22px; display: block;
+    box-shadow: 0 0 0 6px var(--accent-soft);
+  }
+  .kicker {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--accent-ink); margin: 0 0 14px;
+  }
+  h1 {
+    font-family: var(--serif); font-weight: 400; font-size: clamp(32px, 8vw, 44px);
+    margin: 0 0 12px; letter-spacing: -0.01em; text-wrap: balance;
+  }
+  .hero .sub { font-size: 15.5px; color: var(--ink-dim); max-width: 46ch; margin: 0 auto; line-height: 1.7; }
+
+  /* ── Node map decoration — a nod to his pen name "노드(Node)", 마음의
+     지도 제작자(mind-map maker). Small dot-and-line network, not literal. */
+  .nodemap { display: flex; justify-content: center; gap: 6px; margin: 28px 0 4px; opacity: 0.7; }
+  .nodemap span {
+    width: 5px; height: 5px; border-radius: 50%; background: var(--accent);
+    margin-top: 6px;
+  }
+  .nodemap span:nth-child(2) { margin-top: 0; }
+  .nodemap span:nth-child(4) { margin-top: 10px; }
+
+  /* ── Identity chips ───────────────────────────────────────────────── */
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 26px 0 0; }
+  .chip {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.02em; color: var(--ink-dim);
+    background: var(--card-2); border: 1px solid var(--line); border-radius: 999px; padding: 6px 13px;
+  }
+
+  /* ── Section shell ────────────────────────────────────────────────── */
+  section { margin-top: 56px; }
+  .section-label {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent-ink); margin: 0 0 16px;
+  }
+  h2 { font-family: var(--serif); font-weight: 400; font-size: 22px; margin: 0 0 18px; }
+
+  /* ── Persona cards ────────────────────────────────────────────────── */
+  .personas { display: grid; grid-template-columns: 1fr; gap: 12px; }
+  .persona {
+    background: var(--card); border: 1px solid var(--line); border-radius: 16px;
+    padding: 18px 20px; display: flex; gap: 14px; align-items: flex-start;
+  }
+  .persona .glyph {
+    font-size: 20px; width: 38px; height: 38px; border-radius: 10px; flex: none;
+    display: flex; align-items: center; justify-content: center; background: var(--accent-soft);
+  }
+  .persona h3 { font-size: 15px; font-weight: 700; margin: 0 0 4px; }
+  .persona p { font-size: 13.5px; color: var(--ink-dim); margin: 0; line-height: 1.6; }
+
+  /* ── Writing excerpts ─────────────────────────────────────────────── */
+  .post {
+    border-left: 2px solid var(--line); padding: 2px 0 2px 18px; margin-bottom: 22px;
+  }
+  .post .meta { font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint); margin: 0 0 5px; }
+  .post h3 { font-size: 15.5px; font-weight: 600; margin: 0 0 6px; line-height: 1.4; }
+  .post p { font-size: 13.5px; color: var(--ink-dim); margin: 0; line-height: 1.7; }
+
+  /* ── Link row ──────────────────────────────────────────────────────── */
+  .links { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (max-width: 480px) { .links { grid-template-columns: 1fr; } }
+  .link {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+    padding: 14px 18px; text-decoration: none; color: var(--ink); transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+  .link:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .link .name { font-size: 14px; font-weight: 600; }
+  .link .desc { font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint); margin-top: 2px; }
+  .link .arrow { color: var(--accent); font-size: 15px; flex: none; }
+
+  footer {
+    margin-top: 72px; padding-top: 22px; border-top: 1px solid var(--line);
+    font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint); text-align: center;
+    letter-spacing: 0.02em;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <img class="photo" alt="김근후 프로필 사진"
+      src="https://img1.kakaocdn.net/thumb/C400x400.fpng/?fname=http://t1.kakaocdn.net/brunch/service/user/8RKx/image/XUiLQ38WRFIXaJQm7VpkJIbxyUw.png">
+    <p class="kicker">근성장 · Rogan Kim</p>
+    <h1>김근후</h1>
+    <p class="sub">"자유는 본능을 따를 때가 아니라, 설계된 의지로 그것을 다스릴 때 나온다."<br>
+       — 이 한 문장이 그가 만드는 앱과 쓰는 글 모두를 관통한다.</p>
+    <div class="nodemap"><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="chips">
+      <span class="chip">앱 개발자</span>
+      <span class="chip">브런치 작가 · 노드</span>
+      <span class="chip">게임 그래픽 · 홍익대</span>
+      <span class="chip">뮤지션</span>
+    </div>
+  </div>
+
+  <section>
+    <p class="section-label">Worldview</p>
+    <h2>구조가 의지를 이긴다</h2>
+    <div class="persona">
+      <div class="glyph">🧭</div>
+      <div>
+        <p style="margin:0 0 12px;">117편의 글을 관통하는 하나의 관점이 있다 — <b>감정이나 의지력으로 문제를
+          풀려 하지 말고, 문제가 아예 일어날 수 없는 구조를 설계하라.</b> 카페의 침묵이 손님에게 온전한 공간을
+          주는 이유("사랑은 오히려 말이 없다"), 동정이 오히려 관계를 위계로 왜곡시키는 이유("동정은 왜
+          관계를 망가뜨리는가"), 유튜브·릴스 충동이 의지가 아니라 환경 설계로 풀리는 이유 — 전부 같은
+          한 가지를 다른 장면에서 반복해서 보여준다.</p>
+        <p style="margin:0;">루터의 "매이지 않은 자유로운 군주이자, 모든 이에게 매인 종"이라는 역설, 융의
+          페르소나/그림자, C. S. 루이스의 "겸손이란 자신을 덜 생각하는 상태"라는 정의를 빌려 —
+          신학·심리학의 언어로 아주 구체적인 일상(카페, 관계, 스크린타임)을 해부한다. 그리고 그 결론을
+          코드로도 옮긴다: 그가 만드는 앱들은 전부 <b>"의지로 참는" 앱이 아니라 "구조로 막는" 앱</b>이다.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="section-label">Personas</p>
+    <h2>세 갈래로 같은 걸 만든다</h2>
+    <div class="personas">
+      <div class="persona">
+        <div class="glyph">🛠️</div>
+        <div>
+          <h3>개발자 — "의지"가 아니라 "구조"를 만든다</h3>
+          <p>4VPN Blocker, 35Closer Timer는 참을성을 요구하는 앱이 아니다. 강제 종료가 막혀 있고, 확장 삭제가 안 되고, 스케줄 변경엔 냉각 시간이 필요하다 — 순간의 의지가 아니라 환경 자체가 사람을 지키도록 설계했다. 글에서 말하는 원칙을 그대로 코드로 옮긴 결과.</p>
+        </div>
+      </div>
+      <div class="persona">
+        <div class="glyph">✍️</div>
+        <div>
+          <h3>작가 — 필명 "노드", 신학·심리학으로 일상을 해부</h3>
+          <p>브런치 117편. 루터·융·C.S. 루이스를 빌려 카페의 침묵, 동정의 위계, 관계의 도구화 같은 아주 작은 장면들을 구조적으로 읽어낸다. "마음의 지도 제작자"라는 필명 그대로 — 감정을 지도화해서 보여준다.</p>
+        </div>
+      </div>
+      <div class="persona">
+        <div class="glyph">🎮</div>
+        <div>
+          <h3>비주얼 — 홍익대 게임그래픽학과, 필명 "Kaito Ren"</h3>
+          <p>ArtStation에 게임 비주얼 작업을 올린다. 코덱스: 죄악, 네온 듄: 사막 기억 창조자 같은 세계관 작업을 이어가고 있다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="section-label">From Brunch · 노드의 글 (원문 발췌)</p>
+    <h2>글 세 편으로 보는 사고 방식</h2>
+    <div class="post">
+      <p class="meta">2026.04.30 · 사랑은 오히려 말이 없다</p>
+      <h3>무례한 본능과 위대한 의지의 거리</h3>
+      <p>"절제란 결국, 자신의 권리를 포기함으로써 타인에게 진정한 공간을 내어주는 고도의 자유 의지다." 말 없는 카페가 주는 편안함에서 출발해, 루터의 자유론까지 끌고 간 글.</p>
+    </div>
+    <div class="post">
+      <p class="meta">2026.04.28 · 동정은 왜 관계를 망가뜨리는가</p>
+      <h3>원하지도 않은 동정, 요구한 적도 없는 값싼 동정</h3>
+      <p>"도움이란 상대를 끌어올리는 행위가 아니라, 그의 자리를 침범하지 않는 기술에 가깝다." 융의 심리적 팽창 개념으로 "돕는 사람"이 왜 관계를 위계로 만드는지 해부한 글.</p>
+    </div>
+    <div class="post">
+      <p class="meta">2026.05.08 · 인생이 바뀌다, 실제로</p>
+      <h3>나를 보호하는 3단계 디지털 성벽 구축 가이드</h3>
+      <p>"변화는 결심이 아니라 설계에서 온다." 스타크래프트·체스 영상에 매일 한 시간씩 쓰던 시간을, 의지가 아니라 앱 설정으로 강제로 회복한 실제 경험담 — 그의 개발자로서의 작업과 가장 직접적으로 이어지는 글.</p>
+    </div>
+  </section>
+
+  <section>
+    <p class="section-label">Elsewhere</p>
+    <h2>더 보기</h2>
+    <div class="links">
+      <a class="link" href="https://brunch.co.kr/@rogan2534" target="_blank" rel="noopener">
+        <div><div class="name">브런치</div><div class="desc">글 117 · 작품 17</div></div>
+        <span class="arrow">↗</span>
+      </a>
+      <a class="link" href="https://www.artstation.com/kaito_ren" target="_blank" rel="noopener">
+        <div><div class="name">ArtStation</div><div class="desc">Kaito Ren</div></div>
+        <span class="arrow">↗</span>
+      </a>
+      <a class="link" href="https://linktr.ee/rogankimwashere" target="_blank" rel="noopener">
+        <div><div class="name">근성장 Linktree</div><div class="desc">전체 링크 모음</div></div>
+        <span class="arrow">↗</span>
+      </a>
+      <a class="link" href="https://delight0517.github.io/releasepilot-reports/" target="_blank" rel="noopener">
+        <div><div class="name">ReleasePilot</div><div class="desc">만든 것들 · 리포트 허브</div></div>
+        <span class="arrow">↗</span>
+      </a>
+    </div>
+  </section>
+
+  <footer>근성장 · 김근후 — 마음의 지도 제작자 노드</footer>
+</div>
+</body>
+</html>
