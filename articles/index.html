@@ -1,0 +1,103 @@
+<!doctype html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>기사 · 리포트 허브</title>
+<meta name="description" content="ReleasePilot이 정리한 출시 전략·시장 읽기 기사를 SNS 피드처럼 모아보는 채널">
+<link rel="icon" href="../icons/icon-192.png">
+<meta name="theme-color" content="#fbfaf7">
+<style>
+  /* 메인 허브(index.html)와 같은 팔레트/타이포 — 다른 앱이 아니라 같은
+     제품의 한 채널이라는 느낌을 유지한다. */
+  :root {
+    --bg: #fbfaf7; --card: #ffffff; --card-2: #f6f3ec; --line: #e9e3d6;
+    --ink: #1d1b17; --ink-dim: #6b6a5f; --ink-faint: #a3a091;
+    --accent: #c9711f; --accent-soft: #f6e6d3; --accent-ink: #7a4413;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Noto Serif KR", serif;
+    --sans: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, monospace;
+    --shadow-1: 0 1px 2px rgba(29,27,23,0.05), 0 1px 1px rgba(29,27,23,0.03);
+    --shadow-2: 0 12px 28px -12px rgba(29,27,23,0.16), 0 2px 6px rgba(29,27,23,0.05);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans);
+    line-height: 1.5; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 0 18px 90px; }
+  .back-link {
+    position: fixed; top: 16px; left: 16px; z-index: 5; font-family: var(--mono);
+    font-size: 10.5px; color: var(--ink-faint); text-decoration: none;
+    background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px;
+  }
+  .back-link:hover { color: var(--accent-ink); border-color: var(--accent); }
+
+  .hero { padding: 68px 4px 30px; text-align: center; }
+  .eyebrow {
+    display: inline-block; font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--accent-ink); background: var(--accent-soft);
+    border-radius: 999px; padding: 5px 14px; margin: 0 0 18px;
+  }
+  h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(30px, 7vw, 42px); margin: 0 0 12px; }
+  .hero p { margin: 0 auto; font-size: 14.5px; color: var(--ink-dim); max-width: 42ch; }
+
+  /* ── SNS 피드 스타일 카드 — 채널 배지 + 헤드라인 + 스니펫 + 메타(날짜/읽는 시간) ── */
+  .feed { display: flex; flex-direction: column; gap: 12px; margin-top: 24px; }
+  .feed-card {
+    display: block; background: var(--card); border: 1px solid var(--line); border-radius: 18px;
+    padding: 20px 22px; text-decoration: none; color: inherit; box-shadow: var(--shadow-1);
+    transition: transform 0.16s cubic-bezier(.2,.8,.2,1), box-shadow 0.16s ease;
+  }
+  .feed-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-2); }
+  .feed-card .channel {
+    display: inline-block; font-family: var(--mono); font-size: 10px; font-weight: 700;
+    letter-spacing: 0.05em; color: var(--accent-ink); background: var(--accent-soft);
+    border-radius: 999px; padding: 3px 10px; margin-bottom: 10px;
+  }
+  .feed-card h2 { font-family: var(--serif); font-weight: 400; font-size: 20px; margin: 0 0 8px; line-height: 1.3; }
+  .feed-card .snippet { font-size: 13.5px; color: var(--ink-dim); line-height: 1.6; margin: 0 0 12px; }
+  .feed-card .meta { font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint); display: flex; gap: 10px; }
+
+  .empty { font-size: 14px; color: var(--ink-faint); padding: 40px 4px; text-align: center; }
+  footer { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--line); font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint); text-align: center; }
+</style>
+
+<a class="back-link" href="../">‹ 허브로</a>
+<div class="wrap">
+  <div class="hero">
+    <p class="eyebrow">Articles · ReleasePilot</p>
+    <h1>기사</h1>
+    <p>출시 전략·시장 읽기 관련 글을 채널별로 모아봅니다. 리포트(개별 앱 분석)와 달리
+       여러 앱에 공통으로 적용되는 이야기를 다룹니다.</p>
+  </div>
+
+  <div class="feed" id="feed"></div>
+  <p class="empty" id="empty" style="display:none;">아직 게시된 기사가 없습니다.</p>
+  <footer>ReleasePilot 리포트 허브 · 기사 채널</footer>
+</div>
+
+<script>
+function timeAgo(iso) {
+  const d = (iso || '').slice(0, 10);
+  return d;
+}
+fetch('manifest.json').then(r => r.ok ? r.json() : []).then(items => {
+  const feed = document.getElementById('feed');
+  if (!items.length) { document.getElementById('empty').style.display = 'block'; return; }
+  items
+    .slice()
+    .sort((a, b) => (b.publishedAt || '').localeCompare(a.publishedAt || ''))
+    .forEach(it => {
+      const a = document.createElement('a');
+      a.className = 'feed-card';
+      a.href = it.file;
+      a.innerHTML = `
+        <span class="channel">${it.channel || '기사'}</span>
+        <h2>${it.title}</h2>
+        <p class="snippet">${it.snippet || ''}</p>
+        <div class="meta"><span>${timeAgo(it.publishedAt)}</span>${it.readMinutes ? `<span>· ${it.readMinutes}분 읽기</span>` : ''}</div>`;
+      feed.appendChild(a);
+    });
+}).catch(() => {
+  document.getElementById('empty').style.display = 'block';
+});
+</script>

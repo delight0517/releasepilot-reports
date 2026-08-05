@@ -261,9 +261,14 @@
     background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px;
   }
   .about-link:hover { color: var(--accent-ink); border-color: var(--accent); }
+  .top-nav { position: fixed; top: 16px; right: 16px; z-index: 5; display: flex; gap: 8px; }
+  .top-nav .about-link { position: static; }
 </style>
 
-<a class="about-link" href="about/">만든 사람 ↗</a>
+<div class="top-nav">
+  <a class="about-link" href="articles/">📰 기사 ↗</a>
+  <a class="about-link" href="about/">만든 사람 ↗</a>
+</div>
 <div class="wrap">
   <div class="hero">
     <p class="eyebrow">ReleasePilot · 프로젝트 통합 리포트 허브</p>

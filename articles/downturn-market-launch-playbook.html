@@ -1,0 +1,242 @@
+<!doctype html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>시장이 나쁠 때, 프로젝트를 어떻게 살리는가 · 리포트 허브</title>
+<meta name="description" content="큰돈으로 한 번에 띄우는 대신, 작은 결과물로 반응과 신뢰를 먼저 모으는 7가지 원칙과 시장을 읽는 신호 체크리스트">
+<link rel="icon" href="../icons/icon-192.png">
+<meta name="theme-color" content="#fbfaf7">
+<style>
+  :root {
+    --bg: #fbfaf7; --card: #ffffff; --card-2: #f6f3ec; --line: #e9e3d6;
+    --ink: #1d1b17; --ink-dim: #6b6a5f; --ink-faint: #a3a091;
+    --accent: #c9711f; --accent-soft: #f6e6d3; --accent-ink: #7a4413;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Noto Serif KR", serif;
+    --sans: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  * { box-sizing: border-box; overflow-wrap: break-word; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans);
+    line-height: 1.65; -webkit-font-smoothing: antialiased;
+  }
+  .page { max-width: 640px; margin: 0 auto; padding: 0 0 80px; }
+  .back-link {
+    display: inline-block; margin: 16px 0 0 18px; font-family: var(--mono);
+    font-size: 10.5px; color: var(--ink-faint); text-decoration: none;
+  }
+  .back-link:hover { color: var(--accent-ink); }
+
+  .masthead { padding: 18px 22px 26px; text-align: left; }
+  .channel {
+    display: inline-block; font-family: var(--mono); font-size: 10px; font-weight: 700;
+    letter-spacing: 0.05em; color: var(--accent-ink); background: var(--accent-soft);
+    border-radius: 999px; padding: 3px 10px; margin-bottom: 14px;
+  }
+  h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(28px, 7vw, 38px); margin: 0 0 12px; line-height: 1.25; }
+  .masthead .sub { font-size: 14.5px; color: var(--ink-dim); margin: 0; max-width: 46ch; }
+  .meta-row { display: flex; gap: 10px; margin-top: 16px; font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint); }
+
+  section { padding: 22px 22px 4px; }
+  .section-label {
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent-ink); margin: 0 0 10px;
+  }
+  h2 { font-family: var(--serif); font-weight: 400; font-size: 21px; margin: 0 0 12px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px; }
+  .card p { font-size: 13.5px; color: var(--ink-dim); margin: 0 0 10px; }
+  .card p:last-child { margin-bottom: 0; }
+  .card ul, .card ol { margin: 0 0 10px; padding-left: 20px; }
+  .card li { font-size: 13.5px; color: var(--ink-dim); margin-bottom: 4px; }
+  .card b { color: var(--ink); font-weight: 700; }
+  .quote {
+    font-family: var(--serif); font-size: 16px; line-height: 1.55; color: var(--ink);
+    padding: 2px 0 2px 16px; border-left: 3px solid var(--accent); margin: 0 0 14px;
+  }
+  .step {
+    border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin-top: 10px; background: var(--card-2);
+  }
+  .step:first-child { margin-top: 0; }
+  .step-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+  .step-n {
+    width: 22px; height: 22px; border-radius: 50%; background: var(--accent); color: #fff;
+    display: flex; align-items: center; justify-content: center; font-size: 11.5px; font-weight: 700; flex: none;
+  }
+  .step-title { font-size: 13.5px; font-weight: 700; }
+  .step p { margin: 4px 0 0; }
+
+  .signal-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+  .signal-card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; }
+  .signal-card h3 { font-size: 14px; font-weight: 700; margin: 0 0 8px; display: flex; align-items: center; gap: 8px; }
+  .signal-card .glyph { font-size: 16px; }
+  .signal-card ul { margin: 0; padding-left: 18px; }
+  .signal-card li { font-size: 13px; color: var(--ink-dim); margin-bottom: 6px; line-height: 1.55; }
+
+  .conclusion {
+    background: var(--accent-soft); border-radius: 16px; padding: 20px 22px; margin: 8px 22px 0;
+  }
+  .conclusion p { font-size: 14px; color: var(--accent-ink); margin: 0; line-height: 1.65; }
+
+  table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: nowrap; }
+  img, svg { max-width: 100%; height: auto; }
+  footer { padding: 40px 22px 0; font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint); text-align: center; }
+  @media (max-width: 480px) {
+    body { font-size: 15px; }
+    .masthead, section { padding-left: 16px; padding-right: 16px; }
+    .conclusion { margin-left: 16px; margin-right: 16px; }
+  }
+</style>
+
+<div class="page">
+<a class="back-link" href="./">‹ 기사 목록</a>
+<div class="masthead">
+  <span class="channel">출시 전략</span>
+  <h1>시장이 나쁠 때, 프로젝트를 어떻게 살리는가</h1>
+  <p class="sub">큰돈으로 한 번에 띄우는 대신, 작은 결과물로 반응과 신뢰를 먼저 모으는 7가지 원칙 —
+     그리고 타짜처럼 지금이 좋은 때인지 나쁜 때인지 읽는 신호 체크리스트.</p>
+  <div class="meta-row"><span>2026-08-05</span><span>· 6분 읽기</span></div>
+</div>
+
+<section>
+  <p class="section-label">핵심 구조</p>
+  <div class="card">
+    <p class="quote">큰돈 → 개발 → 출시가 아니라, 작은 결과물 → 반응 → 신뢰 → 다음 자원.</p>
+    <p>시장이 나쁠수록 크게 투자받아 한 번에 띄우기보다, 작게 증명해서 다음 자원을 끌어오는
+       방식으로 프로젝트를 활성화해야 한다.</p>
+  </div>
+</section>
+
+<section>
+  <p class="section-label">01</p>
+  <h2>프로젝트 크기를 줄이되, 매력은 줄이지 않기</h2>
+  <div class="card">
+    <p>불황에 가장 위험한 프로젝트: 완성까지 2~3년 걸림 · 출시 전에는 재미를 증명할 수
+       없음 · 많은 인원 필요 · 서버비·광고비가 큼 · 성공해야만 개발비를 회수할 수 있음.</p>
+    <p>전체를 줄이는 게 아니라 <b>가장 매력적인 한 장면만 먼저 완성</b>한다 — 캐릭터 10명 →
+       1명, 스테이지 20개 → 전투장 1개, 스토리 전체 → 보스전 전후의 짧은 장면. 목표는
+       "이거 더 해보고 싶다"는 말이 나오는, <b>감정적으로 완성된 버티컬 슬라이스</b>.</p>
+  </div>
+</section>
+
+<section>
+  <p class="section-label">02</p>
+  <h2>돈 대신 증거를 모아라</h2>
+  <div class="card">
+    <p>시장이 안 좋을수록 투자자는 아이디어보다 증거를 본다: 플레이 테스트 참여자 수,
+       재플레이 비율, 평균 플레이 시간, (조회수보다) 저장·댓글·공유, "출시되면 사겠다"는
+       응답, 1주·4주 재방문율.</p>
+    <p class="quote">"창의적인 액션 게임입니다"보다 "광고비 없이 500명이 테스트했고, 38%가
+       일주일 안에 다시 플레이했다"가 훨씬 강하다.</p>
+  </div>
+</section>
+
+<section>
+  <p class="section-label">03</p>
+  <h2>프로젝트를 공개적으로 성장시키기</h2>
+  <div class="card">
+    <p>완성한 뒤 갑자기 공개하면 관심을 모으기 어렵다 — 개발 과정부터 보여준다: 전후 비교,
+       실패한 디자인과 수정 이유, 플레이어 투표, 10초짜리 핵심 장면.</p>
+    <p>사람들은 노동량이 아니라 <b>눈에 보이는 변화와 흥미로운 선택</b>에 반응한다. 예:
+       "검이 너무 가벼워 보여서 공격 전에 0.15초의 멈춤을 넣었습니다. 어느 쪽이 더 강하게
+       느껴지나요?" — 홍보이면서 동시에 테스트가 되는 게시물.</p>
+  </div>
+</section>
+
+<section>
+  <p class="section-label">04 · 05 · 06</p>
+  <h2>작은 핵심 팬 · 여러 수익원 · 교환형 협업</h2>
+  <div class="card">
+    <p><b>광고비보다 작은 핵심 팬</b> — 처음부터 대중을 모으려 하지 말고, 계속 반응해주는
+       30~100명을 먼저 만든다. 대중보다 먼저 초기 신자 집단이 필요하다.</p>
+    <p><b>수익원을 하나만 두지 않기</b> — 게임 판매 하나에 생존이 걸린 구조는 위험하다.
+       가장 현실적인 조합: 생활비용 아르바이트/외주 + 작은 게임 개발 + 반응 검증.</p>
+    <p><b>협업도 현금이 아닌 교환 구조로</b> — "함께 대작을 만들자"보다 "2주 동안 보스전
+       하나를 만들고, 완료 후 계속할지 결정하자"가 안전하다. 협업도 프로젝트처럼 작게
+       검증한다.</p>
+  </div>
+</section>
+
+<section>
+  <p class="section-label">07 · 실행 순서</p>
+  <h2>현실적인 5단계</h2>
+  <div class="card">
+    <div class="step">
+      <div class="step-head"><span class="step-n">1</span><span class="step-title">2주 — 가장 매력적인 장면 하나 정하기</span></div>
+      <p>대표 캐릭터, 핵심 공격, 적 하나, 배경 한 구역, 30초 분량의 플레이.</p>
+    </div>
+    <div class="step">
+      <div class="step-head"><span class="step-n">2</span><span class="step-title">4주 — 직접 조작 가능한 버전 제작</span></div>
+      <p>완성도보다: 첫눈에 무엇을 하는 게임인지 보이는가 · 손맛이 있는가 · 다시 해보고
+         싶은 이유가 있는가.</p>
+    </div>
+    <div class="step">
+      <div class="step-head"><span class="step-n">3</span><span class="step-title">테스트 — 낯선 사람 포함 20명</span></div>
+      <p>질문은 셋만: 언제 재미를 느꼈는가? 언제 그만두고 싶었는가? 돈을 내고 더 하고
+         싶은가?</p>
+    </div>
+    <div class="step">
+      <div class="step-head"><span class="step-n">4</span><span class="step-title">공개 — 10~20초 영상</span></div>
+      <p>반응이 약하면 광고를 쓰지 말고 게임의 핵심부터 수정한다.</p>
+    </div>
+    <div class="step">
+      <div class="step-head"><span class="step-n">5</span><span class="step-title">확장 결정 — 2개 이상 신호가 나타나면</span></div>
+      <p>재플레이 의사 · 자발적 공유 · 테스트 신청 지속 · 협업 희망자 · 구매·펀딩 의사 ·
+         제작 과정에도 반응. 반응이 없다면 실패가 아니라, 큰돈을 쓰기 전에 방향이 틀렸다는
+         걸 싸게 알아낸 것이다.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <p class="section-label">시장 읽는 기술</p>
+  <h2>타짜처럼 — 카드 한 장이 아니라 여러 신호를 겹쳐 읽는다</h2>
+  <div class="signal-grid">
+    <div class="signal-card">
+      <h3><span class="glyph">💰</span>자금 신호 — 판돈이 도는가</h3>
+      <ul>
+        <li>퍼블리셔·투자사의 신작 계약 발표 빈도가 눈에 띄게 줄었는가</li>
+        <li>같은 카테고리 크라우드펀딩의 성공률·완주 속도가 체감상 줄었는가</li>
+        <li>업계 채용 공고는 줄고 "긴축"·"구조조정" 뉴스는 늘었는가</li>
+      </ul>
+    </div>
+    <div class="signal-card">
+      <h3><span class="glyph">🛒</span>소비자 신호 — 손님이 지갑을 여는가</h3>
+      <ul>
+        <li>비슷한 카테고리 신작이 화제성 대비 판매·설치로 이어지는가, 아니면 화제만
+            되고 조용히 묻히는가</li>
+        <li>평소보다 세일·할인의 빈도와 폭이 늘었는가(정가로 안 팔린다는 신호)</li>
+        <li>"위시리스트만 해둔다" 류의 댓글이 늘고 있는가</li>
+      </ul>
+    </div>
+    <div class="signal-card">
+      <h3><span class="glyph">🧩</span>플랫폼 신호 — 판이 바뀌고 있는가</h3>
+      <ul>
+        <li>스토어·플랫폼이 최근 추천 알고리즘/노출 방식을 바꿨는가 — 바뀐 직후는
+            예측이 특히 어려운 시기</li>
+        <li>같은 카테고리에 신규 출시가 급격히 몰리는가(레드오션), 반대로 뜸해졌는가
+            (기회일 수도, 소비자 신호와 같이 봐야 함)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:12px;">
+    <p><b>패를 읽는 순서</b></p>
+    <ol>
+      <li>한 신호만 보고 판단하지 않는다 — 세 범주 중 <b>2개 이상이 동시에 나쁜 방향</b>을
+          가리킬 때만 "지금은 불황기 전략을 쓸 시기"로 판단한다.</li>
+      <li>직접 확인 없이 단정하지 않는다 — 이 목록은 "어디를 보라"는 안내일 뿐, 실제
+          수치는 판단 시점에 최신 자료로 직접 확인한다.</li>
+      <li>신호가 엇갈리면 보수적으로 — 불황기 전략은 실제로 호황이어도 손해가 크지
+          않지만, 호황을 가정하고 크게 투자했다가 실제로는 불황이면 손실이 훨씬 크다.</li>
+    </ol>
+  </div>
+</section>
+
+<div class="conclusion">
+  <p>시장이 나쁠 때 프로젝트를 활성화하는 방법은 돈을 억지로 끌어오는 게 아니다. 작은
+     완성물을 빠르게 만들고, 실제 반응을 확보하고, 그 반응을 이용해 사람·돈·기회를 한
+     단계씩 끌어오는 것. 대형 기획서를 더 키우는 게 아니라, 짧은 기간 안에 다른 사람에게
+     보여줄 수 있는 강렬한 장면 하나를 완성하는 게 가장 중요하다.</p>
+</div>
+
+<footer>ReleasePilot 리포트 허브 · 기사 채널</footer>
+</div>
