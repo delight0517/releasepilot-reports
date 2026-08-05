@@ -1,0 +1,272 @@
+<!doctype html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>학습 OX 퀴즈 — 노트를 외워지는 퀴즈로</title>
+<meta name="description" content="내 노트를 AI가 OX 퀴즈로 바꾸고, 간격 반복(SM-2)으로 점진적으로 외우게 해주는 학습 앱. 지금 바로 체험해보세요.">
+<link rel="apple-touch-icon" href="../../icons/icon-180.png">
+<link rel="icon" href="../../icons/icon-192.png">
+<meta name="theme-color" content="#fbfaf7">
+<style>
+  :root {
+    --bg: #fbfaf7; --card: #ffffff; --card-2: #f6f3ec; --line: #e9e3d6;
+    --ink: #1d1b17; --ink-dim: #6b6a5f; --ink-faint: #a3a091;
+    --accent: #4f8f6d; --accent-soft: #dcefe4; --accent-ink: #1f5c3d;
+    --accent2: #c9711f; --accent2-soft: #f6e6d3; --accent2-ink: #7a4413;
+    --good: #2f7a63; --good-soft: #dcefe8;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Noto Serif KR", serif;
+    --sans: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, monospace;
+    --shadow-1: 0 1px 2px rgba(29,27,23,0.05), 0 1px 1px rgba(29,27,23,0.03);
+    --shadow-2: 0 12px 28px -12px rgba(29,27,23,0.16), 0 2px 6px rgba(29,27,23,0.05);
+  }
+  @media (prefers-reduced-motion: reduce) { * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; } }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans);
+    line-height: 1.5; -webkit-font-smoothing: antialiased;
+    background-image: radial-gradient(circle at 12% 0%, #eaf5ee 0%, transparent 45%);
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 0 20px 96px; }
+  .top-nav { position: fixed; top: 16px; right: 16px; z-index: 5; }
+  .back-link {
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.04em; color: var(--ink-faint);
+    text-decoration: none; background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px;
+  }
+  .back-link:hover { color: var(--accent-ink); border-color: var(--accent); }
+
+  .hero { padding: 76px 4px 32px; text-align: center; max-width: 600px; margin: 0 auto; }
+  .eyebrow {
+    display: inline-block; font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent-ink); background: var(--accent-soft); border-radius: 999px; padding: 5px 14px; margin: 0 0 22px;
+  }
+  h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(34px, 7.5vw, 50px); line-height: 1.12; letter-spacing: -0.01em; margin: 0 0 16px; text-wrap: balance; }
+  .hero p { margin: 0 auto; font-size: 15.5px; line-height: 1.65; color: var(--ink-dim); max-width: 44ch; }
+
+  .cta-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 26px; }
+  .btn {
+    font-family: var(--sans); font-size: 14px; font-weight: 700; text-decoration: none; border-radius: 999px;
+    padding: 12px 22px; display: inline-flex; align-items: center; gap: 6px; transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--accent); color: #fff; box-shadow: var(--shadow-2); }
+  .btn-secondary { background: var(--card); color: var(--ink); border: 1px solid var(--line); }
+  .signup-note {
+    margin: 14px auto 0; max-width: 40ch; font-size: 12px; line-height: 1.55; color: var(--ink-faint);
+    background: var(--card-2); border-radius: 12px; padding: 10px 16px;
+  }
+
+  .section-head { padding: 0 2px 16px; margin-top: 60px; }
+  .section-head .eyebrow2 { font-family: var(--mono); font-size: 10.5px; color: var(--accent-ink); text-transform: uppercase; letter-spacing: 0.06em; }
+  .section-head h2 { font-family: var(--serif); font-weight: 400; font-size: 24px; margin: 6px 0 8px; letter-spacing: -0.005em; }
+  .section-head p { font-size: 14px; color: var(--ink-dim); margin: 0; max-width: 52ch; }
+
+  /* 운영 방식 — 단계별 흐름 */
+  .steps { display: flex; flex-direction: column; gap: 0; margin-top: 8px; }
+  .step { display: flex; gap: 16px; padding: 18px 2px; position: relative; }
+  .step:not(:last-child)::before {
+    content: ''; position: absolute; left: 23px; top: 52px; bottom: -18px; width: 2px; background: var(--line);
+  }
+  .step-num {
+    flex: none; width: 46px; height: 46px; border-radius: 14px; background: var(--accent-soft); color: var(--accent-ink);
+    display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; font-family: var(--serif);
+    z-index: 1;
+  }
+  .step-body { padding-top: 4px; }
+  .step-title { font-size: 15.5px; font-weight: 700; margin: 0 0 4px; }
+  .step-desc { font-size: 13.5px; line-height: 1.6; color: var(--ink-dim); margin: 0; }
+
+  /* 샘플 질문 카드 */
+  .sample-card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 22px 22px 20px;
+    box-shadow: var(--shadow-1); margin-top: 8px;
+  }
+  .sample-q { font-size: 16px; font-weight: 600; line-height: 1.5; margin: 0 0 14px; }
+  .sample-choices { display: flex; gap: 10px; margin-bottom: 16px; }
+  .sample-choice {
+    flex: 1; text-align: center; padding: 10px; border-radius: 12px; font-weight: 700; font-size: 14px;
+    border: 2px solid var(--line); color: var(--ink-dim);
+  }
+  .sample-choice.correct { border-color: var(--good); background: var(--good-soft); color: var(--good); }
+  .sample-divider { border: none; border-top: 1px solid var(--line); margin: 14px 0; }
+  .sample-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-faint); margin: 0 0 5px; }
+  .sample-text { font-size: 13px; line-height: 1.65; color: var(--ink-dim); margin: 0 0 12px; }
+  .sample-source { font-size: 12px; line-height: 1.6; color: var(--ink-faint); background: var(--card-2); border-radius: 10px; padding: 10px 12px; }
+  .sample-source b { color: var(--ink-dim); }
+
+  /* 원리 카드 (ML/간격반복) */
+  .principle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
+  @media (max-width: 480px) { .principle-grid { grid-template-columns: 1fr; } }
+  .principle-card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px; box-shadow: var(--shadow-1); }
+  .principle-glyph { font-size: 22px; margin-bottom: 8px; }
+  .principle-title { font-size: 14px; font-weight: 700; margin: 0 0 6px; }
+  .principle-desc { font-size: 12.5px; line-height: 1.6; color: var(--ink-dim); margin: 0; }
+
+  /* 그래프 (개념 데모) */
+  .chart-card { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 22px; box-shadow: var(--shadow-1); margin-top: 8px; }
+  .chart-tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--accent2-ink); background: var(--accent2-soft); border-radius: 999px; padding: 4px 10px; display: inline-block; margin-bottom: 14px; }
+  .chart-caption { font-size: 12px; color: var(--ink-faint); margin: 12px 0 0; line-height: 1.6; }
+
+  /* 개발자 전용 트랙 안내 */
+  .dev-card {
+    background: linear-gradient(135deg, #fdf6ea, var(--card)); border: 1px solid var(--line); border-radius: 20px;
+    padding: 22px; box-shadow: var(--shadow-1); margin-top: 8px; display: flex; gap: 16px; align-items: flex-start;
+  }
+  .dev-glyph { flex: none; font-size: 26px; width: 50px; height: 50px; border-radius: 14px; background: var(--accent2-soft); display: flex; align-items: center; justify-content: center; }
+  .dev-body h3 { font-size: 15px; margin: 0 0 6px; font-family: var(--serif); font-weight: 400; }
+  .dev-body p { font-size: 13px; line-height: 1.65; color: var(--ink-dim); margin: 0; }
+
+  footer { margin-top: 72px; padding-top: 24px; border-top: 1px solid var(--line); font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint); text-align: center; letter-spacing: 0.02em; }
+  footer a { color: inherit; }
+</style>
+
+<div class="top-nav"><a class="back-link" href="../../">‹ 허브로</a></div>
+
+<div class="wrap">
+  <div class="hero">
+    <p class="eyebrow">🧠 학습 OX 퀴즈</p>
+    <h1>내 노트가,<br>저절로 외워지는 퀴즈가 됩니다.</h1>
+    <p>텍스트를 붙여넣으면 AI가 밀도 높은 OX 퀴즈를 만들고, 뇌과학 기반 간격 반복
+       알고리즘이 "잊기 직전"에 다시 물어봐서 장기기억으로 넘어가게 도와줍니다.</p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="https://delight0517.github.io/ox-quiz-web/" target="_blank" rel="noopener">지금 바로 체험하기 →</a>
+      <a class="btn btn-secondary" href="#how">어떻게 동작하나요</a>
+    </div>
+    <p class="signup-note">현재는 브라우저(기기)에만 저장되는 체험판입니다. 회원가입 후
+       서버에 내 학습 기록을 저장하는 기능은 준비 중이에요.</p>
+  </div>
+
+  <div class="section-head" id="how">
+    <span class="eyebrow2">How it works</span>
+    <h2>운영 방식</h2>
+    <p>4단계로 끝나는 흐름 — 복잡한 설정 없이 노트만 있으면 됩니다.</p>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p class="step-title">노트를 붙여넣어요</p>
+        <p class="step-desc">외우고 싶은 글(강의 노트, 책 요약, 업무 문서 등)을 그대로 붙여넣습니다. 형식은 자유롭습니다.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p class="step-title">AI가 밀도 높은 OX 퀴즈로 바꿔요</p>
+        <p class="step-desc">핵심 개념 하나하나를 참/거짓 질문으로 재구성하고, 정답 이유와 원문 근거(출처 인용)를 함께 생성합니다. 이상하거나 부정확한 질문은 언제든 스킵·폐기할 수 있어요.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <p class="step-title">간격 반복으로 학습해요</p>
+        <p class="step-desc">맞춘 문제는 점점 뜸하게, 틀린 문제는 더 자주 등장합니다 (SM-2 알고리즘 — Anki와 같은 방식). "몇 일 후 다시" 라벨로 언제 복습할지도 투명하게 보여줍니다.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <p class="step-title">근거를 확인하며 확실히 외워요</p>
+        <p class="step-desc">틀렸을 때뿐 아니라 언제든 "원문(출처) 보기"로 근거 문단을 다시 확인할 수 있어, 단순 암기가 아니라 이해를 바탕으로 기억이 쌓입니다.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-head">
+    <span class="eyebrow2">Sample</span>
+    <h2>생성된 질문 예시</h2>
+    <p>실제로 노트 한 단락을 넣으면 이런 식의 카드가 만들어집니다.</p>
+  </div>
+  <div class="sample-card">
+    <p class="sample-q">Q. 간격 반복 학습에서, 문제를 맞힐수록 다음 복습까지의 간격은 점점 짧아진다.</p>
+    <div class="sample-choices">
+      <div class="sample-choice">O</div>
+      <div class="sample-choice correct">X ✓</div>
+    </div>
+    <hr class="sample-divider">
+    <p class="sample-label">해설</p>
+    <p class="sample-text">맞힐수록 복습 간격은 점점 <b>길어집니다</b>. 이미 장기기억으로
+      넘어간 정보를 불필요하게 자주 복습하면 시간이 낭비되므로, 정답률이 높을수록
+      "잊기 직전" 시점까지 간격을 넓혀 효율을 높이는 것이 핵심입니다. 반대로 틀리면
+      간격이 초기화되어 다시 자주 등장합니다.</p>
+    <p class="sample-label">출처(원문 발췌)</p>
+    <p class="sample-source"><b>노트 3번째 단락:</b> "…SM-2 알고리즘은 정답 시 간격을
+      easeFactor만큼 확장하고, 오답 시 반복 횟수를 0으로 되돌려 다음날 바로 재출제한다…"</p>
+  </div>
+
+  <div class="section-head">
+    <span class="eyebrow2">Why it works</span>
+    <h2>왜 더 쉽게 외워질까요</h2>
+    <p>단순 반복이 아니라, 기억 곡선을 계산해서 복습 타이밍을 개인화합니다.</p>
+  </div>
+  <div class="principle-grid">
+    <div class="principle-card">
+      <div class="principle-glyph">📉</div>
+      <p class="principle-title">망각 곡선을 거스르는 타이밍</p>
+      <p class="principle-desc">사람은 학습 직후 가장 빠르게 잊습니다. "잊기 직전"에 다시
+        노출시키면 같은 복습 횟수로도 기억이 훨씬 오래 유지됩니다.</p>
+    </div>
+    <div class="principle-card">
+      <div class="principle-glyph">🎯</div>
+      <p class="principle-title">개인별 정답률로 난이도 자동 조절</p>
+      <p class="principle-desc">easeFactor가 카드마다 따로 누적돼, 내가 약한 개념은 더
+        자주, 이미 아는 개념은 점점 덜 나오도록 자동으로 맞춰집니다.</p>
+    </div>
+    <div class="principle-card">
+      <div class="principle-glyph">🔀</div>
+      <p class="principle-title">복습과 새 카드의 섞어내기</p>
+      <p class="principle-desc">밀린 복습을 오래된 순으로 먼저 배치하고, 새 카드는 하루 상한을
+        둬서 한 번에 너무 많은 새 정보로 압도되지 않게 합니다.</p>
+    </div>
+    <div class="principle-card">
+      <div class="principle-glyph">🧩</div>
+      <p class="principle-title">근거 기반 이해</p>
+      <p class="principle-desc">정답을 단순 암기하지 않고 원문 근거를 바로 옆에서 확인하며
+        "왜 그런지"까지 함께 기억하도록 설계했습니다.</p>
+    </div>
+  </div>
+
+  <div class="section-head">
+    <span class="eyebrow2">Impact</span>
+    <h2>개발자(김근후)의 실제 학습 지표</h2>
+    <p>아래는 이 방식이 실제로 얼마나 효과적인지 보여주기 위한 개념 그래프입니다.
+      실제 계정·서버 저장 기능이 붙으면 실데이터 그래프로 교체될 예정입니다.</p>
+  </div>
+  <div class="chart-card">
+    <span class="chart-tag">CONCEPT DEMO — 실데이터 아님</span>
+    <svg viewBox="0 0 640 220" width="100%" height="auto" role="img" aria-label="간격 반복 사용 전후 기억률 비교 예시 그래프">
+      <line x1="40" y1="180" x2="620" y2="180" stroke="#e9e3d6" stroke-width="1.5"/>
+      <line x1="40" y1="20" x2="40" y2="180" stroke="#e9e3d6" stroke-width="1.5"/>
+      <!-- 단순 반복(비교군) — 빠르게 감소 -->
+      <polyline points="40,40 130,95 220,130 310,152 400,164 490,172 580,176" fill="none" stroke="#c9a3ea" stroke-width="3" stroke-linecap="round"/>
+      <!-- 간격 반복(이 앱) — 완만하게 유지 -->
+      <polyline points="40,40 130,55 220,50 310,66 400,60 490,74 580,70" fill="none" stroke="#2f7a63" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="580" cy="70" r="4.5" fill="#2f7a63"/>
+      <circle cx="580" cy="176" r="4.5" fill="#c9a3ea"/>
+      <text x="590" y="66" font-size="11" font-family="ui-monospace, monospace" fill="#1f5c3d" font-weight="700">간격 반복</text>
+      <text x="590" y="185" font-size="11" font-family="ui-monospace, monospace" fill="#7a5f96">단순 반복</text>
+      <text x="40" y="200" font-size="10" font-family="ui-monospace, monospace" fill="#a3a091">학습일</text>
+      <text x="10" y="24" font-size="10" font-family="ui-monospace, monospace" fill="#a3a091">기억률</text>
+    </svg>
+    <p class="chart-caption">일반적인 벼락치기(단순 반복)는 며칠 내 기억률이 급격히
+      떨어지는 반면, 잊기 직전에 복습을 배치하는 간격 반복은 훨씬 완만하게 유지된다는
+      것이 알려진 연구 결과입니다. 이 앱은 그 타이밍을 사용자 개인의 정답 이력으로
+      자동 계산합니다.</p>
+  </div>
+
+  <div class="section-head">
+    <span class="eyebrow2">Coming soon</span>
+    <h2>개발자 전용: 성장형 맞춤 학습</h2>
+  </div>
+  <div class="dev-card">
+    <div class="dev-glyph">🌱</div>
+    <div class="dev-body">
+      <h3>로그인하면 나만의 학습 파트너로</h3>
+      <p>개발자(김근후) 계정으로 로그인하면, 직접 만든 퀴즈와 실제 정답 이력을 바탕으로
+        점점 더 정교해지는 "성장형" 맞춤 학습 화면으로 전환될 예정입니다 (회원가입/서버
+        저장 — Firebase 기반, 다음 단계에서 구현).</p>
+    </div>
+  </div>
+
+  <footer>학습 OX 퀴즈 · <a href="https://delight0517.github.io/ox-quiz-web/" target="_blank" rel="noopener">지금 체험하기 ↗</a> · <a href="../../">리포트 허브로 돌아가기</a></footer>
+</div>
