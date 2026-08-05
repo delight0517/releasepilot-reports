@@ -1,0 +1,219 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Auto Pomodoro · 최근 수정사항 보고서</title>
+<style>
+  @font-face { font-family: 'Fraunces-fallback'; src: local('Georgia'); }
+  :root {
+    --ink: #1c2333; --ink-soft: #2a3348; --parchment: #f6f1e6; --parchment-card: #fffdf7;
+    --line: #ded2b8; --accent: #b9812f; --accent-strong: #8f6321; --sage: #5f7d5f;
+    --ready: #3e7d5f; --ready-bg: #e3efe6; --warn: #b2632a; --warn-bg: #f7e9d8;
+    --info: #3a5f8a; --info-bg: #e6edf5; --text: #241f14; --text-soft: #5c5644; --text-faint: #8b8368;
+  }
+  :root[data-theme="dark"] {
+    --ink: #0f1420; --parchment: #171c26; --parchment-card: #1f2532; --line: #333c4d;
+    --accent: #d9a24f; --accent-strong: #e8b768; --sage: #7fa17f; --ready: #6bbf94; --ready-bg: #16302a;
+    --warn: #e0a05e; --warn-bg: #3a2b1a; --info: #7fa8d6; --info-bg: #1b2c3f;
+    --text: #ece6d8; --text-soft: #b8b19c; --text-faint: #7b7663;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink: #0f1420; --parchment: #171c26; --parchment-card: #1f2532; --line: #333c4d;
+      --accent: #d9a24f; --accent-strong: #e8b768; --sage: #7fa17f; --ready: #6bbf94; --ready-bg: #16302a;
+      --warn: #e0a05e; --warn-bg: #3a2b1a; --info: #7fa8d6; --info-bg: #1b2c3f;
+      --text: #ece6d8; --text-soft: #b8b19c; --text-faint: #7b7663;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--parchment); color: var(--text);
+    font-family: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", "Segoe UI", sans-serif;
+    line-height: 1.55; -webkit-font-smoothing: antialiased; }
+  .page { max-width: 640px; margin: 0 auto; padding: 0 0 64px; }
+  .masthead { background: linear-gradient(180deg, var(--ink) 0%, var(--ink-soft) 100%); color: #f3ecd9;
+    padding: 28px 20px 24px; position: relative; overflow: hidden; }
+  .masthead::after { content: ""; position: absolute; right: -40px; top: -40px; width: 160px; height: 160px;
+    border-radius: 50%; background: radial-gradient(circle, var(--accent) 0%, transparent 70%); opacity: 0.35; }
+  .eyebrow { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #c9bd97; margin: 0 0 6px; font-weight: 600; }
+  .masthead h1 { font-family: Georgia, 'Fraunces-fallback', serif; font-size: 30px; line-height: 1.15; margin: 0 0 8px; text-wrap: balance; letter-spacing: -0.01em; }
+  .masthead p.sub { margin: 0; font-size: 14px; color: #cfc6a8; max-width: 46ch; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; position: relative; z-index: 1; }
+  .meta-chip { font-size: 12px; padding: 5px 10px; border-radius: 999px; background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.14); color: #e6dfc7; font-variant-numeric: tabular-nums; }
+  section { padding: 22px 20px 4px; }
+  .section-label { display: flex; align-items: baseline; gap: 8px; margin-bottom: 12px; }
+  .section-label .num { font-size: 12px; color: var(--accent-strong); font-weight: 700; letter-spacing: 0.06em; }
+  .section-label h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-soft); margin: 0; font-weight: 700; }
+  .card { background: var(--parchment-card); border: 1px solid var(--line); border-radius: 14px; padding: 18px; }
+  .card + .card { margin-top: 12px; }
+  .thesis { font-family: Georgia, 'Fraunces-fallback', serif; font-size: 17px; line-height: 1.5; color: var(--text); margin: 0 0 6px; text-wrap: balance; }
+  .thesis em { color: var(--accent-strong); font-style: normal; }
+  .caveat { font-size: 12px; color: var(--text-faint); margin-top: 12px; line-height: 1.5; }
+  .caveat b { color: var(--text-soft); }
+
+  /* -- Day group + commit timeline -- */
+  .day-group { margin-top: 18px; }
+  .day-group:first-child { margin-top: 0; }
+  .day-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .day-date { font-family: Georgia, 'Fraunces-fallback', serif; font-size: 15px; color: var(--accent-strong); }
+  .day-count { font-size: 11px; color: var(--text-faint); background: var(--parchment); border-radius: 999px; padding: 2px 8px; }
+  .commit { border-left: 3px solid var(--sage); padding: 4px 0 10px 14px; margin-bottom: 2px; }
+  .commit:last-child { margin-bottom: 0; }
+  .commit .hash { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 10.5px; color: var(--text-faint); margin-right: 6px; }
+  .commit .msg { font-size: 13.5px; color: var(--text); font-weight: 600; }
+  .commit .why { font-size: 12.5px; color: var(--text-soft); margin-top: 3px; line-height: 1.5; }
+  .commit.fix { border-left-color: var(--warn); }
+  .commit.feature { border-left-color: var(--info); }
+  .tag { display: inline-block; font-size: 9.5px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+    padding: 1px 6px; border-radius: 5px; margin-right: 6px; vertical-align: middle; }
+  .tag.fix { background: var(--warn-bg); color: var(--warn); }
+  .tag.feature { background: var(--info-bg); color: var(--info); }
+  .tag.log { background: var(--ready-bg); color: var(--ready); }
+
+  .stat-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 4px; }
+  .stat-box { background: var(--info-bg); color: var(--info); border-radius: 10px; padding: 12px 14px; text-align: center; }
+  .stat-box .n { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; display: block; }
+  .stat-box .l { font-size: 11px; opacity: 0.85; margin-top: 2px; }
+
+  .source-line { font-size: 12px; color: var(--text-faint); background: var(--parchment); border-radius: 8px;
+    padding: 10px 12px; margin-top: 10px; line-height: 1.55; }
+  .source-line b { color: var(--text-soft); }
+  .source-line code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 11px; }
+  footer { padding: 24px 20px 0; font-size: 11.5px; color: var(--text-faint); text-align: center; }
+  * { overflow-wrap: break-word; }
+  table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: nowrap; }
+  @media (max-width: 640px) {
+    body { font-size: 15px; }
+    .page { padding: 32px 16px 80px; }
+    .stat-row { grid-template-columns: 1fr; }
+  }
+</style>
+
+<div class="page">
+  <div class="masthead">
+    <p class="eyebrow">ReleasePilot · 최근 수정사항 보고서</p>
+    <h1>Auto Pomodoro</h1>
+    <p class="sub">2026-07-25 초기 커밋부터 지금까지, 실제 git 이력 기준 변경사항 — 지어낸 항목 없이 커밋 로그와 작업 일지(TODO.md)만 근거로 정리.</p>
+    <div class="meta-row">
+      <span class="meta-chip">v1.0.1</span>
+      <span class="meta-chip">2026-07-25 ~ 2026-08-05</span>
+      <span class="meta-chip">커밋 27건</span>
+    </div>
+  </div>
+
+  <section>
+    <div class="section-label"><span class="num">01</span><h2>요약</h2></div>
+    <div class="card">
+      <p class="thesis">이 11일 동안의 작업은 <em>새 기능 추가보다 실사용 중 발견된 동기화·잠금·타이머 정확도 버그를 잡는 쪽</em>에 압도적으로 쏠려 있다 — 대부분의 커밋이 "제보 → 원인 재구성(주로 <code>pmset -g log</code> 실측) → 최소 수정" 패턴을 따른다.</p>
+      <div class="stat-row">
+        <div class="stat-box"><span class="n">27</span><span class="l">전체 커밋</span></div>
+        <div class="stat-box"><span class="n">~18</span><span class="l">버그 수정</span></div>
+        <div class="stat-box"><span class="n">~9</span><span class="l">신규 기능/기록</span></div>
+      </div>
+      <p class="caveat">건수는 커밋 메시지를 사람이 읽고 분류한 결과이며(자동 라벨링 아님), "기록" 성격 커밋(사고 원인 로그 등)은 기능 쪽으로 느슨하게 묶었다.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-label"><span class="num">02</span><h2>최근 변경 — 시간순</h2></div>
+    <div class="card">
+
+      <div class="day-group">
+        <div class="day-head"><span class="day-date">2026-08-05</span><span class="day-count">1건</span></div>
+        <div class="commit feature">
+          <span class="tag feature">UI</span><span class="hash">df70d20</span><span class="msg">시간대별 타이머 설정의 시/분 숫자 입력을 24시간 드래그 슬라이더로 교체</span>
+          <p class="why">시간대(예: 새벽 2~10시) 설정 UX를 숫자 입력보다 직관적으로 조작할 수 있게 개선.</p>
+        </div>
+      </div>
+
+      <div class="day-group">
+        <div class="day-head"><span class="day-date">2026-08-04</span><span class="day-count">5건</span></div>
+        <div class="commit fix">
+          <span class="tag fix">FIX</span><span class="hash">73d98d2</span><span class="msg">월드클럭 보정을 실제 타이머 계산에 반영, 같은 기기끼리 동기화 우선권 다툼으로 자기 자신을 막던 버그 수정</span>
+        </div>
+        <div class="commit feature">
+          <span class="tag feature">FEATURE</span><span class="hash">6530b6e</span><span class="msg">"4초 차이난다" 제보에 대응해, 기기별로 세계 시각과 비교해 시계 오차를 자체 점검·리포트하는 기능 추가</span>
+        </div>
+        <div class="commit fix">
+          <span class="tag fix">FIX</span><span class="hash">67ec36c</span><span class="msg">타이머가 세션 도중 25:00으로 리셋되던 문제 — 5분 임계값에서 오래된-세션 판정이 깜빡이던 게 원인</span>
+        </div>
+        <div class="commit fix">
+          <span class="tag fix">FIX</span><span class="hash">6f85e57</span><span class="msg">/wake, /lock 엔드포인트가 테스트성 값을 걸러내도록 — 실제 운영 lock 서버가 적대적 테스트에 반응하지 않게 방어</span>
+        </div>
+        <div class="commit fix">
+          <span class="tag fix">FIX</span><span class="hash">448c9c2</span><span class="msg">N번째 세션마다의 긴 휴식(longBreak) 기능을 비활성화 — Windows 쪽엔 애초에 이 개념이 없어 동작 불일치를 없앰</span>
+        </div>
+      </div>
+
+      <div class="day-group">
+        <div class="day-head"><span class="day-date">2026-08-03</span><span class="day-count">3건</span></div>
+        <div class="commit fix">
+          <span class="tag fix">FIX</span><span class="hash">92f86af</span><span class="msg">"쉬는 시간이 통째로 스킵됨" 사고 원인 로그 + 수정</span>
+          <p class="why">화면 잠금 직후 절전 방지가 꺼지며 곧바로 잠들었다가 깨는 흐름에서, "충분히 쉰 걸로 간주"하는 리셋 로직이 5분짜리 짧은 휴식 기준으로는 몇 분만 잠들어도 넘어가 버렸다. 리셋 판정에 절대 최소 시간(20분)을 추가로 요구하도록 수정.</p>
+        </div>
+        <div class="commit fix">
+          <span class="tag fix">FIX</span><span class="hash">712244e</span><span class="msg">짧은 휴식이 lockComputerOnBreak 자체의 절전 사이클에 의해 지워지던 문제 수정</span>
+        </div>
+        <div class="commit fix">
+          <span class="tag fix">FIX</span><span class="hash">cf0e7cb</span><span class="msg">컴팩트 위젯 색상을 Windows와 정확히 맞추고, 백업 문서 추가, 오래된 LAN IP로 API 동기화가 실패하던 문제 수정</span>
+        </div>
+      </div>
+
+      <div class="day-group">
+        <div class="day-head"><span class="day-date">2026-08-02</span><span class="day-count">5건</span></div>
+        <div class="commit fix">
+          <span class="tag fix">FIX</span><span class="hash">609dcf5</span><span class="msg">completedFocusCount 값 불일치 원인 기록 + Windows 쪽 요청 남김</span>
+        </div>
+        <div class="commit fix">
+          <span class="tag fix">FIX</span><span class="hash">5a2be70</span><span class="msg">원격 break/longBreak 스냅샷을 받아들일 때 completedFocusCount를 재조정</span>
+        </div>
+        <div class="commit fix">
+          <span class="tag fix">FIX</span><span class="hash">d5cc36b</span><span class="msg">lockMode 스키마 불일치 수정 — Windows의 schedule을 Mac의 activeWindows로 올바르게 변환</span>
+        </div>
+        <div class="commit fix">
+          <span class="tag fix">FIX</span><span class="hash">1ea58bb</span><span class="msg">Windows의 lockMode.schedule이 무시되고 동기화 중 Mac의 activeWindows를 지워버리던 버그 수정</span>
+        </div>
+        <div class="commit feature">
+          <span class="tag feature">FEATURE</span><span class="hash">f5a1662</span><span class="msg">Windows에서 이식한 컴팩트 위젯 스킨 추가, 설정에서 선택 가능</span>
+        </div>
+      </div>
+
+      <div class="day-group">
+        <div class="day-head"><span class="day-date">2026-07-30 ~ 08-01</span><span class="day-count">3건</span></div>
+        <div class="commit fix">
+          <span class="tag fix">FIX</span><span class="hash">c25fad4</span><span class="msg">Mac↔Windows 파일 동기화를 실제 Google Drive로 전환, 가짜 로컬 폴더를 잘못 고르지 않도록 앱 내 자동 감지 추가</span>
+        </div>
+        <div class="commit fix">
+          <span class="tag fix">FIX</span><span class="hash">6113b85</span><span class="msg">Mac↔Windows 동기화가 17시간 이상 멈춰있던 사고 수정 — 단일 채널 전송 플래그 + 서버의 누락된 stale-session 방어 추가</span>
+        </div>
+        <div class="commit fix">
+          <span class="tag fix">FIX</span><span class="hash">8ad29a5</span><span class="msg">기기 간 동기화 공백 수정(controlAction 파일-채널 동일화, api-mode push, 휴식 상한) + 영구 디버그 로그 + 위젯 버튼 오버플로 수정</span>
+        </div>
+      </div>
+
+      <div class="day-group">
+        <div class="day-head"><span class="day-date">2026-07-25 ~ 07-29</span><span class="day-count">10건</span></div>
+        <div class="commit feature">
+          <span class="tag log">LOG</span><span class="hash">90f50c2</span><span class="msg">두 개의 wake-alarm 차단 원인 해결 기록(4VPN 파서 버그 수정·검증, RiseSync 웨이크 동기화 코드 작성)</span>
+        </div>
+        <div class="commit feature">
+          <span class="tag feature">FEATURE</span><span class="hash">7d4bc06</span><span class="msg">상류 파서 버그가 수정된 뒤, POST /wake에서 4VPN 포워딩을 기본값으로 활성화</span>
+        </div>
+        <div class="commit feature">
+          <span class="tag feature">FEATURE</span><span class="hash">8db3fe7</span><span class="msg">규칙 기반 wake-alarm 자동 잠금(POST /wake) 추가 — 상류 버그 수정 전까지는 4VPN 포워딩 비활성화</span>
+        </div>
+        <div class="commit feature">
+          <span class="tag feature">FEATURE</span><span class="hash">c260a64</span><span class="msg">휴식 화면 종료 버튼을 전원 끄기/즉시 절전 두 개로 분리</span>
+        </div>
+        <div class="commit feature">
+          <span class="tag feature">FEATURE</span><span class="hash">e1146a9</span><span class="msg">문서 안전장치 설치, git init, iCloud 동기화 실측 검증</span>
+        </div>
+        <div class="commit feature">
+          <span class="tag feature">FEATURE</span><span class="hash">ed64447</span><span class="msg">초기 커밋 — 문서 안전 시스템 설치 전 기준 스냅샷</span>
+        </div>
+      </div>
+
+      <p class="source-line"><b>근거</b> — <code>git log</code>(저장소 <code>schedule/pomodoro</code>) 커밋 메시지 원문 및 <code>TODO.md</code> 작업 일지(2026-08-03 이전 항목의 배경 설명). 2026-08-04~05 커밋 5건은 아직 <code>TODO.md</code>에 서술형 항목으로 옮겨지지 않아 커밋 메시지만을 근거로 요약했다(<b>확인 안 됨</b> 표시는 별도로 없음 — 커밋 메시지 자체가 원문 그대로임).</p>
+    </div>
+  </section>
+
+  <footer>ReleasePilot · Auto Pomodoro 최근 수정사항 보고서 · 2026-08-05</footer>
+</div>
