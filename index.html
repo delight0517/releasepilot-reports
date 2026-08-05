@@ -60,6 +60,14 @@
     line-height: 1.55 !important; color: var(--ink-faint) !important;
     background: var(--card-2); border-radius: 12px; padding: 10px 16px;
   }
+  /* 피드백 — 리포트 콘텐츠(위 privacy-note가 다루는 신뢰 경계)와는 물리적으로
+     분리된 별도 진입점. 항상 개발자에게 직접 감(GitHub Issue). */
+  .feedback-link {
+    display: inline-flex; align-items: center; gap: 5px; margin-top: 10px;
+    font-family: var(--mono); font-size: 11px; color: var(--accent-ink);
+    text-decoration: none; font-weight: 600;
+  }
+  .feedback-link:hover { text-decoration: underline; }
 
   /* ── Section headers ──────────────────────────────────────────────── */
   .section-head { display: flex; align-items: baseline; justify-content: space-between; padding: 0 2px 16px; margin-top: 64px; }
@@ -264,6 +272,7 @@
        최신 버전만 표시, 이전 버전은 펼쳐서 확인.</p>
     <p class="privacy-note">현재는 개발자 개인 전용 도구 — 외부 공개 시 자신의 Claude로
        직접 실행하는 방식(개발자 서버 미경유)을 먼저 제공할 예정.</p>
+    <a class="feedback-link" href="https://github.com/delight0517/releasepilot-reports/issues/new" target="_blank" rel="noopener">💬 피드백·버그 제보하기 ↗</a>
     <a href="https://delight0517.github.io/ox-quiz-web/" target="_blank" rel="noopener"
        style="display:flex;align-items:center;gap:12px;margin-top:16px;padding:14px 16px;
               border:1px solid var(--line);border-radius:14px;background:var(--card);
