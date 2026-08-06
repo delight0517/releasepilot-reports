@@ -1,0 +1,200 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Auto Pomodoro · 출시 반응 예측 · 마케팅 전략</title>
+<style>
+  @font-face { font-family: 'Fraunces-fallback'; src: local('Georgia'); }
+  :root {
+    --ink: #1c2333; --ink-soft: #2a3348; --parchment: #f6f1e6; --parchment-card: #fffdf7;
+    --line: #ded2b8; --accent: #b9812f; --accent-strong: #8f6321; --sage: #5f7d5f;
+    --ready: #3e7d5f; --ready-bg: #e3efe6; --warn: #b2632a; --warn-bg: #f7e9d8;
+    --info: #3a5f8a; --info-bg: #e6edf5; --text: #241f14; --text-soft: #5c5644; --text-faint: #8b8368;
+  }
+  :root[data-theme="dark"] {
+    --ink: #0f1420; --parchment: #171c26; --parchment-card: #1f2532; --line: #333c4d;
+    --accent: #d9a24f; --accent-strong: #e8b768; --sage: #7fa17f; --ready: #6bbf94; --ready-bg: #16302a;
+    --warn: #e0a05e; --warn-bg: #3a2b1a; --info: #7fa8d6; --info-bg: #1b2c3f;
+    --text: #ece6d8; --text-soft: #b8b19c; --text-faint: #7b7663;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink: #0f1420; --parchment: #171c26; --parchment-card: #1f2532; --line: #333c4d;
+      --accent: #d9a24f; --accent-strong: #e8b768; --sage: #7fa17f; --ready: #6bbf94; --ready-bg: #16302a;
+      --warn: #e0a05e; --warn-bg: #3a2b1a; --info: #7fa8d6; --info-bg: #1b2c3f;
+      --text: #ece6d8; --text-soft: #b8b19c; --text-faint: #7b7663;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--parchment); color: var(--text);
+    font-family: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", "Segoe UI", sans-serif;
+    line-height: 1.55; -webkit-font-smoothing: antialiased; }
+  .page { max-width: 640px; margin: 0 auto; padding: 0 0 64px; }
+  .masthead { background: linear-gradient(180deg, var(--ink) 0%, var(--ink-soft) 100%); color: #f3ecd9;
+    padding: 28px 20px 24px; position: relative; overflow: hidden; }
+  .masthead::after { content: ""; position: absolute; right: -40px; top: -40px; width: 160px; height: 160px;
+    border-radius: 50%; background: radial-gradient(circle, var(--accent) 0%, transparent 70%); opacity: 0.35; }
+  .eyebrow { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #c9bd97; margin: 0 0 6px; font-weight: 600; }
+  .masthead h1 { font-family: Georgia, 'Fraunces-fallback', serif; font-size: 30px; line-height: 1.15; margin: 0 0 8px; text-wrap: balance; letter-spacing: -0.01em; }
+  .masthead p.sub { margin: 0; font-size: 14px; color: #cfc6a8; max-width: 46ch; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; position: relative; z-index: 1; }
+  .meta-chip { font-size: 12px; padding: 5px 10px; border-radius: 999px; background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.14); color: #e6dfc7; font-variant-numeric: tabular-nums; }
+  section { padding: 22px 20px 4px; }
+  .section-label { display: flex; align-items: baseline; gap: 8px; margin-bottom: 12px; }
+  .section-label .num { font-size: 12px; color: var(--accent-strong); font-weight: 700; letter-spacing: 0.06em; }
+  .section-label h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-soft); margin: 0; font-weight: 700; }
+  .card { background: var(--parchment-card); border: 1px solid var(--line); border-radius: 14px; padding: 18px; }
+  .card + .card { margin-top: 12px; }
+  .thesis { font-family: Georgia, 'Fraunces-fallback', serif; font-size: 18px; line-height: 1.5; color: var(--text); margin: 0 0 16px; text-wrap: balance; }
+  .thesis em { color: var(--accent-strong); font-style: normal; }
+  .mini-h { font-size: 13px; font-weight: 700; color: var(--accent-strong); margin: 18px 0 6px; }
+  .card > .mini-h:first-child { margin-top: 0; }
+  .caveat { font-size: 12px; color: var(--text-faint); margin-top: 12px; line-height: 1.5; }
+  .caveat b { color: var(--text-soft); }
+  .source-line { font-size: 12px; color: var(--text-faint); background: var(--parchment); border-radius: 8px;
+    padding: 10px 12px; margin-top: 10px; line-height: 1.55; }
+  .source-line b { color: var(--text-soft); }
+  .source-line a { color: var(--info); text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 2px; }
+
+  /* -- Compare table: this app vs adjacent categories -- */
+  .cmp-table { display: grid; gap: 5px; margin: 10px 0 4px; overflow-x: auto; }
+  .cmp-row { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 4px; font-size: 12px;
+    padding: 9px 10px; border-radius: 8px; background: var(--parchment); align-items: center; }
+  .cmp-row.cmp-head { background: transparent; color: var(--text-faint); font-size: 10px; text-transform: uppercase;
+    letter-spacing: 0.03em; font-weight: 700; }
+  .cmp-row.cmp-us { background: var(--ready-bg); font-weight: 600; }
+
+  /* -- Scenario cards -- */
+  .scenario-grid { display: grid; gap: 10px; margin-top: 8px; }
+  .scenario-card { border-radius: 12px; padding: 14px; }
+  .scenario-card.optimistic { background: var(--ready-bg); }
+  .scenario-card.base { background: var(--info-bg); }
+  .scenario-card.pessimistic { background: var(--warn-bg); }
+  .scenario-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .scenario-head h4 { margin: 0; font-size: 14px; }
+  .scenario-prob { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: rgba(255,255,255,0.5); }
+  .scenario-card p { margin: 0; font-size: 13px; color: var(--text-soft); }
+  .scenario-card .move { margin-top: 8px; font-size: 12.5px; font-weight: 600; color: var(--text); }
+
+  /* -- Timeline / MVP-order -- */
+  .timeline { display: grid; gap: 16px; margin-top: 8px; }
+  .tl-item { border-left: 3px solid var(--accent); padding-left: 14px; }
+  .tl-stage { font-size: 12px; font-weight: 700; letter-spacing: 0.02em; color: var(--accent-strong); margin-bottom: 6px; }
+  .tl-row { display: grid; grid-template-columns: 68px 1fr; gap: 8px; font-size: 13px; color: var(--text); padding: 4px 0; }
+  .tl-row .tl-label { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-faint); padding-top: 2px; }
+  .tl-row.problem .tl-label { color: var(--warn); }
+  .tl-row.problem span:last-child { color: var(--text-soft); }
+  .tl-row.strategy .tl-label { color: var(--info); }
+  .tl-row.strategy span:last-child { color: var(--text); font-weight: 500; }
+
+  .legal-item { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; margin-top: 12px; }
+  .legal-item:first-of-type { margin-top: 0; }
+  .legal-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .legal-num { width: 20px; height: 20px; border-radius: 50%; background: var(--warn); color: #fff; font-size: 11px;
+    font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .legal-head h4 { margin: 0; font-size: 14px; }
+  .legal-item p { font-size: 12.5px; color: var(--text-soft); line-height: 1.55; margin: 0 0 6px; }
+  .legal-item p:last-child { margin-bottom: 0; }
+  .legal-fix { color: var(--ready) !important; }
+
+  footer { padding: 24px 20px 0; font-size: 11.5px; color: var(--text-faint); text-align: center; }
+  * { overflow-wrap: break-word; }
+  table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: nowrap; }
+  @media (max-width: 640px) {
+    body { font-size: 15px; }
+    .page { padding: 32px 16px 80px; }
+    .cmp-row { grid-template-columns: 1fr !important; row-gap: 4px; }
+  }
+</style>
+
+<div class="page">
+  <div class="masthead">
+    <p class="eyebrow">ReleasePilot · 출시 반응 예측 · 마케팅 전략</p>
+    <h1>Auto Pomodoro</h1>
+    <p class="sub">"타이머 앱"이 아니라 "스스로 못 끄는 사람을 위한 강제 휴식 장치" — 이 카테고리 정의부터 다시 잡고 예측한 반응과 전략.</p>
+    <div class="meta-row">
+      <span class="meta-chip">v1.0.1</span>
+      <span class="meta-chip">핵심 — 반강제 자동 휴식</span>
+      <span class="meta-chip">PRODUCT_INTENT.md 기준</span>
+    </div>
+  </div>
+
+  <section>
+    <div class="section-label"><span class="num">00</span><h2>이 리포트가 새로 생긴 이유</h2></div>
+    <div class="card">
+      <p class="caveat" style="margin-top:0;">같은 날(2026-08-05) 먼저 나온 <code>region_target_ctr</code> 리포트가 이 앱을 "Mac/Windows 겸용 생산성 툴"로 잘못 포지셔닝했다는 걸 개발자가 지적(2026-08-06): "포모도로 타이머의 중점은 자동 타이머 시작을 통해서 재택 근무 및 일을 하는 이들이 적절히 반 강제적으로 쉴 수 있도록 하는 그러한 앱이라는 점을 리포트에서 전혀 반영되지 않았고, 이상한 곳에 포인트를 두고 있더라." 원인은 그 리포트가 <code>TODO.md</code>/git log(최근 무엇을 고쳤는지)만 근거로 삼고 "왜 만들었는지"는 확인하지 않은 것 — 코드 근거(<code>forcedModeEnabled</code> 주석: "포모도로를 매번 꺼버리는 사람을 위한 기능")와 개발자 확인을 반영해 <code>PRODUCT_INTENT.md</code>를 신설했고, 이 리포트는 그 문서를 기준으로 처음부터 다시 썼다. 재발 방지책으로 이런 리포트를 쓰기 전엔 항상 그 문서를 먼저 확인하도록 프로젝트 규칙에도 반영했다.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-label"><span class="num">01</span><h2>진짜 경쟁 카테고리는 어디인가</h2></div>
+    <div class="card">
+      <p class="thesis">"타이머 앱" 카테고리(Focus To-Do, TickTick, Pomofocus)와 비교하면 이 앱은 기능이 과해 보인다 — 화면 잠금, 자기 자신도 못 끄는 강제 모드까지 있으니까. 하지만 <em>"디지털 웰빙/사용 제한" 카테고리</em>(스크린타임 제한 앱, 이 사용자의 다른 앱인 4VPN Blocker와 같은 자기통제 도구 계열)와 비교하면 정반대로 <em>가장 순한 축</em>에 속한다 — 앱을 막는 게 아니라 "일하는 시간을 정해진 대로 흐르게" 하는 것뿐이니까. 즉 두 카테고리 사이 빈 자리를 메우는 포지션이다.</p>
+
+      <div class="cmp-table">
+        <div class="cmp-row cmp-head"><span>비교 축</span><span>일반 타이머 앱</span><span>Auto Pomodoro</span></div>
+        <div class="cmp-row"><span>휴식을 알려만 줌 vs 강제함</span><span>알림만</span><span>화면 잠금까지</span></div>
+        <div class="cmp-row cmp-us"><span>사용자 본인도 못 끄는 모드 존재</span><span>없음</span><span>있음(forcedModeEnabled)</span></div>
+        <div class="cmp-row"><span>여러 기기 간 강제성 유지</span><span>대체로 기기 단일</span><span>Mac↔Windows↔iOS 동기화</span></div>
+      </div>
+      <p class="caveat">경쟁 앱 3개(Focus To-Do·TickTick·Pomofocus)의 기능 목록은 리뷰 사이트 요약 기준(<a href="https://apix-drive.com/en/blog/reviews/best-pomodoro-timer-apps" target="_blank" rel="noopener">ApiX-Drive 2026</a>)이며, "본인도 못 끄는 강제 모드"가 없다는 건 이번 조사에서 그런 기능을 광고하는 사례를 찾지 못했다는 뜻(<b>확인 안 됨</b>, 완전 부재를 증명한 건 아님).</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-label"><span class="num">02</span><h2>출시 시 예상 반응 — 세 시나리오</h2></div>
+    <div class="card">
+      <div class="scenario-grid">
+        <div class="scenario-card optimistic">
+          <div class="scenario-head"><h4>낙관 — "이거 나한테 필요했다"형 확산</h4><span class="scenario-prob">확인 안 됨</span></div>
+          <p>"내가 나를 못 막아서" 계열의 자기 인식(번아웃·과로 자책 콘텐츠에 공감하는 사람들)이 실제 앱스토어 리뷰·SNS 공유로 이어지는 경우. 강제성 자체가 "이 앱만의 각인점"이 돼 입소문 카피("나 대신 나를 막아주는 타이머" 류)가 자연 발생.</p>
+          <p class="move">→ 확률 추정을 뒷받침할 실측 데이터는 못 찾음 — 리뷰/설치 후 실측으로만 검증 가능.</p>
+        </div>
+        <div class="scenario-card base">
+          <div class="scenario-head"><h4>기본 — 자기통제 앱 카테고리 수준의 조용한 채택</h4><span class="scenario-prob">가능성 높음</span></div>
+          <p>디지털 웰빙/사용 제한 카테고리 앱들이 대체로 그렇듯, 폭발적 확산보다는 이미 문제를 자각한 소수 사용자가 검색으로 찾아 쓰는 조용한 채택 곡선을 그릴 가능성이 크다 — 4VPN Blocker와 유사한 채택 패턴으로 추정(같은 개발자의 다른 앱, 직접 비교 가능).</p>
+          <p class="move">→ 검색 키워드 기반 유입(ASO)이 광고보다 비용 효율적일 가능성 — "포모도로"보다 "자기통제", "강제 휴식", "번아웃 방지" 계열 키워드 실험 필요.</p>
+        </div>
+        <div class="scenario-card pessimistic">
+          <div class="scenario-head"><h4>비관 — "강제"가 거부감으로 읽힘</h4><span class="scenario-prob">리스크</span></div>
+          <p>"본인도 못 끄는 모드"라는 표현 자체가 일부 사용자에게는 매력이 아니라 거부감(통제당하는 느낌)으로 읽힐 수 있다 — 첫 화면 카피에서 "강제"를 전면에 내세우면 설치 전 이탈이 늘 위험.</p>
+          <p class="move">→ 온보딩에서 강제 모드는 기본값이 아니라 "선택"으로 제시(코드상 <code>forcedModeEnabled: false</code>가 기본값 — 이미 이렇게 설계돼 있음, 마케팅 카피도 같은 톤 유지 필요).</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-label"><span class="num">03</span><h2>GTM 실행 순서</h2></div>
+    <div class="card">
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-stage">1단계 — 메시지 재정의</div>
+          <div class="tl-row problem"><span class="tl-label">문제</span><span>지금 화면/문구가 있다면 "생산성·동기화" 톤일 가능성 — 확인 필요.</span></div>
+          <div class="tl-row strategy"><span class="tl-label">전략</span><span>첫 화면 한 줄을 "일이 안 끝나도, 이 시간엔 강제로 쉽니다"류로 — 기능 나열보다 이 앱이 막아주는 구체적 순간(늦은 밤까지 일 붙잡고 있는 상황)을 그려주는 카피.</span></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-stage">2단계 — 미국·영국 우선 진입</div>
+          <div class="tl-row problem"><span class="tl-label">근거</span><span>재택·하이브리드 근무 모수가 가장 크다고 인용됨(region_target_ctr rev.2 참고) — "일하다 못 쉬는 상황" 자체가 벌어질 여지가 많은 시장.</span></div>
+          <div class="tl-row strategy"><span class="tl-label">전략</span><span>디지털 웰빙 카테고리 키워드(ASO) 실험 우선, 유료 광고는 소규모로 카피 A/B(강제 vs 부드러운 표현) 먼저 검증 후 확대.</span></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-stage">3단계 — 한국은 완전히 다른 트랙</div>
+          <div class="tl-row problem"><span class="tl-label">주의</span><span>한국의 "공부 타이머" 수요(수험생층)는 이 앱의 "강제 휴식" 가치와 정반대 니즈(오히려 더 오래 집중하고 싶어함)라 같은 앱·메시지로 동시 진입하면 둘 다 어중간해질 위험.</span></div>
+          <div class="tl-row strategy"><span class="tl-label">전략</span><span>지금은 보류 — 별도 스킨/메시지 없이는 진입하지 않는다(region_target_ctr rev.2와 동일 결론).</span></div>
+        </div>
+      </div>
+
+      <h4 class="mini-h">확인 필요(개발자에게)</h4>
+      <div class="legal-item">
+        <div class="legal-head"><span class="legal-num">1</span><h4>현재 앱스토어/랜딩 문구가 이미 있다면 톤 확인 필요</h4></div>
+        <p>이번 조사 범위에서 실제 배포용 카피(스토어 설명, 랜딩 페이지)는 확인하지 못했다(<b>확인 안 됨</b>) — 있다면 "강제 휴식" 핵심이 이미 반영돼 있는지, 아니라면 이 리포트의 1단계 제안을 어떻게 적용할지 다음 세션에서 실제 문구와 대조 필요.</p>
+      </div>
+      <div class="legal-item">
+        <div class="legal-head"><span class="legal-num">2</span><h4>배포 형태 자체가 아직 미정(개인 전용 → 배포 여부)</h4></div>
+        <p><code>PRODUCT_INTENT.md</code>·이번 리포트 모두 "언젠가 배포한다면"을 전제로 쓴 것 — 실제로 공개 배포할 계획인지, 계속 개인용으로만 쓸 것인지는 확인되지 않았다. 이 확인 자체를 위해 주간 개발 의도 점검(스케줄된 작업)이 새로 생겼다.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>ReleasePilot · Auto Pomodoro 출시 반응 예측·마케팅 전략 · 2026-08-06</footer>
+</div>
