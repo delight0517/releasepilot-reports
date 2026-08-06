@@ -1,0 +1,230 @@
+{
+  "generatedAt": "2026-08-06T19:31:16.305766",
+  "stages": [
+    {
+      "id": "registered",
+      "label": "앱 등록",
+      "phase": "build",
+      "weight": 3
+    },
+    {
+      "id": "analyzed",
+      "label": "코드 분석",
+      "phase": "build",
+      "weight": 5
+    },
+    {
+      "id": "strategy",
+      "label": "타겟·수요 검증",
+      "phase": "build",
+      "weight": 12
+    },
+    {
+      "id": "mvp_locked",
+      "label": "MVP 확정",
+      "phase": "build",
+      "weight": 10
+    },
+    {
+      "id": "metadata",
+      "label": "스토어 메타데이터",
+      "phase": "build",
+      "weight": 8
+    },
+    {
+      "id": "build_signed",
+      "label": "빌드·서명",
+      "phase": "build",
+      "weight": 7
+    },
+    {
+      "id": "submitted",
+      "label": "스토어 제출",
+      "phase": "launch",
+      "weight": 10
+    },
+    {
+      "id": "approved",
+      "label": "심사 통과·출시",
+      "phase": "launch",
+      "weight": 15
+    },
+    {
+      "id": "feedback_1",
+      "label": "1차 사용자 피드백",
+      "phase": "revenue",
+      "weight": 12
+    },
+    {
+      "id": "marketing",
+      "label": "광고·마케팅 집행",
+      "phase": "revenue",
+      "weight": 10
+    },
+    {
+      "id": "revenue_1",
+      "label": "첫 수익",
+      "phase": "revenue",
+      "weight": 8
+    }
+  ],
+  "apps": [
+    {
+      "slug": "harugirok",
+      "name": "사계기록",
+      "stage": "build_signed",
+      "stageLabel": "빌드·서명",
+      "percentTotal": 45,
+      "percentToLaunch": 100,
+      "stagesDone": 6,
+      "stagesTotal": 11,
+      "remainingStages": [
+        "스토어 제출",
+        "심사 통과·출시",
+        "1차 사용자 피드백",
+        "광고·마케팅 집행",
+        "첫 수익"
+      ],
+      "commercialClear": false,
+      "blocked": null,
+      "waypoint": "스토어 메타데이터 확정 후 제출 — 그 전에 '누가 왜 사는지' 타겟 리포트 최신판 재작성 필요",
+      "note": "실기기 설치·실행 확인(2026-08-06), 크래시 수정 반영",
+      "latestReport": null,
+      "updatedAt": "2026-08-06T19:30:42.635213",
+      "etaText": null
+    },
+    {
+      "slug": "ox-quiz",
+      "name": "학습 OX 퀴즈",
+      "stage": "build_signed",
+      "stageLabel": "빌드·서명",
+      "percentTotal": 45,
+      "percentToLaunch": 100,
+      "stagesDone": 6,
+      "stagesTotal": 11,
+      "remainingStages": [
+        "스토어 제출",
+        "심사 통과·출시",
+        "1차 사용자 피드백",
+        "광고·마케팅 집행",
+        "첫 수익"
+      ],
+      "commercialClear": false,
+      "blocked": null,
+      "waypoint": "App Vault 등록 후 MVP 메타데이터 생성 — 타겟(수험생/자격증?) 확정 안 됨",
+      "note": "iOS 빌드·실기기 설치 확인, 웹판 배포됨",
+      "latestReport": null,
+      "updatedAt": "2026-08-06T19:30:43.661255",
+      "etaText": null
+    },
+    {
+      "slug": "risesync",
+      "name": "RiseSync",
+      "stage": "strategy",
+      "stageLabel": "타겟·수요 검증",
+      "percentTotal": 20,
+      "percentToLaunch": 44,
+      "stagesDone": 3,
+      "stagesTotal": 11,
+      "remainingStages": [
+        "MVP 확정",
+        "스토어 메타데이터",
+        "빌드·서명",
+        "스토어 제출",
+        "심사 통과·출시",
+        "1차 사용자 피드백",
+        "광고·마케팅 집행",
+        "첫 수익"
+      ],
+      "commercialClear": true,
+      "blocked": null,
+      "waypoint": "Must 현황판의 미결정 항목부터 확정 → MVP 잠그기",
+      "note": "지역·GTM 전략 리포트 rev.2, 지역적합도 rev.4 게시됨",
+      "latestReport": "risesync-regional_fit_expansion_plan rev.4",
+      "updatedAt": "2026-08-06T19:30:59.743728",
+      "etaText": null
+    },
+    {
+      "slug": "auto-pomodoro",
+      "name": "Auto Pomodoro",
+      "stage": "strategy",
+      "stageLabel": "타겟·수요 검증",
+      "percentTotal": 20,
+      "percentToLaunch": 44,
+      "stagesDone": 3,
+      "stagesTotal": 11,
+      "remainingStages": [
+        "MVP 확정",
+        "스토어 메타데이터",
+        "빌드·서명",
+        "스토어 제출",
+        "심사 통과·출시",
+        "1차 사용자 피드백",
+        "광고·마케팅 집행",
+        "첫 수익"
+      ],
+      "commercialClear": true,
+      "blocked": null,
+      "waypoint": "CTR 리포트의 두 타겟(미국·영국 지식노동자 vs 한국 수험생) 중 하나 선택 → MVP 확정",
+      "note": "지역·타겟 CTR 리포트 rev.1(2026-08-05), 최근 커밋 13건 활발",
+      "latestReport": "auto-pomodoro-region_target_ctr rev.1",
+      "updatedAt": "2026-08-06T19:31:01.216103",
+      "etaText": null
+    },
+    {
+      "slug": "4vpn-blocker",
+      "name": "4VPN Blocker",
+      "stage": "strategy",
+      "stageLabel": "타겟·수요 검증",
+      "percentTotal": 20,
+      "percentToLaunch": 44,
+      "stagesDone": 3,
+      "stagesTotal": 11,
+      "remainingStages": [
+        "MVP 확정",
+        "스토어 메타데이터",
+        "빌드·서명",
+        "스토어 제출",
+        "심사 통과·출시",
+        "1차 사용자 피드백",
+        "광고·마케팅 집행",
+        "첫 수익"
+      ],
+      "commercialClear": true,
+      "blocked": null,
+      "waypoint": "Windows 포팅 완료 후 스토어 트랙 결정",
+      "note": "지역 적합도+확장 기획 rev.1, 사용법 기획서 rev.2",
+      "latestReport": null,
+      "updatedAt": "2026-08-06T19:31:02.248811",
+      "etaText": null
+    },
+    {
+      "slug": "35closer",
+      "name": "35Closer Timer",
+      "stage": "analyzed",
+      "stageLabel": "코드 분석",
+      "percentTotal": 8,
+      "percentToLaunch": 18,
+      "stagesDone": 2,
+      "stagesTotal": 11,
+      "remainingStages": [
+        "타겟·수요 검증",
+        "MVP 확정",
+        "스토어 메타데이터",
+        "빌드·서명",
+        "스토어 제출",
+        "심사 통과·출시",
+        "1차 사용자 피드백",
+        "광고·마케팅 집행",
+        "첫 수익"
+      ],
+      "commercialClear": false,
+      "blocked": null,
+      "waypoint": "타겟·CTR 리포트부터 작성 — 상업성 근거가 아예 없는 상태",
+      "note": "사용법 기획서만 있음, 타겟·수요 검증 리포트 없음",
+      "latestReport": null,
+      "updatedAt": "2026-08-06T19:31:03.309435",
+      "etaText": null
+    }
+  ]
+}

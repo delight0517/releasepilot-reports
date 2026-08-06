@@ -1,0 +1,184 @@
+<!doctype html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>차실장 · 출시 현황판</title>
+<meta name="description" content="등록된 앱들이 출시·수익화까지 어디쯤 왔는지, 다음에 무엇을 해야 하는지 한눈에 보는 현황판">
+<link rel="icon" href="../icons/icon-192.png">
+<meta name="theme-color" content="#fbfaf7">
+<style>
+  :root {
+    --bg: #fbfaf7; --card: #ffffff; --card-2: #f6f3ec; --line: #e9e3d6;
+    --ink: #1d1b17; --ink-dim: #6b6a5f; --ink-faint: #a3a091;
+    --accent: #c9711f; --accent-soft: #f6e6d3; --accent-ink: #7a4413;
+    --good: #2f7a63; --good-soft: #dcefe8;
+    --warn: #b3541e; --warn-soft: #fbe8dc;
+    --launch: #4f7cac; --revenue: #2f7a63;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Noto Serif KR", serif;
+    --sans: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, monospace;
+    --shadow-1: 0 1px 2px rgba(29,27,23,0.05), 0 1px 1px rgba(29,27,23,0.03);
+  }
+  * { box-sizing: border-box; overflow-wrap: break-word; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans);
+    line-height: 1.5; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 0 18px 90px; }
+  .back-link {
+    position: fixed; top: 16px; left: 16px; z-index: 5; font-family: var(--mono);
+    font-size: 10.5px; color: var(--ink-faint); text-decoration: none;
+    background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px;
+  }
+
+  /* ── 차실장 헤더 ─────────────────────────────────────────────── */
+  .hero { padding: 68px 4px 8px; text-align: center; }
+  .bot {
+    width: 76px; height: 76px; margin: 0 auto 16px; border-radius: 22px;
+    background: var(--accent-soft); border: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: center; font-size: 38px;
+  }
+  h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(28px, 6vw, 38px); margin: 0 0 8px; }
+  .hero .role { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--accent-ink); margin: 0 0 14px; }
+  .hero p { margin: 0 auto; font-size: 14.5px; color: var(--ink-dim); max-width: 40ch; }
+
+  /* ── 차실장 브리핑 ───────────────────────────────────────────── */
+  .briefing {
+    background: var(--card); border: 1px solid var(--line); border-left: 3px solid var(--accent);
+    border-radius: 14px; padding: 18px 20px; margin-top: 28px;
+  }
+  .briefing h2 { font-family: var(--serif); font-weight: 400; font-size: 18px; margin: 0 0 10px; }
+  .briefing p { font-size: 13.5px; color: var(--ink-dim); margin: 0 0 8px; line-height: 1.65; }
+  .briefing p:last-child { margin-bottom: 0; }
+  .briefing b { color: var(--ink); }
+
+  .section-head { display: flex; align-items: baseline; justify-content: space-between; padding: 0 2px 14px; margin-top: 48px; }
+  .section-head h2 { font-family: var(--serif); font-weight: 400; font-size: 22px; margin: 0; }
+  .section-head .hint { font-family: var(--mono); font-size: 10px; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.06em; }
+
+  /* ── 앱별 진행 막대 ──────────────────────────────────────────── */
+  .app { background: var(--card); border: 1px solid var(--line); border-radius: 16px;
+    padding: 18px 20px; margin-bottom: 12px; box-shadow: var(--shadow-1); }
+  .app-top { display: flex; align-items: baseline; gap: 10px; margin-bottom: 4px; }
+  .app-name { font-size: 15.5px; font-weight: 700; }
+  .app-pct { font-family: var(--mono); font-size: 13px; color: var(--accent-ink); font-weight: 700; margin-left: auto; }
+  .app-stage { font-size: 12px; color: var(--ink-faint); margin-bottom: 12px; }
+
+  .bar { height: 12px; border-radius: 999px; background: var(--card-2); overflow: hidden; display: flex; }
+  .bar span { display: block; height: 100%; }
+  .seg-build { background: var(--accent); }
+  .seg-launch { background: var(--launch); }
+  .seg-revenue { background: var(--revenue); }
+
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; margin: 10px 0 0; font-family: var(--mono); font-size: 9.5px; color: var(--ink-faint); }
+  .legend i { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 4px; vertical-align: middle; }
+
+  .meta-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .chip { font-family: var(--mono); font-size: 10px; padding: 4px 9px; border-radius: 999px;
+    background: var(--card-2); color: var(--ink-dim); }
+  .chip.warn { background: var(--warn-soft); color: var(--warn); font-weight: 700; }
+  .chip.good { background: var(--good-soft); color: var(--good); font-weight: 700; }
+
+  .next { margin-top: 12px; padding: 11px 14px; background: var(--card-2); border-radius: 10px;
+    font-size: 12.5px; color: var(--ink-dim); line-height: 1.55; }
+  .next b { color: var(--accent-ink); font-family: var(--mono); font-size: 10px;
+    letter-spacing: 0.06em; text-transform: uppercase; display: block; margin-bottom: 3px; }
+
+  .remaining { margin-top: 10px; font-size: 11.5px; color: var(--ink-faint); line-height: 1.6; }
+
+  .empty { font-size: 14px; color: var(--ink-faint); padding: 40px 4px; text-align: center; }
+  footer { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--line);
+    font-family: var(--mono); font-size: 10px; color: var(--ink-faint); text-align: center; }
+  @media (max-width: 480px) { .app { padding: 16px; } }
+</style>
+
+<a class="back-link" href="../">‹ 허브로</a>
+<div class="wrap">
+  <div class="hero">
+    <div class="bot">🤖</div>
+    <p class="role">차실장 · Chief Cha</p>
+    <h1>출시 현황판</h1>
+    <p>등록된 앱이 수익화까지 어디쯤 왔는지, 지금 돌아와서 정확히 뭘 해야 하는지.</p>
+  </div>
+
+  <div class="briefing" id="briefing"></div>
+
+  <div class="section-head"><h2>앱별 진행률</h2><span class="hint">Total → Revenue</span></div>
+  <div id="apps"></div>
+
+  <p class="empty" id="empty" style="display:none;">아직 기록된 진행 상황이 없습니다.</p>
+  <footer id="foot">차실장 · ReleasePilot 출시 현황판</footer>
+</div>
+
+<script>
+const PHASE_CLASS = { build: 'seg-build', launch: 'seg-launch', revenue: 'seg-revenue' };
+
+fetch('data.json', {cache: 'no-store'}).then(r => r.ok ? r.json() : null).then(d => {
+  if (!d || !d.apps || !d.apps.length) { document.getElementById('empty').style.display = 'block'; return; }
+
+  const stages = d.stages;
+  const totalW = stages.reduce((s, x) => s + x.weight, 0);
+  const apps = d.apps;
+
+  // ── 차실장 브리핑 — 데이터에서 직접 뽑은 사실만 말한다 ──────────
+  const notClear = apps.filter(a => a.commercialClear === false);
+  const blocked = apps.filter(a => a.blocked);
+  const nearest = apps.slice().sort((a, b) => b.percentTotal - a.percentTotal)[0];
+  const avg = Math.round(apps.reduce((s, a) => s + a.percentTotal, 0) / apps.length);
+
+  let html = '<h2>🤖 차실장 브리핑</h2>';
+  html += `<p>등록된 앱 <b>${apps.length}개</b>의 평균 진행률은 <b>${avg}%</b>입니다. `
+        + `가장 앞선 건 <b>${nearest.name}</b>(${nearest.percentTotal}%, ${nearest.stageLabel})이고, `
+        + `수익화까지 <b>${nearest.remainingStages.length}단계</b> 남았습니다.</p>`;
+  if (notClear.length) {
+    html += `<p>⚠ <b>${notClear.map(a => a.name).join(', ')}</b> — 누가 왜 사는지가 리포트에 분명하지 않습니다. `
+          + `이 상태로 빌드를 더 진행해도 팔리지 않습니다. 타겟·수요 검증부터 다시 하거나, 접으십시오.</p>`;
+  }
+  if (blocked.length) {
+    html += `<p>⛔ 막힌 항목: ${blocked.map(a => `<b>${a.name}</b>(${a.blocked})`).join(', ')}</p>`;
+  }
+  html += `<p style="font-size:11.5px;color:var(--ink-faint)">기준 시각 ${(d.generatedAt||'').slice(0,16).replace('T',' ')} · `
+        + `진행률은 단계별 가중치 합으로 계산(총 ${totalW}점).</p>`;
+  document.getElementById('briefing').innerHTML = html;
+
+  // ── 앱별 막대 ────────────────────────────────────────────────
+  const wrap = document.getElementById('apps');
+  apps.forEach(a => {
+    // 구간별로 색을 나눠 하나의 막대에 쌓는다 — 출시 전/출시/수익화가
+    // 각각 얼마나 남았는지 색으로 바로 보이게.
+    let segs = '';
+    stages.forEach((s, i) => {
+      if (i >= a.stagesDone) return;
+      segs += `<span class="${PHASE_CLASS[s.phase]}" style="width:${(s.weight/totalW*100).toFixed(2)}%"></span>`;
+    });
+
+    const chips = [];
+    chips.push(`<span class="chip">출시 준비 ${a.percentToLaunch}%</span>`);
+    if (a.etaText) chips.push(`<span class="chip">예상 ${a.etaText}</span>`);
+    if (a.commercialClear === true) chips.push('<span class="chip good">상업성 근거 있음</span>');
+    if (a.commercialClear === false) chips.push('<span class="chip warn">상업성 근거 없음</span>');
+    if (a.blocked) chips.push(`<span class="chip warn">막힘: ${a.blocked}</span>`);
+
+    const el = document.createElement('div');
+    el.className = 'app';
+    el.innerHTML = `
+      <div class="app-top">
+        <span class="app-name">${a.name}</span>
+        <span class="app-pct">${a.percentTotal}%</span>
+      </div>
+      <div class="app-stage">현재 단계 — ${a.stageLabel} (${a.stagesDone}/${a.stagesTotal})</div>
+      <div class="bar">${segs}</div>
+      <div class="meta-row">${chips.join('')}</div>
+      ${a.waypoint ? `<div class="next"><b>다음에 할 일</b>${a.waypoint}</div>` : ''}
+      <div class="remaining">남은 단계: ${a.remainingStages.join(' → ')}</div>`;
+    wrap.appendChild(el);
+  });
+
+  const l = document.createElement('div');
+  l.className = 'legend';
+  l.innerHTML = '<span><i class="seg-build" style="background:var(--accent)"></i>출시 전</span>'
+              + '<span><i style="background:var(--launch)"></i>제출·심사</span>'
+              + '<span><i style="background:var(--revenue)"></i>피드백·광고·수익</span>';
+  wrap.appendChild(l);
+}).catch(() => { document.getElementById('empty').style.display = 'block'; });
+</script>
