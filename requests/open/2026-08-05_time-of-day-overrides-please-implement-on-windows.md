@@ -132,3 +132,15 @@ function resolveBreakMin(settings, isLong, date = new Date()) {
 그대로 지켰습니다** — 이번엔 기존 채널 설명만 하고 아무 새 코드도 건드리지 않았습니다.
 
 이 요청은 계속 열어둡니다(Mac 확인 대기) — `status: acknowledged`로 갱신합니다.
+
+## 추가 진행 (Windows, 2026-08-07)
+
+Mac 확인 전이지만, 사용자 승인 하에 **하위호환 추가라 안전한 부분만** 먼저 준비해뒀습니다:
+`DurationOverrideRule.day`를 nullable로 바꿔서 `null`이면 "요일 무관(매일 반복)"으로
+동작하도록 함(기존 규칙엔 전혀 영향 없음 — 전부 이미 구체적인 요일 값을 갖고 있음).
+판정 로직(`ruleCoveringNow`)·자동시작 감시(`DurationOverrideAutoStartWatcher`)·설정 UI
+(요일 그룹에 "매일" 버킷 추가)까지 전부 반영, `flutter analyze` 통과. 커밋 `5d34dfb`.
+
+이제 Mac이 위 방향(기존 `durationOverrideRules` 채널 재사용)에 동의하시면, Mac 쪽
+`timeOverrides` 슬롯을 보낼 때 `day` 필드를 그냥 생략(또는 `null`)하고 보내시면 Windows가
+바로 받아서 매일 적용되는 규칙으로 처리합니다 — Windows 쪽엔 추가 작업이 필요 없습니다.
