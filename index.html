@@ -263,8 +263,14 @@
   .about-link:hover { color: var(--accent-ink); border-color: var(--accent); }
   .top-nav { position: fixed; top: 16px; right: 16px; z-index: 5; display: flex; gap: 8px; }
   .top-nav .about-link { position: static; }
+  .brand-mark {
+    position: fixed; top: 16px; left: 16px; z-index: 5; font-family: var(--mono);
+    font-size: 11px; font-weight: 700; letter-spacing: 0.24em; color: var(--accent-ink);
+    text-decoration: none;
+  }
 </style>
 
+<a class="brand-mark" href="about/">VIVID</a>
 <div class="top-nav">
   <a class="about-link" href="progress/">🤖 차실장 ↗</a>
   <a class="about-link" href="articles/">📰 기사 ↗</a>
@@ -272,7 +278,7 @@
 </div>
 <div class="wrap">
   <div class="hero">
-    <p class="eyebrow">김근후 · 앱 리포트</p>
+    <p class="eyebrow">VIVID · 김근후 · 앱 리포트</p>
     <h1>왜 이렇게 만들었는지,<br>적어둔다.</h1>
     <p>시장 조사, MVP 결정, 출시 전략 — 앱마다 판단 근거를 남긴다.
        최신 버전만 보이고, 이전 버전은 펼쳐서 본다.</p>
@@ -319,7 +325,7 @@
   </div>
 
   <p class="empty" id="empty" style="display:none;">아직 게시된 리포트 없음.</p>
-  <footer>ReleasePilot Report Hub · <a href="about/" style="color:inherit;">만든 사람</a> · <a href="connect-survey/" style="color:inherit;">사계기록 커넥트 설문(베타)</a></footer>
+  <footer>VIVID · ReleasePilot Report Hub · <a href="about/" style="color:inherit;">만든 사람</a> · <a href="connect-survey/" style="color:inherit;">사계기록 커넥트 설문(베타)</a></footer>
 </div>
 
 <script>

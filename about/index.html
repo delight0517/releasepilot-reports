@@ -61,6 +61,14 @@
   nav.coords a { color: var(--ink-faint); text-decoration: none; }
   nav.coords a:hover { color: var(--seal); }
 
+  /* ── Brand mark — VIVID는 이 사람(김근후/노드)과 그가 만든 AI 페르소나
+     팀(차실장, 클로이 박)을 하나로 묶는 스튜디오 이름. 히어로 위, 어떤
+     섹션보다 먼저 눈에 들어오게 최상단 고정. ─────────────────────────── */
+  .brand-mark {
+    text-align: center; padding-top: 22px; font-family: var(--mono);
+    font-size: 12px; font-weight: 700; letter-spacing: 0.32em; color: var(--seal-ink);
+  }
+
   /* ── Hero ─────────────────────────────────────────────────────────── */
   .hero { padding: 24px 0 36px; text-align: center; }
   .photo {
@@ -183,10 +191,12 @@
 </style>
 </head>
 <body>
+<p class="brand-mark">VIVID</p>
 <nav class="coords">
   <a href="#worldview">세계관</a>
   <a href="#work">하는 일</a>
   <a href="#writing">글</a>
+  <a href="#contact">연락</a>
   <a href="#elsewhere">링크</a>
 </nav>
 <div class="wrap">
@@ -194,7 +204,7 @@
   <div class="hero">
     <img class="photo" alt="김근후 프로필 사진"
       src="https://img1.kakaocdn.net/thumb/C400x400.fpng/?fname=http://t1.kakaocdn.net/brunch/service/user/8RKx/image/XUiLQ38WRFIXaJQm7VpkJIbxyUw.png">
-    <p class="kicker">근성장 · Rogan Kim</p>
+    <p class="kicker">VIVID · 근성장 · Rogan Kim</p>
     <h1>김근후</h1>
     <p class="sub">마음의 지도를 그리는 사람</p>
     <a class="cta" href="https://delight0517.github.io/releasepilot-reports/" target="_blank" rel="noopener">
@@ -270,6 +280,40 @@
         </div>
       </div>
     </div>
+
+    <p class="section-label" style="margin-top:28px;">VIVID 팀 — AI 페르소나</p>
+    <div class="personas">
+      <div class="persona">
+        <div class="glyph">🤖</div>
+        <div>
+          <h3>차실장 — 출시·수익화 트래킹, 냉철 진단</h3>
+          <p>등록된 모든 앱의 출시 11단계 진행률과 상업성 근거를 추적한다. 격려가 아니라 진단을 준다 — 팔릴 근거가 없으면 "지금 이대로는 안 팔린다"고 그대로 말한다. <a href="../progress/" style="color:var(--seal-ink);">현황판 보기 →</a></p>
+        </div>
+      </div>
+      <div class="persona">
+        <div class="glyph">🎨</div>
+        <div>
+          <h3>클로이 박 — 디자인팀장, 차실장 산하</h3>
+          <p>앱 아이콘·스크린샷·스토어 문구 톤앤매너부터 VIVID의 포트폴리오·명함 같은 개인 브랜딩 자산까지 검토한다. 통과 기준 미달이면 그대로 반려한다 — "디자인 업무" 요청은 기본적으로 클로이 박이 맡는다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <p class="section-label">CONTACT</p>
+    <h2>비즈니스 문의</h2>
+    <p class="lede">협업·제안·광고 문의는 아래로 직접 연락 주세요.</p>
+    <div class="links">
+      <a class="link" href="tel:+821075700569">
+        <div><div class="name">전화</div><div class="desc">+82 10-7570-0569</div></div>
+        <span class="arrow">↗</span>
+      </a>
+      <a class="link" href="mailto:delight0517@hongik.ac.kr">
+        <div><div class="name">이메일</div><div class="desc">delight0517@hongik.ac.kr</div></div>
+        <span class="arrow">↗</span>
+      </a>
+    </div>
   </section>
 
   <section id="writing">
@@ -319,7 +363,7 @@
     </div>
   </section>
 
-  <footer>근성장 · 김근후 — 마음의 지도 제작자 노드</footer>
+  <footer>VIVID · 근성장 · 김근후 — 마음의 지도 제작자 노드</footer>
 </div>
 </body>
 </html>
