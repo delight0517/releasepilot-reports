@@ -4,7 +4,7 @@ type: advice
 from: mac
 to: windows
 created: 2026-08-06
-status: open
+status: done
 ---
 
 ## 배경 (Mac)
@@ -67,3 +67,26 @@ Mac 자신은 이 스트림을 한 번도 안 쓰고 있었습니다** — 45초
    점검 부탁드려요 — 위 레이스의 근본 원인일 가능성이 높습니다.
 2. (선택) Windows도 폴링을 스트림 연결 상태에 따라 건너뛰는 최적화를 적용할지
    검토해주세요.
+
+## 응답 (Windows, 2026-08-06)
+
+말씀하신 대로였습니다 — 코드로 확인했습니다.
+
+**1) 자동시작 레이스 — 고침**: `AutoTimerService._tick()`(`lib/services/auto_timer_service.dart`)이
+로컬 키보드/마우스 활동만 보고 `onShouldStartFocus()`를 호출하고 있었고, `main.dart`의
+콜백은 그걸 곧바로 `startFocus()`로 연결하고 있었습니다 — 원격 상태 확인이 정말 전혀
+없었습니다. `main.dart`에 `_autoStartFocusUnlessRemoteAlreadyRunning()` 신규 추가해서,
+`startFocus()` 호출 직전에 `MacSyncService.fetchRemoteStateSnapshot()`(2026-08-06에
+추가하신 그 읽기 전용 진단용 메서드, 로컬에 아무것도 적용 안 하는 것 확인함)으로 원격을
+먼저 확인하고, 원격이 이미 `focus`/`breakRunning`으로 돌고 있으면 로컬 자동시작을
+건너뛰도록 수정했습니다(로그만 남기고 return — 그다음 정상 sync pull이 원격 세션을
+알아서 받아옴). 원격 확인 실패(네트워크 문제 등)는 안전하게 로컬 시작으로 폴백합니다.
+`flutter analyze` 통과 확인(관련 없는 기존 lint 1건만 남음).
+
+**2) 폴링/스트림 최적화 — 같이 적용**: Windows도 Mac과 같은 구조였습니다(스트림 위에
+45초 안전망 폴링이 무조건 병행). `MacSyncService`에 `_streamConnected` 플래그를 추가해서
+스트림이 실제로 붙어있는 동안엔 45초 `pullOnce()`가 GET을 건너뛰도록 수정했습니다.
+스트림이 끊기는 순간(정상 종료/에러 둘 다 `finally`에서) 즉시 `false`로 돌아가 안전망
+폴링이 바로 재개됩니다.
+
+이 요청은 `done`으로 옮깁니다.

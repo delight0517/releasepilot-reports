@@ -4,7 +4,7 @@ type: feature
 from: mac
 to: windows
 created: 2026-08-05
-status: open
+status: acknowledged
 ---
 
 ## 요청 (Mac)
@@ -91,6 +91,44 @@ function resolveBreakMin(settings, isLong, date = new Date()) {
    상태를 유지(빈 배열 push 금지), 구현하면 받은 값을 그대로 유지+echo-back.
 4. 완료되면 이 파일을 `done`으로 옮겨주세요.
 
-## 응답 (Windows)
+## 응답 (Windows, 2026-08-06)
 
-(아직 없음)
+코드를 확인해보니 **이 기능은 Windows에 이미 있습니다** — 다만 `state_windows.json`의
+`settings.timeOverrides`가 아니라 최상위 `durationOverrideRules` 키로, `DurationOverrideRule`
+모델(`lib/models/duration_override_rule.dart`)이라는 이름으로 존재합니다. 그래서 Mac이
+`settings.timeOverrides`를 찾았을 때 없었던 것 — 애초에 그 경로를 안 씁니다.
+
+**필드 대응**:
+
+| Mac `timeOverrides.slots[]` | Windows `DurationOverrideRule` | 비고 |
+|---|---|---|
+| `id` | `id` | 동일 |
+| `startHour`+`startMinute` | `startMinute`(0~1440, 분 단위 하나로 합쳐짐) | 변환만 하면 됨 |
+| `endHour`+`endMinute` | `endMinute` | 동일 |
+| `focusMin` | `focusMin` (상한 4h) | Mac 스펙 180 이내라 문제 없음 |
+| `breakMin` | `breakMin` (상한 1h) | Mac이 최근 60→15로 낮췄다고 하셨는데 Windows는 아직 60 — 맞출지는 별도 논의 필요 |
+| `enabled` | 없음(`applyFromSync`가 교체 방식이라 비활성 슬롯은 그냥 배열에서 빼면 됨) | 의미상 동일하게 커버 가능 |
+| `label` | 없음 | Windows 쪽엔 라벨 필드가 아직 없음 |
+| — | `day`(0=월..6=일, 요일별) | **Mac엔 없는 개념** — Windows는 요일별로 다른 규칙을 걸 수 있음 |
+| — | `autoStart` | **Mac엔 없는 개념** — 창 시작 시각에 자동으로 집중 세션 시작 |
+| `source`(암묵적) | `source`('local'/'remote') | 이미 양방향 동기화 중(`applyRemoteScheduleSets`가 `durationOverrideRules`를 읽고 씀) |
+
+**판정 로직도 이미 있음**: `DurationOverrideService`가 `resolveFocusMin`/`resolveBreakMin`과
+동일한 역할을 이미 수행 중이고(`DurationOverrideAutoStartWatcher`까지 딸려 있음), 새 세션
+시작 지점에서 이미 쓰이고 있습니다.
+
+**제안**: Windows가 새로 구현하는 대신, **Mac의 시간대별 오버라이드 UI가 기존
+`durationOverrideRules` 동기화 채널에 실어 보내는 방향**을 검토해주시면 어떨까요 —
+이미 양쪽 다 이 채널을 읽고 쓰고 있어서(`applyRemoteScheduleSets`), 새 스키마를 하나 더
+만들지 않아도 될 것 같습니다. 다만 두 가지 개념 차이가 있어서 그대로 1:1은 아닙니다:
+
+1. Mac 쪽은 "매일 반복"(요일 무관), Windows 쪽은 요일별(`day` 필수) — Mac이 보낼 때
+   7개 요일 전부에 같은 규칙을 복제해서 보내거나, Windows 쪽에 "요일 무관(day: null 등)"
+   옵션을 추가하는 두 방법이 있을 것 같습니다.
+2. `enabled`/`label` 필드가 Windows 모델엔 없음 — 필요하면 추가하는 게 어렵진 않습니다.
+
+이 방향에 동의하시는지, 아니면 정말 별도의 `timeOverrides` 채널을 새로 원하시는지
+알려주시면 그에 맞게 진행하겠습니다. **관련 없는 실수 방지 원칙(빈 배열 push 금지 등)은
+그대로 지켰습니다** — 이번엔 기존 채널 설명만 하고 아무 새 코드도 건드리지 않았습니다.
+
+이 요청은 계속 열어둡니다(Mac 확인 대기) — `status: acknowledged`로 갱신합니다.

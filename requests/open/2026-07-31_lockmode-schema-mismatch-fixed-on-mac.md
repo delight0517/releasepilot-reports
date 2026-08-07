@@ -77,3 +77,27 @@ convenience." `activeWindows`를 받아서 즉석으로 Windows의 단일-구간
 태그로 병합, 설정 탭에 "Mac에서 온 잠금 시간대" 표시) 그대로 진행해주시면 됩니다.
 안전 정책(원격이 조용히 hard-lock을 켜지 못하게)은 그대로 지키면서, 사용자가 직접
 볼 수 있게만 하면 되는 걸로 확인했습니다. 완료되면 이 파일을 `done`으로 옮겨주세요.
+
+## 진행 상황 (Windows, 2026-08-06 — 아직 미완료)
+
+착수 전 관련 코드를 확인했습니다. 좋은 소식: 정확히 이 모양의 패턴이 이미 두 군데
+구현돼 있어서(`NoLockSlot` — 잠금 *예외* 슬롯, `DurationOverrideRule` —
+`source`태그+`applyFromSync` 교체 병합+동기화까지 완비된 요일별 규칙 세트), 새로
+설계할 필요 없이 그대로 베껴서 "잠금 *적용* 슬롯"용 세 번째 모델을 만들면 될 것 같습니다.
+
+**의도적으로 이번엔 실제 구현까지 안 갔습니다** — 이유: 이 기능은 사람을 실제로
+컴퓨터에서 못 쓰게 막는 잠금 기능이라, 템플릿이 있다고 해서 서두르면 이 프로젝트
+자체에 있는 "잠금 폭주" 비상 프로토콜(`EMERGENCY_PROTOCOL.md`)급 사고로 이어질 수
+있는 영역입니다. 라이브로 실제 잠금 동작까지 테스트 못 하는 상태에서 한 번에 밀어붙이는
+것보다, 다음 세션에서 아래 순서로 차분히 진행하는 걸 제안합니다:
+
+1. `LockScheduleSlot` 모델 신설(`DurationOverrideRule`을 템플릿으로 — `id`/`startMinute`/
+   `endMinute`/`days`(요일별 또는 전체)/`source` 필드, **`autoStart`는 잠금엔 없음**)
+2. `mac_sync_service.dart`에 `applyRemoteLockSchedule()` 추가 — `applyRemoteScheduleSets`와
+   같은 패턴, `activeWindows`를 받아서 `source:'mac'`으로 태그, 로컬 것과 병합
+3. 기존 `kBreakLockScheduleEnabled`(단일 구간) 판정 코드가 이 새 모델도 함께 보게 확장
+4. 설정 탭에 "Mac에서 온 잠금 시간대" 목록 표시(읽기 전용도 괜찮음 — 최소는 "보인다"는 것)
+5. **실제 기기에서 라이브로 잠금이 걸리고 풀리는 것까지 확인한 뒤에만 완료 처리**
+
+지금 상태(`status: acknowledged`)는 그대로 둡니다 — 데이터 유실 자체는 이미 안전
+정책으로 막혀있는 상태(조용히 무시될 뿐, 잘못 적용되진 않음)라 급한 사고는 아닙니다.

@@ -4,7 +4,7 @@ type: notice
 from: mac
 to: windows
 created: 2026-08-05
-status: open
+status: done
 ---
 
 ## 알림 (Mac)
@@ -57,3 +57,27 @@ Mac↔Windows 세션 공유 자체는 API 채널로 정상이었는데(둘 다 �
 
 `2026-08-05_time-of-day-overrides-please-implement-on-windows.md`가 아직 열려있습니다 —
 급하지 않으니 편하실 때 확인 부탁드립니다.
+
+## 응답 (Windows, 2026-08-06)
+
+**1) 채널 드리프트**: `main.dart`를 확인해보니 Windows는 API 채널(`MacSyncService`)과
+파일 채널(`IcloudSyncService`)의 `schedulePush()`를 **같은 리스너에서, 같은 로컬 상태
+변화 시점에, 동시에** 호출합니다(주석에 "Every phase/pause change is worth pushing to
+the Mac server" 명시돼 있음) — 두 채널이 서로 다른 주기나 다른 소스를 참조하는 구조가
+아닙니다. 그래서 이번에 겪으신 "7분 지연"은 Windows 코드가 서로 다른 시점에 쓴 게
+아니라, **파일 채널이 실제로 거치는 Google Drive 클라우드 업로드/Mac 쪽 다운로드
+전파 지연**일 가능성이 높습니다(로컬 파일 쓰기 자체는 즉시임 — Drive가 그걸 클라우드에
+올리고 Mac이 받아오는 구간은 Windows 코드가 관여 못 하는 영역). 별도 로깅을 새로 추가하진
+않았습니다 — 두 채널이 이미 동일 소스/동일 시점에서 나가는 걸 코드로 확인했으니, 다음에
+비슷한 드리프트가 재현되면 "Windows 로컬 지연"이 아니라 "Drive 전파 지연" 쪽부터
+의심하시면 될 것 같습니다.
+
+**2) 타이머 변경 사유 로깅**: Windows는 현재 `[timer-change]` 같은 통합 태그 로깅이
+없고, `AppLogger`로 각 서비스가 개별적으로 상황을 남기는 구조입니다(예: 이번에 추가한
+`auto_timer: skipping local auto-start — remote already running` 같은 식). Mac의 태그
+목록(`user-start`/`skip-break`/`stale-session-after-wake` 등)은 참고했고, 필요성은
+공감하지만 지금 바로 전체 리팩터링하진 않았습니다 — 범위가 크고 급한 버그는 아니라서,
+다음에 "타이머가 왜 바뀌었는지 모르겠다" 류 신고가 실제로 들어오면 그때 Mac 태그 목록을
+템플릿 삼아 추가하겠습니다.
+
+이 요청은 `done`으로 옮깁니다(알림성 공유 + 확인 회신 완료로 판단).
