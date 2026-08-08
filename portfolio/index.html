@@ -1,0 +1,563 @@
+<!doctype html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>포트폴리오 — rogan</title>
+<meta name="description" content="사진과 글을 한곳에 모은 개인 포트폴리오. 로그인하면 편집 가능.">
+<link rel="apple-touch-icon" href="../icons/icon-180.png">
+<link rel="icon" href="../icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Portfolio">
+<meta name="theme-color" content="#14100f">
+<style>
+  /*
+    포트폴리오 — apps/gallery/의 다크룸 컨셉(근흑 배경 + safelight red 액센트,
+    세리프 헤드라인)을 그대로 이어받는다. 사진(apps/gallery/와 같은 Firestore
+    "photos" 컬렉션 + Storage 사용, 코드는 직접 통합 — iframe 아님)과 글(새
+    "posts" 컬렉션)을 탭으로 묶는다. Firebase Auth 세션은 apps/gallery/와
+    완전히 동일한 firebaseConfig를 import해서 쓰므로, onAuthStateChanged가
+    양쪽에서 같은 로그인 상태를 반영한다(로컬스토리지 기반 browserLocalPersistence
+    공유 — 같은 오리진이라 별도 처리 불필요).
+  */
+  :root {
+    --bg: #14100f; --bg-2: #1c1613; --line: rgba(255,255,255,0.09);
+    --ink: #f3ede6; --ink-dim: #b9ada2; --ink-faint: #756a61;
+    --accent: #c8452c; --accent-soft: rgba(200,69,44,0.16); --accent-ink: #ff8a6e;
+    --good: #4f8f6d; --bad: #c8452c;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Noto Serif KR", serif;
+    --sans: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  @media (prefers-reduced-motion: reduce) { * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; } }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans);
+    line-height: 1.5; -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px 96px; }
+
+  header.hero { padding: 56px 4px 28px; text-align: center; }
+  .eyebrow {
+    display: inline-block; font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--accent-ink); background: var(--accent-soft);
+    border-radius: 999px; padding: 5px 14px; margin: 0 0 18px;
+  }
+  h1 {
+    font-family: var(--serif); font-weight: 400; font-size: clamp(32px, 7vw, 48px);
+    letter-spacing: -0.01em; margin: 0 0 10px;
+  }
+  header.hero p { margin: 0 auto; font-size: 14px; color: var(--ink-dim); max-width: 46ch; }
+  .native-note {
+    margin: 14px auto 0; max-width: 46ch; font-size: 11.5px; line-height: 1.6; color: var(--ink-faint);
+  }
+
+  /* tabs */
+  .tabs { display: flex; justify-content: center; gap: 8px; margin: 30px 0 6px; }
+  .tab {
+    font-family: var(--sans); font-size: 13.5px; background: transparent; color: var(--ink-dim);
+    border: 1px solid var(--line); border-radius: 999px; padding: 8px 20px; cursor: pointer;
+    transition: border-color .15s, color .15s, background .15s;
+  }
+  .tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .tab:hover:not(.active) { border-color: var(--accent); color: var(--accent-ink); }
+
+  /* auth bar */
+  .authbar { display: flex; justify-content: center; gap: 10px; margin: 22px 0 8px; flex-wrap: wrap; }
+  button, input, textarea { font-family: var(--sans); font-size: 13.5px; }
+  .btn {
+    background: var(--bg-2); color: var(--ink); border: 1px solid var(--line); border-radius: 8px;
+    padding: 9px 16px; cursor: pointer; transition: border-color .15s, color .15s;
+  }
+  .btn:hover { border-color: var(--accent); color: var(--accent-ink); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn.primary:hover { background: #b53a23; color: #fff; }
+  .btn.ghost { background: transparent; }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+
+  .authcard {
+    max-width: 340px; margin: 14px auto 0; background: var(--bg-2); border: 1px solid var(--line);
+    border-radius: 12px; padding: 20px; display: none;
+  }
+  .authcard.open { display: block; }
+  .authcard label { display: block; font-size: 12px; color: var(--ink-dim); margin: 10px 0 4px; }
+  .authcard input[type=email], .authcard input[type=password] {
+    width: 100%; background: var(--bg); border: 1px solid var(--line); border-radius: 7px;
+    padding: 9px 10px; color: var(--ink);
+  }
+  .authcard .row { display: flex; gap: 8px; margin-top: 16px; }
+  .authcard .err { color: var(--bad); font-size: 12px; margin-top: 8px; min-height: 14px; }
+  .whoami { text-align: center; font-size: 12px; color: var(--ink-faint); margin-top: 6px; }
+
+  /* config warning */
+  .configwarn {
+    max-width: 640px; margin: 20px auto; background: var(--bg-2); border: 1px dashed var(--accent);
+    border-radius: 10px; padding: 16px 18px; font-size: 13px; color: var(--ink-dim); display: none;
+  }
+  .configwarn.show { display: block; }
+  .configwarn code { color: var(--accent-ink); }
+
+  /* panels */
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* ── photos panel (mirrors apps/gallery/) ───────────────── */
+  .dropzone {
+    display: none; max-width: 1080px; margin: 24px auto 8px; border: 1.5px dashed var(--line);
+    border-radius: 12px; padding: 28px; text-align: center; color: var(--ink-dim); font-size: 13px;
+    transition: border-color .15s, background .15s;
+  }
+  .dropzone.open { display: block; }
+  .dropzone.drag { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-ink); }
+  .dropzone input[type=file] { display: none; }
+  .dropzone .pick { color: var(--accent-ink); text-decoration: underline; cursor: pointer; }
+  .queue { margin-top: 12px; font-size: 12px; color: var(--ink-faint); text-align: left; max-width: 480px; margin-inline: auto; }
+  .queue div { padding: 3px 0; }
+
+  .sheet {
+    margin-top: 36px; display: grid; gap: 6px;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  }
+  figure.shot {
+    margin: 0; position: relative; overflow: hidden; background: #0c0a09;
+    border-radius: 2px; opacity: 0; transform: translateY(14px);
+    transition: opacity .6s ease, transform .6s ease;
+  }
+  figure.shot.in { opacity: 1; transform: translateY(0); }
+  figure.shot img { display: block; width: 100%; height: auto; }
+  figure.shot figcaption {
+    position: absolute; left: 0; right: 0; bottom: 0; padding: 10px 12px 8px;
+    font-size: 12px; color: var(--ink); background: linear-gradient(transparent, rgba(0,0,0,0.75));
+    opacity: 0; transition: opacity .2s;
+  }
+  figure.shot:hover figcaption, figure.shot:focus-within figcaption { opacity: 1; }
+  figure.shot .editctl { position: absolute; top: 8px; right: 8px; display: none; gap: 6px; }
+  figure.shot:hover .editctl, figure.shot:focus-within .editctl { display: flex; }
+  .iconbtn {
+    background: rgba(20,16,15,0.75); border: 1px solid var(--line); color: var(--ink);
+    border-radius: 6px; width: 30px; height: 30px; cursor: pointer; font-size: 14px;
+  }
+  .iconbtn:hover { border-color: var(--accent); color: var(--accent-ink); }
+  figure.shot figcaption input {
+    width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--accent);
+    color: var(--ink); font-size: 12px; padding: 2px 0;
+  }
+  .empty { text-align: center; color: var(--ink-faint); font-size: 13px; padding: 60px 0; }
+
+  /* ── posts panel ─────────────────────────────────────────── */
+  .composer {
+    display: none; max-width: 640px; margin: 24px auto 8px; background: var(--bg-2);
+    border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px;
+  }
+  .composer.open { display: block; }
+  .composer input[type=text] {
+    width: 100%; background: var(--bg); border: 1px solid var(--line); border-radius: 7px;
+    padding: 10px 12px; color: var(--ink); font-family: var(--serif); font-size: 17px; margin-bottom: 10px;
+  }
+  .composer textarea {
+    width: 100%; min-height: 120px; background: var(--bg); border: 1px solid var(--line);
+    border-radius: 7px; padding: 10px 12px; color: var(--ink); resize: vertical; margin-bottom: 12px;
+  }
+  .composer .row { display: flex; gap: 8px; justify-content: flex-end; }
+  .composer .err { color: var(--bad); font-size: 12px; margin-top: 8px; }
+
+  .posts { max-width: 640px; margin: 36px auto 0; display: flex; flex-direction: column; gap: 22px; }
+  article.post {
+    background: var(--bg-2); border: 1px solid var(--line); border-radius: 12px; padding: 22px 24px;
+    opacity: 0; transform: translateY(10px); transition: opacity .5s ease, transform .5s ease;
+  }
+  article.post.in { opacity: 1; transform: translateY(0); }
+  article.post h2 {
+    font-family: var(--serif); font-weight: 400; font-size: 22px; margin: 0 0 6px; color: var(--ink);
+  }
+  article.post .meta { font-size: 11.5px; color: var(--ink-faint); margin-bottom: 12px; font-family: var(--mono); }
+  article.post .body { font-size: 14px; color: var(--ink-dim); white-space: pre-wrap; }
+  article.post .postctl { margin-top: 14px; display: flex; gap: 8px; }
+  article.post .postctl .btn { padding: 5px 12px; font-size: 12px; }
+
+  footer { text-align: center; margin-top: 60px; font-size: 11px; color: var(--ink-faint); }
+  footer a.back { color: var(--ink-dim); }
+</style>
+
+<div class="wrap">
+  <header class="hero">
+    <span class="eyebrow">PORTFOLIO</span>
+    <h1>포트폴리오</h1>
+    <p>사진과 글을 한곳에 — 로그인하면 두 탭 모두 편집 가능합니다.</p>
+    <p class="native-note">
+      이 페이지는 반응형 웹으로 iOS Safari에서도 그대로 동작하도록 만들었습니다 —
+      "공유 → 홈 화면에 추가"로 앱처럼 아이콘을 만들어 쓸 수 있습니다. 별도 네이티브
+      iOS 앱이 필요한지는 아직 확인되지 않았고(가정 사항), 필요성이 분명해지면 그때
+      다시 판단합니다.
+    </p>
+  </header>
+
+  <div id="configwarn" class="configwarn">
+    아직 Firebase 설정이 채워지지 않았습니다 — <code>apps/gallery/firebase-config.js</code>의
+    <code>REPLACE_ME</code> 값들을 채워야 로그인/편집이 동작합니다(포트폴리오는 갤러리와
+    같은 Firebase 프로젝트를 공유합니다). 순서대로 따라할 수 있는 안내문은
+    <code>docs/firebase_setup_walkthrough.md</code>를 확인하세요.
+  </div>
+
+  <div class="authbar">
+    <button id="loginToggleBtn" class="btn ghost">로그인</button>
+    <button id="logoutBtn" class="btn ghost" style="display:none">로그아웃</button>
+  </div>
+  <div id="whoami" class="whoami"></div>
+
+  <div id="authcard" class="authcard">
+    <label>이메일</label>
+    <input id="authEmail" type="email" autocomplete="username" placeholder="you@example.com">
+    <label>비밀번호</label>
+    <input id="authPassword" type="password" autocomplete="current-password" placeholder="••••••••">
+    <div class="row">
+      <button id="loginBtn" class="btn primary" style="flex:1">로그인</button>
+      <button id="authCancelBtn" class="btn ghost">닫기</button>
+    </div>
+    <div id="authErr" class="err"></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" id="tabPhotosBtn" data-panel="photos">사진</button>
+    <button class="tab" id="tabPostsBtn" data-panel="posts">글</button>
+  </div>
+
+  <!-- ── PHOTOS PANEL ─────────────────────────────────────── -->
+  <section id="panelPhotos" class="panel active">
+    <div id="dropzone" class="dropzone">
+      <div>사진을 여기로 드래그하거나 <label class="pick" for="fileInput">클릭해서 선택</label>하세요.</div>
+      <input id="fileInput" type="file" accept="image/*" multiple>
+      <div id="queue" class="queue"></div>
+    </div>
+    <div id="sheet" class="sheet"></div>
+    <div id="emptyPhotos" class="empty" style="display:none">아직 올라온 사진이 없습니다.</div>
+  </section>
+
+  <!-- ── POSTS PANEL ──────────────────────────────────────── -->
+  <section id="panelPosts" class="panel">
+    <div style="text-align:center;">
+      <button id="newPostBtn" class="btn ghost" style="display:none;margin-top:18px;">+ 새 글 쓰기</button>
+    </div>
+    <div id="composer" class="composer">
+      <input id="postTitle" type="text" placeholder="제목">
+      <textarea id="postBody" placeholder="내용을 적어주세요…"></textarea>
+      <div class="row">
+        <button id="postCancelBtn" class="btn ghost">취소</button>
+        <button id="postSaveBtn" class="btn primary">게시</button>
+      </div>
+      <div id="postErr" class="err"></div>
+    </div>
+    <div id="posts" class="posts"></div>
+    <div id="emptyPosts" class="empty" style="display:none">아직 게시된 글이 없습니다.</div>
+  </section>
+
+  <footer>
+    <a class="back" href="../apps/gallery/">사진 갤러리(단독 페이지)</a> ·
+    <a class="back" href="../index.html">← 리포트 허브로 돌아가기</a>
+  </footer>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+  import {
+    getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut,
+    browserLocalPersistence, setPersistence,
+  } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+  import {
+    getFirestore, collection, addDoc, deleteDoc, doc, updateDoc,
+    onSnapshot, query, orderBy, serverTimestamp,
+  } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+  import {
+    getStorage, ref, uploadBytes, getDownloadURL, deleteObject,
+  } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
+  // 갤러리와 완전히 같은 Firebase 프로젝트 config를 그대로 재사용한다 —
+  // 별도 Firebase 프로젝트를 새로 만들지 않는다(사용자 요청). 이 import
+  // 하나로 로그인 세션도 자연히 apps/gallery/와 공유된다(같은 origin +
+  // browserLocalPersistence).
+  import { firebaseConfig } from "../apps/gallery/firebase-config.js";
+
+  const isConfigured = Object.values(firebaseConfig).every(v => v && !String(v).includes("REPLACE_ME"));
+  const $ = (id) => document.getElementById(id);
+
+  // ── Tabs ──────────────────────────────────────────────────
+  const tabBtns = [$("tabPhotosBtn"), $("tabPostsBtn")];
+  const panels = { photos: $("panelPhotos"), posts: $("panelPosts") };
+  tabBtns.forEach(btn => btn.addEventListener("click", () => {
+    tabBtns.forEach(b => b.classList.toggle("active", b === btn));
+    Object.entries(panels).forEach(([name, el]) => el.classList.toggle("active", name === btn.dataset.panel));
+  }));
+
+  const configwarnEl = $("configwarn");
+  if (!isConfigured) {
+    configwarnEl.classList.add("show");
+    $("emptyPhotos").style.display = "block";
+    $("emptyPhotos").textContent = "Firebase 설정이 아직 없어 불러올 수 없습니다.";
+    $("emptyPosts").style.display = "block";
+    $("emptyPosts").textContent = "Firebase 설정이 아직 없어 불러올 수 없습니다.";
+    $("loginToggleBtn").disabled = true;
+  } else {
+    runApp();
+  }
+
+  function runApp() {
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+    setPersistence(auth, browserLocalPersistence).catch(() => {});
+
+    let currentUser = null;
+    let photos = [];
+    let posts = [];
+
+    // ── Auth UI (shared across both tabs) ──────────────────
+    const loginToggleBtn = $("loginToggleBtn"), logoutBtn = $("logoutBtn"), authcard = $("authcard");
+    const whoami = $("whoami"), authErr = $("authErr");
+    loginToggleBtn.onclick = () => authcard.classList.toggle("open");
+    $("authCancelBtn").onclick = () => authcard.classList.remove("open");
+    $("loginBtn").onclick = async () => {
+      authErr.textContent = "";
+      const email = $("authEmail").value.trim();
+      const pw = $("authPassword").value;
+      if (!email || !pw) { authErr.textContent = "이메일과 비밀번호를 입력하세요."; return; }
+      try {
+        await signInWithEmailAndPassword(auth, email, pw);
+        authcard.classList.remove("open");
+        $("authEmail").value = ""; $("authPassword").value = "";
+      } catch (e) {
+        authErr.textContent = "로그인 실패 — 이메일/비밀번호를 확인하세요.";
+      }
+    };
+    logoutBtn.onclick = () => signOut(auth);
+
+    onAuthStateChanged(auth, (user) => {
+      currentUser = user;
+      loginToggleBtn.style.display = user ? "none" : "";
+      logoutBtn.style.display = user ? "" : "none";
+      whoami.textContent = user ? `로그인됨: ${user.email}` : "";
+      $("dropzone").classList.toggle("open", !!user);
+      $("newPostBtn").style.display = user ? "" : "none";
+      if (!user) $("composer").classList.remove("open");
+      renderSheet();
+      renderPosts();
+    });
+
+    // ── Photos: upload (drag & drop + click) ───────────────
+    const dropzone = $("dropzone"), fileInput = $("fileInput"), queueEl = $("queue");
+    ["dragenter", "dragover"].forEach(evt =>
+      dropzone.addEventListener(evt, (e) => { e.preventDefault(); dropzone.classList.add("drag"); }));
+    ["dragleave", "drop"].forEach(evt =>
+      dropzone.addEventListener(evt, (e) => { e.preventDefault(); dropzone.classList.remove("drag"); }));
+    dropzone.addEventListener("drop", (e) => {
+      if (e.dataTransfer?.files?.length) uploadFiles(e.dataTransfer.files);
+    });
+    fileInput.addEventListener("change", () => {
+      if (fileInput.files.length) uploadFiles(fileInput.files);
+      fileInput.value = "";
+    });
+
+    async function uploadFiles(fileList) {
+      if (!currentUser) return;
+      const files = Array.from(fileList).filter(f => f.type.startsWith("image/"));
+      for (const file of files) {
+        const line = document.createElement("div");
+        line.textContent = `업로드 중... ${file.name}`;
+        queueEl.appendChild(line);
+        try {
+          const path = `photos/${currentUser.uid}/${Date.now()}_${file.name}`;
+          const storageRef = ref(storage, path);
+          await uploadBytes(storageRef, file);
+          const url = await getDownloadURL(storageRef);
+          await addDoc(collection(db, "photos"), {
+            url, storagePath: path, caption: "", ownerUid: currentUser.uid,
+            createdAt: serverTimestamp(),
+          });
+          line.textContent = `완료: ${file.name}`;
+          setTimeout(() => line.remove(), 2500);
+        } catch (e) {
+          line.textContent = `실패: ${file.name} (${e.message || e})`;
+        }
+      }
+    }
+
+    const sheetEl = $("sheet"), emptyPhotosEl = $("emptyPhotos");
+    const qPhotos = query(collection(db, "photos"), orderBy("createdAt", "desc"));
+    onSnapshot(qPhotos, (snap) => {
+      photos = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderSheet();
+    }, (err) => {
+      emptyPhotosEl.style.display = "block";
+      emptyPhotosEl.textContent = "갤러리를 불러오지 못했습니다 (권한/설정 확인 필요).";
+      console.error(err);
+    });
+
+    function renderSheet() {
+      sheetEl.innerHTML = "";
+      emptyPhotosEl.style.display = photos.length ? "none" : "block";
+      photos.forEach((p) => sheetEl.appendChild(shotEl(p)));
+      requestAnimationFrame(() => observeIn("figure.shot:not(.in)"));
+    }
+
+    function shotEl(p) {
+      const fig = document.createElement("figure");
+      fig.className = "shot";
+      fig.dataset.id = p.id;
+
+      const img = document.createElement("img");
+      img.src = p.url; img.loading = "lazy"; img.alt = p.caption || "";
+      fig.appendChild(img);
+
+      const cap = document.createElement("figcaption");
+      cap.textContent = p.caption || "";
+      fig.appendChild(cap);
+
+      if (currentUser && currentUser.uid === p.ownerUid) {
+        const ctl = document.createElement("div");
+        ctl.className = "editctl";
+
+        const editBtn = document.createElement("button");
+        editBtn.className = "iconbtn"; editBtn.title = "캡션 수정"; editBtn.textContent = "✎";
+        editBtn.onclick = () => startEditCaption(fig, cap, p);
+
+        const delBtn = document.createElement("button");
+        delBtn.className = "iconbtn"; delBtn.title = "삭제"; delBtn.textContent = "✕";
+        delBtn.onclick = () => deletePhoto(p);
+
+        ctl.appendChild(editBtn); ctl.appendChild(delBtn);
+        fig.appendChild(ctl);
+      }
+      return fig;
+    }
+
+    function startEditCaption(fig, cap, p) {
+      cap.innerHTML = "";
+      const input = document.createElement("input");
+      input.value = p.caption || ""; input.placeholder = "캡션 입력 후 Enter";
+      cap.appendChild(input);
+      cap.style.opacity = "1";
+      input.focus();
+      const commit = async () => {
+        const val = input.value.trim();
+        try { await updateDoc(doc(db, "photos", p.id), { caption: val }); } catch (e) { console.error(e); }
+      };
+      input.addEventListener("keydown", (e) => { if (e.key === "Enter") input.blur(); });
+      input.addEventListener("blur", commit);
+    }
+
+    async function deletePhoto(p) {
+      if (!confirm("이 사진을 삭제할까요? 되돌릴 수 없습니다.")) return;
+      try {
+        if (p.storagePath) await deleteObject(ref(storage, p.storagePath));
+        await deleteDoc(doc(db, "photos", p.id));
+      } catch (e) {
+        alert("삭제 실패: " + (e.message || e));
+      }
+    }
+
+    // ── Posts ────────────────────────────────────────────────
+    const newPostBtn = $("newPostBtn"), composer = $("composer");
+    const postTitle = $("postTitle"), postBody = $("postBody"), postErr = $("postErr");
+    let editingPostId = null;
+
+    newPostBtn.onclick = () => {
+      editingPostId = null;
+      postTitle.value = ""; postBody.value = ""; postErr.textContent = "";
+      composer.classList.add("open");
+      postTitle.focus();
+    };
+    $("postCancelBtn").onclick = () => { composer.classList.remove("open"); editingPostId = null; };
+    $("postSaveBtn").onclick = async () => {
+      if (!currentUser) return;
+      const title = postTitle.value.trim();
+      const body = postBody.value.trim();
+      if (!title || !body) { postErr.textContent = "제목과 내용을 모두 입력하세요."; return; }
+      postErr.textContent = "";
+      try {
+        if (editingPostId) {
+          await updateDoc(doc(db, "posts", editingPostId), { title, body, updatedAt: serverTimestamp() });
+        } else {
+          await addDoc(collection(db, "posts"), {
+            title, body, ownerUid: currentUser.uid, authorEmail: currentUser.email,
+            createdAt: serverTimestamp(),
+          });
+        }
+        composer.classList.remove("open");
+        editingPostId = null;
+      } catch (e) {
+        postErr.textContent = "게시 실패: " + (e.message || e);
+      }
+    };
+
+    const postsEl = $("posts"), emptyPostsEl = $("emptyPosts");
+    const qPosts = query(collection(db, "posts"), orderBy("createdAt", "desc"));
+    onSnapshot(qPosts, (snap) => {
+      posts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderPosts();
+    }, (err) => {
+      emptyPostsEl.style.display = "block";
+      emptyPostsEl.textContent = "글을 불러오지 못했습니다 (권한/설정 확인 필요).";
+      console.error(err);
+    });
+
+    function renderPosts() {
+      postsEl.innerHTML = "";
+      emptyPostsEl.style.display = posts.length ? "none" : "block";
+      posts.forEach(p => postsEl.appendChild(postEl(p)));
+      requestAnimationFrame(() => observeIn("article.post:not(.in)"));
+    }
+
+    function postEl(p) {
+      const art = document.createElement("article");
+      art.className = "post";
+
+      const h2 = document.createElement("h2");
+      h2.textContent = p.title || "(제목 없음)";
+      art.appendChild(h2);
+
+      const meta = document.createElement("div");
+      meta.className = "meta";
+      const dateStr = p.createdAt?.toDate ? p.createdAt.toDate().toLocaleDateString("ko-KR") : "";
+      meta.textContent = [p.authorEmail, dateStr].filter(Boolean).join(" · ");
+      art.appendChild(meta);
+
+      const bodyEl = document.createElement("div");
+      bodyEl.className = "body";
+      bodyEl.textContent = p.body || "";
+      art.appendChild(bodyEl);
+
+      if (currentUser && currentUser.uid === p.ownerUid) {
+        const ctl = document.createElement("div");
+        ctl.className = "postctl";
+
+        const editBtn = document.createElement("button");
+        editBtn.className = "btn ghost"; editBtn.textContent = "수정";
+        editBtn.onclick = () => {
+          editingPostId = p.id;
+          postTitle.value = p.title || ""; postBody.value = p.body || ""; postErr.textContent = "";
+          composer.classList.add("open");
+          composer.scrollIntoView({ behavior: "smooth", block: "center" });
+          postTitle.focus();
+        };
+
+        const delBtn = document.createElement("button");
+        delBtn.className = "btn ghost"; delBtn.textContent = "삭제";
+        delBtn.onclick = async () => {
+          if (!confirm("이 글을 삭제할까요? 되돌릴 수 없습니다.")) return;
+          try { await deleteDoc(doc(db, "posts", p.id)); } catch (e) { alert("삭제 실패: " + (e.message || e)); }
+        };
+
+        ctl.appendChild(editBtn); ctl.appendChild(delBtn);
+        art.appendChild(ctl);
+      }
+      return art;
+    }
+
+    function observeIn(selector) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+      }, { threshold: 0.08 });
+      document.querySelectorAll(selector).forEach(el => io.observe(el));
+    }
+  }
+</script>

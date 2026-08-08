@@ -3,6 +3,14 @@
     "date": "2026-08-08",
     "persona": "박새로이",
     "glyph": "🔧",
+    "title": "포트폴리오 신설 — 사진 갤러리 + 새 글(posts) 통합 페이지",
+    "detail": "리포트 허브 셸(다크/라이트, 히어로, 뒤로가기 패턴)을 참고해 새 최상위 경로 portfolio/index.html 신설. apps/gallery/의 다크룸 톤·firebaseConfig를 그대로 import해 사진 탭을 직접 통합(iframe 아님) — 같은 Firebase Auth 세션이므로 onAuthStateChanged 하나로 로그인 상태가 갤러리와 포트폴리오 양쪽에 동시 반영됨. 새 Firestore 컬렉션 posts로 글 탭(제목/본문, 로그인 시 작성·수정·삭제) 추가, 별도 Firebase 프로젝트는 만들지 않음. 루트 index.html에 진입 카드 연결. 로컬 서버로 렌더링/콘솔 에러 없음 확인 — Firebase config가 REPLACE_ME 상태라 로그인/글쓰기의 실제 end-to-end 동작은 미검증.",
+    "link": "../portfolio/"
+  },
+  {
+    "date": "2026-08-08",
+    "persona": "박새로이",
+    "glyph": "🔧",
     "title": "35Closer 절전 방지 무시 버그 — 근본 원인 추적·수정",
     "detail": "사용자가 keepAwake를 켜고 나갔는데도 절전됨. 이벤트 로그(events-2026-08-07.log)를 시간순으로 대조해 autoIdle의 Claude 보호 하드캡이 keepAwake 상태를 아예 모른 채 sleep을 실행한다는 구조적 결함 확인. auto_idle_controller.dart에 attachKeepAwake() 게이트 추가, 재빌드·재배포까지 확인.",
     "link": null
