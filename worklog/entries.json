@@ -1,0 +1,34 @@
+[
+  {
+    "date": "2026-08-08",
+    "persona": "박새로이",
+    "glyph": "🔧",
+    "title": "35Closer 절전 방지 무시 버그 — 근본 원인 추적·수정",
+    "detail": "사용자가 keepAwake를 켜고 나갔는데도 절전됨. 이벤트 로그(events-2026-08-07.log)를 시간순으로 대조해 autoIdle의 Claude 보호 하드캡이 keepAwake 상태를 아예 모른 채 sleep을 실행한다는 구조적 결함 확인. auto_idle_controller.dart에 attachKeepAwake() 게이트 추가, 재빌드·재배포까지 확인.",
+    "link": null
+  },
+  {
+    "date": "2026-08-08",
+    "persona": "박새로이",
+    "glyph": "🔧",
+    "title": "사진 갤러리 — Firebase 로그인·업로드·삭제 구현",
+    "detail": "정적 사이트에 Auth(이메일/비밀번호)+Firestore+Storage 연동. 로그인 시에만 업로드/캡션 수정/삭제 가능, 비로그인은 감상만. Firebase 콘솔 수동 설정 단계는 한국어 안내문(docs/firebase_setup_walkthrough.md)으로 분리.",
+    "link": "../apps/gallery/"
+  },
+  {
+    "date": "2026-08-08",
+    "persona": "클로이 박",
+    "glyph": "🎨",
+    "title": "사진 갤러리 — 다크룸 컨셉 기획",
+    "detail": "가로/세로 원본 비율을 그대로 살리는 콘택트시트 그리드, 등장 시 한 가지 동작(페이드+살짝 떠오름)만 반복하는 절제된 애니메이션, safelight red 액센트로 톤 확정. 구현은 박새로이에게 인계.",
+    "link": null
+  },
+  {
+    "date": "2026-08-08",
+    "persona": "차실장",
+    "glyph": "🤖",
+    "title": "iOS 실기기 세션 업데이트 자동 설치 시스템 구축",
+    "detail": "이번 세션 중 변경된 iOS 앱만 골라 빌드·설치하는 디스패처(tool/session_update_installer.sh)를 만들어 사계기록·OX퀴즈 앱 실기기 설치까지 확인. 과정에서 프로젝트 위치 인덱스가 사계기록(harugirok)을 오래된 스냅샷으로 잘못 표시해 실제 변경을 놓쳤던 걸 발견·정정.",
+    "link": null
+  }
+]
