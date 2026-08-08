@@ -1,0 +1,381 @@
+<!doctype html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>사진 — Darkroom Gallery</title>
+<meta name="description" content="필름을 다루듯 느긋하게 넘겨보는 사진 포트폴리오. rogan 개인 갤러리.">
+<link rel="apple-touch-icon" href="../../icons/icon-180.png">
+<link rel="icon" href="../../icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Darkroom">
+<meta name="theme-color" content="#14100f">
+<style>
+  /*
+    다크룸 컨셉 — 근흑 배경 + safelight red 액센트, 세리프 헤드라인/산세리프 본문.
+    이 디자인 톤은 1차 기획 세션("클로이 박")이 정한 방향이라 이후 세션에서
+    임의로 바꾸지 않는다 (CLAUDE.md 참고). 데이터 소스만 GitHub Contents API에서
+    Firebase(Firestore+Storage)로 바뀌었다.
+  */
+  :root {
+    --bg: #14100f; --bg-2: #1c1613; --line: rgba(255,255,255,0.09);
+    --ink: #f3ede6; --ink-dim: #b9ada2; --ink-faint: #756a61;
+    --accent: #c8452c; --accent-soft: rgba(200,69,44,0.16); --accent-ink: #ff8a6e;
+    --good: #4f8f6d; --bad: #c8452c;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Noto Serif KR", serif;
+    --sans: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  @media (prefers-reduced-motion: reduce) { * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; } }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans);
+    line-height: 1.5; -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px 96px; }
+
+  header.hero { padding: 56px 4px 28px; text-align: center; }
+  .eyebrow {
+    display: inline-block; font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--accent-ink); background: var(--accent-soft);
+    border-radius: 999px; padding: 5px 14px; margin: 0 0 18px;
+  }
+  h1 {
+    font-family: var(--serif); font-weight: 400; font-size: clamp(32px, 7vw, 48px);
+    letter-spacing: -0.01em; margin: 0 0 10px;
+  }
+  header.hero p { margin: 0 auto; font-size: 14px; color: var(--ink-dim); max-width: 46ch; }
+  .native-note {
+    margin: 14px auto 0; max-width: 46ch; font-size: 11.5px; line-height: 1.6; color: var(--ink-faint);
+  }
+
+  /* auth bar */
+  .authbar { display: flex; justify-content: center; gap: 10px; margin: 22px 0 8px; flex-wrap: wrap; }
+  button, input {
+    font-family: var(--sans); font-size: 13.5px;
+  }
+  .btn {
+    background: var(--bg-2); color: var(--ink); border: 1px solid var(--line); border-radius: 8px;
+    padding: 9px 16px; cursor: pointer; transition: border-color .15s, color .15s;
+  }
+  .btn:hover { border-color: var(--accent); color: var(--accent-ink); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn.primary:hover { background: #b53a23; color: #fff; }
+  .btn.ghost { background: transparent; }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+
+  .authcard {
+    max-width: 340px; margin: 14px auto 0; background: var(--bg-2); border: 1px solid var(--line);
+    border-radius: 12px; padding: 20px; display: none;
+  }
+  .authcard.open { display: block; }
+  .authcard label { display: block; font-size: 12px; color: var(--ink-dim); margin: 10px 0 4px; }
+  .authcard input[type=email], .authcard input[type=password] {
+    width: 100%; background: var(--bg); border: 1px solid var(--line); border-radius: 7px;
+    padding: 9px 10px; color: var(--ink);
+  }
+  .authcard .row { display: flex; gap: 8px; margin-top: 16px; }
+  .authcard .err { color: var(--bad); font-size: 12px; margin-top: 8px; min-height: 14px; }
+  .whoami { text-align: center; font-size: 12px; color: var(--ink-faint); margin-top: 6px; }
+
+  /* config warning */
+  .configwarn {
+    max-width: 640px; margin: 20px auto; background: var(--bg-2); border: 1px dashed var(--accent);
+    border-radius: 10px; padding: 16px 18px; font-size: 13px; color: var(--ink-dim); display: none;
+  }
+  .configwarn.show { display: block; }
+  .configwarn code { color: var(--accent-ink); }
+
+  /* uploader */
+  .dropzone {
+    display: none; max-width: 1080px; margin: 24px auto 8px; border: 1.5px dashed var(--line);
+    border-radius: 12px; padding: 28px; text-align: center; color: var(--ink-dim); font-size: 13px;
+    transition: border-color .15s, background .15s;
+  }
+  .dropzone.open { display: block; }
+  .dropzone.drag { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-ink); }
+  .dropzone input[type=file] { display: none; }
+  .dropzone .pick { color: var(--accent-ink); text-decoration: underline; cursor: pointer; }
+  .queue { margin-top: 12px; font-size: 12px; color: var(--ink-faint); text-align: left; max-width: 480px; margin-inline: auto; }
+  .queue div { padding: 3px 0; }
+
+  /* contact sheet — justified-ish grid preserving original aspect ratio */
+  .sheet {
+    margin-top: 36px; display: grid; gap: 6px;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  }
+  figure.shot {
+    margin: 0; position: relative; overflow: hidden; background: #0c0a09;
+    border-radius: 2px; opacity: 0; transform: translateY(14px);
+    transition: opacity .6s ease, transform .6s ease;
+  }
+  figure.shot.in { opacity: 1; transform: translateY(0); }
+  figure.shot img { display: block; width: 100%; height: auto; }
+  figure.shot figcaption {
+    position: absolute; left: 0; right: 0; bottom: 0; padding: 10px 12px 8px;
+    font-size: 12px; color: var(--ink); background: linear-gradient(transparent, rgba(0,0,0,0.75));
+    opacity: 0; transition: opacity .2s;
+  }
+  figure.shot:hover figcaption, figure.shot:focus-within figcaption { opacity: 1; }
+  figure.shot .editctl {
+    position: absolute; top: 8px; right: 8px; display: none; gap: 6px;
+  }
+  figure.shot:hover .editctl, figure.shot:focus-within .editctl { display: flex; }
+  .iconbtn {
+    background: rgba(20,16,15,0.75); border: 1px solid var(--line); color: var(--ink);
+    border-radius: 6px; width: 30px; height: 30px; cursor: pointer; font-size: 14px;
+  }
+  .iconbtn:hover { border-color: var(--accent); color: var(--accent-ink); }
+  figure.shot figcaption input {
+    width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--accent);
+    color: var(--ink); font-size: 12px; padding: 2px 0;
+  }
+  .empty { text-align: center; color: var(--ink-faint); font-size: 13px; padding: 60px 0; }
+
+  footer { text-align: center; margin-top: 60px; font-size: 11px; color: var(--ink-faint); }
+  footer a.back { color: var(--ink-dim); }
+</style>
+
+<div class="wrap">
+  <header class="hero">
+    <span class="eyebrow">FILM · DARKROOM</span>
+    <h1>사진</h1>
+    <p>필름을 다루듯 느긋하게 넘겨보는 개인 포트폴리오. 원본 비율 그대로 담습니다.</p>
+    <p class="native-note">
+      이 페이지는 반응형 웹으로 iOS Safari에서도 그대로 동작하도록 만들었습니다 —
+      "공유 → 홈 화면에 추가"로 앱처럼 아이콘을 만들어 쓸 수 있습니다. 별도 네이티브
+      iOS 앱이 필요한지는 아직 확인되지 않았고, 필요성이 분명해지면 그때 다시
+      판단합니다. (가정 사항 — 문제가 있다면 알려주세요.)
+    </p>
+  </header>
+
+  <div id="configwarn" class="configwarn">
+    아직 Firebase 설정이 채워지지 않았습니다 — <code>apps/gallery/firebase-config.js</code>의
+    <code>REPLACE_ME</code> 값들을 채워야 로그인/업로드가 동작합니다. 순서대로 따라할 수 있는
+    안내문은 <code>docs/firebase_setup_walkthrough.md</code>를 확인하세요.
+  </div>
+
+  <div class="authbar">
+    <button id="loginToggleBtn" class="btn ghost">관리자 로그인</button>
+    <button id="logoutBtn" class="btn ghost" style="display:none">로그아웃</button>
+  </div>
+  <div id="whoami" class="whoami"></div>
+
+  <div id="authcard" class="authcard">
+    <label>이메일</label>
+    <input id="authEmail" type="email" autocomplete="username" placeholder="you@example.com">
+    <label>비밀번호</label>
+    <input id="authPassword" type="password" autocomplete="current-password" placeholder="••••••••">
+    <div class="row">
+      <button id="loginBtn" class="btn primary" style="flex:1">로그인</button>
+      <button id="authCancelBtn" class="btn ghost">닫기</button>
+    </div>
+    <div id="authErr" class="err"></div>
+  </div>
+
+  <div id="dropzone" class="dropzone">
+    <div>사진을 여기로 드래그하거나 <label class="pick" for="fileInput">클릭해서 선택</label>하세요.</div>
+    <input id="fileInput" type="file" accept="image/*" multiple>
+    <div id="queue" class="queue"></div>
+  </div>
+
+  <div id="sheet" class="sheet"></div>
+  <div id="empty" class="empty" style="display:none">아직 올라온 사진이 없습니다.</div>
+
+  <footer>
+    <a class="back" href="../../index.html">← 리포트 허브로 돌아가기</a>
+  </footer>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+  import {
+    getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut,
+    browserLocalPersistence, setPersistence,
+  } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+  import {
+    getFirestore, collection, addDoc, deleteDoc, doc, updateDoc,
+    onSnapshot, query, orderBy, serverTimestamp,
+  } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+  import {
+    getStorage, ref, uploadBytes, getDownloadURL, deleteObject,
+  } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
+  import { firebaseConfig } from "./firebase-config.js";
+
+  const isConfigured = Object.values(firebaseConfig).every(v => v && !String(v).includes("REPLACE_ME"));
+  const $ = (id) => document.getElementById(id);
+  const sheetEl = $("sheet"), emptyEl = $("empty"), configwarnEl = $("configwarn");
+
+  if (!isConfigured) {
+    configwarnEl.classList.add("show");
+    emptyEl.style.display = "block";
+    emptyEl.textContent = "Firebase 설정이 아직 없어 갤러리를 불러올 수 없습니다.";
+    $("loginToggleBtn").disabled = true;
+  } else {
+    runApp();
+  }
+
+  function runApp() {
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+    setPersistence(auth, browserLocalPersistence).catch(() => {});
+
+    let currentUser = null;
+    let photos = [];
+    const seenIds = new Set();
+
+    // ── Auth UI ─────────────────────────────────────────────
+    const loginToggleBtn = $("loginToggleBtn"), logoutBtn = $("logoutBtn"), authcard = $("authcard");
+    const whoami = $("whoami"), authErr = $("authErr");
+    loginToggleBtn.onclick = () => authcard.classList.toggle("open");
+    $("authCancelBtn").onclick = () => authcard.classList.remove("open");
+    $("loginBtn").onclick = async () => {
+      authErr.textContent = "";
+      const email = $("authEmail").value.trim();
+      const pw = $("authPassword").value;
+      if (!email || !pw) { authErr.textContent = "이메일과 비밀번호를 입력하세요."; return; }
+      try {
+        await signInWithEmailAndPassword(auth, email, pw);
+        authcard.classList.remove("open");
+        $("authEmail").value = ""; $("authPassword").value = "";
+      } catch (e) {
+        authErr.textContent = "로그인 실패 — 이메일/비밀번호를 확인하세요.";
+      }
+    };
+    logoutBtn.onclick = () => signOut(auth);
+
+    onAuthStateChanged(auth, (user) => {
+      currentUser = user;
+      loginToggleBtn.style.display = user ? "none" : "";
+      logoutBtn.style.display = user ? "" : "none";
+      whoami.textContent = user ? `로그인됨: ${user.email}` : "";
+      $("dropzone").classList.toggle("open", !!user);
+      renderSheet();
+    });
+
+    // ── Upload (drag & drop + click) ───────────────────────
+    const dropzone = $("dropzone"), fileInput = $("fileInput"), queueEl = $("queue");
+    ["dragenter", "dragover"].forEach(evt =>
+      dropzone.addEventListener(evt, (e) => { e.preventDefault(); dropzone.classList.add("drag"); }));
+    ["dragleave", "drop"].forEach(evt =>
+      dropzone.addEventListener(evt, (e) => { e.preventDefault(); dropzone.classList.remove("drag"); }));
+    dropzone.addEventListener("drop", (e) => {
+      if (e.dataTransfer?.files?.length) uploadFiles(e.dataTransfer.files);
+    });
+    fileInput.addEventListener("change", () => {
+      if (fileInput.files.length) uploadFiles(fileInput.files);
+      fileInput.value = "";
+    });
+
+    async function uploadFiles(fileList) {
+      if (!currentUser) return;
+      const files = Array.from(fileList).filter(f => f.type.startsWith("image/"));
+      for (const file of files) {
+        const line = document.createElement("div");
+        line.textContent = `업로드 중... ${file.name}`;
+        queueEl.appendChild(line);
+        try {
+          const path = `photos/${currentUser.uid}/${Date.now()}_${file.name}`;
+          const storageRef = ref(storage, path);
+          await uploadBytes(storageRef, file);
+          const url = await getDownloadURL(storageRef);
+          await addDoc(collection(db, "photos"), {
+            url, storagePath: path, caption: "", ownerUid: currentUser.uid,
+            createdAt: serverTimestamp(),
+          });
+          line.textContent = `완료: ${file.name}`;
+          setTimeout(() => line.remove(), 2500);
+        } catch (e) {
+          line.textContent = `실패: ${file.name} (${e.message || e})`;
+        }
+      }
+    }
+
+    // ── Firestore live gallery ─────────────────────────────
+    const q = query(collection(db, "photos"), orderBy("createdAt", "desc"));
+    onSnapshot(q, (snap) => {
+      photos = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderSheet();
+    }, (err) => {
+      emptyEl.style.display = "block";
+      emptyEl.textContent = "갤러리를 불러오지 못했습니다 (권한/설정 확인 필요).";
+      console.error(err);
+    });
+
+    function renderSheet() {
+      sheetEl.innerHTML = "";
+      emptyEl.style.display = photos.length ? "none" : "block";
+      photos.forEach((p) => sheetEl.appendChild(shotEl(p)));
+      requestAnimationFrame(observeIn);
+    }
+
+    function shotEl(p) {
+      const fig = document.createElement("figure");
+      fig.className = "shot";
+      fig.dataset.id = p.id;
+
+      const img = document.createElement("img");
+      img.src = p.url; img.loading = "lazy"; img.alt = p.caption || "";
+      fig.appendChild(img);
+
+      const cap = document.createElement("figcaption");
+      cap.textContent = p.caption || "";
+      fig.appendChild(cap);
+
+      if (currentUser && currentUser.uid === p.ownerUid) {
+        const ctl = document.createElement("div");
+        ctl.className = "editctl";
+
+        const editBtn = document.createElement("button");
+        editBtn.className = "iconbtn"; editBtn.title = "캡션 수정"; editBtn.textContent = "✎";
+        editBtn.onclick = () => startEditCaption(fig, cap, p);
+
+        const delBtn = document.createElement("button");
+        delBtn.className = "iconbtn"; delBtn.title = "삭제"; delBtn.textContent = "✕";
+        delBtn.onclick = () => deletePhoto(p);
+
+        ctl.appendChild(editBtn); ctl.appendChild(delBtn);
+        fig.appendChild(ctl);
+      }
+      return fig;
+    }
+
+    function startEditCaption(fig, cap, p) {
+      cap.innerHTML = "";
+      const input = document.createElement("input");
+      input.value = p.caption || ""; input.placeholder = "캡션 입력 후 Enter";
+      cap.appendChild(input);
+      fig.style.setProperty("--force-caption", "1");
+      cap.style.opacity = "1";
+      input.focus();
+      const commit = async () => {
+        const val = input.value.trim();
+        try {
+          await updateDoc(doc(db, "photos", p.id), { caption: val });
+        } catch (e) { console.error(e); }
+      };
+      input.addEventListener("keydown", (e) => { if (e.key === "Enter") input.blur(); });
+      input.addEventListener("blur", commit);
+    }
+
+    async function deletePhoto(p) {
+      if (!confirm("이 사진을 삭제할까요? 되돌릴 수 없습니다.")) return;
+      try {
+        if (p.storagePath) await deleteObject(ref(storage, p.storagePath));
+        await deleteDoc(doc(db, "photos", p.id));
+      } catch (e) {
+        alert("삭제 실패: " + (e.message || e));
+      }
+    }
+
+    function observeIn() {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+      }, { threshold: 0.08 });
+      document.querySelectorAll("figure.shot:not(.in)").forEach(el => io.observe(el));
+    }
+  }
+</script>
