@@ -259,14 +259,31 @@
     position: fixed; top: 16px; right: 16px; font-family: var(--mono); font-size: 10.5px;
     letter-spacing: 0.04em; color: var(--ink-faint); text-decoration: none; z-index: 5;
     background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px;
+    white-space: nowrap;
   }
   .about-link:hover { color: var(--accent-ink); border-color: var(--accent); }
-  .top-nav { position: fixed; top: 16px; right: 16px; z-index: 5; display: flex; gap: 8px; }
+  .top-nav {
+    position: fixed; top: 16px; right: 16px; z-index: 5; display: flex; gap: 8px;
+    flex-wrap: wrap; justify-content: flex-end; max-width: calc(100vw - 90px);
+  }
   .top-nav .about-link { position: static; }
   .brand-mark {
     position: fixed; top: 16px; left: 16px; z-index: 5; font-family: var(--mono);
     font-size: 11px; font-weight: 700; letter-spacing: 0.24em; color: var(--accent-ink);
     text-decoration: none;
+  }
+  /* 모바일(2026-08-11 클로이 박 점검) — 5개 알약 버튼이 375px 화면에서
+     내부 텍스트까지 줄바꿈되며 좌상단 VIVID 마크와 겹쳤다(위 white-space:
+     nowrap + flex-wrap만으로는 5개 전부가 한 줄에 안 들어가 여전히 겹침).
+     좁은 화면에서는 고정 배치를 버리고 평범한 문서 흐름으로 내려서 겹침
+     자체를 구조적으로 없앤다. */
+  @media (max-width: 520px) {
+    .brand-mark { position: static; display: block; text-align: center; padding: 16px 0 4px; }
+    .top-nav {
+      position: static; max-width: none; margin: 0 auto; padding: 0 12px;
+      justify-content: center;
+    }
+    .about-link { font-size: 10px; padding: 5px 10px; }
   }
 </style>
 
