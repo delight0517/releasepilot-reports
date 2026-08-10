@@ -67,8 +67,12 @@
   .result-count { font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint); margin: 12px 2px 0; }
   .result-count b { color: var(--ink-dim); }
 
-  .section-head { display: flex; align-items: baseline; justify-content: space-between; padding: 0 2px 14px; margin-top: 40px; }
+  .section-head { display: flex; align-items: baseline; justify-content: space-between; padding: 0 2px 14px; margin-top: 40px; flex-wrap: wrap; row-gap: 6px; }
   .section-head h2 { font-family: var(--serif); font-weight: 400; font-size: 22px; margin: 0; }
+  @media (max-width: 480px) {
+    .section-head { align-items: flex-start; }
+    .section-head .hint { flex-basis: 100%; }
+  }
   .section-head .hint { font-family: var(--mono); font-size: 10px; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.06em; }
 
   /* 라이브 데모 */

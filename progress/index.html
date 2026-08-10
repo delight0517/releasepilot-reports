@@ -52,9 +52,17 @@
   .briefing p:last-child { margin-bottom: 0; }
   .briefing b { color: var(--ink); }
 
-  .section-head { display: flex; align-items: baseline; justify-content: space-between; padding: 0 2px 14px; margin-top: 48px; }
+  .section-head { display: flex; align-items: baseline; justify-content: space-between; padding: 0 2px 14px; margin-top: 48px; flex-wrap: wrap; row-gap: 6px; }
   .section-head h2 { font-family: var(--serif); font-weight: 400; font-size: 22px; margin: 0; }
   .section-head .hint { font-family: var(--mono); font-size: 10px; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.06em; }
+  /* 모바일(2026-08-11 클로이 박 점검) — 헤딩이 2줄로 줄바꿈되는 좁은 화면에서
+     baseline 정렬 때문에 오른쪽 hint 라벨이 첫 줄과 겹쳐 보였다("11단계 — 왜
+     이 순서인가" + "Build → Launch → Revenue"). 좁은 화면에선 hint를 새 줄로
+     떨어뜨려서 겹침을 없앤다. */
+  @media (max-width: 480px) {
+    .section-head { align-items: flex-start; }
+    .section-head .hint { flex-basis: 100%; }
+  }
 
   /* ── 11단계 안내 — 막대를 보기 전에 "왜 이 순서인가"를 먼저 이해시킨다.
      사용자 요청: "단계마다의 설득을 교육시키는 방식으로" — 숫자만 던지지
