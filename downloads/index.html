@@ -1,0 +1,134 @@
+<!doctype html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>다운로드 · ReleasePilot 앱 허브</title>
+<meta name="description" content="등록된 앱들의 버전·진행률과 플랫폼별 다운로드 가능 여부를 정직하게 보여주는 페이지">
+<link rel="icon" href="../icons/icon-192.png">
+<meta name="theme-color" content="#fbfaf7">
+<style>
+  :root {
+    --bg: #fbfaf7; --card: #ffffff; --card-2: #f6f3ec; --line: #e9e3d6;
+    --ink: #1d1b17; --ink-dim: #6b6a5f; --ink-faint: #a3a091;
+    --accent: #c9711f; --accent-soft: #f6e6d3; --accent-ink: #7a4413;
+    --good: #2f7a63; --good-soft: #dcefe8;
+    --warn: #b3541e; --warn-soft: #fbe8dc;
+    --off: #8a8778; --off-soft: #ece9df;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Noto Serif KR", serif;
+    --sans: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, monospace;
+    --shadow-1: 0 1px 2px rgba(29,27,23,0.05), 0 1px 1px rgba(29,27,23,0.03);
+  }
+  * { box-sizing: border-box; overflow-wrap: break-word; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 0 18px 90px; }
+  .back-link { position: fixed; top: 16px; left: 16px; z-index: 5; font-family: var(--mono); font-size: 10.5px;
+    color: var(--ink-faint); text-decoration: none; background: var(--card); border: 1px solid var(--line);
+    border-radius: 999px; padding: 6px 12px; }
+
+  .hero { padding: 68px 4px 8px; text-align: center; }
+  h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(28px, 6vw, 38px); margin: 0 0 10px; }
+  .hero p { margin: 0 auto; font-size: 14.5px; color: var(--ink-dim); max-width: 46ch; }
+
+  .honesty { background: var(--card); border: 1px solid var(--line); border-left: 3px solid var(--warn);
+    border-radius: 14px; padding: 16px 20px; margin-top: 26px; font-size: 13px; color: var(--ink-dim); line-height: 1.65; }
+  .honesty b { color: var(--ink); }
+  .honesty ul { margin: 8px 0 0; padding-left: 18px; }
+  .honesty li { margin: 4px 0; }
+
+  .app { background: var(--card); border: 1px solid var(--line); border-radius: 16px;
+    padding: 18px 20px; margin-top: 18px; box-shadow: var(--shadow-1); }
+  .app-top { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .app-name { font-size: 16.5px; font-weight: 700; font-family: var(--serif); }
+  .app-ver { font-family: var(--mono); font-size: 11.5px; color: var(--ink-faint); }
+  .app-pct { font-family: var(--mono); font-size: 12px; color: var(--accent-ink); margin-left: auto; }
+  .app-note { font-size: 12.5px; color: var(--ink-dim); margin: 8px 0 0; }
+
+  .platforms { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+  @media (max-width: 480px) { .platforms { grid-template-columns: 1fr; } }
+  .pf-card { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; background: var(--card-2); }
+  .pf-head { display: flex; align-items: center; gap: 8px; }
+  .pf-name { font-weight: 700; font-size: 13.5px; }
+  .pf-badge { margin-left: auto; font-family: var(--mono); font-size: 9.5px; font-weight: 700;
+    padding: 3px 8px; border-radius: 999px; }
+  .pf-badge.off { background: var(--off-soft); color: var(--off); }
+  .pf-badge.warn { background: var(--warn-soft); color: var(--warn); }
+  .pf-badge.ok { background: var(--good-soft); color: var(--good); }
+  .pf-btn { display: block; text-align: center; margin-top: 10px; padding: 8px; border-radius: 8px;
+    font-family: var(--mono); font-size: 11.5px; font-weight: 700; background: var(--off-soft); color: var(--off);
+    border: 1px dashed var(--ink-faint); cursor: default; }
+  .pf-readiness { font-size: 11.5px; color: var(--ink-dim); margin-top: 8px; line-height: 1.55; }
+  .pf-policy { font-size: 10.5px; color: var(--ink-faint); margin-top: 6px; line-height: 1.5; }
+  .pf-eta { font-family: var(--mono); font-size: 10px; color: var(--accent-ink); margin-top: 6px; }
+
+  .no-target { font-size: 12.5px; color: var(--ink-faint); margin-top: 12px; padding: 10px; background: var(--card-2); border-radius: 8px; }
+
+  .empty { font-size: 14px; color: var(--ink-faint); padding: 40px 4px; text-align: center; }
+  footer { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--line);
+    font-family: var(--mono); font-size: 10px; color: var(--ink-faint); text-align: center; }
+</style>
+
+<a class="back-link" href="../">‹ 허브로</a>
+<div class="wrap">
+  <div class="hero">
+    <h1>다운로드</h1>
+    <p>등록된 앱의 버전·진행률과, 지금 이 순간 실제로 받아 설치할 수 있는지를 플랫폼별로 정직하게 보여줍니다.</p>
+  </div>
+
+  <div class="honesty">
+    <b>정직 고지 — 지금은 어떤 앱도 서명·공증·스토어 심사를 마치지 않았습니다.</b>
+    <ul>
+      <li>🍎 macOS: Apple Developer Program(연 $99) 서명·공증 전까지는 Gatekeeper가 막습니다.</li>
+      <li>🪟 Windows: 코드서명 인증서 전까지는 SmartScreen 경고가 뜹니다(실행 자체는 가능).</li>
+      <li>📱 iOS: 웹사이트 직접 설치는 애플 정책상 불가능 — TestFlight 또는 App Store 출시가 필요합니다.</li>
+      <li>🤖 Android: "출처를 알 수 없는 앱" 허용 시 APK 직접 설치가 실제로 가능합니다.</li>
+    </ul>
+  </div>
+
+  <div id="apps"></div>
+  <p class="empty" id="empty" style="display:none;">아직 등록된 앱이 없습니다.</p>
+  <footer>차실장 · ReleasePilot 다운로드 페이지 · 진행률/ETA는 <a href="../progress/" style="color:inherit">출시 현황판</a>과 같은 데이터를 씁니다</footer>
+</div>
+
+<script>
+const PLATFORM_LABEL = { mac: '🍎 macOS', windows: '🪟 Windows', ios: '📱 iOS', android: '🤖 Android' };
+const BADGE_CLASS = { not_built: 'off', unsigned_warning: 'warn', store_track: 'ok' };
+const BADGE_LABEL = { not_built: '미배포', unsigned_warning: '경고 있음', store_track: '스토어 트랙' };
+const BTN_LABEL = { not_built: '준비 중', unsigned_warning: '경고 감수 안내', store_track: '스토어로 이동' };
+
+fetch('../progress/data.json', {cache: 'no-store'}).then(r => r.ok ? r.json() : null).then(d => {
+  if (!d || !d.apps || !d.apps.length) { document.getElementById('empty').style.display = 'block'; return; }
+  const wrap = document.getElementById('apps');
+
+  d.apps.forEach(a => {
+    const el = document.createElement('div');
+    el.className = 'app';
+
+    let pfHtml = '';
+    if (!a.platforms || !a.platforms.length) {
+      pfHtml = `<div class="no-target">아직 어느 플랫폼(Mac/Windows/iOS/Android)을 목표하는지 기록되지 않았습니다 — 배포 계획 미확정.</div>`;
+    } else {
+      pfHtml = '<div class="platforms">' + a.distribution.map(dist => `
+        <div class="pf-card">
+          <div class="pf-head">
+            <span class="pf-name">${PLATFORM_LABEL[dist.platform] || dist.platform}</span>
+            <span class="pf-badge ${BADGE_CLASS[dist.status]}">${BADGE_LABEL[dist.status]}</span>
+          </div>
+          <div class="pf-btn">${BTN_LABEL[dist.status]}</div>
+          <p class="pf-readiness">${dist.readiness}</p>
+          ${dist.policyNote ? `<p class="pf-policy">${dist.policyNote}</p>` : ''}
+        </div>`).join('') + '</div>';
+    }
+
+    el.innerHTML = `
+      <div class="app-top">
+        <span class="app-name">${a.name}</span>
+        ${a.version ? `<span class="app-ver">v${a.version}</span>` : `<span class="app-ver">버전 확인 안 됨</span>`}
+        <span class="app-pct">전체 진행 ${a.percentTotal}% · ${a.stageLabel}</span>
+      </div>
+      ${a.etaText ? `<div class="pf-eta">지금 속도 기준 수익화까지 예상 ${a.etaText} (근거: 과거 단계 전환 기록)</div>` : `<div class="pf-eta">ETA — 단계 전환 기록이 2건 미만이라 추정하지 않음(지어내지 않음)</div>`}
+      ${a.note ? `<p class="app-note">${a.note}</p>` : ''}
+      ${pfHtml}`;
+    wrap.appendChild(el);
+  });
+}).catch(() => { document.getElementById('empty').style.display = 'block'; });
+</script>

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-07T00:10:21.806809",
+  "generatedAt": "2026-08-10T10:19:40.567053",
   "stages": [
     {
       "id": "registered",
@@ -90,8 +90,11 @@
       "waypoint": "스토어 메타데이터 확정 후 제출 — 그 전에 '누가 왜 사는지' 타겟 리포트 최신판 재작성 필요",
       "note": "실기기 설치·실행 확인(2026-08-06), 크래시 수정 반영",
       "latestReport": null,
-      "updatedAt": "2026-08-06T19:30:42.635213",
-      "etaText": null
+      "updatedAt": "2026-08-10T10:19:27.686724",
+      "etaText": null,
+      "version": "2.15.1+34",
+      "platforms": [],
+      "distribution": []
     },
     {
       "slug": "ox-quiz",
@@ -114,8 +117,34 @@
       "waypoint": "App Vault 등록 후 MVP 메타데이터 생성 — 타겟(수험생/자격증?) 확정 안 됨",
       "note": "iOS 빌드·실기기 설치 확인, 웹판 배포됨",
       "latestReport": null,
-      "updatedAt": "2026-08-06T19:30:43.661255",
-      "etaText": null
+      "updatedAt": "2026-08-10T10:19:25.331660",
+      "etaText": null,
+      "version": "1.0.0+1",
+      "platforms": [
+        "mac",
+        "windows",
+        "ios"
+      ],
+      "distribution": [
+        {
+          "platform": "mac",
+          "status": "unsigned_warning",
+          "readiness": "로컬 빌드는 있으나 공개 배포용 서명/공증 여부가 확인되지 않음 — 받으면 아래 경고가 뜰 수 있습니다.",
+          "policyNote": "macOS: 코드서명·공증 없이 받으면 Gatekeeper가 \"손상된 파일\" 경고로 막습니다. 우클릭→열기로 우회는 가능하나 정식 배포로는 부적절합니다."
+        },
+        {
+          "platform": "windows",
+          "status": "unsigned_warning",
+          "readiness": "로컬 빌드는 있으나 공개 배포용 서명/공증 여부가 확인되지 않음 — 받으면 아래 경고가 뜰 수 있습니다.",
+          "policyNote": "Windows: 코드서명 인증서 없이 받으면 SmartScreen이 \"알 수 없는 게시자\" 경고를 띄웁니다. \"추가 정보→실행\"으로 설치 자체는 가능합니다."
+        },
+        {
+          "platform": "ios",
+          "status": "unsigned_warning",
+          "readiness": "앱 자체는 빌드됐지만 iOS는 스토어/TestFlight 없이는 배포 불가 (아래 정책 참고).",
+          "policyNote": "iOS: 웹사이트에서 직접 설치는 애플 정책상 원천적으로 불가능합니다. TestFlight(개발자 계정 필요, 빌드당 90일 만료, 최대 1만 명) 또는 App Store 정식 출시가 필요합니다."
+        }
+      ]
     },
     {
       "slug": "risesync",
@@ -141,8 +170,20 @@
       "waypoint": "Must 현황판의 미결정 항목부터 확정 → MVP 잠그기",
       "note": "지역·GTM 전략 리포트 rev.2, 지역적합도 rev.4 게시됨",
       "latestReport": "risesync-regional_fit_expansion_plan rev.4",
-      "updatedAt": "2026-08-06T19:30:59.743728",
-      "etaText": null
+      "updatedAt": "2026-08-10T10:19:27.076219",
+      "etaText": null,
+      "version": null,
+      "platforms": [
+        "ios"
+      ],
+      "distribution": [
+        {
+          "platform": "ios",
+          "status": "not_built",
+          "readiness": "아직 배포용 빌드 전 (진행률 20%) — 다운로드 버튼 자체가 없습니다.",
+          "policyNote": "iOS: 웹사이트에서 직접 설치는 애플 정책상 원천적으로 불가능합니다. TestFlight(개발자 계정 필요, 빌드당 90일 만료, 최대 1만 명) 또는 App Store 정식 출시가 필요합니다."
+        }
+      ]
     },
     {
       "slug": "auto-pomodoro",
@@ -168,8 +209,20 @@
       "waypoint": "CTR 리포트의 두 타겟(미국·영국 지식노동자 vs 한국 수험생) 중 하나 선택 → MVP 확정",
       "note": "지역·타겟 CTR 리포트 rev.1(2026-08-05), 최근 커밋 13건 활발",
       "latestReport": "auto-pomodoro-region_target_ctr rev.1",
-      "updatedAt": "2026-08-06T19:31:01.216103",
-      "etaText": null
+      "updatedAt": "2026-08-10T10:19:26.463949",
+      "etaText": null,
+      "version": "1.0.1",
+      "platforms": [
+        "mac"
+      ],
+      "distribution": [
+        {
+          "platform": "mac",
+          "status": "not_built",
+          "readiness": "아직 배포용 빌드 전 (진행률 20%) — 다운로드 버튼 자체가 없습니다.",
+          "policyNote": "macOS: 코드서명·공증 없이 받으면 Gatekeeper가 \"손상된 파일\" 경고로 막습니다. 우클릭→열기로 우회는 가능하나 정식 배포로는 부적절합니다."
+        }
+      ]
     },
     {
       "slug": "4vpn-blocker",
@@ -195,8 +248,27 @@
       "waypoint": "Windows 포팅 완료 후 스토어 트랙 결정",
       "note": "지역 적합도+확장 기획 rev.1, 사용법 기획서 rev.2",
       "latestReport": null,
-      "updatedAt": "2026-08-06T19:31:02.248811",
-      "etaText": null
+      "updatedAt": "2026-08-10T10:19:25.867088",
+      "etaText": null,
+      "version": null,
+      "platforms": [
+        "mac",
+        "windows"
+      ],
+      "distribution": [
+        {
+          "platform": "mac",
+          "status": "not_built",
+          "readiness": "아직 배포용 빌드 전 (진행률 20%) — 다운로드 버튼 자체가 없습니다.",
+          "policyNote": "macOS: 코드서명·공증 없이 받으면 Gatekeeper가 \"손상된 파일\" 경고로 막습니다. 우클릭→열기로 우회는 가능하나 정식 배포로는 부적절합니다."
+        },
+        {
+          "platform": "windows",
+          "status": "not_built",
+          "readiness": "아직 배포용 빌드 전 (진행률 20%) — 다운로드 버튼 자체가 없습니다.",
+          "policyNote": "Windows: 코드서명 인증서 없이 받으면 SmartScreen이 \"알 수 없는 게시자\" 경고를 띄웁니다. \"추가 정보→실행\"으로 설치 자체는 가능합니다."
+        }
+      ]
     },
     {
       "slug": "35closer",
@@ -223,8 +295,20 @@
       "waypoint": "타겟·CTR 리포트부터 작성 — 상업성 근거가 아예 없는 상태",
       "note": "사용법 기획서만 있음, 타겟·수요 검증 리포트 없음",
       "latestReport": null,
-      "updatedAt": "2026-08-06T19:31:03.309435",
-      "etaText": null
+      "updatedAt": "2026-08-10T10:19:24.790710",
+      "etaText": null,
+      "version": "1.1.0+16",
+      "platforms": [
+        "mac"
+      ],
+      "distribution": [
+        {
+          "platform": "mac",
+          "status": "not_built",
+          "readiness": "아직 배포용 빌드 전 (진행률 8%) — 다운로드 버튼 자체가 없습니다.",
+          "policyNote": "macOS: 코드서명·공증 없이 받으면 Gatekeeper가 \"손상된 파일\" 경고로 막습니다. 우클릭→열기로 우회는 가능하나 정식 배포로는 부적절합니다."
+        }
+      ]
     }
   ]
 }

@@ -170,6 +170,30 @@ const STAGE_EXPLAIN = {
   revenue_1:   { glyph: '💰', persuade: '이게 증명이다 — 나머지 전부는 여기 도달하기 위한 과정이었다.' },
 };
 
+// 배포 가능성 — 지어내지 않고 항상 같은 문구(정직 원칙, 2026-08-10 추가).
+// distribution이 비어있으면(platforms 미설정) "아직 어느 플랫폼을 목표하는지도
+// 안 정해짐"으로 솔직히 표시한다 — 조용히 생략하지 않는다.
+const DIST_STATUS_LABEL = {
+  not_built: '아직 배포 전',
+  unsigned_warning: '경고 뜨는 채 배포 가능',
+  store_track: '스토어 트랙',
+};
+const PLATFORM_LABEL = { mac: '🍎 macOS', windows: '🪟 Windows', ios: '📱 iOS', android: '🤖 Android' };
+
+function renderDistribution(a) {
+  if (!a.platforms || !a.platforms.length) {
+    return `<div class="next" style="margin-top:10px"><b>배포 가능성</b>아직 어느 플랫폼을 목표하는지 기록되지 않았습니다.</div>`;
+  }
+  const rows = a.distribution.map(d => `
+    <div style="margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);font-size:12px">
+      <span style="font-weight:700">${PLATFORM_LABEL[d.platform] || d.platform}</span>
+      <span class="chip ${d.status === 'not_built' ? '' : 'warn'}" style="margin-left:6px">${DIST_STATUS_LABEL[d.status] || d.status}</span>
+      <p style="margin:6px 0 0;color:var(--ink-dim);line-height:1.55">${d.readiness}</p>
+      ${d.policyNote ? `<p style="margin:4px 0 0;color:var(--ink-faint);font-size:11px;line-height:1.55">${d.policyNote}</p>` : ''}
+    </div>`).join('');
+  return `<div class="next" style="margin-top:10px"><b>🤖 배포 가능성 — 차실장 정직 리포트</b>${rows}</div>`;
+}
+
 function buildStageGuide(stages, apps) {
   const el = document.getElementById('stageGuide');
   const maxDone = apps.length ? Math.max(...apps.map(a => a.stagesDone)) : 0;
@@ -240,6 +264,7 @@ fetch('data.json', {cache: 'no-store'}).then(r => r.ok ? r.json() : null).then(d
     const chips = [];
     chips.push(`<span class="chip">출시 준비 ${a.percentToLaunch}%</span>`);
     if (a.etaText) chips.push(`<span class="chip">예상 ${a.etaText}</span>`);
+    if (a.version) chips.push(`<span class="chip">v${a.version}</span>`);
     if (a.commercialClear === true) chips.push('<span class="chip good">상업성 근거 있음</span>');
     if (a.commercialClear === false) chips.push('<span class="chip warn">상업성 근거 없음</span>');
     if (a.blocked) chips.push(`<span class="chip warn">막힘: ${a.blocked}</span>`);
@@ -255,7 +280,8 @@ fetch('data.json', {cache: 'no-store'}).then(r => r.ok ? r.json() : null).then(d
       <div class="bar">${segs}</div>
       <div class="meta-row">${chips.join('')}</div>
       ${a.waypoint ? `<div class="next"><b>다음에 할 일</b>${a.waypoint}</div>` : ''}
-      <div class="remaining">남은 단계: ${a.remainingStages.join(' → ')}</div>`;
+      <div class="remaining">남은 단계: ${a.remainingStages.join(' → ')}</div>
+      ${renderDistribution(a)}`;
     wrap.appendChild(el);
   });
 
