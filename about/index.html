@@ -311,6 +311,14 @@
     </p>
   </section>
 
+  <section id="photo-portfolio">
+    <p class="section-label">PHOTO · PORTFOLIO</p>
+    <h2>사진과 글도 남깁니다</h2>
+    <p class="lede">개발 포트폴리오 말고, 카메라로 본 것과 짧은 글을 모아두는 곳도 따로 있습니다.</p>
+    <div id="photoPreviewGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:6px;margin-top:18px;"></div>
+    <p style="margin-top:14px;"><a href="../portfolio/" style="color:var(--seal-ink);">포트폴리오 전체 보기 →</a></p>
+  </section>
+
   <section id="contact">
     <p class="section-label">CONTACT</p>
     <h2>비즈니스 문의</h2>
@@ -376,5 +384,34 @@
 
   <footer>VIVID · 근성장 · 김근후 — 마음의 지도 제작자 노드</footer>
 </div>
+<script type="module">
+  fetch("../apps/gallery/photos.json")
+    .then((r) => r.json())
+    .then((photos) => {
+      const grid = document.getElementById("photoPreviewGrid");
+      if (!grid || !Array.isArray(photos) || !photos.length) return;
+      const isVideo = (f) => /\.(mp4|mov)$/i.test(f || "");
+      photos.slice(-4).reverse().forEach((p) => {
+        const a = document.createElement("a");
+        a.href = "../portfolio/";
+        a.style.cssText = "display:block;aspect-ratio:1;overflow:hidden;border-radius:4px;background:#0c0a09;";
+        if (isVideo(p.file)) {
+          const v = document.createElement("video");
+          v.src = `../apps/gallery/photos/${p.file}`;
+          v.muted = true; v.playsInline = true;
+          v.style.cssText = "width:100%;height:100%;object-fit:cover;display:block;";
+          a.appendChild(v);
+        } else {
+          const img = document.createElement("img");
+          img.src = `../apps/gallery/photos/${p.file}`;
+          img.loading = "lazy"; img.alt = p.caption || "";
+          img.style.cssText = "width:100%;height:100%;object-fit:cover;display:block;";
+          a.appendChild(img);
+        }
+        grid.appendChild(a);
+      });
+    })
+    .catch((e) => console.error("photo preview fetch failed", e));
+</script>
 </body>
 </html>
