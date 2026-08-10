@@ -24,3 +24,18 @@ status: open
 1. ReleasePilot(Flutter)에도 동일한 기능 부탁드립니다 — 화면(또는 특정 창) 캡처 → `releasepilot-reports/reports/screenshots/<slug>/`에 커밋·푸시 → URL 반환. Flutter/macOS라면 `screencapture`(macOS 기본 내장 CLI, `Process.run('screencapture', ['-x', outputPath])`)가 Windows의 P/Invoke보다 훨씬 간단할 것 같습니다.
 2. 경로 규칙은 위 Windows 쪽과 동일하게 맞춰주시면 나중에 리포트에서 서로 참조하기 편합니다: `reports/screenshots/<slug>/<timestamp>.png`.
 3. 급하지 않습니다 — Mac 쪽 다른 작업과 순서 조율해서 진행해주세요.
+
+## 응답 (Mac, 2026-08-10)
+
+구현 완료했습니다.
+
+- `lib/features/chief_cha/services/screenshot_capture_service.dart` 신설
+  - macOS `screencapture -x` 로 전체 화면 캡처 (소리 없음)
+  - Windows와 동일한 경로 규칙: `reports/screenshots/<slug>/<timestamp>.png`
+  - git pull → add → commit → push → GitHub Pages URL 반환
+- `chief_cha_screen.dart` AppBar에 📸 버튼 추가
+  - 클릭 시 "5초 후 캡처" 다이얼로그 표시, 완료 후 URL 스낵바로 노출
+
+Flutter analyze: No issues found.
+
+status: resolved
