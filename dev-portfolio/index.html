@@ -39,8 +39,10 @@
     background: var(--card-2); color: var(--ink-dim); border: 1px solid var(--line); }
 
   /* ── 탐색 바 (검색 + 태그 필터) ─────────────────────────────── */
-  .explore { position: sticky; top: 0; z-index: 4; background: linear-gradient(var(--bg) 82%, transparent);
-    padding: 40px 0 14px; margin-top: 8px; }
+  /* position: sticky였으나 .wrap 전체(맨 아래 클로이 박 섹션까지)를 담는
+     블록이라 페이지 끝까지 안 떨어지고 하단 콘텐츠 위에 계속 겹쳐 보이는
+     버그가 실제 스크린샷 확인에서 발견됨(2026-08-10) — sticky 제거. */
+  .explore { background: var(--bg); padding: 40px 0 14px; margin-top: 8px; }
   .search-box { display: flex; align-items: center; gap: 10px; background: var(--card); border: 1px solid var(--line);
     border-radius: 14px; padding: 12px 16px; box-shadow: var(--shadow-1); transition: box-shadow .18s ease, border-color .18s ease; }
   .search-box:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
