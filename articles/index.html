@@ -5,6 +5,19 @@
 <meta name="description" content="ReleasePilot이 정리한 출시 전략·시장 읽기 기사를 SNS 피드처럼 모아보는 채널">
 <link rel="icon" href="../icons/icon-192.png">
 <meta name="theme-color" content="#fbfaf7">
+<!--
+  ADSENSE (off until approved) — 2026-08-10, Claude/클로이 박이 준비해둠.
+  1) https://www.google.com/adsense 가입·심사 통과 후 대시보드에서 ca-pub-XXXXXXXXXXXXXXXX 형태의
+     퍼블리셔 ID를 받는다.
+  2) 아래 두 <script> 태그의 주석(<!-- ~ -->)을 풀고, ca-pub-XXXXXXXXXXXXXXXX를 실제 ID로 바꾼다.
+  3) 애드센스는 개인정보처리방침 페이지가 있어야 승인/노출된다 — about/ 폴더에 아직 없으면
+     먼저 만들어야 한다 (쿠키·광고 개인정보 수집 고지 포함).
+  4) 지금은 articles/ 채널에만 적용 범위를 한정했다 — reports/apps 등 Mac과 공유하는 다른
+     영역에 넓히려면 Mac 세션의 동의를 먼저 구할 것 (files/GitHub_Pages_Hub_Consolidation_Design.md
+     §1-1 폴더 소유권 원칙).
+
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+-->
 <style>
   /* 메인 허브(index.html)와 같은 팔레트/타이포 — 다른 앱이 아니라 같은
      제품의 한 채널이라는 느낌을 유지한다. */
@@ -71,6 +84,10 @@
   </div>
 
   <div class="feed" id="feed"></div>
+  <!-- ADSENSE 슬롯 (off) — 퍼블리셔 ID 채운 뒤 아래 주석을 풀면 피드 하단에 광고가 뜬다.
+  <ins class="adsbygoogle" style="display:block; margin-top:16px;" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="0000000000" data-ad-format="auto" data-full-width-responsive="true"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  -->
   <p class="empty" id="empty" style="display:none;">아직 게시된 기사가 없습니다.</p>
   <footer>ReleasePilot 리포트 허브 · 기사 채널</footer>
 </div>
