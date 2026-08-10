@@ -1,0 +1,83 @@
+/*
+  공용 테마 — dev-portfolio/의 warm/cream case-study 스타일을 추출한 것.
+  새 포트폴리오 버티컬(acting/, design/, 3d-work/, english-tutor/, translation/)은
+  이 파일을 import하고 :root에서 --accent 계열만 오버라이드해서 쓴다.
+  portfolio/(다크룸 컨셉)는 자기만의 팔레트라 이 파일을 쓰지 않는다 — 억지로 통일하지 않음.
+*/
+:root {
+  --bg: #fbfaf7; --card: #ffffff; --card-2: #f6f3ec; --line: #e9e3d6;
+  --ink: #1d1b17; --ink-dim: #6b6a5f; --ink-faint: #a3a091;
+  --accent: #c9711f; --accent-soft: #f6e6d3; --accent-ink: #7a4413;
+  --good: #2f7a63; --good-soft: #dcefe8;
+  --warn: #b3541e; --warn-soft: #fbe8dc;
+  --live: #4f7cac; --live-soft: #e3ebf3;
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Noto Serif KR", serif;
+  --sans: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, monospace;
+  --shadow-1: 0 1px 2px rgba(29,27,23,0.05), 0 1px 1px rgba(29,27,23,0.03);
+  --shadow-2: 0 10px 24px -12px rgba(29,27,23,0.18);
+}
+* { box-sizing: border-box; overflow-wrap: break-word; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); line-height: 1.55; -webkit-font-smoothing: antialiased; }
+a { color: inherit; }
+.wrap { max-width: 880px; margin: 0 auto; padding: 0 18px 96px; }
+.back-link { position: fixed; top: 16px; left: 16px; z-index: 5; font-family: var(--mono); font-size: 10.5px;
+  color: var(--ink-faint); text-decoration: none; background: var(--card); border: 1px solid var(--line);
+  border-radius: 999px; padding: 6px 12px; }
+
+.hero { padding: 68px 4px 8px; text-align: center; }
+.eyebrow { display: inline-block; font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--accent-ink); background: var(--accent-soft);
+  border-radius: 999px; padding: 5px 14px; margin: 0 0 16px; }
+h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(28px, 6vw, 40px); margin: 0 0 12px; text-wrap: balance; }
+.hero p { margin: 0 auto; font-size: 14.5px; color: var(--ink-dim); max-width: 52ch; }
+
+.stack-row { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 22px 0 0; }
+.stack-chip { font-family: var(--mono); font-size: 11px; padding: 5px 12px; border-radius: 999px;
+  background: var(--card-2); color: var(--ink-dim); border: 1px solid var(--line); }
+
+/* 탭 (design/의 배너·명함·책커버 전환용) */
+.tabs { display: flex; gap: 8px; justify-content: center; margin: 30px 0 6px; flex-wrap: wrap; }
+.tab { font-family: var(--sans); font-size: 13.5px; background: var(--card); color: var(--ink-dim);
+  border: 1px solid var(--line); border-radius: 999px; padding: 8px 18px; cursor: pointer;
+  transition: border-color .15s, color .15s, background .15s; }
+.tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+.tab:hover:not(.active) { border-color: var(--accent); color: var(--accent-ink); }
+.panel { display: none; }
+.panel.active { display: block; }
+
+.section-head { display: flex; align-items: baseline; justify-content: space-between; padding: 0 2px 14px; margin-top: 40px; }
+.section-head h2 { font-family: var(--serif); font-weight: 400; font-size: 22px; margin: 0; }
+.section-head .hint { font-family: var(--mono); font-size: 10px; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.06em; }
+
+/* 작업물 그리드 (사진/디자인 결과물 공용) */
+.grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+.grid-item { background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden;
+  box-shadow: var(--shadow-1); transition: box-shadow .16s ease, transform .16s ease; }
+.grid-item:hover { box-shadow: var(--shadow-2); transform: translateY(-2px); }
+.grid-item .thumb { aspect-ratio: 4/3; background: var(--card-2); display: flex; align-items: center;
+  justify-content: center; color: var(--ink-faint); font-family: var(--mono); font-size: 11px; text-align: center; padding: 12px; }
+.grid-item .cap { padding: 10px 12px; font-size: 12.5px; color: var(--ink-dim); }
+@media (prefers-reduced-motion: reduce) { .grid-item:hover { transform: none; } }
+
+/* 영상/유튜브 임베드 슬롯 (배우·통역 공용) */
+.video-slot { aspect-ratio: 16/9; background: var(--card-2); border: 1px dashed var(--line); border-radius: 14px;
+  display: flex; align-items: center; justify-content: center; color: var(--ink-faint);
+  font-family: var(--mono); font-size: 12px; text-align: center; padding: 20px; }
+.video-slot iframe { width: 100%; height: 100%; border: 0; border-radius: 14px; }
+
+.contact-card { background: var(--card); border: 1px solid var(--line); border-radius: 16px;
+  padding: 20px 22px; box-shadow: var(--shadow-1); margin-top: 18px; }
+.contact-card a.btn { display: inline-block; margin-top: 10px; background: var(--accent); color: #fff;
+  text-decoration: none; font-size: 13px; padding: 9px 16px; border-radius: 999px; }
+
+/* 클로이 박 정직 리뷰 — 모든 신규 버티컬 공용 */
+.chloe { background: var(--card); border: 1px solid var(--line); border-left: 3px solid var(--live);
+  border-radius: 14px; padding: 18px 20px; margin-top: 18px; }
+.chloe h3 { font-family: var(--serif); font-weight: 400; font-size: 17px; margin: 0 0 4px; }
+.chloe .role { font-family: var(--mono); font-size: 10px; color: var(--live); letter-spacing: 0.08em; text-transform: uppercase; }
+.chloe ul { margin: 12px 0 0; padding-left: 18px; font-size: 13px; color: var(--ink-dim); line-height: 1.7; }
+.chloe li b { color: var(--ink); }
+
+footer { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--line);
+  font-family: var(--mono); font-size: 10px; color: var(--ink-faint); text-align: center; }
