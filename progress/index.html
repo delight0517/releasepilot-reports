@@ -120,6 +120,14 @@
 
   .remaining { margin-top: 10px; font-size: 11.5px; color: var(--ink-faint); line-height: 1.6; }
 
+  .stale-toggle { margin-top: 18px; border: 1px dashed var(--line); border-radius: 14px; padding: 4px 16px; }
+  .stale-toggle summary { cursor: pointer; padding: 12px 0; font-family: var(--mono); font-size: 11.5px;
+    color: var(--ink-faint); letter-spacing: 0.02em; list-style: none; }
+  .stale-toggle summary::-webkit-details-marker { display: none; }
+  .stale-toggle summary::before { content: '▸ '; }
+  .stale-toggle[open] summary::before { content: '▾ '; }
+  .stale-toggle .app { opacity: 0.75; }
+
   .empty { font-size: 14px; color: var(--ink-faint); padding: 40px 4px; text-align: center; }
   footer { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--line);
     font-family: var(--mono); font-size: 10px; color: var(--ink-faint); text-align: center; }
@@ -251,8 +259,7 @@ fetch('data.json', {cache: 'no-store'}).then(r => r.ok ? r.json() : null).then(d
   buildStageGuide(stages, apps);
 
   // ── 앱별 막대 ────────────────────────────────────────────────
-  const wrap = document.getElementById('apps');
-  apps.forEach(a => {
+  function buildAppCard(a) {
     // 구간별로 색을 나눠 하나의 막대에 쌓는다 — 출시 전/출시/수익화가
     // 각각 얼마나 남았는지 색으로 바로 보이게.
     let segs = '';
@@ -282,8 +289,35 @@ fetch('data.json', {cache: 'no-store'}).then(r => r.ok ? r.json() : null).then(d
       ${a.waypoint ? `<div class="next"><b>다음에 할 일</b>${a.waypoint}</div>` : ''}
       <div class="remaining">남은 단계: ${a.remainingStages.join(' → ')}</div>
       ${renderDistribution(a)}`;
-    wrap.appendChild(el);
+    return el;
+  }
+
+  // 30일 이상 손대지 않은 앱은 접어둔다(2026-08-10, "30일 동안 건들지 않은
+  // 앱이 있으면 적당히 숨겨줘" 요청) — 지우진 않고 펼치면 그대로 다 보인다.
+  // lastActiveAt이 아예 없으면(아주 옛날 데이터) 활동 없음으로 간주해 숨김
+  // 쪽으로 보낸다 — 조용히 최신 취급해서 놓치는 것보다 안전한 기본값.
+  const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
+  const now = Date.now();
+  const activeApps = [];
+  const staleApps = [];
+  apps.forEach(a => {
+    const t = a.lastActiveAt ? Date.parse(a.lastActiveAt) : NaN;
+    if (!isNaN(t) && (now - t) <= THIRTY_DAYS_MS) activeApps.push(a);
+    else staleApps.push(a);
   });
+
+  const wrap = document.getElementById('apps');
+  activeApps.forEach(a => wrap.appendChild(buildAppCard(a)));
+
+  if (staleApps.length) {
+    const details = document.createElement('details');
+    details.className = 'stale-toggle';
+    const summary = document.createElement('summary');
+    summary.textContent = `30일 이상 손대지 않은 앱 ${staleApps.length}개 — 펼쳐서 보기`;
+    details.appendChild(summary);
+    staleApps.forEach(a => details.appendChild(buildAppCard(a)));
+    wrap.appendChild(details);
+  }
 
   const l = document.createElement('div');
   l.className = 'legend';
