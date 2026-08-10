@@ -56,6 +56,40 @@
   .section-head h2 { font-family: var(--serif); font-weight: 400; font-size: 22px; margin: 0; }
   .section-head .hint { font-family: var(--mono); font-size: 10px; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.06em; }
 
+  /* ── 11단계 안내 — 막대를 보기 전에 "왜 이 순서인가"를 먼저 이해시킨다.
+     사용자 요청: "단계마다의 설득을 교육시키는 방식으로" — 숫자만 던지지
+     않고, 각 단계가 왜 필요한지 한 문장으로 설득한다. ──────────────────── */
+  .stage-guide { display: flex; flex-direction: column; gap: 0; }
+  .stage-item {
+    display: flex; gap: 14px; padding: 16px 4px; border-bottom: 1px solid var(--line);
+    align-items: flex-start;
+  }
+  .stage-item:last-child { border-bottom: none; }
+  .stage-rail { display: flex; flex-direction: column; align-items: center; flex: none; width: 34px; }
+  .stage-num {
+    width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-family: var(--mono); font-size: 12px; font-weight: 700;
+    color: #fff; flex: none;
+  }
+  .stage-line { flex: 1; width: 2px; background: var(--line); margin-top: 4px; min-height: 12px; }
+  .stage-body { flex: 1; padding-top: 2px; }
+  .stage-top-row { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  .stage-name { font-size: 14.5px; font-weight: 700; }
+  .stage-phase-tag {
+    font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.05em;
+    padding: 2px 7px; border-radius: 999px; font-weight: 700;
+  }
+  .stage-weight { font-family: var(--mono); font-size: 10px; color: var(--ink-faint); margin-left: auto; }
+  .stage-persuade { font-size: 13px; color: var(--ink-dim); margin: 6px 0 0; line-height: 1.6; }
+  .stage-item.is-reached .stage-num { opacity: 1; }
+  .stage-item.is-future .stage-num { opacity: 0.35; }
+  .stage-item.is-future .stage-name { color: var(--ink-faint); }
+  .stage-item.is-future .stage-persuade { color: var(--ink-faint); }
+  .stage-reached-badge {
+    font-family: var(--mono); font-size: 9px; font-weight: 700; color: var(--good);
+    background: var(--good-soft); border-radius: 999px; padding: 2px 8px; margin-left: 6px;
+  }
+
   /* ── 앱별 진행 막대 ──────────────────────────────────────────── */
   .app { background: var(--card); border: 1px solid var(--line); border-radius: 16px;
     padding: 18px 20px; margin-bottom: 12px; box-shadow: var(--shadow-1); }
@@ -103,6 +137,9 @@
 
   <div class="briefing" id="briefing"></div>
 
+  <div class="section-head"><h2>11단계 — 왜 이 순서인가</h2><span class="hint">Build → Launch → Revenue</span></div>
+  <div class="stage-guide" id="stageGuide"></div>
+
   <div class="section-head"><h2>앱별 진행률</h2><span class="hint">Total → Revenue</span></div>
   <div id="apps"></div>
 
@@ -112,6 +149,52 @@
 
 <script>
 const PHASE_CLASS = { build: 'seg-build', launch: 'seg-launch', revenue: 'seg-revenue' };
+const PHASE_COLOR = { build: '#c9711f', launch: '#4f7cac', revenue: '#2f7a63' };
+const PHASE_LABEL = { build: '출시 전', launch: '제출·심사', revenue: '수익화' };
+
+// 고정 데이터 — tool/launch_progress_cli.dart의 _stages, docs/23의 11단계와
+// id가 정확히 일치해야 한다. 매번 API로 새로 글을 쓰는 게 아니라, 이 표 하나를
+// 계속 재사용한다(2026-08-07 사용자 요청: "정해둘 부분은 재활용할 수 있게").
+// 새 단계가 생기면 여기 한 줄만 추가하면 됨 — 렌더링 로직은 안 바뀜.
+const STAGE_EXPLAIN = {
+  registered:  { glyph: '📋', persuade: '시작 지점을 남겨야 나중에 얼마나 왔는지 잴 수 있다.' },
+  analyzed:    { glyph: '🔎', persuade: '실제 코드를 안 보고 세운 계획은 추측일 뿐이다.' },
+  strategy:    { glyph: '🎯', persuade: '정확히 누가 왜 사는지를 모르면, 그 뒤 모든 단계가 헛수고가 된다 — 가중치가 가장 큰 이유.' },
+  mvp_locked:  { glyph: '🔒', persuade: '다 만들 필요 없다. 팔릴 핵심 하나만 먼저 잠가야 한다.' },
+  metadata:    { glyph: '📝', persuade: '좋은 앱도 설명이 없으면 아무도 못 찾는다.' },
+  build_signed:{ glyph: '🛠️', persuade: '코드가 실행 파일이 되는 마지막 기술적 관문.' },
+  submitted:   { glyph: '📤', persuade: '이제 심사관이 본다 — 규정 위반 하나가 곧 반려다.' },
+  approved:    { glyph: '🚀', persuade: '여기서부터 진짜 사용자가 만난다 — 두 번째로 가중치가 큰 이유.' },
+  feedback_1:  { glyph: '💬', persuade: '출시는 끝이 아니라 진짜 데이터가 들어오는 시작점이다.' },
+  marketing:   { glyph: '📣', persuade: '좋은 앱도 알려지지 않으면 존재하지 않는 것과 같다.' },
+  revenue_1:   { glyph: '💰', persuade: '이게 증명이다 — 나머지 전부는 여기 도달하기 위한 과정이었다.' },
+};
+
+function buildStageGuide(stages, apps) {
+  const el = document.getElementById('stageGuide');
+  const maxDone = apps.length ? Math.max(...apps.map(a => a.stagesDone)) : 0;
+  stages.forEach((s, i) => {
+    const info = STAGE_EXPLAIN[s.id] || { glyph: '•', persuade: '' };
+    const reached = i < maxDone;
+    const item = document.createElement('div');
+    item.className = 'stage-item ' + (reached ? 'is-reached' : 'is-future');
+    item.innerHTML = `
+      <div class="stage-rail">
+        <div class="stage-num" style="background:${PHASE_COLOR[s.phase]}">${info.glyph}</div>
+        ${i < stages.length - 1 ? '<div class="stage-line"></div>' : ''}
+      </div>
+      <div class="stage-body">
+        <div class="stage-top-row">
+          <span class="stage-name">${i + 1}. ${s.label}</span>
+          <span class="stage-phase-tag" style="background:${PHASE_COLOR[s.phase]}22;color:${PHASE_COLOR[s.phase]}">${PHASE_LABEL[s.phase]}</span>
+          ${reached ? '<span class="stage-reached-badge">누군가 도달함</span>' : ''}
+          <span class="stage-weight">비중 ${s.weight}</span>
+        </div>
+        <p class="stage-persuade">${info.persuade}</p>
+      </div>`;
+    el.appendChild(item);
+  });
+}
 
 fetch('data.json', {cache: 'no-store'}).then(r => r.ok ? r.json() : null).then(d => {
   if (!d || !d.apps || !d.apps.length) { document.getElementById('empty').style.display = 'block'; return; }
@@ -140,6 +223,8 @@ fetch('data.json', {cache: 'no-store'}).then(r => r.ok ? r.json() : null).then(d
   html += `<p style="font-size:11.5px;color:var(--ink-faint)">기준 시각 ${(d.generatedAt||'').slice(0,16).replace('T',' ')} · `
         + `진행률은 단계별 가중치 합으로 계산(총 ${totalW}점).</p>`;
   document.getElementById('briefing').innerHTML = html;
+
+  buildStageGuide(stages, apps);
 
   // ── 앱별 막대 ────────────────────────────────────────────────
   const wrap = document.getElementById('apps');
