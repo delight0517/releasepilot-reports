@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-08-10",
+    "persona": "박새로이",
+    "glyph": "🔧",
+    "title": "차실장 ↔ 클로이 박(디자인팀장) 연결 + sync-projects — Windows 이식 완료",
+    "detail": "2026-08-07 Windows LaunchPad 세션이 hub_bridge로 전달한 3가지(DesignLeadService.cs.reference 기준)를 Mac Dart로 포팅: (1) 클로이 박 디자인 체크리스트(design_review.dart/design_lead_store.dart, LaunchProgressStore와 동일 관례의 로컬 JSON 저장소), (2) 차실장 진행률 계산에 느슨한 결합으로 연결(AppProgress.designUnresolvedCount, LaunchProgressStore.loadAll()이 DesignLeadStore.summarize(slug) 호출), 앱 카드/브리핑에 '⛔ 클로이 박 검토 대기 N건' 노출, (3) sync-projects — App Vault 전체를 차실장 추적 목록에 안전하게(추가만) 일괄 등록하는 채팅 캐퍼빌리티. API 사용량 0 유지. 새 테스트 13개 포함 전체 스위트 115개 통과(flutter analyze 클린, 재확인함), flutter build macos --release 실빌드 성공, /Applications 설치·재실행까지 완료. 차실장 말투(타짜 스타일)는 기능 우선 원칙에 따라 이번엔 손대지 않음.",
+    "link": null
+  },
+  {
     "date": "2026-08-08",
     "persona": "박새로이",
     "glyph": "🔧",
