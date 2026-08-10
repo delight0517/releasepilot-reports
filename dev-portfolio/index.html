@@ -1,0 +1,222 @@
+<!doctype html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>앱 개발 포트폴리오 — 김근후</title>
+<meta name="description" content="여러 플랫폼(Flutter/Swift/Electron)에 걸쳐 직접 기획·개발한 앱들의 케이스 스터디. 취업 준비용 포트폴리오.">
+<link rel="icon" href="../icons/icon-192.png">
+<meta name="theme-color" content="#fbfaf7">
+<style>
+  :root {
+    --bg: #fbfaf7; --card: #ffffff; --card-2: #f6f3ec; --line: #e9e3d6;
+    --ink: #1d1b17; --ink-dim: #6b6a5f; --ink-faint: #a3a091;
+    --accent: #c9711f; --accent-soft: #f6e6d3; --accent-ink: #7a4413;
+    --good: #2f7a63; --good-soft: #dcefe8;
+    --warn: #b3541e; --warn-soft: #fbe8dc;
+    --live: #4f7cac; --live-soft: #e3ebf3;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Noto Serif KR", serif;
+    --sans: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, monospace;
+    --shadow-1: 0 1px 2px rgba(29,27,23,0.05), 0 1px 1px rgba(29,27,23,0.03);
+  }
+  * { box-sizing: border-box; overflow-wrap: break-word; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); line-height: 1.55; -webkit-font-smoothing: antialiased; }
+  a { color: inherit; }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 18px 96px; }
+  .back-link { position: fixed; top: 16px; left: 16px; z-index: 5; font-family: var(--mono); font-size: 10.5px;
+    color: var(--ink-faint); text-decoration: none; background: var(--card); border: 1px solid var(--line);
+    border-radius: 999px; padding: 6px 12px; }
+
+  .hero { padding: 68px 4px 8px; text-align: center; }
+  .eyebrow { display: inline-block; font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--accent-ink); background: var(--accent-soft);
+    border-radius: 999px; padding: 5px 14px; margin: 0 0 16px; }
+  h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(28px, 6vw, 40px); margin: 0 0 12px; }
+  .hero p { margin: 0 auto; font-size: 14.5px; color: var(--ink-dim); max-width: 52ch; }
+
+  .stack-row { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 22px 0 0; }
+  .stack-chip { font-family: var(--mono); font-size: 11px; padding: 5px 12px; border-radius: 999px;
+    background: var(--card-2); color: var(--ink-dim); border: 1px solid var(--line); }
+
+  .section-head { display: flex; align-items: baseline; justify-content: space-between; padding: 0 2px 14px; margin-top: 52px; }
+  .section-head h2 { font-family: var(--serif); font-weight: 400; font-size: 22px; margin: 0; }
+  .section-head .hint { font-family: var(--mono); font-size: 10px; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.06em; }
+
+  /* 라이브 데모 */
+  .demo-row { display: flex; flex-direction: column; gap: 10px; }
+  .demo-card { display: flex; align-items: center; gap: 14px; padding: 16px 18px; border: 1px solid var(--line);
+    border-radius: 14px; background: var(--card); text-decoration: none; color: inherit; box-shadow: var(--shadow-1); }
+  .demo-glyph { font-size: 30px; line-height: 1; flex: none; }
+  .demo-name { display: block; font-weight: 700; color: var(--accent-ink); }
+  .demo-desc { display: block; font-size: 13px; color: var(--ink-faint); margin-top: 2px; }
+  .demo-badge { margin-left: auto; font-family: var(--mono); font-size: 9.5px; font-weight: 700;
+    background: var(--good-soft); color: var(--good); border-radius: 999px; padding: 4px 10px; flex: none; }
+
+  /* 케이스 스터디 */
+  .case { background: var(--card); border: 1px solid var(--line); border-radius: 16px;
+    padding: 20px 22px; margin-bottom: 14px; box-shadow: var(--shadow-1); display: flex; gap: 16px; }
+  .case-icon { width: 56px; height: 56px; border-radius: 14px; flex: none; object-fit: cover;
+    border: 1px solid var(--line); background: var(--card-2); }
+  .case-icon.placeholder { display: flex; align-items: center; justify-content: center; font-size: 24px; }
+  .case-body { flex: 1; min-width: 0; }
+  .case-top { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  .case-name { font-family: var(--serif); font-size: 17px; font-weight: 400; }
+  .case-stage { font-family: var(--mono); font-size: 10px; color: var(--ink-faint); margin-left: auto; }
+  .case-problem { font-size: 13.5px; color: var(--ink-dim); margin: 8px 0 0; line-height: 1.6; }
+  .case-problem b { color: var(--ink); }
+  .case-stack { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .case-tag { font-family: var(--mono); font-size: 10px; padding: 3px 8px; border-radius: 999px;
+    background: var(--card-2); color: var(--ink-dim); }
+  .case-shots { margin-top: 12px; font-size: 11.5px; color: var(--ink-faint); padding: 8px 10px;
+    background: var(--card-2); border-radius: 8px; border: 1px dashed var(--line); }
+
+  /* 클로이 박 체크 */
+  .chloe { background: var(--card); border: 1px solid var(--line); border-left: 3px solid var(--live);
+    border-radius: 14px; padding: 18px 20px; margin-top: 18px; }
+  .chloe h3 { font-family: var(--serif); font-weight: 400; font-size: 17px; margin: 0 0 4px; }
+  .chloe .role { font-family: var(--mono); font-size: 10px; color: var(--live); letter-spacing: 0.08em; text-transform: uppercase; }
+  .chloe ul { margin: 12px 0 0; padding-left: 18px; font-size: 13px; color: var(--ink-dim); line-height: 1.7; }
+  .chloe li b { color: var(--ink); }
+
+  footer { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--line);
+    font-family: var(--mono); font-size: 10px; color: var(--ink-faint); text-align: center; }
+</style>
+
+<a class="back-link" href="../">‹ 허브로</a>
+<div class="wrap">
+  <div class="hero">
+    <span class="eyebrow">Dev Portfolio · Job Search</span>
+    <h1>혼자서 기획부터 배포까지</h1>
+    <p>여러 플랫폼에 걸쳐 직접 문제를 정의하고, 설계하고, 만들고, 출시 과정까지 관리한 프로젝트들입니다.
+       규모는 작지만 전 과정을 스스로 책임졌습니다.</p>
+    <div class="stack-row">
+      <span class="stack-chip">Flutter / Dart</span>
+      <span class="stack-chip">Swift / SwiftUI</span>
+      <span class="stack-chip">Electron / Node.js</span>
+      <span class="stack-chip">Firebase</span>
+      <span class="stack-chip">Claude API 연동</span>
+      <span class="stack-chip">CLI 자동화 (pure dart:io)</span>
+      <span class="stack-chip">Git 기반 동기화 아키텍처</span>
+      <span class="stack-chip">macOS 시스템 API (pmset 등)</span>
+    </div>
+  </div>
+
+  <div class="section-head"><h2>지금 바로 써볼 수 있는 데모</h2><span class="hint">Live</span></div>
+  <div class="demo-row">
+    <a class="demo-card" href="../apps/ox-quiz/">
+      <span class="demo-glyph">🧠</span>
+      <span><span class="demo-name">학습 OX 퀴즈</span>
+        <span class="demo-desc">노트를 붙여넣으면 Claude API가 OX 퀴즈로 자동 생성, SM-2 간격 반복으로 암기시킴</span></span>
+      <span class="demo-badge">지금 클릭해서 사용 가능</span>
+    </a>
+    <a class="demo-card" href="../apps/gallery/">
+      <span class="demo-glyph">🎞️</span>
+      <span><span class="demo-name">사진 갤러리 (Darkroom)</span>
+        <span class="demo-desc">Firebase Auth + Storage 연동. 로그인하면 업로드/수정/삭제까지 가능한 실사용 웹앱</span></span>
+      <span class="demo-badge">지금 클릭해서 사용 가능</span>
+    </a>
+  </div>
+
+  <div class="section-head"><h2>프로젝트</h2><span class="hint" id="caseHint">By App</span></div>
+  <div id="cases"></div>
+
+  <div class="chloe">
+    <p class="role">클로이 박 · Design Lead</p>
+    <h3>지금 이 포트폴리오, 채용 관점에서 어디가 비는지</h3>
+    <ul id="chloeList"></ul>
+  </div>
+
+  <footer>클로이 박 · ReleasePilot 포트폴리오 페이지 · 진행률 데이터는 <a href="../progress/" style="color:inherit">출시 현황판</a>과 공유</footer>
+</div>
+
+<script>
+// 실제 소스 확인 없이 지어내지 않는다(docs/09/11 원칙) — 못 찾은 스크린샷은
+// "촬영 예정"으로 정직하게 표시하고, 아이콘이 서로 중복된 파일이면 그것도 숨기지 않는다.
+const CASES = [
+  {
+    slug: 'releasepilot', name: 'ReleasePilot (이 도구 자신)', glyph: '🚀',
+    problem: '<b>문제</b>: 여러 앱을 혼자 만들다 보니 "출시까지 뭐가 남았는지", "어느 컴퓨터에 뭐가 있는지"를 매번 기억에 의존했다. <b>해결</b>: 앱 등록→분석→MVP 메타데이터→진행 트래킹을 하나의 Flutter 데스크톱 앱으로 통합, API 토큰 없이 git을 "공유 디스크"로 쓰는 동기화 아키텍처를 직접 설계.',
+    stack: ['Flutter', 'Dart CLI (dart:io)', 'Git-as-DB', 'Claude API(claude -p) 연동'],
+    hasIcon: false, shotNote: '데스크톱 앱 UI 스크린샷 촬영 예정 — 채용 관점에서 가장 보여주고 싶은 프로젝트라 우선순위 1순위'
+  },
+  {
+    slug: '4vpn-blocker', name: '4VPN Blocker', glyph: null,
+    problem: '<b>문제</b>: 스스로 만든 규칙을 스스로 우회하는 게 자기통제 앱의 근본적 약점이다. <b>해결</b>: 강제종료·확장 삭제·스케줄 잠금 우회를 막는 방어적 설계를 macOS 네이티브(Swift)로 구현, Windows 포팅 진행 중.',
+    stack: ['Swift', 'macOS 시스템 API', 'Chrome/Firefox 확장'],
+    hasIcon: true, shotNote: '실행 화면 스크린샷 촬영 예정'
+  },
+  {
+    slug: '35closer', name: '35Closer Timer', glyph: null,
+    problem: '<b>문제</b>: 집중 시간을 지키려 해도 화면/시스템 절전이 걸리거나, 반대로 왜 절전이 걸렸는지 몰라 답답했다. <b>해결</b>: 원형 카운트다운 타이머에 caffeinate 기반 절전 방지 + pmset 로그를 파싱해 "왜 절전됐는지" 실제 사유까지 보여주는 진단 기능을 붙임.',
+    stack: ['Flutter (macOS)', 'pmset/시스템 로그 파싱', 'Process 제어'],
+    hasIcon: true, shotNote: '원형 타이머·전원 진단 화면 스크린샷 촬영 예정'
+  },
+  {
+    slug: 'harugirok', name: '사계기록', glyph: null,
+    problem: '<b>문제</b>: 일기·습관을 꾸준히 기록하기 어렵다. <b>해결</b>: 크로스플랫폼 일기/습관 트래킹 앱으로 실기기 설치·실행까지 확인(v2.15.1). 상업성 검증은 아직 근거 부족 — 타겟이 불분명한 채로 기능만 앞서갔다.',
+    stack: ['Flutter (iOS/Android/macOS/Windows)'],
+    hasIcon: true, shotNote: '실기기 스크린샷 촬영 예정'
+  },
+  {
+    slug: 'ox-quiz', name: '학습 OX 퀴즈', glyph: null,
+    problem: '<b>문제</b>: 노트를 정리해도 실제로 외워지지 않는다. <b>해결</b>: Claude API로 노트를 OX 퀴즈로 자동 변환, SM-2 간격 반복 알고리즘으로 복습 시점을 스스로 계산. 위 라이브 데모에서 바로 확인 가능.',
+    stack: ['Flutter (Web/Mac/Win/iOS)', 'Claude API', 'SM-2 알고리즘'],
+    hasIcon: true, shotNote: null
+  },
+  {
+    slug: 'risesync', name: 'RiseSync', glyph: null,
+    problem: '<b>문제</b>: 기상 알람 하나로는 실제 기상 행동까지 이어지지 않는다. <b>해결</b>: iOS 네이티브(SwiftUI)로 기상 루틴을 설계 중 — 지역·타겟 적합도 리포트까지 작성해 MVP 범위를 좁히는 단계.',
+    stack: ['SwiftUI (iOS)'],
+    hasIcon: true, shotNote: '실기기 스크린샷 촬영 예정'
+  },
+  {
+    slug: 'auto-pomodoro', name: 'Auto Pomodoro', glyph: '🍅',
+    problem: '<b>문제</b>: 뽀모도로 타이머는 많지만 데스크톱에 상시 떠있는 형태로 방해 없이 쓰고 싶었다. <b>해결</b>: Electron 기반 데스크톱 타이머(v1.0.1), 지역·타겟 CTR 리포트로 GTM 방향까지 검토 중.',
+    stack: ['Electron', 'Node.js'],
+    hasIcon: false, shotNote: '실행 화면 스크린샷 촬영 예정'
+  },
+];
+
+const STAGE_LABEL = { registered:'앱 등록', analyzed:'코드 분석', strategy:'타겟·수요 검증', mvp_locked:'MVP 확정',
+  metadata:'스토어 메타데이터', build_signed:'빌드·서명', submitted:'스토어 제출', approved:'심사 통과·출시',
+  feedback_1:'1차 피드백', marketing:'광고·마케팅', revenue_1:'첫 수익' };
+
+Promise.all([
+  fetch('../progress/data.json', {cache:'no-store'}).then(r => r.ok ? r.json() : null).catch(() => null),
+]).then(([progress]) => {
+  const byslug = {};
+  (progress && progress.apps || []).forEach(a => byslug[a.slug] = a);
+
+  const wrap = document.getElementById('cases');
+  CASES.forEach(c => {
+    const p = byslug[c.slug];
+    const el = document.createElement('div');
+    el.className = 'case';
+    const iconHtml = c.hasIcon
+      ? `<img class="case-icon" src="assets/icons/${c.slug}.png" alt="${c.name} 아이콘">`
+      : `<div class="case-icon placeholder">${c.glyph || '📱'}</div>`;
+    el.innerHTML = `
+      ${iconHtml}
+      <div class="case-body">
+        <div class="case-top">
+          <span class="case-name">${c.name}</span>
+          ${p ? `<span class="case-stage">${p.stageLabel} · ${p.percentTotal}%${p.version ? ' · v' + p.version : ''}</span>` : ''}
+        </div>
+        <p class="case-problem">${c.problem}</p>
+        <div class="case-stack">${c.stack.map(s => `<span class="case-tag">${s}</span>`).join('')}</div>
+        ${c.shotNote ? `<div class="case-shots">📷 ${c.shotNote}</div>` : ''}
+      </div>`;
+    wrap.appendChild(el);
+  });
+
+  const chloe = document.getElementById('chloeList');
+  const points = [
+    '<b>스크린샷이 거의 없다</b> — 지금 7개 프로젝트 중 실제 화면 스크린샷이 있는 건 0개. 채용 담당자는 코드보다 화면을 먼저 본다. 시뮬레이터/실기기로 5~10장씩만 찍어도 이 페이지가 완전히 달라진다.',
+    '<b>ox-quiz와 harugirok 앱 아이콘이 완전히 같은 파일</b> — 둘 중 하나(혹은 둘 다)가 Flutter 기본 아이콘을 안 바꾼 채로 남아있다는 뜻. 최소 하나는 실제로 디자인해서 교체할 것.',
+    '<b>"임팩트"를 말할 수 있는 프로젝트가 아직 없다</b> — 사용자 수/리뷰/수익 같은 숫자를 지어내지 말고, 대신 "왜 이 설계를 택했는지"(예: git-as-DB, pmset 로그 파싱 같은 기술적 판단)를 케이스 스터디에 한 단락씩 더 쓰면 숫자 없이도 설득력이 생긴다.',
+    '<b>GitHub 링크가 없다</b> — 코드를 실제로 보고 싶어하는 채용 담당자가 많다. 공개 가능한 저장소(최소 ox-quiz, ReleasePilot 자체 CLI 툴)는 README 정리 후 링크를 이 페이지에 추가할 것.',
+    '<b>연락처/이력서 링크가 없다</b> — 포트폴리오는 보고 끝나면 의미가 없다. 이메일 또는 이력서 PDF 링크를 hero 영역에 추가해야 실제로 "다음 행동"으로 이어진다.',
+    '<b>ReleasePilot 자신을 대표작으로 더 밀 것</b> — "앱 여러 개 만듦" 나열보다, "혼자 개발하며 반복되는 문제(출시 관리·기기 간 동기화)를 도구로 직접 만들어 해결했다"는 서사가 신입/주니어 포지션에서 훨씬 강하다. 이 도구 자체의 아키텍처(git 기반 무-API 동기화, CLI-first 설계)를 기술 면접 소재로 준비해둘 것.',
+  ];
+  chloe.innerHTML = points.map(p => `<li>${p}</li>`).join('');
+});
+</script>
