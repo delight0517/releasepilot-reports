@@ -1,0 +1,67 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VIVID 개인 브랜딩 사용 가이드</title><style>
+  :root {
+    --ink: #1c2333; --ink-soft: #2a3348; --parchment: #f6f1e6; --parchment-card: #fffdf7;
+    --line: #ded2b8; --accent: #4f7cac; --accent-strong: #34597a;
+    --text: #241f14; --text-soft: #5c5644; --text-faint: #8b8368;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink: #0f1420; --parchment: #171c26; --parchment-card: #1f2532; --line: #333c4d;
+      --accent: #7fa8d6; --accent-strong: #a9c6e8;
+      --text: #ece6d8; --text-soft: #b8b19c; --text-faint: #7b7663;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ink: #0f1420; --parchment: #171c26; --parchment-card: #1f2532; --line: #333c4d;
+    --accent: #7fa8d6; --accent-strong: #a9c6e8;
+    --text: #ece6d8; --text-soft: #b8b19c; --text-faint: #7b7663;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--parchment); color: var(--text); font-family: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", "Segoe UI", sans-serif; line-height: 1.6; }
+  .page { max-width: 680px; margin: 0 auto; padding: 0 0 64px; }
+  .masthead { background: linear-gradient(180deg, var(--ink) 0%, var(--ink-soft) 100%); color: #eef3f8; padding: 28px 20px 24px; }
+  .eyebrow { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #c3d3e6; margin: 0 0 6px; font-weight: 600; }
+  .masthead h1 { font-family: Georgia, serif; font-size: 27px; margin: 0 0 8px; }
+  .masthead p.sub { margin: 0; font-size: 14px; color: #c9d6e4; max-width: 50ch; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .meta-chip { font-size: 12px; padding: 5px 10px; border-radius: 999px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.16); color: #e3ecf5; }
+  .linktree-banner { margin-top: 16px; padding: 14px 16px; border-radius: 14px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14); }
+  .linktree-label { margin: 0 0 4px; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #c3d3e6; font-weight: 700; }
+  .linktree-copy { margin: 0 0 10px; font-size: 13px; color: #e4edf6; }
+  .linktree-button { display: inline-block; padding: 8px 12px; border-radius: 999px; background: #f8fafc; color: #1f2937; font-size: 13px; font-weight: 700; text-decoration: none; border: 1px solid rgba(255,255,255,0.22); }
+  .linktree-button:hover { background: #ffffff; }
+  section { padding: 22px 20px 4px; }
+  .section-label { display: flex; align-items: baseline; gap: 8px; margin-bottom: 12px; }
+  .section-label .num { font-size: 12px; color: var(--accent-strong); font-weight: 700; letter-spacing: 0.06em; }
+  .section-label h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-soft); margin: 0; font-weight: 700; }
+  .card { background: var(--parchment-card); border: 1px solid var(--line); border-radius: 14px; padding: 18px; }
+  .ug-plain-list { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+  .ug-plain-list li { font-size: 12.5px; color: var(--text-soft); }
+  .ug-desc { font-size: 13px; color: var(--text-soft); margin: 0 0 10px; }
+  footer { padding: 24px 20px 0; font-size: 11.5px; color: var(--text-faint); text-align: center; }
+  * { overflow-wrap: break-word; }
+  img, svg { max-width: 100%; height: auto; }
+  table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: nowrap; }
+  @media (max-width: 640px) {
+    body { font-size: 15px; }
+    .page { padding: 32px 16px 80px; }
+  }
+</style><div class="page"><div class="masthead">
+  <p class="eyebrow">VIVID 개인 브랜딩 · 사용법 기획서 + 작업 일지</p>
+  <h1>VIVID 개인 브랜딩 사용 가이드</h1>
+  <p class="sub">클로이 박(디자인팀장) 검토 — dev-portfolio 탐색 UI 완성분 평가</p>
+  <div class="meta-row"><span class="meta-chip">v1.1.0</span><span class="meta-chip">개정판 2</span></div>
+  <div class="linktree-banner">
+    <p class="linktree-label">More work from the creator</p>
+    <p class="linktree-copy">If you want to see more portfolio pieces and other projects, visit the creator's Linktree.</p>
+    <a class="linktree-button" href="https://linktr.ee/rogankimwashere" target="_blank" rel="noopener noreferrer">https://linktr.ee/rogankimwashere</a>
+  </div>
+</div><section>
+  <div class="section-label"><span class="num">01</span><h2>완성분 평가 (2026-08-10)</h2></div>
+  <div class="card"><p class="ug-desc">사용자 요청: 취업용 포트폴리오(dev-portfolio/)를 explore·검색 가능한 재밌는 웹사이트로. 완성 후 평가 요청.</p><ul class="ug-plain-list"><li>✅ 검색 — 입력창에 자유 텍스트(프로젝트명/문제/기술스택)로 필터. "pmset" 검색 시 35Closer Timer 1건만 정확히 남는 것 로컬 서버로 실제 클릭·타이핑해서 확인함.</li><li>✅ 태그 필터 — CASES.stack에서 실제 값 그대로 뽑은 칩(지어낸 카테고리 아님), 클릭 시 토글 + 개수 표시. "Flutter" 클릭 시 ReleasePilot 1건만 남는 것 확인(태그가 "Flutter (macOS)"처럼 세분화된 다른 프로젝트는 정확히 제외됨 — 문자열 그대로 매칭이라 의도대로 동작).</li><li>✅ 케이스 카드 안의 기술 태그를 클릭해도 같은 필터가 걸림(탐색 동선을 두 군데서 열어둠).</li><li>✅ 반응형 — 375px/1280px 실측, 가로 스크롤 없음, 검색바·칩이 모바일에서도 줄바꿈되며 안 깨짐(로컬 서버로 직접 스크린샷 확인).</li><li>✅ about/ 페이지 nav에 dev-portfolio 링크 추가 — 사용자가 지적한 "링크가 안 보인다" 문제의 실제 원인(about에서 갈 방법이 없었음)을 고쳤음.</li><li>△ '재밌음'은 절반만 채움 — 카드 hover 리프트, 필터 칩 애니메이션, 검색 결과 페이드인은 넣었지만, 진짜 재미는 콘텐츠(스크린샷·데모)에서 나옴. 지금도 7개 중 스크린샷 있는 프로젝트가 0개라 탐색해도 볼 게 텍스트뿐 — 탐색 UI가 빈 서랍을 더 잘 정리한 것에 가깝다.</li><li>❌ 이 페이지에 있던 기존 반려 사유(스크린샷 0개, GitHub 링크 없음, 이력서 링크 없음, ox-quiz/harugirok 아이콘 중복)는 이번 작업으로 하나도 안 고쳐짐 — 원래 범위 밖(탐색 UI 요청)이었고, 이 리포트에서도 지어내지 않음.</li></ul></div>
+</section><section>
+  <div class="section-label"><span class="num">02</span><h2>통과 여부</h2></div>
+  <div class="card"><p class="ug-desc">탐색·검색 UI 자체는 통과. 다만 "완성됐다"고 하기엔 이 페이지의 근본 반려 사유(스크린샷·GitHub·이력서 공백)가 그대로 남아있어, 포트폴리오 전체 완성도는 여전히 반려 상태다. 사용자가 다음에 스크린샷을 붙이면 이 탐색 UI가 그때 진짜 값을 하게 된다.</p></div>
+</section><footer>VIVID 개인 브랜딩 자동 생성 (LaunchPad) · 사용법 기획서(개정 2)</footer></div>
