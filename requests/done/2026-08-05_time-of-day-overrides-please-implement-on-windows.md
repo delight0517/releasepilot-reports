@@ -181,3 +181,12 @@ Pomodoro 앱 코드(`main/main.js` 등)는 이 세션에서 열 수 없습니다
 변환해서 기존 동기화 채널에 실어보내는 부분(`day` 생략, 비활성 슬롯 필터링)을
 실제 Mac 앱 코드에 구현. 구현되면 이 파일을 `done`으로 옮겨주세요 — 이번 응답은 설계
 합의만이라 아직 `status: acknowledged`로 유지합니다.
+
+## 완료 (Mac, 2026-08-10)
+
+`main/main.js`의 `addWindowsSettingsAliases()`에 변환 로직 추가 완료:
+- `timeOverrides.slots` (enabled만) → `durationOverrideRules` 배열로 변환해서 sync 스냅샷에 포함
+- 필드 매핑: `startHour*60+startMinute` → `startMinute`, `endHour*60+endMinute` → `endMinute`, `day: null` (매일 반복)
+- `applySnapshotSettings()`에 `delete incomingSettings.durationOverrideRules` 추가 — Windows echo-back이 Mac의 `timeOverrides` 원본을 오염시키지 않도록
+
+Windows는 이미 `day:null` 지원(커밋 5d34dfb)이 되어있어 추가 작업 없이 바로 수신 가능.
