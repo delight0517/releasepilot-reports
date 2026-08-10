@@ -2,7 +2,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>앱 개발 포트폴리오 — 김근후</title>
-<meta name="description" content="여러 플랫폼(Flutter/Swift/Electron)에 걸쳐 직접 기획·개발한 앱들의 케이스 스터디. 취업 준비용 포트폴리오.">
+<meta name="description" content="여러 플랫폼(Flutter/Swift/Electron)에 걸쳐 직접 기획·개발한 앱들의 케이스 스터디. 검색·필터로 둘러보는 취업 준비용 포트폴리오.">
 <link rel="icon" href="../icons/icon-192.png">
 <meta name="theme-color" content="#fbfaf7">
 <style>
@@ -17,6 +17,7 @@
     --sans: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", sans-serif;
     --mono: ui-monospace, "SF Mono", Menlo, monospace;
     --shadow-1: 0 1px 2px rgba(29,27,23,0.05), 0 1px 1px rgba(29,27,23,0.03);
+    --shadow-2: 0 10px 24px -12px rgba(29,27,23,0.18);
   }
   * { box-sizing: border-box; overflow-wrap: break-word; }
   body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); line-height: 1.55; -webkit-font-smoothing: antialiased; }
@@ -30,21 +31,50 @@
   .eyebrow { display: inline-block; font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em;
     text-transform: uppercase; color: var(--accent-ink); background: var(--accent-soft);
     border-radius: 999px; padding: 5px 14px; margin: 0 0 16px; }
-  h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(28px, 6vw, 40px); margin: 0 0 12px; }
+  h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(28px, 6vw, 40px); margin: 0 0 12px; text-wrap: balance; }
   .hero p { margin: 0 auto; font-size: 14.5px; color: var(--ink-dim); max-width: 52ch; }
 
   .stack-row { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 22px 0 0; }
   .stack-chip { font-family: var(--mono); font-size: 11px; padding: 5px 12px; border-radius: 999px;
     background: var(--card-2); color: var(--ink-dim); border: 1px solid var(--line); }
 
-  .section-head { display: flex; align-items: baseline; justify-content: space-between; padding: 0 2px 14px; margin-top: 52px; }
+  /* ── 탐색 바 (검색 + 태그 필터) ─────────────────────────────── */
+  .explore { position: sticky; top: 0; z-index: 4; background: linear-gradient(var(--bg) 82%, transparent);
+    padding: 40px 0 14px; margin-top: 8px; }
+  .search-box { display: flex; align-items: center; gap: 10px; background: var(--card); border: 1px solid var(--line);
+    border-radius: 14px; padding: 12px 16px; box-shadow: var(--shadow-1); transition: box-shadow .18s ease, border-color .18s ease; }
+  .search-box:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .search-box svg { flex: none; opacity: .55; }
+  .search-box input { flex: 1; border: none; outline: none; background: none; font: inherit; font-size: 14.5px; color: var(--ink); }
+  .search-box input::placeholder { color: var(--ink-faint); }
+  .search-kbd { font-family: var(--mono); font-size: 10px; color: var(--ink-faint); border: 1px solid var(--line);
+    border-radius: 6px; padding: 2px 6px; flex: none; }
+
+  .filter-row { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 12px; }
+  .filter-chip { font-family: var(--mono); font-size: 11px; padding: 6px 13px; border-radius: 999px;
+    background: var(--card); color: var(--ink-dim); border: 1px solid var(--line); cursor: pointer;
+    transition: transform .12s ease, background .12s ease, color .12s ease, border-color .12s ease; user-select: none; }
+  .filter-chip:hover { transform: translateY(-1px); border-color: var(--accent); }
+  .filter-chip.on { background: var(--accent); color: #fff8ee; border-color: var(--accent); }
+  .filter-chip .n { opacity: .6; margin-left: 5px; }
+  .filter-chip.on .n { opacity: .85; }
+  .filter-clear { font-family: var(--mono); font-size: 11px; color: var(--ink-faint); background: none; border: none;
+    cursor: pointer; text-decoration: underline; padding: 6px 4px; display: none; }
+  .filter-clear.show { display: inline-block; }
+
+  .result-count { font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint); margin: 12px 2px 0; }
+  .result-count b { color: var(--ink-dim); }
+
+  .section-head { display: flex; align-items: baseline; justify-content: space-between; padding: 0 2px 14px; margin-top: 40px; }
   .section-head h2 { font-family: var(--serif); font-weight: 400; font-size: 22px; margin: 0; }
   .section-head .hint { font-family: var(--mono); font-size: 10px; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.06em; }
 
   /* 라이브 데모 */
   .demo-row { display: flex; flex-direction: column; gap: 10px; }
   .demo-card { display: flex; align-items: center; gap: 14px; padding: 16px 18px; border: 1px solid var(--line);
-    border-radius: 14px; background: var(--card); text-decoration: none; color: inherit; box-shadow: var(--shadow-1); }
+    border-radius: 14px; background: var(--card); text-decoration: none; color: inherit; box-shadow: var(--shadow-1);
+    transition: box-shadow .16s ease, transform .16s ease; }
+  .demo-card:hover { box-shadow: var(--shadow-2); transform: translateY(-2px); }
   .demo-glyph { font-size: 30px; line-height: 1; flex: none; }
   .demo-name { display: block; font-weight: 700; color: var(--accent-ink); }
   .demo-desc { display: block; font-size: 13px; color: var(--ink-faint); margin-top: 2px; }
@@ -52,8 +82,13 @@
     background: var(--good-soft); color: var(--good); border-radius: 999px; padding: 4px 10px; flex: none; }
 
   /* 케이스 스터디 */
+  #cases { display: grid; gap: 14px; }
   .case { background: var(--card); border: 1px solid var(--line); border-radius: 16px;
-    padding: 20px 22px; margin-bottom: 14px; box-shadow: var(--shadow-1); display: flex; gap: 16px; }
+    padding: 20px 22px; box-shadow: var(--shadow-1); display: flex; gap: 16px;
+    animation: rise .32s ease both; transition: box-shadow .16s ease, transform .16s ease; }
+  .case:hover { box-shadow: var(--shadow-2); transform: translateY(-2px); }
+  @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  @media (prefers-reduced-motion: reduce) { .case { animation: none; } .case:hover, .demo-card:hover { transform: none; } }
   .case-icon { width: 56px; height: 56px; border-radius: 14px; flex: none; object-fit: cover;
     border: 1px solid var(--line); background: var(--card-2); }
   .case-icon.placeholder { display: flex; align-items: center; justify-content: center; font-size: 24px; }
@@ -65,9 +100,13 @@
   .case-problem b { color: var(--ink); }
   .case-stack { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px; }
   .case-tag { font-family: var(--mono); font-size: 10px; padding: 3px 8px; border-radius: 999px;
-    background: var(--card-2); color: var(--ink-dim); }
+    background: var(--card-2); color: var(--ink-dim); cursor: pointer; transition: background .12s ease, color .12s ease; }
+  .case-tag:hover { background: var(--accent-soft); color: var(--accent-ink); }
   .case-shots { margin-top: 12px; font-size: 11.5px; color: var(--ink-faint); padding: 8px 10px;
     background: var(--card-2); border-radius: 8px; border: 1px dashed var(--line); }
+
+  .empty-state { text-align: center; padding: 48px 20px; color: var(--ink-faint); font-size: 13.5px; }
+  .empty-state .glyph { font-size: 28px; margin-bottom: 8px; }
 
   /* 클로이 박 체크 */
   .chloe { background: var(--card); border: 1px solid var(--line); border-left: 3px solid var(--live);
@@ -100,6 +139,16 @@
     </div>
   </div>
 
+  <div class="explore">
+    <div class="search-box">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input id="q" type="search" placeholder="프로젝트, 문제, 기술스택으로 검색… (예: pmset, Claude API, 타이머)" autocomplete="off">
+      <span class="search-kbd">/</span>
+    </div>
+    <div class="filter-row" id="tagFilters"></div>
+  </div>
+  <p class="result-count" id="resultCount"></p>
+
   <div class="section-head"><h2>지금 바로 써볼 수 있는 데모</h2><span class="hint">Live</span></div>
   <div class="demo-row">
     <a class="demo-card" href="../apps/ox-quiz/">
@@ -118,6 +167,10 @@
 
   <div class="section-head"><h2>프로젝트</h2><span class="hint" id="caseHint">By App</span></div>
   <div id="cases"></div>
+  <div class="empty-state" id="emptyState" style="display:none">
+    <div class="glyph">🔍</div>
+    검색·필터에 걸리는 프로젝트가 없습니다. <button class="filter-clear show" id="emptyClear" style="display:inline">필터 초기화</button>
+  </div>
 
   <div class="chloe">
     <p class="role">클로이 박 · Design Lead</p>
@@ -125,7 +178,7 @@
     <ul id="chloeList"></ul>
   </div>
 
-  <footer>클로이 박 · ReleasePilot 포트폴리오 페이지 · 진행률 데이터는 <a href="../progress/" style="color:inherit">출시 현황판</a>과 공유</footer>
+  <footer>클로이 박 · ReleasePilot 포트폴리오 페이지 · 진행률 데이터는 <a href="../progress/" style="color:inherit">출시 현황판</a>과 공유 · 2026-08-10 검색·필터 탐색 UI 추가</footer>
 </div>
 
 <script>
@@ -186,26 +239,89 @@ Promise.all([
   const byslug = {};
   (progress && progress.apps || []).forEach(a => byslug[a.slug] = a);
 
+  // ── 태그 필터 목록 구성 (실제 CASES.stack에서 그대로 뽑음, 지어내지 않음) ──
+  const tagCounts = new Map();
+  CASES.forEach(c => c.stack.forEach(t => tagCounts.set(t, (tagCounts.get(t) || 0) + 1)));
+  const tags = [...tagCounts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+  const activeTags = new Set();
+
+  const tagFiltersEl = document.getElementById('tagFilters');
+  function renderTagChips() {
+    tagFiltersEl.innerHTML = tags.map(([t, n]) =>
+      `<span class="filter-chip${activeTags.has(t) ? ' on' : ''}" data-tag="${t.replace(/"/g,'&quot;')}">${t}<span class="n">${n}</span></span>`
+    ).join('') + `<button class="filter-clear${activeTags.size ? ' show' : ''}" id="clearBtn">필터 초기화</button>`;
+    tagFiltersEl.querySelectorAll('.filter-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        const t = chip.dataset.tag;
+        activeTags.has(t) ? activeTags.delete(t) : activeTags.add(t);
+        renderTagChips();
+        renderCases();
+      });
+    });
+    const clearBtn = document.getElementById('clearBtn');
+    if (clearBtn) clearBtn.addEventListener('click', () => { activeTags.clear(); renderTagChips(); renderCases(); });
+  }
+
   const wrap = document.getElementById('cases');
-  CASES.forEach(c => {
-    const p = byslug[c.slug];
-    const el = document.createElement('div');
-    el.className = 'case';
-    const iconHtml = c.hasIcon
-      ? `<img class="case-icon" src="assets/icons/${c.slug}.png" alt="${c.name} 아이콘">`
-      : `<div class="case-icon placeholder">${c.glyph || '📱'}</div>`;
-    el.innerHTML = `
-      ${iconHtml}
-      <div class="case-body">
-        <div class="case-top">
-          <span class="case-name">${c.name}</span>
-          ${p ? `<span class="case-stage">${p.stageLabel} · ${p.percentTotal}%${p.version ? ' · v' + p.version : ''}</span>` : ''}
-        </div>
-        <p class="case-problem">${c.problem}</p>
-        <div class="case-stack">${c.stack.map(s => `<span class="case-tag">${s}</span>`).join('')}</div>
-        ${c.shotNote ? `<div class="case-shots">📷 ${c.shotNote}</div>` : ''}
-      </div>`;
-    wrap.appendChild(el);
+  const emptyEl = document.getElementById('emptyState');
+  const countEl = document.getElementById('resultCount');
+  const qInput = document.getElementById('q');
+
+  function matches(c, query) {
+    const inTags = activeTags.size === 0 || c.stack.some(t => activeTags.has(t));
+    if (!inTags) return false;
+    if (!query) return true;
+    const hay = (c.name + ' ' + c.problem + ' ' + c.stack.join(' ')).toLowerCase();
+    return hay.includes(query);
+  }
+
+  function renderCases() {
+    const query = qInput.value.trim().toLowerCase();
+    const list = CASES.filter(c => matches(c, query));
+
+    wrap.innerHTML = '';
+    list.forEach(c => {
+      const p = byslug[c.slug];
+      const el = document.createElement('div');
+      el.className = 'case';
+      const iconHtml = c.hasIcon
+        ? `<img class="case-icon" src="assets/icons/${c.slug}.png" alt="${c.name} 아이콘">`
+        : `<div class="case-icon placeholder">${c.glyph || '📱'}</div>`;
+      el.innerHTML = `
+        ${iconHtml}
+        <div class="case-body">
+          <div class="case-top">
+            <span class="case-name">${c.name}</span>
+            ${p ? `<span class="case-stage">${p.stageLabel} · ${p.percentTotal}%${p.version ? ' · v' + p.version : ''}</span>` : ''}
+          </div>
+          <p class="case-problem">${c.problem}</p>
+          <div class="case-stack">${c.stack.map(s => `<span class="case-tag" data-tag="${s.replace(/"/g,'&quot;')}">${s}</span>`).join('')}</div>
+          ${c.shotNote ? `<div class="case-shots">📷 ${c.shotNote}</div>` : ''}
+        </div>`;
+      el.querySelectorAll('.case-tag').forEach(tagEl => {
+        tagEl.addEventListener('click', () => {
+          activeTags.add(tagEl.dataset.tag);
+          renderTagChips();
+          renderCases();
+        });
+      });
+      wrap.appendChild(el);
+    });
+
+    emptyEl.style.display = list.length === 0 ? '' : 'none';
+    countEl.innerHTML = query || activeTags.size
+      ? `<b>${list.length}</b>개 프로젝트 표시 중 (전체 ${CASES.length}개)`
+      : `전체 <b>${CASES.length}</b>개 프로젝트`;
+  }
+
+  renderTagChips();
+  renderCases();
+  qInput.addEventListener('input', renderCases);
+  document.getElementById('emptyClear').addEventListener('click', () => { activeTags.clear(); qInput.value = ''; renderTagChips(); renderCases(); });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === '/' && document.activeElement !== qInput) { e.preventDefault(); qInput.focus(); }
+    if (e.key === 'Escape' && document.activeElement === qInput) { qInput.value = ''; qInput.blur(); renderCases(); }
   });
 
   const chloe = document.getElementById('chloeList');
@@ -216,6 +332,7 @@ Promise.all([
     '<b>GitHub 링크가 없다</b> — 코드를 실제로 보고 싶어하는 채용 담당자가 많다. 공개 가능한 저장소(최소 ox-quiz, ReleasePilot 자체 CLI 툴)는 README 정리 후 링크를 이 페이지에 추가할 것.',
     '<b>연락처/이력서 링크가 없다</b> — 포트폴리오는 보고 끝나면 의미가 없다. 이메일 또는 이력서 PDF 링크를 hero 영역에 추가해야 실제로 "다음 행동"으로 이어진다.',
     '<b>ReleasePilot 자신을 대표작으로 더 밀 것</b> — "앱 여러 개 만듦" 나열보다, "혼자 개발하며 반복되는 문제(출시 관리·기기 간 동기화)를 도구로 직접 만들어 해결했다"는 서사가 신입/주니어 포지션에서 훨씬 강하다. 이 도구 자체의 아키텍처(git 기반 무-API 동기화, CLI-first 설계)를 기술 면접 소재로 준비해둘 것.',
+    '<b>2026-08-10 추가</b> — 검색·태그 필터 탐색 UI를 붙였다(사용자 요청: "explore 및 검색하는 재밌는 웹사이트"). 다만 탐색 기능은 콘텐츠가 없으면 의미가 없다 — 위 스크린샷·GitHub·이력서 공백을 채우는 게 여전히 우선순위 1번이다.',
   ];
   chloe.innerHTML = points.map(p => `<li>${p}</li>`).join('');
 });
