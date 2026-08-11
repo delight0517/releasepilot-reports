@@ -3,6 +3,14 @@
     "date": "2026-08-11",
     "persona": "박새로이",
     "glyph": "🔧",
+    "title": "방문자 분석(GoatCounter) 연결 — 방문자수/지역/유입경로, 검색어는 별도 콘솔 안내",
+    "detail": "요청: 들어오는 인원/지역/서치엔진 유입을 수치로 보고, 서치엔진 유입이면 검색 키워드까지 알고 싶다는 요청. 도구는 무료·쿠키 없는 GoatCounter로 확정. 검색 키워드는 GoatCounter를 포함한 어떤 분석 스크립트도 리퍼러 정책상 볼 수 없어 이미 세팅된 구글 Search Console/네이버 서치어드바이저에서만 확인 가능하다는 점을 문서에 명시(혼동 방지). 구현: 루트 analytics-config.js 신설(사이트 코드 값을 한 곳에서만 관리, YOUR_CODE placeholder일 때는 count.js 요청 자체를 보내지 않도록 가드해 조용한 404 대신 완전한 no-op으로 처리) → 공개 페이지 전체(index/about/articles/connect-survey/dev-portfolio/downloads/portfolio/progress/worklog/apps/gallery/apps/ox-quiz/apps/balance-game, 총 12개, git으로 실재 확인)에 상대경로로 로드 스크립트 삽입. about/index.html CONTACT 블록에 '방문 통계 보기' 링크 추가 — GOATCOUNTER_CODE가 placeholder면 자동으로 비활성 표시, 실제 코드 세팅 후엔 공개 대시보드로 연결. docs/goatcounter_setup_walkthrough.md 신규(네이버/구글 walkthrough와 같은 예나 톤, 가입→사이트코드→Public 토글→analytics-config.js 값 교체→커밋/push 5단계 + '검색어는 여기서 안 보여요' 전용 섹션에서 기존 두 문서로 링크). 로컬 python http.server로 12개 페이지 전부 렌더링·콘솔 에러 없음, analytics-config.js가 placeholder 상태에서 조용히 no-op하는 것 확인. 커밋까지만, push는 승인 대기(구조적 변경).",
+    "link": "../about/"
+  },
+  {
+    "date": "2026-08-11",
+    "persona": "박새로이",
+    "glyph": "🔧",
     "title": "네이버 검색 노출 세팅 — robots.txt/sitemap.xml/OG 태그/검증 placeholder",
     "detail": "웹 명함(about/index.html)이 네이버 검색에 뜨게 해달라는 요청 처리. robots.txt 신설(모든 크롤러 + 네이버 Yeti 허용, sitemap.xml 위치 명시), sitemap.xml 신설(루트/about/portfolio/apps/gallery/dev-portfolio/progress/articles/worklog 8개 공개 페이지, lastmod는 각 파일 git 마지막 커밋 날짜 기준). about/index.html·index.html <head>에 Open Graph(og:title/description/image/url/type)·Twitter Card 메타 태그 추가(about는 기존 프로필 사진 URL 재사용, 새 이미지 파일 생성 없음), 둘 다에 <meta name=\"naver-site-verification\" content=\"여기에_나중에_채울_값\"> placeholder 추가(실제 값은 rogan님이 https://searchadvisor.naver.com 에 본인 네이버 계정으로 로그인해 사이트 등록해야만 발급됨 — 로그인 필요한 수동 단계라 대신 할 수 없음). docs/naver_search_setup_walkthrough.md 신규(과거 firebase_setup_walkthrough.md와 같은 톤 — 터미널 몰라도 되는 한국어 단계별: 사이트 등록→HTML 태그 검증값 붙여넣기→커밋/push→소유확인→사이트맵 제출→웹페이지 수집 요청). 로컬 python http.server로 about/index.html·index.html 렌더링 및 sitemap.xml/robots.txt 유효성(XML 파싱 에러 없음) 확인. 커밋까지만, push는 승인 대기.",
     "link": "../about/"

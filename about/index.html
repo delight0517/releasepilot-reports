@@ -346,6 +346,10 @@
         <div><div class="name">이메일</div><div class="desc">delight0517@hongik.ac.kr</div></div>
         <span class="arrow">↗</span>
       </a>
+      <a class="link" id="statsLink" href="#" target="_blank" rel="noopener">
+        <div><div class="name">방문 통계 보기</div><div class="desc">GoatCounter 공개 대시보드(방문자 수·지역·유입경로)</div></div>
+        <span class="arrow">↗</span>
+      </a>
     </div>
   </section>
 
@@ -426,6 +430,22 @@
       });
     })
     .catch((e) => console.error("photo preview fetch failed", e));
+</script>
+<!-- 방문자 분석(GoatCounter, 쿠키 없음) — 실제 코드값은 ../analytics-config.js 한 곳에서만 관리 -->
+<script src="../analytics-config.js"></script>
+<script>
+  (function () {
+    var el = document.getElementById("statsLink");
+    if (!el) return;
+    var code = window.GOATCOUNTER_CODE;
+    if (!code || code === "YOUR_CODE") {
+      el.style.opacity = "0.5";
+      el.style.pointerEvents = "none";
+      el.querySelector(".desc").textContent = "아직 세팅 전(docs/goatcounter_setup_walkthrough.md 참고)";
+      return;
+    }
+    el.href = "https://" + code + ".goatcounter.com";
+  })();
 </script>
 </body>
 </html>
