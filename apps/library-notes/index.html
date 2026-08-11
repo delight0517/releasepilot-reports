@@ -4,28 +4,62 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>자료실</title>
-<meta name="description" content="노션처럼 폴더 안에 폴더를 넣어 취업/알바 자료를 정리하는 개인 자료실" />
+<meta name="description" content="노션처럼 폴더 안에 폴더를 넣어 자료를 정리하는 자료실 — 유저명+PIN으로 어디서든 접근 가능" />
 <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header>
-    <div id="breadcrumb" class="breadcrumb"></div>
-    <div class="header-actions">
-      <button id="btn-import" class="icon-btn" title="가져오기">📥</button>
-      <button id="btn-export" class="icon-btn" title="내보내기">📤</button>
+  <section id="screen-login">
+    <div class="login-card">
+      <h1>🗂️ 자료실</h1>
+      <p class="hint">유저명 + 4자리 PIN만으로 이용합니다. 처음 쓰는 유저명이면 그 자리에서 새 계정이 만들어지고, 다음에 올 때 같은 유저명+PIN을 입력하면 이어서 볼 수 있습니다.</p>
+      <label for="login-username-input">유저명</label>
+      <input id="login-username-input" type="text" placeholder="한/영/숫자, 2~24자" maxlength="24" autocomplete="username" />
+      <label for="login-pin-input">PIN (숫자 4자리)</label>
+      <input id="login-pin-input" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="••••" autocomplete="current-password" />
+      <button id="btn-login" class="primary-btn full-width">시작하기</button>
+      <p id="login-status" class="hint error"></p>
+      <p class="hint faint">⚠️ 임시 자료실입니다 — PIN 4자리라 보안이 강하지 않습니다. 민감한 정보는 저장하지 마세요. PIN을 잊으면 그 유저명은 되찾을 방법이 없습니다.</p>
     </div>
-    <input id="import-file-input" type="file" accept="application/json" style="display:none" />
-  </header>
+  </section>
 
-  <p class="hint device-hint">이 기기(브라우저)에만 저장됩니다. 다른 기기로 옮기려면 📤 내보내기 → 다른 기기에서 📥 가져오기.</p>
+  <section id="screen-app" style="display:none">
+    <header>
+      <div id="breadcrumb" class="breadcrumb"></div>
+      <div class="header-actions">
+        <span id="account-badge" class="account-badge"></span>
+        <button id="btn-import" class="icon-btn" title="가져오기">📥</button>
+        <button id="btn-export" class="icon-btn" title="내보내기">📤</button>
+        <button id="btn-logout" class="icon-btn" title="로그아웃">🚪</button>
+      </div>
+      <input id="import-file-input" type="file" accept="application/json" style="display:none" />
+    </header>
 
-  <main>
-    <div id="browser-list" class="browser-list"></div>
-  </main>
+    <p id="sync-status" class="hint sync-status"></p>
 
-  <div class="fab-row">
-    <button id="btn-add-folder" class="fab secondary">📁＋</button>
-    <button id="btn-add-document" class="fab primary" style="display:none">📄＋</button>
+    <main>
+      <div id="browser-list" class="browser-list"></div>
+    </main>
+
+    <div class="fab-row">
+      <button id="btn-add-folder" class="fab secondary">📁＋</button>
+      <button id="btn-add-document" class="fab primary" style="display:none">📄＋</button>
+    </div>
+  </section>
+
+  <!-- 읽기 화면 — 기본 진입점. 편집 화면과 분리해서 폰트 크게/전체화면으로 편하게 읽게 한다. -->
+  <div id="screen-read" class="fullscreen-modal" style="display:none">
+    <div class="read-header">
+      <button id="btn-read-close" class="icon-btn" title="닫기">✕</button>
+      <div class="font-size-controls">
+        <button id="btn-font-smaller" class="icon-btn" title="글자 작게">A-</button>
+        <button id="btn-font-bigger" class="icon-btn" title="글자 크게">A+</button>
+      </div>
+      <button id="btn-read-edit" class="secondary-btn">✏️ 편집</button>
+    </div>
+    <div class="read-body">
+      <h2 id="read-title"></h2>
+      <div id="read-content" class="read-content"></div>
+    </div>
   </div>
 
   <div id="modal-editor" class="modal" style="display:none">
