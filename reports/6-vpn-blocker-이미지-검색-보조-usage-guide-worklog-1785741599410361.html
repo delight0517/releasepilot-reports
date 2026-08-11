@@ -49,7 +49,74 @@
   <p class="sub">사용법 기획서(핵심 흐름·작업 일지·TODO) — LaunchPad에서 자동 생성</p>
   <div class="meta-row"><span class="meta-chip">v1.0.0</span><span class="meta-chip">개정판 1</span></div>
 </div><section>
-  <div class="section-label"><span class="num">01</span><h2>개요 — 이 프로젝트는 무엇인가</h2></div>
+  <style>
+  .report-toc { position: sticky; top: 0; z-index: 20; background: var(--parchment-card, var(--bg, #fff));
+    border: 1px solid var(--line, #e5e0d5); border-radius: 10px; margin: 0 0 20px; padding: 10px 14px; }
+  .report-toc-toggle { display: none; }
+  .report-toc-list { display: flex; flex-wrap: wrap; gap: 6px; }
+  .report-toc-list a { font-size: 11px; font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    padding: 5px 10px; border-radius: 999px; border: 1px solid var(--line, #e5e0d5);
+    color: var(--text-soft, #6b6a5f); text-decoration: none; white-space: nowrap; }
+  .report-toc-list a.active { background: var(--accent-strong, #c9711f); color: #fff; border-color: transparent; }
+  .report-to-top { position: fixed; right: 18px; bottom: 18px; z-index: 20; display: none;
+    width: 40px; height: 40px; border-radius: 50%; align-items: center; justify-content: center;
+    background: var(--accent-strong, #c9711f); color: #fff; text-decoration: none; font-size: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2); border: none; cursor: pointer; }
+  @media (max-width: 700px) {
+    .report-toc-list { max-height: 0; overflow: hidden; transition: max-height .2s ease; width: 100%; }
+    .report-toc.open .report-toc-list { max-height: 400px; overflow-y: auto; }
+    .report-toc-toggle { display: block; font-size: 12px; font-family: ui-monospace, monospace;
+      background: none; border: 1px solid var(--line, #e5e0d5); border-radius: 999px; padding: 5px 12px;
+      color: var(--text-soft, #6b6a5f); cursor: pointer; }
+  }
+</style>
+<nav class="report-toc" id="report-toc">
+  <button class="report-toc-toggle" id="report-toc-toggle" type="button">☰ 목차</button>
+  <div class="report-toc-list" id="report-toc-list"></div>
+</nav>
+<button class="report-to-top" id="report-to-top" type="button" title="맨 위로">↑</button>
+<script>
+(function () {
+  var toc = document.getElementById('report-toc-list');
+  var sections = document.querySelectorAll('.section-label');
+  if (!toc || !sections.length) return;
+  sections.forEach(function (sec, i) {
+    var num = sec.querySelector('.num');
+    var h2 = sec.querySelector('h2');
+    if (!h2) return;
+    var id = 'toc-section-' + (i + 1);
+    sec.id = id;
+    var a = document.createElement('a');
+    a.href = '#' + id;
+    a.textContent = (num ? num.textContent.trim() + '. ' : '') + h2.textContent.trim();
+    toc.appendChild(a);
+  });
+  var links = toc.querySelectorAll('a');
+  if ('IntersectionObserver' in window) {
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          links.forEach(function (l) { l.classList.remove('active'); });
+          var link = toc.querySelector('a[href="#' + entry.target.id + '"]');
+          if (link) link.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-10% 0px -75% 0px' });
+    sections.forEach(function (s) { obs.observe(s); });
+  }
+  var toTop = document.getElementById('report-to-top');
+  window.addEventListener('scroll', function () {
+    toTop.style.display = window.scrollY > 500 ? 'flex' : 'none';
+  });
+  toTop.onclick = function () { window.scrollTo({ top: 0, behavior: 'smooth' }); };
+  var toggleBtn = document.getElementById('report-toc-toggle');
+  if (toggleBtn) {
+    toggleBtn.onclick = function () { document.getElementById('report-toc').classList.toggle('open'); };
+  }
+})();
+</script>
+
+<div class="section-label"><span class="num">01</span><h2>개요 — 이 프로젝트는 무엇인가</h2></div>
   <div class="card"><p class="ug-desc">6 VPN Blocker — 이미지·검색 보조 (Chrome 확장) — LaunchPad에서 "Chrome 확장 트랙" 출시 트랙으로 관리 중입니다.</p><p class="ug-desc">이미지 숨김 + Google/YouTube 검색 결과 정밀 필터 (6 VPN Blocker 앱·스케줄 연동).</p><p class="ug-desc">프로젝트 경로: C:\Users\delig\Desktop\app dev\6VPN_Image_Blocker\mobile\assets\browser_extensions\chrome</p></div>
 </section><section>
   <div class="section-label"><span class="num">02</span><h2>LaunchPad 진행 현황</h2></div>

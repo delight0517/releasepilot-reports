@@ -78,7 +78,74 @@
     <a class="linktree-button" href="https://linktr.ee/rogankimwashere" target="_blank" rel="noopener noreferrer">https://linktr.ee/rogankimwashere</a>
   </div>
 </div><section>
-  <div class="section-label"><span class="num">01</span><h2>VIVID 브랜딩 · 3줄 요약</h2></div>
+  <style>
+  .report-toc { position: sticky; top: 0; z-index: 20; background: var(--parchment-card, var(--bg, #fff));
+    border: 1px solid var(--line, #e5e0d5); border-radius: 10px; margin: 0 0 20px; padding: 10px 14px; }
+  .report-toc-toggle { display: none; }
+  .report-toc-list { display: flex; flex-wrap: wrap; gap: 6px; }
+  .report-toc-list a { font-size: 11px; font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    padding: 5px 10px; border-radius: 999px; border: 1px solid var(--line, #e5e0d5);
+    color: var(--text-soft, #6b6a5f); text-decoration: none; white-space: nowrap; }
+  .report-toc-list a.active { background: var(--accent-strong, #c9711f); color: #fff; border-color: transparent; }
+  .report-to-top { position: fixed; right: 18px; bottom: 18px; z-index: 20; display: none;
+    width: 40px; height: 40px; border-radius: 50%; align-items: center; justify-content: center;
+    background: var(--accent-strong, #c9711f); color: #fff; text-decoration: none; font-size: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2); border: none; cursor: pointer; }
+  @media (max-width: 700px) {
+    .report-toc-list { max-height: 0; overflow: hidden; transition: max-height .2s ease; width: 100%; }
+    .report-toc.open .report-toc-list { max-height: 400px; overflow-y: auto; }
+    .report-toc-toggle { display: block; font-size: 12px; font-family: ui-monospace, monospace;
+      background: none; border: 1px solid var(--line, #e5e0d5); border-radius: 999px; padding: 5px 12px;
+      color: var(--text-soft, #6b6a5f); cursor: pointer; }
+  }
+</style>
+<nav class="report-toc" id="report-toc">
+  <button class="report-toc-toggle" id="report-toc-toggle" type="button">☰ 목차</button>
+  <div class="report-toc-list" id="report-toc-list"></div>
+</nav>
+<button class="report-to-top" id="report-to-top" type="button" title="맨 위로">↑</button>
+<script>
+(function () {
+  var toc = document.getElementById('report-toc-list');
+  var sections = document.querySelectorAll('.section-label');
+  if (!toc || !sections.length) return;
+  sections.forEach(function (sec, i) {
+    var num = sec.querySelector('.num');
+    var h2 = sec.querySelector('h2');
+    if (!h2) return;
+    var id = 'toc-section-' + (i + 1);
+    sec.id = id;
+    var a = document.createElement('a');
+    a.href = '#' + id;
+    a.textContent = (num ? num.textContent.trim() + '. ' : '') + h2.textContent.trim();
+    toc.appendChild(a);
+  });
+  var links = toc.querySelectorAll('a');
+  if ('IntersectionObserver' in window) {
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          links.forEach(function (l) { l.classList.remove('active'); });
+          var link = toc.querySelector('a[href="#' + entry.target.id + '"]');
+          if (link) link.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-10% 0px -75% 0px' });
+    sections.forEach(function (s) { obs.observe(s); });
+  }
+  var toTop = document.getElementById('report-to-top');
+  window.addEventListener('scroll', function () {
+    toTop.style.display = window.scrollY > 500 ? 'flex' : 'none';
+  });
+  toTop.onclick = function () { window.scrollTo({ top: 0, behavior: 'smooth' }); };
+  var toggleBtn = document.getElementById('report-toc-toggle');
+  if (toggleBtn) {
+    toggleBtn.onclick = function () { document.getElementById('report-toc').classList.toggle('open'); };
+  }
+})();
+</script>
+
+<div class="section-label"><span class="num">01</span><h2>VIVID 브랜딩 · 3줄 요약</h2></div>
   <div class="card"><div class="review-scoreline"><div><span class="n fail">2</span><span class="lbl">반려</span></div><div><span class="n pass">1</span><span class="lbl">통과</span></div><div><span class="n fail" style="color:var(--text-faint)">1</span><span class="lbl">보류</span></div></div><div class="review-row"><div class="review-badge fail">✕</div><div class="review-body"><p class="review-title">명함</p><p class="review-detail">존재 안 함. "about/ 연동 QR 프로필"로 정의만 확정.</p></div></div><div class="review-row"><div class="review-badge fail">✕</div><div class="review-body"><p class="review-title">연락처 노출</p><p class="review-detail">about/에 실제 전화·이메일 그대로 노출. 사용자 직접 수정 예정.</p></div></div><div class="review-row"><div class="review-badge pass">✓</div><div class="review-body"><p class="review-title">반응형</p><p class="review-detail">375/768/1280px 실측 — 가로 스크롤 없음.</p></div></div><div class="review-row"><div class="review-badge hold">!</div><div class="review-body"><p class="review-title">개발자명 일관성</p><p class="review-detail">about/ 안은 일관됨. 스토어 대조는 접근권한 없어 보류.</p></div></div></div>
 </section><section>
   <div class="section-label"><span class="num">02</span><h2>dev-portfolio 탐색 UI · 3줄 요약</h2></div>

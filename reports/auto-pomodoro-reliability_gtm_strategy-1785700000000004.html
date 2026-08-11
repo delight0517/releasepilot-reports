@@ -119,7 +119,74 @@
   </div>
 
   <section>
-    <div class="section-label"><span class="num">00</span><h2>이 리포트가 새로 생긴 이유</h2></div>
+    <style>
+  .report-toc { position: sticky; top: 0; z-index: 20; background: var(--parchment-card, var(--bg, #fff));
+    border: 1px solid var(--line, #e5e0d5); border-radius: 10px; margin: 0 0 20px; padding: 10px 14px; }
+  .report-toc-toggle { display: none; }
+  .report-toc-list { display: flex; flex-wrap: wrap; gap: 6px; }
+  .report-toc-list a { font-size: 11px; font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    padding: 5px 10px; border-radius: 999px; border: 1px solid var(--line, #e5e0d5);
+    color: var(--text-soft, #6b6a5f); text-decoration: none; white-space: nowrap; }
+  .report-toc-list a.active { background: var(--accent-strong, #c9711f); color: #fff; border-color: transparent; }
+  .report-to-top { position: fixed; right: 18px; bottom: 18px; z-index: 20; display: none;
+    width: 40px; height: 40px; border-radius: 50%; align-items: center; justify-content: center;
+    background: var(--accent-strong, #c9711f); color: #fff; text-decoration: none; font-size: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2); border: none; cursor: pointer; }
+  @media (max-width: 700px) {
+    .report-toc-list { max-height: 0; overflow: hidden; transition: max-height .2s ease; width: 100%; }
+    .report-toc.open .report-toc-list { max-height: 400px; overflow-y: auto; }
+    .report-toc-toggle { display: block; font-size: 12px; font-family: ui-monospace, monospace;
+      background: none; border: 1px solid var(--line, #e5e0d5); border-radius: 999px; padding: 5px 12px;
+      color: var(--text-soft, #6b6a5f); cursor: pointer; }
+  }
+</style>
+<nav class="report-toc" id="report-toc">
+  <button class="report-toc-toggle" id="report-toc-toggle" type="button">☰ 목차</button>
+  <div class="report-toc-list" id="report-toc-list"></div>
+</nav>
+<button class="report-to-top" id="report-to-top" type="button" title="맨 위로">↑</button>
+<script>
+(function () {
+  var toc = document.getElementById('report-toc-list');
+  var sections = document.querySelectorAll('.section-label');
+  if (!toc || !sections.length) return;
+  sections.forEach(function (sec, i) {
+    var num = sec.querySelector('.num');
+    var h2 = sec.querySelector('h2');
+    if (!h2) return;
+    var id = 'toc-section-' + (i + 1);
+    sec.id = id;
+    var a = document.createElement('a');
+    a.href = '#' + id;
+    a.textContent = (num ? num.textContent.trim() + '. ' : '') + h2.textContent.trim();
+    toc.appendChild(a);
+  });
+  var links = toc.querySelectorAll('a');
+  if ('IntersectionObserver' in window) {
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          links.forEach(function (l) { l.classList.remove('active'); });
+          var link = toc.querySelector('a[href="#' + entry.target.id + '"]');
+          if (link) link.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-10% 0px -75% 0px' });
+    sections.forEach(function (s) { obs.observe(s); });
+  }
+  var toTop = document.getElementById('report-to-top');
+  window.addEventListener('scroll', function () {
+    toTop.style.display = window.scrollY > 500 ? 'flex' : 'none';
+  });
+  toTop.onclick = function () { window.scrollTo({ top: 0, behavior: 'smooth' }); };
+  var toggleBtn = document.getElementById('report-toc-toggle');
+  if (toggleBtn) {
+    toggleBtn.onclick = function () { document.getElementById('report-toc').classList.toggle('open'); };
+  }
+})();
+</script>
+
+<div class="section-label"><span class="num">00</span><h2>이 리포트가 새로 생긴 이유</h2></div>
     <div class="card">
       <p class="caveat" style="margin-top:0;">같은 날(2026-08-05) 먼저 나온 <code>region_target_ctr</code> 리포트가 이 앱을 "Mac/Windows 겸용 생산성 툴"로 잘못 포지셔닝했다는 걸 개발자가 지적(2026-08-06): "포모도로 타이머의 중점은 자동 타이머 시작을 통해서 재택 근무 및 일을 하는 이들이 적절히 반 강제적으로 쉴 수 있도록 하는 그러한 앱이라는 점을 리포트에서 전혀 반영되지 않았고, 이상한 곳에 포인트를 두고 있더라." 원인은 그 리포트가 <code>TODO.md</code>/git log(최근 무엇을 고쳤는지)만 근거로 삼고 "왜 만들었는지"는 확인하지 않은 것 — 코드 근거(<code>forcedModeEnabled</code> 주석: "포모도로를 매번 꺼버리는 사람을 위한 기능")와 개발자 확인을 반영해 <code>PRODUCT_INTENT.md</code>를 신설했고, 이 리포트는 그 문서를 기준으로 처음부터 다시 썼다. 재발 방지책으로 이런 리포트를 쓰기 전엔 항상 그 문서를 먼저 확인하도록 프로젝트 규칙에도 반영했다.</p>
     </div>

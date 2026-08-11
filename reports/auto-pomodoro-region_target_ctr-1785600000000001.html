@@ -126,7 +126,74 @@
   </div>
 
   <section>
-    <div class="section-label"><span class="num">01</span><h2>두 개의 서로 다른 사용자 층</h2></div>
+    <style>
+  .report-toc { position: sticky; top: 0; z-index: 20; background: var(--parchment-card, var(--bg, #fff));
+    border: 1px solid var(--line, #e5e0d5); border-radius: 10px; margin: 0 0 20px; padding: 10px 14px; }
+  .report-toc-toggle { display: none; }
+  .report-toc-list { display: flex; flex-wrap: wrap; gap: 6px; }
+  .report-toc-list a { font-size: 11px; font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    padding: 5px 10px; border-radius: 999px; border: 1px solid var(--line, #e5e0d5);
+    color: var(--text-soft, #6b6a5f); text-decoration: none; white-space: nowrap; }
+  .report-toc-list a.active { background: var(--accent-strong, #c9711f); color: #fff; border-color: transparent; }
+  .report-to-top { position: fixed; right: 18px; bottom: 18px; z-index: 20; display: none;
+    width: 40px; height: 40px; border-radius: 50%; align-items: center; justify-content: center;
+    background: var(--accent-strong, #c9711f); color: #fff; text-decoration: none; font-size: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2); border: none; cursor: pointer; }
+  @media (max-width: 700px) {
+    .report-toc-list { max-height: 0; overflow: hidden; transition: max-height .2s ease; width: 100%; }
+    .report-toc.open .report-toc-list { max-height: 400px; overflow-y: auto; }
+    .report-toc-toggle { display: block; font-size: 12px; font-family: ui-monospace, monospace;
+      background: none; border: 1px solid var(--line, #e5e0d5); border-radius: 999px; padding: 5px 12px;
+      color: var(--text-soft, #6b6a5f); cursor: pointer; }
+  }
+</style>
+<nav class="report-toc" id="report-toc">
+  <button class="report-toc-toggle" id="report-toc-toggle" type="button">☰ 목차</button>
+  <div class="report-toc-list" id="report-toc-list"></div>
+</nav>
+<button class="report-to-top" id="report-to-top" type="button" title="맨 위로">↑</button>
+<script>
+(function () {
+  var toc = document.getElementById('report-toc-list');
+  var sections = document.querySelectorAll('.section-label');
+  if (!toc || !sections.length) return;
+  sections.forEach(function (sec, i) {
+    var num = sec.querySelector('.num');
+    var h2 = sec.querySelector('h2');
+    if (!h2) return;
+    var id = 'toc-section-' + (i + 1);
+    sec.id = id;
+    var a = document.createElement('a');
+    a.href = '#' + id;
+    a.textContent = (num ? num.textContent.trim() + '. ' : '') + h2.textContent.trim();
+    toc.appendChild(a);
+  });
+  var links = toc.querySelectorAll('a');
+  if ('IntersectionObserver' in window) {
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          links.forEach(function (l) { l.classList.remove('active'); });
+          var link = toc.querySelector('a[href="#' + entry.target.id + '"]');
+          if (link) link.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-10% 0px -75% 0px' });
+    sections.forEach(function (s) { obs.observe(s); });
+  }
+  var toTop = document.getElementById('report-to-top');
+  window.addEventListener('scroll', function () {
+    toTop.style.display = window.scrollY > 500 ? 'flex' : 'none';
+  });
+  toTop.onclick = function () { window.scrollTo({ top: 0, behavior: 'smooth' }); };
+  var toggleBtn = document.getElementById('report-toc-toggle');
+  if (toggleBtn) {
+    toggleBtn.onclick = function () { document.getElementById('report-toc').classList.toggle('open'); };
+  }
+})();
+</script>
+
+<div class="section-label"><span class="num">01</span><h2>두 개의 서로 다른 사용자 층</h2></div>
     <div class="card">
       <p class="thesis">이 앱은 사실 <em>두 가지 완전히 다른 타겟</em>에 동시에 맞을 수 있는 드문 케이스다 — (A) Mac/Windows를 오가며 일하는 <em>하이브리드 지식노동자</em>와 (B) 이미 포모도로 타이머를 일상적으로 쓰는 <em>수험생·학생</em>. 코드상 시간대별 자동 집중/휴식 길이, 화면 잠금 강제, 크로스 디바이스 동기화 같은 기능은 A쪽(엄격한 자기관리가 필요한 직장인)에 더 맞지만, 포모도로라는 형식 자체의 실제 대중 수요는 B쪽에서 이미 검증돼 있다.</p>
 

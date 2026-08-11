@@ -59,7 +59,74 @@
     <a class="linktree-button" href="https://linktr.ee/rogankimwashere" target="_blank" rel="noopener noreferrer">https://linktr.ee/rogankimwashere</a>
   </div>
 </div><section>
-  <div class="section-label"><span class="num">01</span><h2>검토 요약 (0/3 통과, 2026-08-10)</h2></div>
+  <style>
+  .report-toc { position: sticky; top: 0; z-index: 20; background: var(--parchment-card, var(--bg, #fff));
+    border: 1px solid var(--line, #e5e0d5); border-radius: 10px; margin: 0 0 20px; padding: 10px 14px; }
+  .report-toc-toggle { display: none; }
+  .report-toc-list { display: flex; flex-wrap: wrap; gap: 6px; }
+  .report-toc-list a { font-size: 11px; font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    padding: 5px 10px; border-radius: 999px; border: 1px solid var(--line, #e5e0d5);
+    color: var(--text-soft, #6b6a5f); text-decoration: none; white-space: nowrap; }
+  .report-toc-list a.active { background: var(--accent-strong, #c9711f); color: #fff; border-color: transparent; }
+  .report-to-top { position: fixed; right: 18px; bottom: 18px; z-index: 20; display: none;
+    width: 40px; height: 40px; border-radius: 50%; align-items: center; justify-content: center;
+    background: var(--accent-strong, #c9711f); color: #fff; text-decoration: none; font-size: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2); border: none; cursor: pointer; }
+  @media (max-width: 700px) {
+    .report-toc-list { max-height: 0; overflow: hidden; transition: max-height .2s ease; width: 100%; }
+    .report-toc.open .report-toc-list { max-height: 400px; overflow-y: auto; }
+    .report-toc-toggle { display: block; font-size: 12px; font-family: ui-monospace, monospace;
+      background: none; border: 1px solid var(--line, #e5e0d5); border-radius: 999px; padding: 5px 12px;
+      color: var(--text-soft, #6b6a5f); cursor: pointer; }
+  }
+</style>
+<nav class="report-toc" id="report-toc">
+  <button class="report-toc-toggle" id="report-toc-toggle" type="button">☰ 목차</button>
+  <div class="report-toc-list" id="report-toc-list"></div>
+</nav>
+<button class="report-to-top" id="report-to-top" type="button" title="맨 위로">↑</button>
+<script>
+(function () {
+  var toc = document.getElementById('report-toc-list');
+  var sections = document.querySelectorAll('.section-label');
+  if (!toc || !sections.length) return;
+  sections.forEach(function (sec, i) {
+    var num = sec.querySelector('.num');
+    var h2 = sec.querySelector('h2');
+    if (!h2) return;
+    var id = 'toc-section-' + (i + 1);
+    sec.id = id;
+    var a = document.createElement('a');
+    a.href = '#' + id;
+    a.textContent = (num ? num.textContent.trim() + '. ' : '') + h2.textContent.trim();
+    toc.appendChild(a);
+  });
+  var links = toc.querySelectorAll('a');
+  if ('IntersectionObserver' in window) {
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          links.forEach(function (l) { l.classList.remove('active'); });
+          var link = toc.querySelector('a[href="#' + entry.target.id + '"]');
+          if (link) link.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-10% 0px -75% 0px' });
+    sections.forEach(function (s) { obs.observe(s); });
+  }
+  var toTop = document.getElementById('report-to-top');
+  window.addEventListener('scroll', function () {
+    toTop.style.display = window.scrollY > 500 ? 'flex' : 'none';
+  });
+  toTop.onclick = function () { window.scrollTo({ top: 0, behavior: 'smooth' }); };
+  var toggleBtn = document.getElementById('report-toc-toggle');
+  if (toggleBtn) {
+    toggleBtn.onclick = function () { document.getElementById('report-toc').classList.toggle('open'); };
+  }
+})();
+</script>
+
+<div class="section-label"><span class="num">01</span><h2>검토 요약 (0/3 통과, 2026-08-10)</h2></div>
   <div class="card"><p class="ug-desc">클로이 박이 VIVID 개인 브랜딩 자산(포트폴리오 웹, 명함, 개발자명 일관성, 반응형 비율)을 검토했습니다. 격려가 아니라 진단입니다.</p><ul class="ug-plain-list"><li>❌ 포트폴리오 웹 — about/ CONTACT 섹션에 실제 휴대폰 번호·학교 이메일 노출 확인. 사용자 확인 후 보류(직접 수정 예정, 클로이 박 추가 조치 없음).</li><li>❌ 명함 디자인 — 정의를 "about/로 연결되는 디지털 프로필 카드/QR"로 확정(2026-08-10, 이전엔 미정의). 파일시스템 전체 검색 결과 0건 — 시작 전.</li><li>✅ 모바일/데스크탑 반응형 비율 — 375px(모바일)/768px(태블릿)/1280px(데스크탑) 3개 뷰포트에서 허브 루트(/)와 about/ 페이지 실측. 페이지 레벨 가로 스크롤 없음(docScrollWidth ≤ viewport 전 구간). 허브의 '앱별로 보기'·'어떻게 이어지나' 캐러셀은 overflow-x:auto + flex-wrap:nowrap로 의도된 가로 스크롤(버그 아님). 통과.</li><li>⬜ 개발자명 일관성 — about/ 안에서는 "김근후"로 일관됨(title/메타/h1/footer/CONTACT 전부 확인). "노드"(브런치 필명)·"Kaito Ren"(ArtStation 필명)은 개발자명이 아니라 실제 외부 플랫폼 계정 자체의 필명이라 대상에서 제외. 실제 스토어(Chrome 웹스토어/Partner Center) 게시자명과의 대조는 접근 권한이 없어 계속 보류.</li></ul></div>
 </section><section>
   <div class="section-label"><span class="num">02</span><h2>반응형 실측 데이터</h2></div>
