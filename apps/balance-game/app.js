@@ -12,6 +12,12 @@ const NICKNAME_STORAGE_KEY = "balanceArtRef_nickname";
 const CACHE_PREFIX = "balanceArtRef_cache_";
 const MODEL = "claude-sonnet-5";
 
+// 실제로 배포된 수집 서버 — 방문자가 ⚙️ 설정에서 직접 Worker URL을 입력할 필요가
+// 없도록 기본값으로 박아둔다(2026-08-11 전까지는 빈 값이라 "제출하기"가 아무도
+// 모르게 항상 실패했었음 — 이 기본값이 그 버그의 실제 수정이다). 설정 칸은
+// 다른 배포본을 테스트하고 싶을 때를 위해 남겨두되, 비워두면 이 기본값을 쓴다.
+const DEFAULT_COLLECTOR_URL = "https://balance-game-survey-collector.PLACEHOLDER.workers.dev";
+
 let currentMode = null;
 let flatQuestions = [];
 let currentIndex = 0;
@@ -34,7 +40,8 @@ function setApiKey(key) {
 }
 
 function getCollectorUrl() {
-  return (localStorage.getItem(COLLECTOR_URL_STORAGE_KEY) || "").replace(/\/$/, "");
+  const stored = localStorage.getItem(COLLECTOR_URL_STORAGE_KEY);
+  return (stored && stored.trim() ? stored : DEFAULT_COLLECTOR_URL).replace(/\/$/, "");
 }
 function setCollectorUrl(url) {
   localStorage.setItem(COLLECTOR_URL_STORAGE_KEY, url.trim());
@@ -551,8 +558,11 @@ function clearAllCache() {
 
 async function submitToCollector() {
   const collectorUrl = getCollectorUrl();
-  if (!collectorUrl) {
-    el("submit-status").textContent = "⚠️ 설정에서 응답 수집 서버 URL을 먼저 등록해주세요.";
+  if (collectorUrl.includes("PLACEHOLDER")) {
+    // 수집 서버 배포 전 임시 상태(2026-08-11) — 방문자에게 설정 탓을 하지
+    // 않는다, 방문자가 고칠 수 있는 게 아니므로. 배포되면 DEFAULT_COLLECTOR_URL만
+    // 실제 주소로 바꾸면 이 분기는 저절로 안 타게 된다.
+    el("submit-status").textContent = "🚧 수집 서버 준비 중입니다 — 조금 있다가 다시 시도해주세요!";
     return;
   }
   el("submit-status").textContent = "제출하는 중...";
@@ -571,7 +581,7 @@ async function submitToCollector() {
       const body = await res.json().catch(() => ({}));
       throw new Error(body.error || `제출 실패 (${res.status})`);
     }
-    el("submit-status").textContent = "✅ 제출 완료! 참여해주셔서 감사합니다.";
+    el("submit-status").textContent = "✅ 제출 완료! 참여해주셔서 감사합니다 — 결과는 모아서 정리한 뒤 공유드릴게요.";
   } catch (e) {
     el("submit-status").textContent = `❌ ${e.message}`;
   }
