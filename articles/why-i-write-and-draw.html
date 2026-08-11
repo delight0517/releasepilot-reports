@@ -1,0 +1,166 @@
+<!doctype html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>고덕역에서, 내가 글과 그림을 그리는 이유 · 리포트 허브</title>
+<meta name="description" content="게임과 웹툰이 물들여온 색을 알아채고, 그것을 내려놓기로 한 어느 하루에 대한 개인 에세이">
+<link rel="icon" href="../icons/icon-192.png">
+<meta name="theme-color" content="#fbfaf7">
+<style>
+  :root {
+    --bg: #fbfaf7; --card: #ffffff; --card-2: #f6f3ec; --line: #e9e3d6;
+    --ink: #1d1b17; --ink-dim: #6b6a5f; --ink-faint: #a3a091;
+    --accent: #c9711f; --accent-soft: #f6e6d3; --accent-ink: #7a4413;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Noto Serif KR", serif;
+    --sans: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  }
+  * { box-sizing: border-box; overflow-wrap: break-word; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans);
+    line-height: 1.75; -webkit-font-smoothing: antialiased;
+  }
+  .page { max-width: 620px; margin: 0 auto; padding: 0 0 80px; }
+  .back-link {
+    display: inline-block; margin: 16px 0 0 18px; font-family: var(--mono);
+    font-size: 10.5px; color: var(--ink-faint); text-decoration: none;
+  }
+  .back-link:hover { color: var(--accent-ink); }
+
+  .masthead { padding: 18px 22px 26px; text-align: left; }
+  .channel {
+    display: inline-block; font-family: var(--mono); font-size: 10px; font-weight: 700;
+    letter-spacing: 0.05em; color: var(--accent-ink); background: var(--accent-soft);
+    border-radius: 999px; padding: 3px 10px; margin-bottom: 14px;
+  }
+  h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(27px, 7vw, 36px); margin: 0 0 12px; line-height: 1.3; }
+  .masthead .sub { font-size: 14.5px; color: var(--ink-dim); margin: 0; max-width: 46ch; }
+  .meta-row { display: flex; gap: 10px; margin-top: 16px; font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint); }
+
+  .byline {
+    display: flex; align-items: center; gap: 10px; padding: 0 22px 20px;
+    font-size: 12.5px; color: var(--ink-faint);
+  }
+  .byline .avatar {
+    width: 30px; height: 30px; border-radius: 50%; background: var(--accent-soft); color: var(--accent-ink);
+    display: flex; align-items: center; justify-content: center; font-family: var(--serif); font-weight: 700; font-size: 12px; flex: none;
+  }
+  .byline b { color: var(--ink); }
+
+  section { padding: 4px 22px 4px; }
+  .prose p { font-size: 15.5px; color: var(--ink); margin: 0 0 18px; }
+  .prose p.short { margin-bottom: 6px; }
+  .quote {
+    font-family: var(--serif); font-size: 18px; line-height: 1.5; color: var(--ink);
+    padding: 2px 0 2px 16px; border-left: 3px solid var(--accent); margin: 26px 0;
+  }
+  .img-slot {
+    margin: 28px 0; padding: 22px; border: 1px dashed var(--line); border-radius: 14px;
+    background: var(--card-2); text-align: center; color: var(--ink-faint); font-size: 12.5px;
+  }
+
+  .reveal { opacity: 0; transform: translateY(16px); transition: opacity 560ms cubic-bezier(.22,.61,.36,1), transform 560ms cubic-bezier(.22,.61,.36,1); }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+
+  table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: nowrap; }
+  img, svg { max-width: 100%; height: auto; }
+  footer { padding: 40px 22px 0; font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint); text-align: center; }
+  .colophon { padding: 40px 22px 0; }
+  .colophon p { font-size: 12px; color: var(--ink-faint); line-height: 1.65; max-width: 56ch; }
+  .colophon .sign { font-family: var(--serif); font-size: 14px; color: var(--ink-dim); margin-top: 4px; }
+  @media (max-width: 480px) {
+    body { font-size: 15px; }
+    .masthead, section, .byline, .colophon { padding-left: 16px; padding-right: 16px; }
+  }
+</style>
+
+<div class="page">
+<a class="back-link" href="./">‹ 기사 목록</a>
+<div class="masthead">
+  <span class="channel">에세이 · 창작 노트</span>
+  <h1>고덕역에서, 내가 글과 그림을 그리는 이유</h1>
+  <p class="sub">게임은, 웹툰은 나를 무엇으로 물들여왔는가. 오래된 동네에서 마주친 그 색들을
+     내려놓기로 한 어느 하루의 기록.</p>
+  <div class="meta-row"><span>2026-08-12</span><span>· 4분 읽기</span></div>
+</div>
+<div class="byline"><div class="avatar">근</div><div>글 <b>근후</b></div></div>
+
+<section class="prose">
+  <p class="reveal">오늘은 고덕역에 오게 되었다. 지난 2–3일간 하루 종일 나는 미디어, 그리고 소재 찾기에 열중해 있었다.</p>
+
+  <p class="quote reveal">게임은 무엇인가.<br>무엇이기에 그토록 나를 중독으로 내몰았는가.<br>그렇다면 올바른 게임은 무엇인가.</p>
+
+  <p class="reveal">모르겠는 그 답을, 나는 오랜 추억이 깃든 고덕역에서 찾게 되었다.</p>
+
+  <p class="reveal">모든 동네에는 주인과 주민이 존재했고, 나는 중학교·고등학교 시절, 그리고 대학교 초반 시절까지 이곳에서 두리번거리는 시간을 가졌었다.</p>
+
+  <p class="reveal">그곳에서 나는 묘한 감각과 마주쳤다. 내가 봐왔던 수많은 웹툰에서 말한 부활, 죽음, 싸움짱 같은 이미지가 겹쳐 보이기 시작한 것이다.</p>
+
+  <p class="reveal">중학생. 내 눈앞에 보이는 학생들이었다. 그중에 한 친구가 보였다. 그 친구의 화장, 옷차림을 보니 우선 중학생인 건 확실한데 — 많은 웹툰 캐릭터가 겹쳐 보이기 시작했던 것 같다.</p>
+
+  <p class="reveal">그리고 나의 기억의 조각이 발동되었다. 이들이 보는 세계의 모습을, 내가 보아온 외국인들의 모습을 말이다.</p>
+
+  <p class="reveal short">미국, 흑인, 강함… 군대.</p>
+  <p class="reveal">여자, 퀸카, 양아치, 예쁨 등 — 내게는 없는 추억과 인격이었지만, 끝없이 보고 자라온 인격들이 내 눈가를 적셨다.</p>
+
+  <p class="reveal">지금껏 밤새 봐온 것들 — 수련회에서 밤새 돌려 보던 웹툰들과 그곳에서의 "짱", 그리고 그 붉은 색채들이 덮어온 곳이 바로 이곳이었다는 걸 알게 되었다. 이곳을 봐도, 저것을 봐도 잠식되어 왔던 것들 말이다.</p>
+
+  <p class="reveal">그런즉 나는 어쩌면 내려놓기로 한 것이었다. 긴 세월의 여파와 풍파, 그리고 파도 속에서 내 영혼은 이제 그러한 가짜 세상, 가짜 이야기를 나의 것으로 물들이지 않기로 했다.</p>
+
+  <p class="reveal">작은 촬영장, 작은 일터에 가면 또 서로의 긴장과 낮추는 것 — 일종의 그러한 경쟁들이 시작된다. 스파이더맨의 강철 같은 힘도 이제 내게는 한 장난에 불과했다.</p>
+
+  <p class="reveal">그러자 보이기 시작했다. 세상은 물들여져 있었다. 각종 색으로.</p>
+
+  <p class="quote reveal">죽음의 색.<br>강자의 색.<br>방조의 색.<br>배신의 색.</p>
+
+  <p class="reveal">이 모든 꿀렁대는 세계 속의 여파에, 나도 모르게 휩쓸리고 세상을 배우고 있었던 것이다.</p>
+
+  <p class="reveal">그렇다. 그것만으로 나는 — 누구에게나 그러한 색으로 물들여진, 진득한 그 색들을 치우고 싶었다. 밝은 빛 앞에, 그 투명한 빛 앞에.</p>
+
+  <div class="img-slot reveal">📷 사진 자리 — IMG_8537 (원본 사진을 보내주시면 이 자리에 넣어드릴게요)</div>
+
+  <p class="reveal">그것이 일상이 되고, 하나의 풀잎이 되고, 하나의 세계가 되는 것 — 나는 그런 것을 원했다. 소소함이 회복되길 원했다.</p>
+
+  <p class="reveal">더 이상 거대한 두꺼운 나무로 인해서, 그 강렬한 피톤치드 향으로 인해서 숲이 백조의 해골들로 가득 차지 않길 바랐다.</p>
+
+  <p class="reveal">나는 세상을 이제 있는 그대로 보았고, 그것은 구원이었다. 그리고 그것을 전하는 그 목표 하나 — 그거 하나만을 가지고 작품을 만든다고 해도 충분한 이유가 되었음은 분명했다.</p>
+
+  <p class="quote reveal">나는 다 내려놓겠다.<br>내 힘, 영향력, 유명세.</p>
+
+  <p class="reveal">그리고 그냥 마땅히, 시냇물이 흐르듯 — 평범하고도 같은 하나의 감정과 삶을 기록해보려고 한다.</p>
+
+  <p class="reveal">그리고 그것을 위해서는, 적어도 감정의 채색과 캐릭터를 그릴 줄은 알아야겠지.</p>
+</section>
+
+<div class="colophon">
+  <p>고덕역에서 쓴 글. 2026-08-12.</p>
+  <p class="sign">— 근후</p>
+</div>
+
+<footer>ReleasePilot 리포트 허브 · 기사 채널</footer>
+</div>
+
+<script>
+  var revealEls = document.querySelectorAll('.reveal');
+  var revealFallback = setTimeout(function () {
+    revealEls.forEach(function (el) { el.classList.add('in'); });
+  }, 1800);
+  try {
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+        });
+      }, { threshold: 0.12, rootMargin: '0px' });
+      revealEls.forEach(function (el) { io.observe(el); });
+    } else {
+      revealEls.forEach(function (el) { el.classList.add('in'); });
+      clearTimeout(revealFallback);
+    }
+  } catch (err) {
+    revealEls.forEach(function (el) { el.classList.add('in'); });
+    clearTimeout(revealFallback);
+  }
+</script>
