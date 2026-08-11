@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+User-agent: Yeti
+Allow: /
+
+Sitemap: https://delight0517.github.io/releasepilot-reports/sitemap.xml
