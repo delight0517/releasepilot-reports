@@ -58,6 +58,61 @@ async function persistToServer() {
   }
 }
 
+// ── 하루 단위 백업 / 복구 ──────────────────────────────────────────────────
+async function fetchBackups() {
+  const url = `${STORAGE_API_URL}/api/backups?username=${encodeURIComponent(session.username)}&pin=${encodeURIComponent(session.pin)}`;
+  const res = await fetch(url);
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(body.error || `백업 목록을 불러오지 못했습니다 (${res.status})`);
+  return body.backups || [];
+}
+
+async function restoreBackup(date) {
+  const res = await fetch(`${STORAGE_API_URL}/api/restore`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username: session.username, pin: session.pin, date }),
+  });
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(body.error || `복구 실패 (${res.status})`);
+  return body.data;
+}
+
+async function openBackupsModal() {
+  const list = el("backups-list");
+  list.innerHTML = '<p class="hint">불러오는 중...</p>';
+  el("modal-backups").style.display = "flex";
+  try {
+    const backups = await fetchBackups();
+    if (!backups.length) {
+      list.innerHTML = '<p class="hint">아직 백업이 없습니다 — 내일부터 매일 하나씩 쌓입니다.</p>';
+      return;
+    }
+    list.innerHTML = "";
+    backups.forEach((b) => {
+      const row = document.createElement("button");
+      row.className = "backup-row";
+      row.innerHTML = `<span class="backup-date">${b.date}</span><span class="backup-meta">폴더 ${b.folderCount}개 · 자료 ${b.documentCount}개</span>`;
+      row.onclick = async () => {
+        if (!confirm(`${b.date} 시점으로 되돌릴까요? 지금 상태는 오늘자 백업으로 남습니다.`)) return;
+        try {
+          const restored = await restoreBackup(b.date);
+          data = restored;
+          currentFolderId = null;
+          el("modal-backups").style.display = "none";
+          renderBrowser();
+          el("sync-status").textContent = `✅ ${b.date} 시점으로 복구했습니다.`;
+        } catch (e) {
+          alert(`복구 실패: ${e.message}`);
+        }
+      };
+      list.appendChild(row);
+    });
+  } catch (e) {
+    list.innerHTML = `<p class="hint error">${escapeHtml(e.message)}</p>`;
+  }
+}
+
 // 저장 호출을 짧게 묶어서(연타 방지) 서버 부하를 줄인다.
 function save() {
   if (saveTimer) clearTimeout(saveTimer);
@@ -401,6 +456,8 @@ document.addEventListener("DOMContentLoaded", () => {
   el("btn-editor-save").onclick = saveEditor;
   el("btn-editor-cancel").onclick = closeEditor;
   el("btn-export").onclick = exportJson;
+  el("btn-backups").onclick = openBackupsModal;
+  el("btn-backups-close").onclick = () => { el("modal-backups").style.display = "none"; };
   el("btn-import").onclick = () => el("import-file-input").click();
   el("import-file-input").onchange = (e) => {
     if (e.target.files && e.target.files[0]) importJsonFile(e.target.files[0]);

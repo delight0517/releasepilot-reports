@@ -62,7 +62,18 @@ header {
 .read-body h2 { margin: 0 0 16px; font-size: 20px; }
 .read-content { white-space: pre-wrap; word-break: break-word; line-height: 1.8; font-size: 17px; }
 
+.backups-list { display: flex; flex-direction: column; gap: 6px; max-height: 50vh; overflow-y: auto; }
+.backup-row {
+  display: flex; justify-content: space-between; align-items: center; width: 100%;
+  padding: 10px 12px; border: 1px solid #e9e3d6; border-radius: 8px; background: #ffffff;
+  cursor: pointer; font-family: inherit; text-align: left;
+}
+.backup-row:hover { border-color: #c9711f; }
+.backup-date { font-weight: 700; font-size: 14px; }
+.backup-meta { font-size: 12px; color: #a3a091; }
+
 @media (prefers-color-scheme: dark) {
+  .backup-row { background: #221d15; border-color: #3a3327; }
   .login-card input { background: #17140f; border-color: #3a3327; color: #f2ede1; }
   .fullscreen-modal { background: #17140f; }
   .read-header { background: #17140f; border-color: #3a3327; }

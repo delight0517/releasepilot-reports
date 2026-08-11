@@ -29,6 +29,7 @@
         <span id="account-badge" class="account-badge"></span>
         <button id="btn-import" class="icon-btn" title="가져오기">📥</button>
         <button id="btn-export" class="icon-btn" title="내보내기">📤</button>
+        <button id="btn-backups" class="icon-btn" title="하루 단위 백업에서 복구">🕐</button>
         <button id="btn-logout" class="icon-btn" title="로그아웃">🚪</button>
       </div>
       <input id="import-file-input" type="file" accept="application/json" style="display:none" />
@@ -59,6 +60,17 @@
     <div class="read-body">
       <h2 id="read-title"></h2>
       <div id="read-content" class="read-content"></div>
+    </div>
+  </div>
+
+  <div id="modal-backups" class="modal" style="display:none">
+    <div class="modal-card">
+      <h2>하루 단위 백업</h2>
+      <p class="hint">매일 그날의 첫 저장 직전 상태가 자동으로 남습니다. 실수로 지웠다면 여기서 되돌릴 날짜를 고르세요.</p>
+      <div id="backups-list" class="backups-list"></div>
+      <div class="modal-actions">
+        <button id="btn-backups-close" class="secondary-btn">닫기</button>
+      </div>
     </div>
   </div>
 
