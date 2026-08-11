@@ -17,6 +17,13 @@ let flatQuestions = [];
 let currentIndex = 0;
 const answers = {}; // id -> "A" | "B" | "BOTH" (ab) or "A".."H" (choice)
 
+// 동적 2차 질문(dynamicFollowUp) 상태 — 1라운드 끝나면 API로 "분석 + 맞춤 2차 질문"을
+// 받아와 flatQuestions 뒤에 이어붙인다. followUpData가 채워지면 "이미 이어붙였다"는
+// 뜻이라 완료 판정 때 다시 트리거하지 않는다.
+let round1Snapshot = null; // 1라운드 질문 목록 스냅샷 (요약 문구 생성용)
+let round1AnswersSnapshot = null;
+let followUpData = null; // { analysis, round2Questions }
+
 const el = (id) => document.getElementById(id);
 
 function getApiKey() {
@@ -61,7 +68,15 @@ function renderSettings() {
 }
 
 function showScreen(name) {
-  ["screen-start", "screen-question", "screen-finish", "screen-result", "screen-settings"].forEach((s) => {
+  [
+    "screen-start",
+    "screen-question",
+    "screen-followup-loading",
+    "screen-analysis",
+    "screen-finish",
+    "screen-result",
+    "screen-settings",
+  ].forEach((s) => {
     el(s).style.display = s === `screen-${name}` ? "block" : "none";
   });
 }
@@ -90,6 +105,9 @@ function startGame(modeKey) {
   currentMode.rounds.forEach((round) => flatQuestions.push(...round.questions));
   currentIndex = 0;
   Object.keys(answers).forEach((k) => delete answers[k]);
+  round1Snapshot = null;
+  round1AnswersSnapshot = null;
+  followUpData = null;
   showScreen("question");
   renderQuestion();
 }
@@ -100,11 +118,19 @@ function roundTitleFor(index) {
     if (index < count + round.questions.length) return round.title;
     count += round.questions.length;
   }
+  // 정적 라운드를 넘어선 인덱스는 동적으로 이어붙인 맞춤 2차 질문(followUpData)이다.
+  if (followUpData) return "ROUND 2 — 맞춤 질문";
   return "";
 }
 
 function renderQuestion() {
   if (currentIndex >= flatQuestions.length) {
+    if (currentMode.dynamicFollowUp && followUpData === null) {
+      round1Snapshot = [...flatQuestions];
+      round1AnswersSnapshot = { ...answers };
+      runFollowUpFlow();
+      return;
+    }
     showScreen("finish");
     el("submit-status").textContent = "";
     return;
@@ -142,29 +168,29 @@ function answerCurrent(choice) {
   renderQuestion();
 }
 
-function profileToKoreanSummary() {
+// questionList/answerMap을 받는 범용 버전 — 1라운드 스냅샷, 1+2라운드 합본 등
+// 어떤 질문 목록에 대해서도 같은 방식으로 요약을 만들 수 있도록 일반화했다.
+function koreanSummaryFor(questionList, answerMap) {
   const lines = [];
-  for (const round of currentMode.rounds) {
-    for (const q of round.questions) {
-      const picked = answers[q.id];
-      if (!picked) continue;
-      if (q.type === "ab") {
-        const label = picked === "BOTH" ? `A(${q.a}) + B(${q.b}) 둘 다` : picked === "A" ? q.a : q.b;
-        lines.push(`- ${q.text}: ${label}`);
-      } else {
-        const choice = q.choices.find((c) => c.key === picked);
-        lines.push(`- ${q.text}: ${choice ? choice.label : picked}`);
-      }
+  for (const q of questionList) {
+    const picked = answerMap[q.id];
+    if (!picked) continue;
+    if (q.type === "ab") {
+      const label = picked === "BOTH" ? `A(${q.a}) + B(${q.b}) 둘 다` : picked === "A" ? q.a : q.b;
+      lines.push(`- ${q.text}: ${label}`);
+    } else {
+      const choice = q.choices.find((c) => c.key === picked);
+      lines.push(`- ${q.text}: ${choice ? choice.label : picked}`);
     }
   }
   return lines.join("\n");
 }
 
-function shorthandSummary() {
+function shorthandFor(questionList, answerMap) {
   // "1A 2B 3AB 4A ..." 형식 — 사용자가 준 예시 표기 그대로.
-  return flatQuestions
+  return questionList
     .map((q, i) => {
-      const picked = answers[q.id];
+      const picked = answerMap[q.id];
       if (!picked) return null;
       return `${i + 1}${picked}`;
     })
@@ -172,7 +198,81 @@ function shorthandSummary() {
     .join(" ");
 }
 
+function profileToKoreanSummary() {
+  return koreanSummaryFor(flatQuestions, answers);
+}
+function shorthandSummary() {
+  return shorthandFor(flatQuestions, answers);
+}
+
+function buildFollowUpPrompt() {
+  const summary = koreanSummaryFor(round1Snapshot, round1AnswersSnapshot);
+  const shorthand = shorthandFor(round1Snapshot, round1AnswersSnapshot);
+  return `아래는 사용자가 커리어/콘텐츠 취향 밸런스 게임 1라운드(A/B + 다지선다)에 답한 결과야.
+
+${summary}
+
+(답 요약: ${shorthand})
+
+너는 지금 이 사용자의 게임 상대이자 분석가야. 예시처럼 친근한 반말 톤으로, 답변에서
+드러나는 모순이나 특이점을 구체적으로 짚어가며(어떤 문항 번호+답이 근거인지 언급) 2~4
+문단 정도로 분석해줘. 임시로 붙일 만한 직업/포지션 이름이 있다면 하나 제안하고, 참고할
+만한 실제 인물/직업 사례가 있으면 언급해도 좋아(없으면 생략).
+
+그 다음, 이 분석을 더 구체화하기 위한 "ROUND 2" 질문 10~12개를 만들어줘. 추상적인 성향
+질문이 아니라 "내일부터 이 일을 해야 한다"는 구체적 시나리오/선택지로 만들어(급여, 프로젝트,
+행사, 5년/10년 후 모습 등). 마지막 1~2문항은 A/B/C 다지선다로 만들어도 좋음(예: 최종 결론
+문항에서 "둘 다"를 뜻하는 C 옵션).
+
+반드시 아래 JSON 형식으로만 답해 (마크다운 코드블록 없이 순수 JSON):
+{
+  "analysis": "...(줄바꿈은 \\n으로)...",
+  "round2Questions": [
+    {"id": "r2_1", "type": "ab", "text": "1. ...", "a": "...", "b": "..."},
+    {"id": "r2_12", "type": "choice", "text": "12. ...", "choices": [{"key":"A","label":"..."},{"key":"B","label":"..."},{"key":"C","label":"..."}]}
+  ]
+}
+id는 r2_1, r2_2 처럼 겹치지 않게 순번으로 붙여줘.`;
+}
+
+function buildCareerFinalPrompt() {
+  const fullQuestions = [...round1Snapshot, ...(followUpData ? followUpData.round2Questions : [])];
+  const summary = koreanSummaryFor(fullQuestions, answers);
+  const shorthand = shorthandFor(fullQuestions, answers);
+  return `아래는 커리어/콘텐츠 밸런스 게임 1라운드 + 맞춤 2라운드 전체 답변이야.
+
+${summary}
+
+(답 요약: ${shorthand})
+
+1라운드 분석에서 나온 관점: ${followUpData ? followUpData.analysis : "(없음)"}
+
+이 전체 답을 바탕으로, 실제로 시도해볼 수 있는 직업/커리어 조합 3개를 만들어줘. 각 조합은
+직업 이름 나열이 아니라, 처음 벌기 시작할 때 → 3년 차 → 자기 작품/IP 제작까지 이어지는
+현실적인 경로로 붙여줘.
+
+반드시 아래 JSON 형식으로만 답해 (마크다운 코드블록 없이 순수 JSON):
+{
+  "combos": [
+    {
+      "title": "조합 이름",
+      "summary": "1~2문장 요약",
+      "path": [
+        {"stage": "처음 시작 (몇 년차인지 명시)", "detail": "구체적으로 무엇을 하는지, 수입원은 어디서 나오는지"},
+        {"stage": "3년 차", "detail": "..."},
+        {"stage": "자기 작품/IP 제작 단계", "detail": "..."}
+      ]
+    }
+  ]
+}
+combos는 정확히 3개.`;
+}
+
 function buildPrompt() {
+  if (currentMode.key === "career" && followUpData) {
+    return buildCareerFinalPrompt();
+  }
+
   const summary = profileToKoreanSummary();
   const shorthand = shorthandSummary();
 
@@ -233,6 +333,72 @@ ${summary}
 lifeStructures는 2~3개, 나머지 후보 리스트는 각 3~4개 정도로.`;
 }
 
+async function callClaudeApi(prompt, maxTokens) {
+  const apiKey = getApiKey();
+  if (!apiKey) throw new Error("NO_API_KEY");
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": apiKey,
+      "anthropic-version": "2023-06-01",
+      "anthropic-dangerous-direct-browser-access": "true",
+    },
+    body: JSON.stringify({
+      model: MODEL,
+      max_tokens: maxTokens,
+      messages: [{ role: "user", content: prompt }],
+    }),
+  });
+  if (!res.ok) {
+    const errBody = await res.text();
+    throw new Error(`API 오류 (${res.status}): ${errBody}`);
+  }
+  const data = await res.json();
+  const text = data.content.map((block) => block.text || "").join("");
+  return JSON.parse(text);
+}
+
+async function runFollowUpFlow() {
+  showScreen("followup-loading");
+
+  const cached = readCache(`${currentMode.key}:round2`, round1AnswersSnapshot);
+  if (cached) {
+    followUpData = cached;
+    showAnalysis(true);
+    return;
+  }
+
+  if (!getApiKey()) {
+    // API 키가 없으면 맞춤 2차 질문을 만들 수 없다 — 그냥 1라운드 결과로 마무리 화면으로.
+    showScreen("finish");
+    el("submit-status").textContent = "";
+    return;
+  }
+
+  try {
+    const parsed = await callClaudeApi(buildFollowUpPrompt(), 3000);
+    writeCache(`${currentMode.key}:round2`, round1AnswersSnapshot, parsed);
+    followUpData = parsed;
+    showAnalysis(false);
+  } catch (e) {
+    showScreen("finish");
+    el("submit-status").textContent = `⚠️ 2차 질문 생성 실패로 1라운드 결과로 진행합니다: ${e.message}`;
+  }
+}
+
+function showAnalysis(fromCache) {
+  el("analysis-cache-badge").style.display = fromCache ? "inline-block" : "none";
+  el("analysis-text").textContent = followUpData.analysis || "";
+  showScreen("analysis");
+}
+
+function continueToFollowUpQuestions() {
+  flatQuestions = [...round1Snapshot, ...followUpData.round2Questions];
+  showScreen("question");
+  renderQuestion();
+}
+
 async function generateResult(forceRefresh) {
   const profile = { ...answers };
   showScreen("result");
@@ -252,38 +418,15 @@ async function generateResult(forceRefresh) {
     return;
   }
 
-  const apiKey = getApiKey();
-  if (!apiKey) {
+  if (!getApiKey()) {
     el("result-loading").style.display = "none";
     el("result-content").innerHTML =
       '<p class="error">API 키가 설정되지 않았습니다. 오른쪽 위 ⚙️ 설정에서 본인의 Claude API 키를 입력해주세요.</p>';
     return;
   }
 
-  const prompt = buildPrompt();
-
   try {
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01",
-        "anthropic-dangerous-direct-browser-access": "true",
-      },
-      body: JSON.stringify({
-        model: MODEL,
-        max_tokens: 2500,
-        messages: [{ role: "user", content: prompt }],
-      }),
-    });
-    if (!res.ok) {
-      const errBody = await res.text();
-      throw new Error(`API 오류 (${res.status}): ${errBody}`);
-    }
-    const data = await res.json();
-    const text = data.content.map((block) => block.text || "").join("");
-    const parsed = JSON.parse(text);
+    const parsed = await callClaudeApi(buildPrompt(), 2500);
     writeCache(currentMode.key, profile, parsed);
     el("result-loading").style.display = "none";
     renderResult(parsed);
@@ -302,6 +445,23 @@ function escapeHtml(s) {
 function renderResult(result) {
   const wrap = el("result-content");
   wrap.innerHTML = "";
+
+  if (result.combos) {
+    (result.combos || []).forEach((combo) => {
+      const card = document.createElement("div");
+      card.className = "combo-card";
+      const pathHtml = (combo.path || [])
+        .map((p) => `<li><strong>${escapeHtml(p.stage)}</strong>${escapeHtml(p.detail)}</li>`)
+        .join("");
+      card.innerHTML = `
+        <h3>${escapeHtml(combo.title)}</h3>
+        <p class="summary">${escapeHtml(combo.summary || "")}</p>
+        <ol class="combo-path">${pathHtml}</ol>
+      `;
+      wrap.appendChild(card);
+    });
+    return;
+  }
 
   if (currentMode.key === "art") {
     const list = document.createElement("div");
@@ -428,6 +588,7 @@ document.addEventListener("DOMContentLoaded", () => {
   el("choice-both").onclick = () => answerCurrent("BOTH");
   el("btn-submit-collector").onclick = submitToCollector;
   el("btn-generate-now").onclick = () => generateResult();
+  el("btn-continue-followup").onclick = continueToFollowUpQuestions;
   el("btn-settings").onclick = () => {
     renderSettings();
     showScreen("settings");
