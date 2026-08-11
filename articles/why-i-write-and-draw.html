@@ -64,6 +64,32 @@
   .reveal { opacity: 0; transform: translateY(16px); transition: opacity 560ms cubic-bezier(.22,.61,.36,1), transform 560ms cubic-bezier(.22,.61,.36,1); }
   .reveal.in { opacity: 1; transform: translateY(0); }
 
+  /* ── 원본 비주얼 ① — 히어로 색채 왜시. 특정 작품 이미지를 쓰지 않고, 글에서
+     말하는 "겹쳐 보이는 색들"을 그 자체로 추상화해 표현한다(저작권 걱정 없음). */
+  .hero-wash { margin: 4px 22px 24px; border-radius: 18px; overflow: hidden; }
+  .hero-wash svg { display: block; width: 100%; height: auto; }
+  @media (max-width: 480px) { .hero-wash { margin-left: 16px; margin-right: 16px; } }
+
+  /* ── 원본 비주얼 ② — 색 스와치. 본문에서 나열한 "죽음의 색/강자의 색/방조의
+     색/배신의 색"을 실제 색 타일로 만들어 텍스트만으로 지나가지 않게 한다. */
+  .color-swatches { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 26px 0; }
+  .swatch { border-radius: 12px; padding: 16px 10px 10px; text-align: center; }
+  .swatch .chip { width: 100%; aspect-ratio: 1; border-radius: 50%; margin: 0 auto 10px; }
+  .swatch .label { font-family: var(--mono); font-size: 10px; color: var(--ink-dim); line-height: 1.4; }
+  @media (max-width: 420px) { .color-swatches { grid-template-columns: repeat(2, 1fr); } }
+
+  /* ── 원본 비주얼 ③ — "투명한 빛" 클로징 비주얼. 색으로 물든 세계에서 벗어나
+     빛으로 향하는 결말부 정서를 도형으로 표현. */
+  .light-close { margin: 30px 22px; display: flex; justify-content: center; }
+  .light-close svg { width: 160px; height: 160px; }
+  @media (max-width: 480px) { .light-close { margin-left: 16px; margin-right: 16px; } }
+
+  .source-note {
+    margin: 30px 22px 0; padding: 14px 16px; border-radius: 12px; background: var(--card-2);
+    font-size: 11.5px; color: var(--ink-faint); line-height: 1.6;
+  }
+  @media (max-width: 480px) { .source-note { margin-left: 16px; margin-right: 16px; } }
+
   table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: nowrap; }
   img, svg { max-width: 100%; height: auto; }
   footer { padding: 40px 22px 0; font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint); text-align: center; }
@@ -86,6 +112,24 @@
   <div class="meta-row"><span>2026-08-12</span><span>· 4분 읽기</span></div>
 </div>
 <div class="byline"><div class="avatar">근</div><div>글 <b>근후</b></div></div>
+
+<div class="hero-wash reveal">
+  <svg viewBox="0 0 620 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="서로 겹쳐 번지는 색채를 표현한 추상 일러스트">
+    <defs>
+      <radialGradient id="w1" cx="30%" cy="35%" r="65%"><stop offset="0%" stop-color="#7a2e2e" stop-opacity="0.85"/><stop offset="100%" stop-color="#7a2e2e" stop-opacity="0"/></radialGradient>
+      <radialGradient id="w2" cx="75%" cy="25%" r="60%"><stop offset="0%" stop-color="#c9711f" stop-opacity="0.8"/><stop offset="100%" stop-color="#c9711f" stop-opacity="0"/></radialGradient>
+      <radialGradient id="w3" cx="55%" cy="80%" r="65%"><stop offset="0%" stop-color="#5c4a8a" stop-opacity="0.75"/><stop offset="100%" stop-color="#5c4a8a" stop-opacity="0"/></radialGradient>
+      <radialGradient id="w4" cx="90%" cy="75%" r="55%"><stop offset="0%" stop-color="#7a6a2e" stop-opacity="0.7"/><stop offset="100%" stop-color="#7a6a2e" stop-opacity="0"/></radialGradient>
+      <radialGradient id="clear" cx="10%" cy="90%" r="45%"><stop offset="0%" stop-color="#fbfaf7" stop-opacity="0.95"/><stop offset="100%" stop-color="#fbfaf7" stop-opacity="0"/></radialGradient>
+    </defs>
+    <rect width="620" height="220" fill="#1d1b17"/>
+    <rect width="620" height="220" fill="url(#w1)"/>
+    <rect width="620" height="220" fill="url(#w2)"/>
+    <rect width="620" height="220" fill="url(#w3)"/>
+    <rect width="620" height="220" fill="url(#w4)"/>
+    <rect width="620" height="220" fill="url(#clear)"/>
+  </svg>
+</div>
 
 <section class="prose">
   <p class="reveal">오늘은 고덕역에 오게 되었다. 지난 2–3일간 하루 종일 나는 미디어, 그리고 소재 찾기에 열중해 있었다.</p>
@@ -113,11 +157,31 @@
 
   <p class="reveal">그러자 보이기 시작했다. 세상은 물들여져 있었다. 각종 색으로.</p>
 
-  <p class="quote reveal">죽음의 색.<br>강자의 색.<br>방조의 색.<br>배신의 색.</p>
+  <div class="color-swatches reveal">
+    <div class="swatch" style="background:#f6e6d3"><div class="chip" style="background:#7a2e2e"></div><div class="label">죽음의 색</div></div>
+    <div class="swatch" style="background:#f6e6d3"><div class="chip" style="background:#c9711f"></div><div class="label">강자의 색</div></div>
+    <div class="swatch" style="background:#f6e6d3"><div class="chip" style="background:#7a6a2e"></div><div class="label">방조의 색</div></div>
+    <div class="swatch" style="background:#f6e6d3"><div class="chip" style="background:#5c4a8a"></div><div class="label">배신의 색</div></div>
+  </div>
 
   <p class="reveal">이 모든 꿀렁대는 세계 속의 여파에, 나도 모르게 휩쓸리고 세상을 배우고 있었던 것이다.</p>
 
   <p class="reveal">그렇다. 그것만으로 나는 — 누구에게나 그러한 색으로 물들여진, 진득한 그 색들을 치우고 싶었다. 밝은 빛 앞에, 그 투명한 빛 앞에.</p>
+
+  <div class="light-close reveal">
+    <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="색이 걷히고 남는 투명한 빛을 표현한 도형">
+      <defs>
+        <radialGradient id="light" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#fff8ec" stop-opacity="1"/>
+          <stop offset="55%" stop-color="#f6e6d3" stop-opacity="0.5"/>
+          <stop offset="100%" stop-color="#f6e6d3" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <circle cx="80" cy="80" r="78" fill="url(#light)"/>
+      <circle cx="80" cy="80" r="26" fill="none" stroke="#c9711f" stroke-width="1.2" opacity="0.55"/>
+      <circle cx="80" cy="80" r="4" fill="#c9711f"/>
+    </svg>
+  </div>
 
   <div class="img-slot reveal">📷 사진 자리 — IMG_8537 (원본 사진을 보내주시면 이 자리에 넣어드릴게요)</div>
 
@@ -133,6 +197,12 @@
 
   <p class="reveal">그리고 그것을 위해서는, 적어도 감정의 채색과 캐릭터를 그릴 줄은 알아야겠지.</p>
 </section>
+
+<div class="source-note reveal">
+  이 글의 시각 요소(색채 웨시·색 스와치·빛 도형)는 모두 직접 제작한 원본 그래픽입니다.
+  글에서 언급한 웹툰들의 실제 장면/캐릭터 이미지는 저작권 문제로 캡처·삽입하지 않았습니다.
+  구체적으로 인용하고 싶은 작품이 있다면 제목을 알려주시면 공식 링크로 연결해드릴게요.
+</div>
 
 <div class="colophon">
   <p>고덕역에서 쓴 글. 2026-08-12.</p>
