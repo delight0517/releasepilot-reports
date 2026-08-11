@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>밸런스 게임</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>⚖️ 밸런스 게임</h1>
+    <button id="btn-settings" class="icon-btn" title="설정">⚙️</button>
+  </header>
+
+  <main>
+    <section id="screen-start">
+      <p class="lead">A/B 질문에 답하면 취향 프로필을 만들고, 그에 맞는 결과를 추천해줍니다.</p>
+      <p class="hint">같은 답 조합으로는 API를 다시 부르지 않고 저장된 결과를 재사용합니다.</p>
+      <label for="nickname-input">닉네임</label>
+      <input id="nickname-input" type="text" placeholder="테스트 결과에 표시될 닉네임" maxlength="40" />
+      <div id="mode-list" class="mode-list"></div>
+    </section>
+
+    <section id="screen-question" style="display:none">
+      <div id="question-card" class="card">
+        <p class="round-title" id="round-title"></p>
+        <p class="progress" id="progress"></p>
+        <h2 id="question-text"></h2>
+        <div id="ab-box">
+          <div class="choice-row">
+            <button id="choice-a" class="choice-btn"></button>
+            <button id="choice-b" class="choice-btn"></button>
+          </div>
+          <button id="choice-both" class="choice-btn both-btn">둘 다 끌려요</button>
+        </div>
+        <div id="choice-box" class="bonus-grid" style="display:none"></div>
+      </div>
+    </section>
+
+    <section id="screen-finish" style="display:none">
+      <div class="card">
+        <h2>다 답했어요!</h2>
+        <p class="hint">둘 중 하나를 고르세요 — 둘 다 해도 됩니다.</p>
+        <button id="btn-submit-collector" class="primary-btn">📮 제출하기 (연구용 저장, API 비용 없음)</button>
+        <p id="submit-status" class="hint"></p>
+        <button id="btn-generate-now" class="secondary-btn">✨ 지금 바로 AI 레퍼런스 보기 (본인 API 키 사용)</button>
+      </div>
+    </section>
+
+    <section id="screen-result" style="display:none">
+      <div class="result-header">
+        <button id="btn-restart" class="secondary-btn">◀ 처음으로</button>
+        <span id="result-cache-badge" class="badge" style="display:none">📦 캐시된 결과</span>
+        <button id="btn-retry-generate" class="secondary-btn">🔄 다시 생성</button>
+      </div>
+      <p id="result-loading" style="display:none">생성하는 중...</p>
+      <div id="result-content"></div>
+    </section>
+
+    <section id="screen-settings" style="display:none">
+      <h2>설정</h2>
+      <label for="api-key-input">Claude API 키 (본인 것, 이 기기에만 저장됩니다)</label>
+      <input id="api-key-input" type="password" placeholder="sk-ant-..." />
+      <div class="row">
+        <button id="btn-save-key" class="primary-btn">저장</button>
+        <button id="btn-clear-cache" class="secondary-btn">캐시 전체 삭제</button>
+      </div>
+      <p id="settings-status" class="hint"></p>
+
+      <h2>응답 수집 서버</h2>
+      <p class="hint">테스터들의 제출 결과를 모으는 주소입니다 (worker/ 폴더 배포 후 나오는 URL).</p>
+      <label for="collector-url-input">Worker URL</label>
+      <input id="collector-url-input" type="text" placeholder="https://balance-game-survey-collector.xxx.workers.dev" />
+      <div class="row">
+        <button id="btn-save-collector" class="primary-btn">저장</button>
+      </div>
+      <p id="collector-status" class="hint"></p>
+      <button id="btn-settings-back" class="secondary-btn">◀ 뒤로</button>
+    </section>
+  </main>
+
+  <script src="questions.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
