@@ -61,6 +61,15 @@
     transition: transform 0.16s cubic-bezier(.2,.8,.2,1), box-shadow 0.16s ease;
   }
   .feed-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-2); }
+  /* 개별 기사 페이지(rediscovering-rest-time.html)와 같은 reveal-on-scroll 처리 —
+     허브 카드 리스트에는 이게 아예 없어서 "왜 애니메이션이 없냐"는 피드백을 받았다
+     (2026-08-12, 클로이 박 판단으로 바로 적용). 카드가 fetch 이후 JS로 생성되므로
+     아래 스크립트에서 클래스를 붙이고 IntersectionObserver로 순차 등장시킨다. */
+  .feed-card.reveal { opacity: 0; transform: translateY(18px); transition: opacity 520ms cubic-bezier(.22,.61,.36,1), transform 520ms cubic-bezier(.22,.61,.36,1); }
+  .feed-card.reveal.in { opacity: 1; transform: translateY(0); }
+  @media (prefers-reduced-motion: reduce) {
+    .feed-card.reveal { transition-duration: 0.001ms; }
+  }
   .feed-card .channel {
     display: inline-block; font-family: var(--mono); font-size: 10px; font-weight: 700;
     letter-spacing: 0.05em; color: var(--accent-ink); background: var(--accent-soft);
@@ -103,9 +112,10 @@ fetch('manifest.json').then(r => r.ok ? r.json() : []).then(items => {
   items
     .slice()
     .sort((a, b) => (b.publishedAt || '').localeCompare(a.publishedAt || ''))
-    .forEach(it => {
+    .forEach((it, i) => {
       const a = document.createElement('a');
-      a.className = 'feed-card';
+      a.className = 'feed-card reveal';
+      a.style.transitionDelay = Math.min(i * 60, 360) + 'ms';
       a.href = it.file;
       a.innerHTML = `
         <span class="channel">${it.channel || '기사'}</span>
@@ -114,6 +124,18 @@ fetch('manifest.json').then(r => r.ok ? r.json() : []).then(items => {
         <div class="meta"><span>${timeAgo(it.publishedAt)}</span>${it.readMinutes ? `<span>· ${it.readMinutes}분 읽기</span>` : ''}</div>`;
       feed.appendChild(a);
     });
+
+  var revealEls = feed.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -30px 0px' });
+    revealEls.forEach(function (el) { io.observe(el); });
+  } else {
+    revealEls.forEach(function (el) { el.classList.add('in'); });
+  }
 }).catch(() => {
   document.getElementById('empty').style.display = 'block';
 });

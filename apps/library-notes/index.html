@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>자료실</title>
+<meta name="description" content="노션처럼 폴더 안에 폴더를 넣어 취업/알바 자료를 정리하는 개인 자료실" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <div id="breadcrumb" class="breadcrumb"></div>
+    <div class="header-actions">
+      <button id="btn-import" class="icon-btn" title="가져오기">📥</button>
+      <button id="btn-export" class="icon-btn" title="내보내기">📤</button>
+    </div>
+    <input id="import-file-input" type="file" accept="application/json" style="display:none" />
+  </header>
+
+  <p class="hint device-hint">이 기기(브라우저)에만 저장됩니다. 다른 기기로 옮기려면 📤 내보내기 → 다른 기기에서 📥 가져오기.</p>
+
+  <main>
+    <div id="browser-list" class="browser-list"></div>
+  </main>
+
+  <div class="fab-row">
+    <button id="btn-add-folder" class="fab secondary">📁＋</button>
+    <button id="btn-add-document" class="fab primary" style="display:none">📄＋</button>
+  </div>
+
+  <div id="modal-editor" class="modal" style="display:none">
+    <div class="modal-card">
+      <h2 id="editor-heading">새 자료</h2>
+      <input id="editor-title-input" type="text" placeholder="제목" />
+      <textarea id="editor-content-input" placeholder="내용"></textarea>
+      <div class="modal-actions">
+        <button id="btn-editor-cancel" class="secondary-btn">취소</button>
+        <button id="btn-editor-save" class="primary-btn">저장</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
