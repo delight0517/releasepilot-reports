@@ -79,9 +79,21 @@
   table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: nowrap; }
   img, svg { max-width: 100%; height: auto; }
   footer { padding: 40px 22px 0; font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint); text-align: center; }
+  .byline {
+    display: flex; align-items: center; gap: 10px; padding: 0 22px 20px;
+    font-size: 12.5px; color: var(--ink-faint);
+  }
+  .byline .avatar {
+    width: 30px; height: 30px; border-radius: 50%; background: var(--accent-soft); color: var(--accent-ink);
+    display: flex; align-items: center; justify-content: center; font-family: var(--serif); font-weight: 700; font-size: 12px; flex: none;
+  }
+  .byline b { color: var(--ink); }
+  .colophon { padding: 40px 22px 0; }
+  .colophon p { font-size: 12px; color: var(--ink-faint); line-height: 1.65; max-width: 56ch; }
+  .colophon .sign { font-family: var(--serif); font-size: 14px; color: var(--ink-dim); margin-top: 4px; }
   @media (max-width: 480px) {
     body { font-size: 15px; }
-    .masthead, section { padding-left: 16px; padding-right: 16px; }
+    .masthead, section, .byline, .colophon { padding-left: 16px; padding-right: 16px; }
     .conclusion { margin-left: 16px; margin-right: 16px; }
   }
 </style>
@@ -95,9 +107,14 @@
      그리고 타짜처럼 지금이 좋은 때인지 나쁜 때인지 읽는 신호 체크리스트.</p>
   <div class="meta-row"><span>2026-08-05</span><span>· 6분 읽기</span></div>
 </div>
+<div class="byline"><div class="avatar">CP</div><div>글 <b>클로이 박</b> · Launchpad Magazine</div></div>
 
 <section>
-  <p class="section-label">핵심 구조</p>
+  <p class="card" style="background:none;border:none;padding:0;font-size:14.5px;color:var(--ink-dim);">
+    완성까지 2년, 팀 없이 혼자, 통장 잔고는 반년 치. 이런 조건에서 시장까지 나쁘다는
+    소식이 들리면 보통 둘 중 하나를 한다 — 더 크게 걸거나, 접거나. 둘 다 틀렸다.
+  </p>
+  <p class="section-label" style="margin-top:16px;">핵심 구조</p>
   <div class="card">
     <p class="quote">큰돈 → 개발 → 출시가 아니라, 작은 결과물 → 반응 → 신뢰 → 다음 자원.</p>
     <p>시장이 나쁠수록 크게 투자받아 한 번에 띄우기보다, 작게 증명해서 다음 자원을 끌어오는
@@ -109,8 +126,9 @@
   <p class="section-label">01</p>
   <h2>프로젝트 크기를 줄이되, 매력은 줄이지 않기</h2>
   <div class="card">
-    <p>불황에 가장 위험한 프로젝트: 완성까지 2~3년 걸림 · 출시 전에는 재미를 증명할 수
-       없음 · 많은 인원 필요 · 서버비·광고비가 큼 · 성공해야만 개발비를 회수할 수 있음.</p>
+    <p>가장 먼저 위험해지는 건 완성까지 2~3년 걸리는 프로젝트다. 출시 전에는 재미를 증명할
+       방법이 없고, 사람이 많이 필요하고, 서버비·광고비까지 크다 — 게다가 성공해야만
+       그 돈을 회수한다. 시장이 나쁠 때 이런 조건은 그대로 죽는 조건이다.</p>
     <p>전체를 줄이는 게 아니라 <b>가장 매력적인 한 장면만 먼저 완성</b>한다 — 캐릭터 10명 →
        1명, 스테이지 20개 → 전투장 1개, 스토리 전체 → 보스전 전후의 짧은 장면. 목표는
        "이거 더 해보고 싶다"는 말이 나오는, <b>감정적으로 완성된 버티컬 슬라이스</b>.</p>
@@ -236,6 +254,14 @@
      완성물을 빠르게 만들고, 실제 반응을 확보하고, 그 반응을 이용해 사람·돈·기회를 한
      단계씩 끌어오는 것. 대형 기획서를 더 키우는 게 아니라, 짧은 기간 안에 다른 사람에게
      보여줄 수 있는 강렬한 장면 하나를 완성하는 게 가장 중요하다.</p>
+</div>
+
+<div class="colophon">
+  <p>이 글은 Launchpad Magazine 출시 전략 채널의 기사로, 클로이 박(Chloe Park) 에디터가
+     불황기 인디 프로젝트 사례와 일반적인 시장 신호를 종합해 작성했습니다. 특정 수치나
+     사례를 인용하기보다 "지금 이 방식이 왜 더 안전한가"라는 판단 근거를 정리하는 데
+     목적을 두었으며, 실제 시장 신호는 판단 시점의 최신 자료로 직접 확인해야 합니다.</p>
+  <p class="sign">— 클로이 박, Launchpad Magazine</p>
 </div>
 
 <footer>ReleasePilot 리포트 허브 · 기사 채널</footer>
