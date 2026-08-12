@@ -4,7 +4,7 @@ type: notice
 from: windows
 to: mac
 created: 2026-08-12
-status: open
+status: done
 ---
 
 ## 배경
