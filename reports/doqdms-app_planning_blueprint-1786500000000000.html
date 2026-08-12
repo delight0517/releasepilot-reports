@@ -1,0 +1,173 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DOQDMS — 위치 기반 교회 예배 검색 웹앱 (기획서)</title>
+<style>
+  :root {
+    --bg: #faf7f2; --bg-raised: #ffffff; --fg: #211f2e; --muted: #6b6a7c;
+    --border: #e7e1d6; --accent: #c9711f; --accent-soft: #f6e6d3;
+    --risk: #a13a3a; --risk-soft: #f6e2df; --good: #2f7a63; --good-soft: #dcefe8;
+    --info: #2a5f8f; --info-soft: #dbe8f2;
+    --serif: Iowan Old Style, Georgia, "Noto Serif KR", ui-serif, serif;
+    --sans: -apple-system, "Pretendard", "Apple SD Gothic Neo", "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16151d; --bg-raised: #201f29; --fg: #ede9e0; --muted: #9a97ab;
+      --border: #322f3d; --accent: #e2a262; --accent-soft: #3a2f22;
+      --risk: #e08787; --risk-soft: #3a2325; --good: #7fc6ac; --good-soft: #1f332c;
+      --info: #7fb0e0; --info-soft: #1f2c3a;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #16151d; --bg-raised: #201f29; --fg: #ede9e0; --muted: #9a97ab;
+    --border: #322f3d; --accent: #e2a262; --accent-soft: #3a2f22;
+    --risk: #e08787; --risk-soft: #3a2325; --good: #7fc6ac; --good-soft: #1f332c;
+    --info: #7fb0e0; --info-soft: #1f2c3a;
+  }
+  :root[data-theme="light"] {
+    --bg: #faf7f2; --bg-raised: #ffffff; --fg: #211f2e; --muted: #6b6a7c;
+    --border: #e7e1d6; --accent: #c9711f; --accent-soft: #f6e6d3;
+    --risk: #a13a3a; --risk-soft: #f6e2df; --good: #2f7a63; --good-soft: #dcefe8;
+    --info: #2a5f8f; --info-soft: #dbe8f2;
+  }
+  * { box-sizing: border-box; overflow-wrap: break-word; }
+  body { background: var(--bg); color: var(--fg); font-family: var(--sans); line-height: 1.65; -webkit-font-smoothing: antialiased; }
+  .page { max-width: 800px; margin: 0 auto; padding: 56px 24px 96px; }
+  .eyebrow { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; }
+  h1 { font-family: var(--serif); font-size: clamp(26px, 5vw, 38px); font-weight: 600; line-height: 1.18; margin: 0 0 6px; text-wrap: balance; }
+  .subtitle { color: var(--muted); font-size: 14px; margin: 0 0 32px; }
+  .subtitle code { background: var(--bg-raised); border: 1px solid var(--border); border-radius: 4px; padding: 1px 6px; font-size: 12.5px; }
+  section { margin-bottom: 44px; }
+  h2 { font-family: var(--serif); font-size: 21px; font-weight: 600; margin: 0 0 6px; }
+  .section-lede { color: var(--muted); font-size: 14px; margin: 0 0 16px; }
+  h3 { font-size: 15px; font-weight: 700; margin: 20px 0 8px; }
+  .callout { border-radius: 12px; padding: 18px 20px; margin-bottom: 20px; border: 1px solid transparent; }
+  .callout.info { background: var(--info-soft); border-color: color-mix(in srgb, var(--info) 35%, transparent); }
+  .callout p { margin: 0; }
+  .callout .tag { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.04em; border-radius: 999px; padding: 2px 10px; margin-bottom: 8px; }
+  .callout.info .tag { color: var(--info); border: 1px solid var(--info); }
+  .branch-card { border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; margin-bottom: 16px; background: var(--bg-raised); }
+  .branch-card h3 { margin-top: 0; font-size: 16px; font-family: var(--serif); }
+  .branch-meta { display: grid; grid-template-columns: 110px 1fr; gap: 8px 14px; font-size: 13.5px; margin: 10px 0; }
+  .branch-meta .k { color: var(--muted); font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.02em; padding-top: 1px; }
+  .caveat { background: var(--risk-soft); border: 1px solid color-mix(in srgb, var(--risk) 30%, transparent); border-radius: 10px; padding: 12px 16px; font-size: 13px; margin: 14px 0; }
+  ol.plain, ul.plain { padding-left: 20px; font-size: 13.5px; }
+  ol.plain li, ul.plain li { margin-bottom: 6px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: nowrap; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); }
+  th { color: var(--muted); font-weight: 600; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.02em; }
+  .badge { display: inline-block; font-size: 11px; font-weight: 700; border-radius: 999px; padding: 2px 9px; }
+  .badge.p0 { background: var(--good-soft); color: var(--good); }
+  .badge.p1 { background: var(--accent-soft); color: var(--accent); }
+  .badge.p2 { background: var(--border); color: var(--muted); }
+  footer { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted); }
+  footer p { margin: 6px 0; }
+  img, svg { max-width: 100%; height: auto; }
+  @media (max-width: 640px) {
+    body { font-size: 15px; }
+    .page { padding: 32px 16px 80px; }
+    .branch-meta { grid-template-columns: 1fr !important; }
+    .branch-card, .callout { padding: 14px 16px !important; }
+  }
+</style>
+
+<div class="page">
+  <p class="eyebrow">신규 앱 기획서 · DOQDMS (LaunchPad와 별개의 독립 신규 프로젝트)</p>
+  <h1>DOQDMS — 위치 기반 교회 예배 검색 웹앱</h1>
+  <p class="subtitle">
+    기획 단계(Planning-only) · <code>releasepilot-hub/apps/doqdms</code>에 원본 기획서 등록됨 ·
+    2026-08-12 작성 · 아직 코드/저장소 없음
+  </p>
+
+  <div class="callout info">
+    <span class="tag">한 줄 정의</span>
+    <p>
+      지금 내 위치에서 가까운 교회를 찾고, 그 교회의 예배 시간표 · 온라인 예배 영상 유무 ·
+      가는 법(대중교통 소요시간)까지 한 화면에서 확인할 수 있는 지도 기반 검색 서비스.
+      MVP는 네이티브 앱이 아니라 <strong>웹사이트(모바일 웹 최적화)</strong> 형태로 먼저 만든다.
+    </p>
+  </div>
+
+  <section>
+    <h2>1. 배경</h2>
+    <p>
+      네이버지도·카카오맵 같은 범용 지도 서비스는 "교회"를 장소(POI)로만 보여줄 뿐, 예배
+      시간표·온라인 예배 영상 유무·예배 규모 같은 종교시설 특화 정보를 구조화해 보여주지
+      않는다. 타지에서 새로 교회를 찾는 사람은 결국 교회 홈페이지를 하나씩 들어가 확인해야
+      하는데, 홈페이지가 없거나 오래된 경우가 많다. DOQDMS는 이 파편화된 정보(위치 + 예배
+      시간표 + 온라인 영상)를 한 곳에 모아 지도 위에서 바로 비교·필터링할 수 있게 한다.
+    </p>
+  </section>
+
+  <section>
+    <h2>2. 핵심 사용자 흐름</h2>
+    <ol class="plain">
+      <li><strong>현재 위치에서 시작</strong> — Geolocation API로 위치를 얻고, 권한 거부 시 수동 주소 검색으로 대체.</li>
+      <li><strong>가까운 교회 검색</strong> — 반경(1/3/5/10km) 내 등록 교회를 거리순으로 반환.</li>
+      <li><strong>웹사이트 링크</strong> — 각 교회 카드에 공식 홈페이지 노출(없으면 "홈페이지 없음" 표시).</li>
+      <li><strong>지도 표시</strong> — 결과를 지도 위 마커로 표시, 교단/규모/온라인 예배 여부로 아이콘 색상 구분.</li>
+      <li><strong>대중교통 길찾기</strong> — 지도 플랫폼 API 연동으로 소요시간·환승 정보 표시(자체 경로 엔진 없이 기존 API 호출).</li>
+      <li><strong>온라인 예배 영상 존재 확인</strong> — 유튜브/홈페이지에서 "실시간 예배", "주일예배 다시보기" 류 링크 탐지 → 배지 부여.</li>
+      <li><strong>예배 규모 추정</strong> — 예배 영상의 좌석 점유율/조회수 등 간접 지표로 소·중·대규모 라벨 추정 (고난도 — MVP 이후).</li>
+      <li><strong>커뮤니티 + 필터</strong> — 교단/언어/온라인 예배 여부/규모/주차 여부 필터, 사용자 한마디(MVP 이후).</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>3. 데이터 파이프라인 — 크롤링</h2>
+    <p class="section-lede">1차: 네이버지도 업체 정보 · 2차: 교회 공식 홈페이지 · 3차: 교회 유튜브 채널</p>
+    <div class="caveat">
+      <strong>법적 리스크:</strong> 네이버지도를 자체 브라우저 자동화로 직접 스크래핑하는 방식은
+      이용약관 위반 소지가 있다. 착수 전 (a) 라이선스 허용 범위의 오픈 API부터 확인하고,
+      (b) 안 되는 항목은 "교회가 직접 등록/수정하는 관리자 페이지"로 전환하는 셀프 등록 옵션을
+      함께 설계해야 한다 — 법무/약관 재확인 전에는 실제 크롤러 코드를 실행하지 않는다.
+    </div>
+    <p>월 1회 배치로 재크롤링해 정보를 최신화하고, 교회별로 <code>lastCrawledAt</code>을 기록해
+      화면에 "정보 갱신일"을 노출한다.</p>
+  </section>
+
+  <section>
+    <h2>4. MVP 우선순위</h2>
+    <table>
+      <tr><th>우선순위</th><th>기능</th><th>비고</th></tr>
+      <tr><td><span class="badge p0">P0</span></td><td>현재 위치, 인근 검색, 지도 표시</td><td>핵심 골격</td></tr>
+      <tr><td><span class="badge p0">P0</span></td><td>홈페이지 링크, 기본 필터(교단/거리)</td><td></td></tr>
+      <tr><td><span class="badge p1">P1</span></td><td>대중교통 길찾기/소요시간</td><td>지도 API 연동</td></tr>
+      <tr><td><span class="badge p1">P1</span></td><td>온라인 예배 영상 유무 배지</td><td>유튜브 링크 탐지만</td></tr>
+      <tr><td><span class="badge p2">P2</span></td><td>커뮤니티(리뷰/한마디)</td><td></td></tr>
+      <tr><td><span class="badge p2">P2</span></td><td>예배 영상 기반 규모 추정</td><td>영상 분석 R&D 필요</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>5. 로드맵</h2>
+    <ol class="plain">
+      <li>Phase 0 — 기획 확정 (이 문서)</li>
+      <li>Phase 1 — 특정 지역 20~30개 교회 수동 시드 데이터 구축(크롤러 없이 MVP 시연 가능)</li>
+      <li>Phase 2 — 웹사이트 MVP 출시 (P0/P1)</li>
+      <li>Phase 3 — 크롤링 자동화 + 월간 갱신 배치 (법무 확인 후, 또는 셀프 등록 전환)</li>
+      <li>Phase 4 — 커뮤니티/필터 고도화, 예배 규모 추정 R&D</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>6. 열린 질문</h2>
+    <ul class="plain">
+      <li>네이버지도 크롤링 허용 범위 — 안 되면 셀프 등록형으로 전환할지</li>
+      <li>대중교통 길찾기 API를 카카오/네이버/구글 중 어디로 쓸지 (쿼터·비용·정확도 비교)</li>
+      <li>예배 규모 추정을 영상 분석까지 할지, 조회수/구독자수 같은 간접 지표로 단순화할지</li>
+      <li>초기 타깃 지역(전국 vs 특정 도시)과 시드 데이터 확보 방법(수동 조사 vs 외주)</li>
+    </ul>
+  </section>
+
+  <div class="caveat">
+    이 문서는 <strong>아직 코드가 없는 기획 단계</strong>의 블루프린트다. 전체 원본 기획서는
+    <code>releasepilot-hub</code> 저장소의 <code>apps/doqdms/windows/delivery/DOQDMS_Blueprint.md</code>에
+    있으며, 이 페이지는 그 문서를 사람이 브라우저에서 읽기 좋게 옮긴 버전이다. 실제 개발 착수 후에는
+    이 페이지도 함께 갱신한다.
+  </div>
+
+  <footer>
+    <p>생성: releasepilot-reports · reports/ 채널 · DOQDMS는 LaunchPad(23_app_Releaser) 빌드트리에 등록되지 않은 완전 별도 신규 앱 기획</p>
+  </footer>
+</div>
