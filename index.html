@@ -180,11 +180,21 @@
   .cover-card .title {
     font-size: 15px; font-weight: 700; line-height: 1.3; margin: 3px 0 2px; color: var(--ink);
   }
+  /* §5(docs/22) — 이름에 붙은 부가설명은 제목과 같은 무게로 보이면 안 되므로
+     별도 태그로 작고 흐리게. */
+  .name-tag {
+    display: inline-block; font-size: 10.5px; font-weight: 500; color: var(--ink-faint);
+    margin-left: 6px;
+  }
   .cover-card .intent-caption {
     font-size: 12px; color: var(--ink-faint); line-height: 1.4; margin: 0 0 4px;
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
   }
   .cover-card .meta { font-size: 11px; color: var(--ink-faint); }
+  /* §4(docs/22) — v/rev는 방문자보다 개발자에게 중요한 정보라 날짜보다 한 단계
+     더 흐리고 작게. 날짜는 위 .meta-date로 그대로 두고 이 span만 톤을 낮춘다. */
+  .cover-card .meta .meta-date { color: var(--ink-dim); font-weight: 600; }
+  .cover-card .meta .meta-version { font-size: 10px; opacity: 0.75; }
   .cover-card .chev { color: var(--ink-faint); font-size: 16px; flex: none; }
 
   /* 같은 앱의 여러 개정판을 하나로 묶는 컨테이너 — 최신판(cover-card) 아래에
@@ -343,7 +353,7 @@
     <div class="section-head"><h2>어떻게 이어지나</h2><span class="hint">Scroll →</span></div>
     <div class="flow" id="flow"></div>
 
-    <div class="section-head"><h2>리포트 종류</h2><span class="hint">Tap to explore</span></div>
+    <div class="section-head"><h2>리포트 종류</h2><span class="hint">눌러서 보기</span></div>
     <div class="menu-grid" id="menuGrid"></div>
   </div>
 
@@ -356,7 +366,7 @@
   </div>
 
   <div id="appsView">
-    <div class="section-head"><h2>앱별로 보기</h2><span class="hint">By App</span></div>
+    <div class="section-head"><h2>앱별로 보기</h2><span class="hint">앱별</span></div>
     <div class="apps" id="apps"></div>
     <div id="groups"></div>
   </div>
@@ -606,6 +616,13 @@ const FLOW_DESC = {
 function iconFor(appName) {
   return ICONS[appName.toLowerCase()] || appName.trim().charAt(0).toUpperCase() || '·';
 }
+// docs/22 §5 — 일부 앱 이름에 " — 부가설명"이 붙어있어("6 VPN Blocker — 이미지·검색
+// 보조") 목록에서 다른 짧은 이름들과 시각적 무게가 안 맞았다. manifest 데이터 자체는
+// 건드리지 않고(다른 프로젝트가 쓰는 필드), 표시할 때만 짧은 이름/태그로 분리한다.
+function splitAppName(name) {
+  const m = /^(.*?)\s+—\s+(.*)$/.exec(name || '');
+  return m ? { short: m[1], tag: m[2] } : { short: name, tag: null };
+}
 // manifest 엔트리에 실제 아이콘(iconUrl)이 있으면 그걸 쓰고, 없거나 로드 실패하면
 // 지금까지 쓰던 글자/이모지 배지로 폴백한다(2026-08-06, Windows가 iconUrl 필드를
 // 게시하기 시작했는데 허브가 그걸 읽어서 그리는 코드가 아예 없었던 문제 대응).
@@ -689,9 +706,9 @@ function coverCard(it, color) {
   a.innerHTML = `
     ${glyphBadgeHtml(it, color)}
     <div class="body">
-      <div class="title">${it.displayName || it.appName}</div>
+      <div class="title">${(() => { const n = splitAppName(it.displayName || it.appName); return n.short + (n.tag ? `<span class="name-tag">${n.tag}</span>` : ''); })()}</div>
       <div class="intent-caption">${it.intent}</div>
-      <div class="meta">v${it.version} · rev.${it.reportRevision} · ${date}</div>
+      <div class="meta"><span class="meta-date">${date}</span><span class="meta-version"> · v${it.version} · rev.${it.reportRevision}</span></div>
     </div>
     <span class="chev">›</span>`;
   return a;
@@ -913,6 +930,7 @@ fetch('reports/manifest.json', { cache: 'no-store' }).then(r => r.ok ? r.json() 
     const color = PALETTE[order % PALETTE.length];
     const glyph = iconFor(appName);
     const id = slugId(appName);
+    const shortName = splitAppName(appName).short; // §5(docs/22) — 표시용 짧은 이름, id/그룹핑은 원래 appName 유지
     order++;
 
     // Group by reportKind, newest revision first within each kind.
@@ -929,7 +947,7 @@ fetch('reports/manifest.json', { cache: 'no-store' }).then(r => r.ok ? r.json() 
     tile.href = '#' + id;
     tile.innerHTML = `
       <div class="app-icon" style="background:${color.bg};color:${color.fg}">${glyph}</div>
-      <div class="name">${appName}</div>
+      <div class="name">${shortName}</div>
       <div class="count">${kinds.length}종</div>`;
     appsEl.appendChild(tile);
 
@@ -938,7 +956,7 @@ fetch('reports/manifest.json', { cache: 'no-store' }).then(r => r.ok ? r.json() 
     group.id = id;
     group.innerHTML = `<div class="app-group-head">
       <div class="app-icon" style="background:${color.bg};color:${color.fg}">${glyph}</div>
-      <h2>${appName} · CTR → MVP → 기획서 순</h2>
+      <h2>${shortName} · CTR → MVP → 기획서 순</h2>
     </div>`;
 
     kinds.forEach(kind => {
