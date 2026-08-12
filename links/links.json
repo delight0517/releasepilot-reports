@@ -1,15 +1,15 @@
 [
-  { "label": "무기고 허브 — 김근후 전체 소개", "url": "../about/", "emoji": "🗺️", "pinned": true },
-  { "label": "영상 편집자 포트폴리오", "url": "../video-editor/", "emoji": "🎬", "pinned": true },
-  { "label": "앱 개발 포트폴리오", "url": "../dev-portfolio/", "emoji": "🧩" },
-  { "label": "배우 포트폴리오", "url": "../acting/", "emoji": "🎭" },
-  { "label": "비주얼 디자인 포트폴리오", "url": "../design/", "emoji": "🎨" },
-  { "label": "3D 오브젝트 포트폴리오", "url": "../3d-work/", "emoji": "🧱" },
-  { "label": "무대 위 김근후 — 영상·기획서·글", "url": "../stage/", "emoji": "🎤" },
-  { "label": "포트폴리오 아카이브 (사진·3D·영상·웹툰·글)", "url": "../portfolio/", "emoji": "🗂️" },
-  { "label": "매거진 · 글", "url": "../articles/", "emoji": "📰" },
-  { "label": "영어 1:1 과외", "url": "../english-tutor/", "emoji": "🇬🇧" },
-  { "label": "영어 통역 · 번역", "url": "../translation/", "emoji": "🌐" },
-  { "label": "ArtStation", "url": "https://www.artstation.com/kaito_ren", "emoji": "↗" },
-  { "label": "브런치 — 사유의 공간", "url": "https://brunch.co.kr/@rogan2534", "emoji": "↗" }
+  { "label": "무기고 허브", "sub": "김근후 전체 소개", "url": "../about/", "emoji": "🗺️", "pinned": true, "big": true },
+  { "label": "영상 편집자", "sub": "포트폴리오", "url": "../video-editor/", "emoji": "🎬", "pinned": true, "image": "https://img.youtube.com/vi/wlY23yU8iPw/hqdefault.jpg" },
+  { "label": "배우", "sub": "포트폴리오", "url": "../acting/", "emoji": "🎭", "image": "https://img.youtube.com/vi/BMuR4FHYzeA/hqdefault.jpg" },
+  { "label": "무대 위 김근후", "sub": "영상·기획서·글", "url": "../stage/", "emoji": "🎤", "image": "https://img.youtube.com/vi/5EC3WFHOcQ8/hqdefault.jpg" },
+  { "label": "포트폴리오 아카이브", "sub": "사진·3D·영상·웹툰·글", "url": "../portfolio/", "emoji": "🗂️", "image": "https://img.youtube.com/vi/m8tRk_qcyUo/hqdefault.jpg" },
+  { "label": "앱 개발", "sub": "포트폴리오", "url": "../dev-portfolio/", "emoji": "🧩" },
+  { "label": "비주얼 디자인", "sub": "포트폴리오", "url": "../design/", "emoji": "🎨" },
+  { "label": "3D 오브젝트", "sub": "포트폴리오", "url": "../3d-work/", "emoji": "🧱" },
+  { "label": "매거진", "sub": "글", "url": "../articles/", "emoji": "📰" },
+  { "label": "영어 1:1 과외", "sub": "", "url": "../english-tutor/", "emoji": "🇬🇧" },
+  { "label": "영어 통역·번역", "sub": "", "url": "../translation/", "emoji": "🌐" },
+  { "label": "ArtStation", "sub": "", "url": "https://www.artstation.com/kaito_ren", "emoji": "↗" },
+  { "label": "브런치", "sub": "사유의 공간", "url": "https://brunch.co.kr/@rogan2534", "emoji": "↗" }
 ]
