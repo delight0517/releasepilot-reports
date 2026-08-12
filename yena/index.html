@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>김예나 — AI Professional Recommendation</title>
+<meta name="description" content="김예나의 학력·경력 데이터와 장기간 AI 상호작용에서 관찰된 행동 패턴을 기반으로 한 Professional Recommendation.">
+<style>
+  :root {
+    --paper: #f6f1e7;
+    --paper-2: #efe6d4;
+    --ink: #2c2620;
+    --ink-soft: #5b5346;
+    --line: #ded2b8;
+    --accent: #b5581f;
+    --accent-2: #4c6b4f;
+    --card: #fffdf8;
+    --shadow: 0 10px 30px rgba(44, 38, 32, 0.08);
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.7;
+  }
+  h1, h2, h3, .serif {
+    font-family: "Noto Serif KR", Georgia, "Nanum Myeongjo", serif;
+  }
+  a { color: inherit; }
+  .wrap {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .kicker {
+    padding: 14px 0;
+    text-align: center;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    color: var(--ink-soft);
+    border-bottom: 1px solid var(--line);
+    background: var(--paper-2);
+  }
+
+  /* Hero */
+  .hero {
+    padding: 72px 0 40px;
+    text-align: center;
+  }
+  .portrait {
+    width: 132px;
+    height: 132px;
+    margin: 0 auto 28px;
+    border-radius: 50%;
+    background: linear-gradient(150deg, #d98f4e, #b5581f);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff8ee;
+    font-size: 44px;
+    font-weight: 600;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+  }
+  .portrait img { width: 100%; height: 100%; object-fit: cover; }
+  .photo-note {
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-top: -18px;
+    margin-bottom: 28px;
+  }
+  .eyebrow {
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  h1.title {
+    font-size: 34px;
+    margin: 0 0 14px;
+    font-weight: 700;
+  }
+  .subtitle {
+    font-size: 16px;
+    color: var(--ink-soft);
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  /* Stat strip */
+  .stat-strip {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin: 44px 0 0;
+  }
+  .stat {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 18px 10px;
+    text-align: center;
+  }
+  .stat .value {
+    font-family: "Noto Serif KR", Georgia, serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .stat .label {
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-top: 4px;
+  }
+
+  section { padding: 56px 0; }
+  section + section { border-top: 1px solid var(--line); }
+
+  h2.section-title {
+    font-size: 24px;
+    margin: 0 0 26px;
+    font-weight: 700;
+  }
+  .lead {
+    font-size: 19px;
+    font-weight: 600;
+    line-height: 1.65;
+    margin-bottom: 20px;
+  }
+  p { color: var(--ink-soft); margin: 0 0 16px; }
+  p:last-child { margin-bottom: 0; }
+
+  .flow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin: 26px 0;
+  }
+  .flow .step {
+    background: var(--paper-2);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .flow .arrow { color: var(--accent); font-size: 15px; }
+
+  /* Data snapshot grid */
+  .snap-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .snap-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 20px 22px;
+  }
+  .snap-card h3 {
+    font-size: 14px;
+    margin: 0 0 10px;
+    color: var(--accent-2);
+    font-weight: 700;
+  }
+  .snap-card ul {
+    margin: 0;
+    padding-left: 18px;
+    color: var(--ink-soft);
+    font-size: 14px;
+  }
+  .snap-card li { margin-bottom: 4px; }
+  .snap-closing {
+    margin-top: 20px;
+    font-size: 14px;
+    color: var(--ink-soft);
+  }
+
+  /* Behavioral cards */
+  .b-card {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 18px;
+    padding: 26px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .b-card:last-child { border-bottom: none; padding-bottom: 0; }
+  .b-card:first-child { padding-top: 0; }
+  .b-num {
+    font-family: "Noto Serif KR", Georgia, serif;
+    font-size: 26px;
+    color: var(--line);
+    font-weight: 700;
+  }
+  .b-head {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+  .b-title { font-size: 17px; font-weight: 700; }
+  .badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: rgba(76, 107, 79, 0.14);
+    color: var(--accent-2);
+  }
+  .badge.high {
+    background: rgba(181, 88, 31, 0.14);
+    color: var(--accent);
+  }
+  .b-card p { font-size: 14px; }
+
+  .highlight-box {
+    background: var(--paper-2);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 20px 24px;
+    font-size: 15px;
+    font-weight: 600;
+    margin-top: 20px;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 20px 0;
+  }
+  .tag {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 9px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent-2);
+  }
+
+  .quote-box {
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: var(--radius);
+    padding: 32px 28px;
+    margin-top: 26px;
+    font-size: 15px;
+    line-height: 1.75;
+  }
+  .quote-box .mark { color: var(--accent); font-size: 22px; }
+
+  .disclaimer {
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .disclaimer .attribution {
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+  }
+  .disclaimer .attribution strong { color: var(--ink); }
+
+  .placeholder-box {
+    border: 1.5px dashed var(--line);
+    border-radius: var(--radius);
+    padding: 34px 26px;
+    text-align: center;
+    color: var(--ink-soft);
+  }
+  .placeholder-box .icon { font-size: 26px; margin-bottom: 10px; }
+  .placeholder-box .sub { font-size: 12px; margin-top: 6px; opacity: 0.8; }
+
+  footer {
+    padding: 30px 0 60px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+
+  @media (max-width: 640px) {
+    .stat-strip { grid-template-columns: repeat(3, 1fr); }
+    .stat-strip .stat:nth-child(4), .stat-strip .stat:nth-child(5) { grid-column: span 1; }
+    .snap-grid { grid-template-columns: 1fr; }
+    h1.title { font-size: 26px; }
+    .b-card { grid-template-columns: 40px 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="kicker">AI-ASSISTED PROFESSIONAL RECOMMENDATION</div>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="portrait" id="portrait">예</div>
+    <div class="photo-note" id="photoNote">사진 준비 중 — 추후 실제 프로필 사진으로 교체 예정</div>
+    <div class="eyebrow" id="eyebrow"></div>
+    <h1 class="title" id="titleText"></h1>
+    <p class="subtitle" id="subtitleText"></p>
+
+    <div class="stat-strip" id="statStrip"></div>
+  </div>
+</div>
+
+<section id="sec-recommendation">
+  <div class="wrap">
+    <h2 class="section-title">Recommendation</h2>
+    <div id="recLead" class="lead"></div>
+    <div id="recParagraphs"></div>
+    <div class="flow" id="recFlow"></div>
+    <p id="recClosing"></p>
+  </div>
+</section>
+
+<section id="sec-snapshot">
+  <div class="wrap">
+    <h2 class="section-title">Data Snapshot</h2>
+    <div class="snap-grid" id="snapGrid"></div>
+    <p class="snap-closing" id="snapClosing"></p>
+  </div>
+</section>
+
+<section id="sec-behavior">
+  <div class="wrap">
+    <h2 class="section-title">AI Behavioral Analysis</h2>
+    <p id="behaviorIntro"></p>
+    <div id="behaviorCards"></div>
+  </div>
+</section>
+
+<section id="sec-difference">
+  <div class="wrap">
+    <h2 class="section-title" id="diffHeading"></h2>
+    <div id="diffParagraphs"></div>
+    <div class="highlight-box" id="diffHighlight"></div>
+  </div>
+</section>
+
+<section id="sec-roles">
+  <div class="wrap">
+    <h2 class="section-title" id="rolesHeading"></h2>
+    <p id="rolesIntro"></p>
+    <div class="tags" id="rolesTags"></div>
+    <p id="rolesClosing"></p>
+  </div>
+</section>
+
+<section id="sec-final">
+  <div class="wrap">
+    <h2 class="section-title" id="finalHeading"></h2>
+    <div id="finalParagraphs"></div>
+    <div class="quote-box" id="finalQuote"></div>
+  </div>
+</section>
+
+<section id="sec-disclaimer">
+  <div class="wrap">
+    <h2 class="section-title" id="discHeading"></h2>
+    <div class="disclaimer">
+      <div id="discParagraphs"></div>
+      <div class="attribution" id="discAttribution"></div>
+    </div>
+  </div>
+</section>
+
+<section id="sec-updates">
+  <div class="wrap">
+    <h2 class="section-title" id="updHeading"></h2>
+    <div class="placeholder-box">
+      <div class="icon">📎</div>
+      <div id="updBody"></div>
+      <div class="sub" id="updSub"></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" id="footerText"></div>
+</footer>
+
+<script>
+fetch('content.json')
+  .then(r => r.json())
+  .then(data => render(data))
+  .catch(err => {
+    document.body.innerHTML = '<div style="padding:60px;text-align:center;color:#5b5346;">콘텐츠를 불러오지 못했습니다.</div>';
+    console.error(err);
+  });
+
+function el(tag, opts = {}) {
+  const e = document.createElement(tag);
+  if (opts.text) e.textContent = opts.text;
+  if (opts.html) e.innerHTML = opts.html;
+  if (opts.class) e.className = opts.class;
+  return e;
+}
+
+function render(data) {
+  document.title = `${data.name} — AI Professional Recommendation`;
+
+  if (data.photoUrl) {
+    const portrait = document.getElementById('portrait');
+    portrait.innerHTML = '';
+    const img = document.createElement('img');
+    img.src = data.photoUrl;
+    img.alt = data.photoAlt || data.name;
+    portrait.appendChild(img);
+    document.getElementById('photoNote').style.display = 'none';
+  }
+
+  document.getElementById('eyebrow').textContent = data.name;
+  document.getElementById('titleText').textContent = data.title;
+  document.getElementById('subtitleText').textContent = data.subtitle;
+
+  const statStrip = document.getElementById('statStrip');
+  data.stats.forEach(s => {
+    const card = el('div', { class: 'stat' });
+    card.appendChild(el('div', { class: 'value', text: s.value }));
+    card.appendChild(el('div', { class: 'label', text: s.label }));
+    statStrip.appendChild(card);
+  });
+
+  // Recommendation
+  document.getElementById('recLead').textContent = data.recommendation.lead;
+  const recP = document.getElementById('recParagraphs');
+  data.recommendation.paragraphs.forEach(t => recP.appendChild(el('p', { text: t })));
+  const flow = document.getElementById('recFlow');
+  data.recommendation.flow.forEach((step, i) => {
+    if (i > 0) flow.appendChild(el('span', { class: 'arrow', text: '→' }));
+    flow.appendChild(el('span', { class: 'step', text: step }));
+  });
+  document.getElementById('recClosing').textContent = data.recommendation.closing;
+
+  // Data snapshot
+  const snapGrid = document.getElementById('snapGrid');
+  const snapKeys = ['education', 'research', 'teaching', 'currentScope', 'additional', 'leadership'];
+  snapKeys.forEach(key => {
+    const group = data.dataSnapshot[key];
+    if (!group) return;
+    const card = el('div', { class: 'snap-card' });
+    card.appendChild(el('h3', { text: group.heading }));
+    const ul = el('ul');
+    group.items.forEach(it => ul.appendChild(el('li', { text: it })));
+    card.appendChild(ul);
+    snapGrid.appendChild(card);
+  });
+  document.getElementById('snapClosing').textContent = data.dataSnapshot.closing;
+
+  // Behavioral analysis
+  document.getElementById('behaviorIntro').textContent = data.behavioralAnalysis.intro;
+  const bCards = document.getElementById('behaviorCards');
+  data.behavioralAnalysis.items.forEach(item => {
+    const card = el('div', { class: 'b-card' });
+    card.appendChild(el('div', { class: 'b-num', text: item.number }));
+    const right = el('div');
+    const head = el('div', { class: 'b-head' });
+    head.appendChild(el('span', { class: 'b-title', text: item.title }));
+    const badgeClass = item.strength === '매우 강함' ? 'badge high' : 'badge';
+    head.appendChild(el('span', { class: badgeClass, text: item.strength }));
+    right.appendChild(head);
+    item.paragraphs.forEach(t => right.appendChild(el('p', { text: t })));
+    card.appendChild(right);
+    bCards.appendChild(card);
+  });
+
+  // Difference
+  document.getElementById('diffHeading').textContent = data.difference.heading;
+  const diffP = document.getElementById('diffParagraphs');
+  data.difference.paragraphs.forEach(t => diffP.appendChild(el('p', { text: t })));
+  document.getElementById('diffHighlight').textContent = data.difference.highlight;
+
+  // Roles
+  document.getElementById('rolesHeading').textContent = data.roles.heading;
+  document.getElementById('rolesIntro').textContent = data.roles.intro;
+  const tagsWrap = document.getElementById('rolesTags');
+  data.roles.tags.forEach(t => tagsWrap.appendChild(el('span', { class: 'tag', text: t })));
+  document.getElementById('rolesClosing').textContent = data.roles.closing;
+
+  // Final recommendation
+  document.getElementById('finalHeading').textContent = data.finalRecommendation.heading;
+  const finalP = document.getElementById('finalParagraphs');
+  data.finalRecommendation.paragraphs.forEach(t => finalP.appendChild(el('p', { text: t })));
+  document.getElementById('finalQuote').innerHTML =
+    '<span class="mark">“</span> ' + data.finalRecommendation.quote + ' <span class="mark">”</span>';
+
+  // Disclaimer
+  document.getElementById('discHeading').textContent = data.disclaimer.heading;
+  const discP = document.getElementById('discParagraphs');
+  data.disclaimer.paragraphs.forEach(t => discP.appendChild(el('p', { text: t })));
+  document.getElementById('discAttribution').innerHTML =
+    `<strong>${data.disclaimer.attribution}</strong><br>${data.disclaimer.attributionSub}`;
+
+  // Updates placeholder
+  document.getElementById('updHeading').textContent = data.updatesPlaceholder.heading;
+  document.getElementById('updBody').textContent = data.updatesPlaceholder.body;
+  document.getElementById('updSub').textContent = data.updatesPlaceholder.sub;
+
+  document.getElementById('footerText').textContent = `최종 업데이트 ${data.lastUpdated}`;
+}
+</script>
+
+</body>
+</html>
