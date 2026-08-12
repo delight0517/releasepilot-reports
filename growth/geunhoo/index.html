@@ -14,7 +14,8 @@
     짙은 남색·차콜 배경 + 골드/앰버 액센트. 박새로이 2026-08-12, 임의 판단.
     이 파일은 growth/geunhoo/ 전용 인스턴스다 — 재사용 스키마는
     docs/growth_tree_schema.md, 새 슬러그를 만들 때는 이 파일을 템플릿 삼아
-    growth/<slug>/index.html로 복사 후 WHY_SIMPLE만 새로 쓰면 된다.
+    growth/<slug>/index.html로 복사하면 된다. whySimple/journeyContext/glossary는
+    (2026-08-13부터) JSON 필드이므로 이 파일 자체는 손볼 것 없음.
   */
   :root {
     --bg: #0d1220; --bg-2: #121a2c; --card: #182339; --card-2: #1e2c48;
@@ -167,6 +168,14 @@
   .effect-card.good { background: var(--good-soft); border: 1px solid rgba(79,174,134,0.4); color: #cdeadd; }
   .effect-card.warn { background: var(--warn-soft); border: 1px solid rgba(217,138,66,0.4); color: #f1d9bd; }
   .effect-card .eff-label { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; opacity: .85; }
+  .journey-note { font-size: 13px; color: var(--ink-dim); line-height: 1.7; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+  .glossary-list { display: flex; flex-direction: column; gap: 8px; }
+  .glossary-item { font-size: 13px; line-height: 1.6; color: var(--ink-dim); }
+  .glossary-item b { color: var(--gold-ink); font-weight: 600; }
+  .why-toggle { background: none; border: none; color: var(--ink-faint); font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.04em; cursor: pointer; padding: 0; margin-top: 8px; text-decoration: underline; }
+  .why-toggle:hover { color: var(--gold-ink); }
+  .why-formal { display: none; margin-top: 8px; font-size: 12.5px; color: var(--ink-faint); line-height: 1.6; border-left: 2px solid var(--line); padding-left: 10px; }
+  .why-formal.open { display: block; }
   .action-box {
     margin-top: 8px; background: var(--card); border: 1px solid var(--line); border-radius: 12px;
     padding: 12px 14px; font-size: 13px; color: var(--ink);
@@ -247,20 +256,9 @@ const DATA_URL = './growth_tree.json';
 // growth_tree.json 자체(재사용 스키마)는 원문 인용만 담아야 하므로, 이 "쉬운 설명"은
 // 이 인스턴스(geunhoo)의 페이지에만 두는 별도 레이어다. 새 slug 페이지를 만들 때는
 // 이 맵을 그 사람의 노드에 맞게 새로 쓰면 된다.
-const WHY_SIMPLE = {
-  positioning_bio_rewrite: "프로필은 우리 가게 <b>간판</b>이에요. 지나가는 사람이 3초 안에 '아, 이 가게 뭐 파는 곳이구나' 알아야 들어오죠. 지금 간판 문구는 너무 어려운 말이라, 처음 온 사람은 그냥 지나쳐요.",
-  pillar_ratio_focus: "장난감을 5가지 다 조금씩 만들면 뭘 제일 잘 만드는지 알 수 없어요. 그래서 <b>제일 자신있는 3D 아트를 절반 넘게(55%)</b>, 나머지는 조금씩만 만들기로 정하는 거예요. 8주 동안 이 비율을 지켜야 뭐가 잘 통하는지 보여요.",
-  pinned_posts_setup: "집에 손님이 왔을 때 <b>제일 잘 보이는 자리에 대표작 3개</b>를 딱 걸어두는 것과 같아요. 손님이 어디를 봐야 할지 몰라서 그냥 나가버리지 않게요.",
-  discovery_reels_batch: "이 트리에서 가장 중요한 <b>첫 관문</b>이에요. 시험을 보려면 문제집이 있어야 하듯, 뒤에 나오는 모든 실험(테스트·비교·측정)은 이 릴스 6개가 있어야 시작할 수 있어요.",
-  save_carousel: "릴스가 '짧은 예고편'이라면, 캐러셀은 <b>차근차근 설명하는 안내판</b>이에요. 보는 사람이 '저장'을 눌러 나중에 다시 찾아보게 만드는 역할을 해요.",
-  story_routine: "스토리는 매일 안부를 묻는 <b>친한 친구의 문자</b> 같은 거예요. 새로운 사람을 끌어오진 못해도, 이미 온 사람과 더 가까워지게 해줘요.",
-  single_purpose_per_reel: "릴스를 올리기 전에 미리 <b>이건 '보여주기용', 이건 '저장용'</b>처럼 이름표를 붙여두는 거예요. 그래야 나중에 결과를 보고 '아, 이래서 잘 됐구나'를 알 수 있어요.",
-  trial_reels_test: "Trial Reels는 <b>미리 맛보기 시식 코너</b> 같은 기능이에요. 아직 나를 모르는 사람에게 먼저 보여주고, 반응이 괜찮으면 그때 전체 공개하는 거죠.",
-  ab_variable_test: "한 번에 여러 가지를 바꾸면 뭐가 효과 있었는지 헷갈려요. 그래서 <b>한 주에 딱 한 가지만</b> 바꿔보며 비교하는 거예요 — 요리할 때 소금 양만 바꿔보며 맛을 비교하는 것과 같아요.",
-  metrics_tracking: "숫자를 눈대중으로 어림잡지 않고, <b>매주 노트에 기록</b>하는 거예요. 조회수만 보면 착각하기 쉬워서, 저장 수·팔로우 전환까지 같이 적어둬야 진짜 잘 되는 걸 알 수 있어요.",
-  scale_validated_format: "8주 동안 쌓은 기록을 보고 <b>제일 잘 통한 방식만 골라서 더 크게</b> 키우는 마지막 단계예요. 감이 아니라 그동안 모은 진짜 숫자로 결정하는 거죠.",
-};
-
+// WHY_SIMPLE 상수는 2026-08-13에 제거됐다 — 이제 growth_tree.json 자체의
+// whySimple/journeyContext/glossary 필드를 읽는다(iOS 뷰어와 같은 소스를
+// 공유하기 위해, docs/growth_tree_schema.md §3 참고).
 let TREE = null;
 // 로컬 미리보기 전용 — 새로고침하면 원래대로 (실제 저장은 git 커밋으로만 반영됨,
 // apps/gallery/index.html의 configwarn 패턴과 동일한 원칙).
@@ -380,7 +378,13 @@ function openDrawer(nodeId) {
       </div>`;
   } else {
     const done = isDone(node);
-    const simple = WHY_SIMPLE[node.id] || node.why;
+    const simple = node.whySimple || node.why;
+    const glossaryEntries = Object.entries(node.glossary || {});
+    const glossaryHtml = glossaryEntries.length
+      ? `<div class="drawer-section"><h3>용어 설명</h3><div class="glossary-list">${
+          glossaryEntries.map(([term, def]) => `<div class="glossary-item"><b>${term}</b> — ${def}</div>`).join('')
+        }</div></div>`
+      : '';
     drawer.innerHTML = `
       <button class="drawer-close" id="drawerClose">✕</button>
       <span class="node-cat">${node.category}</span>
@@ -390,6 +394,13 @@ function openDrawer(nodeId) {
       <div class="drawer-section">
         <h3>왜 필요한가요?</h3>
         <p>${simple}</p>
+        <button class="why-toggle" id="whyToggle">원문 근거 문장 보기</button>
+        <div class="why-formal" id="whyFormal">${node.why}</div>
+      </div>
+
+      <div class="drawer-section">
+        <h3>이 트리에서 어디쯤인가요?</h3>
+        <div class="journey-note">${node.journeyContext || ''}</div>
       </div>
 
       <div class="drawer-section">
@@ -411,6 +422,8 @@ function openDrawer(nodeId) {
         </div>
       </div>
 
+      ${glossaryHtml}
+
       <button class="mark-btn ${done ? 'is-done' : ''}" id="markBtn">
         ${done ? '✓ 완료로 표시됨 (미리보기)' : '완료로 표시'}
       </button>
@@ -426,6 +439,9 @@ function openDrawer(nodeId) {
       renderProgress();
       renderTiers();
       openDrawer(node.id);
+    });
+    document.getElementById('whyToggle').addEventListener('click', () => {
+      document.getElementById('whyFormal').classList.toggle('open');
     });
   }
 
