@@ -1,6 +1,7 @@
 [
   { "label": "무기고 허브", "sub": "김근후 전체 소개", "url": "../about/", "emoji": "🗺️", "pinned": true, "big": true },
   { "label": "영상 편집자", "sub": "포트폴리오", "url": "../video-editor/", "emoji": "🎬", "pinned": true, "image": "https://img.youtube.com/vi/wlY23yU8iPw/hqdefault.jpg" },
+  { "label": "3D 게임 아티스트", "sub": "취업용 포트폴리오", "url": "../game-artist/", "emoji": "🗡️", "pinned": true },
   { "label": "배우", "sub": "포트폴리오", "url": "../acting/", "emoji": "🎭", "image": "https://img.youtube.com/vi/BMuR4FHYzeA/hqdefault.jpg" },
   { "label": "무대 위 김근후", "sub": "영상·기획서·글", "url": "../stage/", "emoji": "🎤", "image": "https://img.youtube.com/vi/5EC3WFHOcQ8/hqdefault.jpg" },
   { "label": "포트폴리오 아카이브", "sub": "사진·3D·영상·웹툰·글", "url": "../portfolio/", "emoji": "🗂️", "image": "https://img.youtube.com/vi/m8tRk_qcyUo/hqdefault.jpg" },
