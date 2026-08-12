@@ -1,0 +1,11 @@
+[
+  { "id": "game-artist-images", "label": "game-artist/ 실제 포트폴리오 이미지 업로드 (실루엣→완성, Substance Painter 뷰포트, 최종 프레젠테이션)", "pillar": "3D 게임 아티스트", "status": "open", "addedAt": "2026-08-12" },
+  { "id": "video-editor-tier-review", "label": "video-editor/ A/B등급 영상 본인 재검토·확정", "pillar": "영상 편집자", "status": "open", "addedAt": "2026-08-12" },
+  { "id": "reel-silhouette", "label": "릴스 촬영 — 실루엣→완성 3단계 점프컷", "pillar": "3D 게임 아티스트", "status": "open", "addedAt": "2026-08-12" },
+  { "id": "reel-painter-timelapse", "label": "릴스 촬영 — Substance Painter 핸드페인팅 타임랩스", "pillar": "3D 게임 아티스트", "status": "open", "addedAt": "2026-08-12" },
+  { "id": "reel-ai-research", "label": "릴스 촬영 — AI 리서치 과정 화면 녹화", "pillar": "3D 게임 아티스트 · AI", "status": "open", "addedAt": "2026-08-12" },
+  { "id": "reel-timeline-voiceover", "label": "릴스 촬영 — 편집 타임라인 스크린 녹화 + 보이스오버", "pillar": "영상 편집자", "status": "open", "addedAt": "2026-08-12" },
+  { "id": "linktree-manual-update", "label": "linktr.ee 실제 계정에 video-editor/game-artist/links 링크 반영 (본인 로그인 필요)", "pillar": "인프라", "status": "open", "addedAt": "2026-08-12" },
+  { "id": "notion-share-check", "label": "Notion 'ai 배경 포트폴리오' 하위 페이지 공유 설정 재확인", "pillar": "인프라", "status": "open", "addedAt": "2026-08-12" },
+  { "id": "design-3dwork-fill", "label": "design/, 3d-work/ 아카이브에 실제 결과물 채우기", "pillar": "포트폴리오", "status": "open", "addedAt": "2026-08-12" }
+]

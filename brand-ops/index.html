@@ -1,0 +1,95 @@
+<!doctype html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>예나 트래커 — 브랜드 운영 현황</title>
+<meta name="description" content="김근후 개인 브랜드 사이트들의 미완료 작업 트래커. 2주 간격 리포트.">
+<link rel="icon" href="../icons/icon-192.png">
+<meta name="theme-color" content="#0b0d10">
+<style>
+  :root {
+    --bg: #0b0d10; --card: #12151a; --line: #232a32;
+    --ink: #eef2f5; --ink-dim: #a9b3bd; --ink-faint: #62707c;
+    --acc: #ffb02e; --acc-soft: rgba(255,176,46,0.14);
+    --ok: #38c48f; --ok-soft: rgba(56,196,143,0.12);
+    --mono: ui-monospace, "SF Mono", "Roboto Mono", Menlo, monospace;
+    --sans: -apple-system, "Pretendard", "Apple SD Gothic Neo", "Segoe UI", sans-serif;
+  }
+  :root[data-theme="light"] {
+    --bg: #f3f4f6; --card: #ffffff; --line: #dfe3e8;
+    --ink: #0f1216; --ink-dim: #4c555e; --ink-faint: #8a929a;
+    --acc: #b9740a; --acc-soft: rgba(185,116,10,0.10);
+    --ok: #1f8f66; --ok-soft: rgba(31,143,102,0.10);
+  }
+  * { box-sizing: border-box; overflow-wrap: break-word; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 48px 20px 80px; }
+  .kicker { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--acc); margin: 0 0 8px; }
+  h1 { font-size: 22px; font-weight: 700; margin: 0 0 4px; }
+  .sub { font-size: 12.5px; color: var(--ink-faint); margin: 0 0 28px; font-family: var(--mono); }
+
+  .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 30px; }
+  .stat { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+  .stat .n { font-family: var(--mono); font-size: 22px; font-weight: 700; }
+  .stat .l { font-size: 11px; color: var(--ink-faint); margin-top: 2px; }
+
+  .group { margin-bottom: 26px; }
+  .group h2 { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-faint); margin: 0 0 10px; }
+  .item { display: flex; align-items: flex-start; gap: 10px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 11px 14px; margin-bottom: 8px; }
+  .item .dot { width: 9px; height: 9px; border-radius: 50%; margin-top: 5px; flex: none; background: var(--acc); }
+  .item.done .dot { background: var(--ok); }
+  .item .txt { font-size: 13.5px; }
+  .item.done .txt { color: var(--ink-faint); text-decoration: line-through; }
+  .item .age { font-family: var(--mono); font-size: 10px; color: var(--ink-faint); margin-left: auto; flex: none; padding-top: 2px; }
+
+  footer { margin-top: 40px; font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint); text-align: center; }
+</style>
+
+<div class="wrap">
+  <p class="kicker">예나 트래커 · Brand Ops</p>
+  <h1>김근후 개인 브랜드 — 미완료 작업</h1>
+  <p class="sub">데이터 소스: brand-ops/todo.json · 2주 간격 자동 리포트 연동</p>
+
+  <div class="stat-row" id="statMount"></div>
+  <div id="listMount"></div>
+
+  <footer>이 페이지는 todo.json 하나로 움직입니다 · 완료 처리는 status를 "done"으로 바꾸면 됩니다</footer>
+</div>
+
+<script>
+  fetch("./todo.json")
+    .then(r => r.json())
+    .then(items => {
+      items = Array.isArray(items) ? items : [];
+      const open = items.filter(i => i.status !== "done");
+      const done = items.filter(i => i.status === "done");
+
+      document.getElementById("statMount").innerHTML = `
+        <div class="stat"><div class="n">${items.length}</div><div class="l">전체</div></div>
+        <div class="stat"><div class="n">${open.length}</div><div class="l">미완료</div></div>
+        <div class="stat"><div class="n">${done.length}</div><div class="l">완료</div></div>`;
+
+      const pillars = {};
+      items.forEach(i => { (pillars[i.pillar || "기타"] ??= []).push(i); });
+
+      const mount = document.getElementById("listMount");
+      mount.innerHTML = "";
+      Object.entries(pillars).forEach(([pillar, list]) => {
+        const g = document.createElement("div");
+        g.className = "group";
+        const now = new Date("2026-08-12");
+        g.innerHTML = `<h2>${pillar}</h2>` + list.map(it => {
+          const days = it.addedAt ? Math.max(0, Math.round((now - new Date(it.addedAt)) / 86400000)) : null;
+          return `<div class="item ${it.status === "done" ? "done" : ""}">
+            <span class="dot"></span>
+            <span class="txt">${it.label}</span>
+            ${days !== null ? `<span class="age">D+${days}</span>` : ""}
+          </div>`;
+        }).join("");
+        mount.appendChild(g);
+      });
+    })
+    .catch(e => {
+      document.getElementById("listMount").textContent = "todo.json을 불러오지 못했습니다.";
+      console.error(e);
+    });
+</script>
