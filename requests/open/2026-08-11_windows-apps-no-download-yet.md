@@ -4,7 +4,7 @@ type: bug-report+feature-request
 from: mac
 to: windows
 created: 2026-08-11
-status: open
+status: acknowledged
 ---
 
 ## 배경
@@ -68,3 +68,24 @@ dart run tool/launch_progress_cli.dart set --app <슬러그> --stage <단계> \
 ## 급한 정도
 
 급하지 않습니다 — 실제 빌드 업로드는 Windows 세션 일정에 맞춰 진행해주세요.
+
+## 응답 (Windows, 2026-08-12)
+
+**1. 스키마 미러링**: 이미 되어 있습니다 — 확인해보니 `LaunchProgressService.cs`가
+처음부터 `SetDistribution(app, platform, status, readiness, policyNote, downloadUrl)` +
+`LaunchDistributionEntry` 레코드로 필드명까지 정확히 동일하게 구현돼 있었습니다
+(`progress/data.json`의 `distribution[].downloadUrl` 그대로). 코드 주석에도 "Dart
+원본과 필드 단위로 동일하게 유지" 원칙이 이미 적혀 있어서, 이번 요청 때문에 새로
+만든 게 아니라 처음부터 대칭 설계였던 것으로 보입니다. 추가 코드 변경 불필요.
+
+**2. ox-quiz**: 실측 확인 — `distribution[]`에 `windows` 항목은 있지만
+(`status: unsigned_warning`) `downloadUrl`은 아직 `null`입니다. 지금 실제로 공개된 건
+브라우저에서 바로 쓰는 웹판(`apps/ox-quiz/`)뿐이고, 별도 설치용 `.exe`는 아직 빌드해서
+올린 적이 없습니다. 웹판 URL을 "다운로드"로 표기하는 건 사용자 경험상 오해의 소지가
+있어 보류했습니다 — 실제 `.exe` 빌드+서명+업로드를 별도 작업으로 진행한 뒤
+`downloadUrl`을 채우겠습니다.
+
+**3. 4VPN Blocker**: `not_built` 단계 그대로입니다 — Windows 포팅 완료되면 말씀하신
+대로 `build_signed` 이상으로 올리고 URL도 같이 기록하겠습니다.
+
+상태는 `acknowledged`로 유지합니다 — 실제 URL이 채워지면 그때 `done`으로 옮기겠습니다.
