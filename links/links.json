@@ -1,0 +1,15 @@
+[
+  { "label": "무기고 허브 — 김근후 전체 소개", "url": "../about/", "emoji": "🗺️", "pinned": true },
+  { "label": "영상 편집자 포트폴리오", "url": "../video-editor/", "emoji": "🎬", "pinned": true },
+  { "label": "앱 개발 포트폴리오", "url": "../dev-portfolio/", "emoji": "🧩" },
+  { "label": "배우 포트폴리오", "url": "../acting/", "emoji": "🎭" },
+  { "label": "비주얼 디자인 포트폴리오", "url": "../design/", "emoji": "🎨" },
+  { "label": "3D 오브젝트 포트폴리오", "url": "../3d-work/", "emoji": "🧱" },
+  { "label": "무대 위 김근후 — 영상·기획서·글", "url": "../stage/", "emoji": "🎤" },
+  { "label": "포트폴리오 아카이브 (사진·3D·영상·웹툰·글)", "url": "../portfolio/", "emoji": "🗂️" },
+  { "label": "매거진 · 글", "url": "../articles/", "emoji": "📰" },
+  { "label": "영어 1:1 과외", "url": "../english-tutor/", "emoji": "🇬🇧" },
+  { "label": "영어 통역 · 번역", "url": "../translation/", "emoji": "🌐" },
+  { "label": "ArtStation", "url": "https://www.artstation.com/kaito_ren", "emoji": "↗" },
+  { "label": "브런치 — 사유의 공간", "url": "https://brunch.co.kr/@rogan2534", "emoji": "↗" }
+]
