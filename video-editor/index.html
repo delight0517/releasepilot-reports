@@ -1,0 +1,219 @@
+<!doctype html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>김근후 — 영상 편집자</title>
+<meta name="description" content="김근후, 영상 편집자. 컷과 리듬으로 이야기를 만든다.">
+<link rel="icon" href="../icons/icon-192.png">
+<meta name="theme-color" content="#0b0b0d">
+<style>
+  :root {
+    --bg: #0b0b0d; --bg-raised: #141417; --card: #17171b; --line: #29292f;
+    --ink: #f2f1ec; --ink-dim: #b7b6c2; --ink-faint: #6f6e7a;
+    --grade: #e8632b; --grade-soft: rgba(232,99,43,0.14);
+    --teal: #2fa39a; --teal-soft: rgba(47,163,154,0.14);
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Noto Serif KR", serif;
+    --sans: -apple-system, "Pretendard", "Apple SD Gothic Neo", "Segoe UI", sans-serif;
+    --mono: ui-monospace, "SF Mono", "Roboto Mono", Menlo, monospace;
+  }
+  :root[data-theme="light"] {
+    --bg: #f4f2ee; --bg-raised: #ffffff; --card: #ffffff; --line: #dedad2;
+    --ink: #17161a; --ink-dim: #4c4a55; --ink-faint: #8a8791;
+    --grade: #c8531f; --grade-soft: rgba(200,83,31,0.10);
+    --teal: #1f7e76; --teal-soft: rgba(31,126,118,0.10);
+  }
+  * { box-sizing: border-box; overflow-wrap: break-word; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  a { color: inherit; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 0 22px 100px; }
+
+  /* ── filmstrip texture along the very top, quiet, always there ── */
+  .filmstrip { height: 10px; width: 100%;
+    background: repeating-linear-gradient(90deg, var(--line) 0 6px, transparent 6px 16px);
+    opacity: 0.55; }
+
+  /* ── HERO — a scrub bar / timeline reads the tagline out ── */
+  .hero { position: relative; padding: 92px 22px 56px; text-align: center; overflow: hidden;
+    background: radial-gradient(700px 380px at 50% -12%, var(--grade-soft), transparent 65%), var(--bg); }
+  .timecode { font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em; color: var(--ink-faint);
+    text-transform: uppercase; margin: 0 0 22px; }
+  .timecode b { color: var(--grade); }
+  .hero h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(34px, 6.6vw, 56px); margin: 0 0 14px; text-wrap: balance; }
+  .hero h1 em { font-style: normal; color: var(--grade); }
+  .hero .role { font-family: var(--mono); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); margin: 0 0 18px; }
+  .hero p.lede { max-width: 52ch; margin: 0 auto; font-size: 15.5px; color: var(--ink-dim); }
+
+  .scrub { position: relative; height: 3px; background: var(--line); margin: 40px auto 0; max-width: 560px; border-radius: 999px; overflow: hidden; }
+  .scrub::after { content: ""; position: absolute; inset: 0; width: 38%; background: linear-gradient(90deg, var(--teal), var(--grade)); }
+
+  section { padding: 60px 0 0; scroll-margin-top: 20px; }
+  .section-head { margin-bottom: 22px; text-align: center; }
+  .section-eyebrow { display: block; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--grade); margin-bottom: 6px; }
+  .section-head h2 { font-family: var(--serif); font-weight: 400; font-size: 25px; margin: 0; }
+  .section-head p { margin: 6px auto 0; font-size: 13px; color: var(--ink-faint); max-width: 50ch; }
+
+  /* ── featured cut ── */
+  .featured { background: var(--card); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; }
+  .featured .frame { position: relative; aspect-ratio: 16/9; background: #000; }
+  .featured .frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .featured .meta { padding: 20px 24px 24px; }
+  .featured .tag { display: inline-flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 10.5px;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--grade); background: var(--grade-soft);
+    border-radius: 999px; padding: 4px 11px; margin-bottom: 10px; }
+  .featured h3 { font-family: var(--serif); font-weight: 400; font-size: 22px; margin: 0 0 8px; }
+  .featured .note { font-size: 13.5px; color: var(--ink-dim); margin: 0; max-width: 62ch; }
+
+  /* ── secondary reel ── */
+  .reel { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-top: 18px; }
+  .clip { background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+  .clip .frame { position: relative; aspect-ratio: 16/9; background: #000; }
+  .clip .frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .clip .meta { padding: 14px 16px 16px; }
+  .clip h4 { font-family: var(--serif); font-weight: 400; font-size: 16px; margin: 0 0 4px; }
+  .clip .note { font-size: 12px; color: var(--ink-faint); margin: 0; }
+
+  /* ── study strip — smaller, lower-confidence work, honestly labeled ── */
+  .strip-head { display: flex; align-items: baseline; justify-content: space-between; margin: 46px 0 12px; }
+  .strip-head span { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); }
+  .strip { display: flex; gap: 14px; overflow-x: auto; padding: 2px 2px 10px; scroll-snap-type: x proximity; }
+  .strip::-webkit-scrollbar { height: 6px; }
+  .strip::-webkit-scrollbar-thumb { background: var(--line); border-radius: 999px; }
+  .strip .clip { flex: none; width: 240px; scroll-snap-align: start; }
+
+  .principle { margin-top: 64px; border-top: 1px solid var(--line); padding-top: 28px; text-align: center; }
+  .principle p { font-family: var(--serif); font-size: 16px; color: var(--ink-dim); max-width: 46ch; margin: 0 auto; }
+
+  footer { margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--line); font-size: 12px; color: var(--ink-faint); text-align: center; }
+  footer p { margin: 4px 0; }
+
+  @media (max-width: 640px) {
+    body { font-size: 15px; }
+    .reel { grid-template-columns: 1fr; }
+    .hero { padding: 72px 18px 44px; }
+  }
+</style>
+
+<div class="filmstrip"></div>
+
+<div class="hero">
+  <p class="timecode">00:00:00:00 <b>REC</b> · 영상 편집자</p>
+  <h1>컷과 리듬으로,<br><em>이야기</em>를 만든다</h1>
+  <p class="role">김근후 · VIDEO EDITOR</p>
+  <p class="lede">장면과 장면 사이의 간격, 음악이 붙는 타이밍, 색이 바뀌는 순간 —
+    그 틈에서 이야기가 만들어진다고 믿는다. 아래는 그 틈을 직접 만진 작업들.</p>
+  <div class="scrub"></div>
+</div>
+
+<div class="wrap">
+  <section id="featured">
+    <div class="section-head">
+      <span class="section-eyebrow">Featured Cut</span>
+      <h2>대표작</h2>
+      <p>구조가 있는 편집 — 레퍼런스를 두고 처음부터 끝까지 서사를 설계한 작업.</p>
+    </div>
+    <div id="featuredMount"></div>
+  </section>
+
+  <section id="secondary">
+    <div class="section-head">
+      <span class="section-eyebrow">Also Cut</span>
+      <h2>리듬과 무드</h2>
+      <p>음악·톤에 맞춰 컷의 리듬과 색감을 설계한 작업.</p>
+    </div>
+    <div class="reel" id="reelMount"></div>
+  </section>
+
+  <div class="strip-head">
+    <span>Study Reel — 장르 실험</span>
+    <span>참고용 · 낮은 확신도</span>
+  </div>
+  <div class="strip" id="stripMount"></div>
+
+  <div class="principle">
+    <p>이 페이지는 편집자로서의 작업만 보여준다. 다른 작업(개발·연기·디자인)은
+      여기에 없다 — 그게 이 페이지의 원칙이다.</p>
+  </div>
+
+  <footer>
+    <p>생성: releasepilot-reports · video-editor/ · 영상 데이터 출처: <code>../portfolio/videos.json</code></p>
+  </footer>
+</div>
+
+<script>
+  // ── 데이터는 portfolio/videos.json 하나를 그대로 재사용한다.
+  // 새 영상이 거기 추가되면, 여기 TIERS에 id만 추가해서 언제든 다시
+  // 조합할 수 있다 — 영상 데이터를 이 페이지에 직접 박아넣지 않는 이유.
+  const TIERS = {
+    featured: [
+      { id: "breakup-process-edit", note: "레퍼런스를 두고 서사 구조를 처음부터 설계한 편집. 대표작." }
+    ],
+    secondary: [
+      { id: "sandy-beach-kaze", note: "음악 무드에 맞춘 리듬·색감 편집." }
+    ],
+    study: [
+      { id: "seoul-urban-legend-dab-monster", note: "내레이션 기반 공포 장르 편집" },
+      { id: "seoul-urban-legend-haunted-house", note: "내레이션 기반 공포 장르 편집" }
+    ]
+  };
+
+  function ytId(url) {
+    const m = (url || "").match(/(?:youtu\.be\/|v=)([\w-]{6,})/);
+    return m ? m[1] : null;
+  }
+
+  function embedUrl(yt) {
+    const id = ytId(yt);
+    return id ? `https://www.youtube.com/embed/${id}` : "";
+  }
+
+  fetch("../portfolio/videos.json")
+    .then(r => r.json())
+    .then(items => {
+      const byId = Object.fromEntries((Array.isArray(items) ? items : []).map(v => [v.id, v]));
+
+      const featuredMount = document.getElementById("featuredMount");
+      TIERS.featured.forEach(t => {
+        const v = byId[t.id];
+        if (!v) return;
+        const el = document.createElement("div");
+        el.className = "featured";
+        el.innerHTML = `
+          <div class="frame"><iframe src="${embedUrl(v.youtube)}" title="${v.title}" allowfullscreen loading="lazy"></iframe></div>
+          <div class="meta">
+            <span class="tag">대표작</span>
+            <h3>${v.title}</h3>
+            <p class="note">${t.note}</p>
+          </div>`;
+        featuredMount.appendChild(el);
+      });
+
+      const reelMount = document.getElementById("reelMount");
+      TIERS.secondary.forEach(t => {
+        const v = byId[t.id];
+        if (!v) return;
+        const el = document.createElement("div");
+        el.className = "clip";
+        el.innerHTML = `
+          <div class="frame"><iframe src="${embedUrl(v.youtube)}" title="${v.title}" allowfullscreen loading="lazy"></iframe></div>
+          <div class="meta"><h4>${v.title}</h4><p class="note">${t.note}</p></div>`;
+        reelMount.appendChild(el);
+      });
+
+      const stripMount = document.getElementById("stripMount");
+      TIERS.study.forEach(t => {
+        const v = byId[t.id];
+        if (!v) return;
+        const el = document.createElement("div");
+        el.className = "clip";
+        el.innerHTML = `
+          <div class="frame"><iframe src="${embedUrl(v.youtube)}" title="${v.title}" allowfullscreen loading="lazy"></iframe></div>
+          <div class="meta"><h4>${v.title}</h4><p class="note">${t.note}</p></div>`;
+        stripMount.appendChild(el);
+      });
+    })
+    .catch(e => {
+      document.getElementById("featuredMount").textContent = "영상 데이터를 불러오지 못했습니다.";
+      console.error(e);
+    });
+</script>
