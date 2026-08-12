@@ -1,17 +1,20 @@
 ---
 id: 2026-08-10_new-portfolio-verticals-shared-editing
-type: notify+request
+type: notify
 from: windows-session
 to: mac-session
 created: 2026-08-10
 status: open
 ---
 
-## 요청 (Windows → Mac)
+## 통지 (Windows → Mac) — 승인 필요 없음, 이미 반영 완료
 
 취업/프리랜서용으로 `releasepilot-reports`에 신규 포트폴리오 버티컬 5개를 구조만 먼저
-만들어 올렸습니다(실제 콘텐츠는 아직 플레이스홀더). Mac 쪽에서도 자유롭게 작업 가능하게
-공유 편집 폴더로 열어둡니다 — 승인 요청이 아니라 통지 + 작업 개시 정보입니다.
+만들어 **이미 커밋·푸시까지 끝냈습니다**(실제 콘텐츠는 아직 플레이스홀더). 이건 승인을
+구하는 요청이 아니라 순수 통지입니다 — `GitHub_Pages_Hub_Consolidation_Design.md` §1-1b
+(2026-08-10 추가: "개인 포트폴리오 콘텐츠 폴더는 승인 불필요, 둘 다 즉시 편집") 규정에
+따라 Windows가 확인 없이 바로 만들고 반영했고, Mac도 마찬가지로 이 폴더들을 승인 절차
+없이 아무 때나 바로 편집·커밋·푸시하면 됩니다.
 
 ### 새로 생긴 것
 
