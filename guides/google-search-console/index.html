@@ -1,0 +1,141 @@
+<!doctype html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>교재 — Google Search Console 등록 (스킬트리)</title>
+<meta name="description" content="예나 교재 · Google Search Console 등록 + sitemap 제출을 스킬트리 방식으로 따라가는 가이드.">
+<link rel="canonical" href="https://delight0517.github.io/releasepilot-reports/guides/google-search-console/">
+<link rel="icon" href="../../icons/icon-192.png">
+<meta name="theme-color" content="#0f1216">
+<style>
+  :root {
+    --bg: #0f1216; --card: #171b21; --line: #262c34;
+    --ink: #eef1f5; --ink-dim: #a9b2bd; --ink-faint: #626b76;
+    --gold: #e6b23d; --gold-soft: rgba(230,178,61,0.14);
+    --wait: #e0654f; --wait-soft: rgba(224,101,79,0.14);
+    --done: #38c48f; --done-soft: rgba(56,196,143,0.14);
+    --mono: ui-monospace, "SF Mono", Menlo, monospace;
+    --sans: -apple-system, "Pretendard", "Apple SD Gothic Neo", "Segoe UI", sans-serif;
+    --serif: "Iowan Old Style", Georgia, "Noto Serif KR", serif;
+  }
+  :root[data-theme="light"] {
+    --bg: #f4f5f7; --card: #ffffff; --line: #e1e4e9;
+    --ink: #14171b; --ink-dim: #4c545c; --ink-faint: #8a919a;
+    --gold: #a3730f; --gold-soft: rgba(163,115,15,0.10);
+    --wait: #b8402c; --wait-soft: rgba(184,64,44,0.08);
+    --done: #1f8f66; --done-soft: rgba(31,143,102,0.08);
+  }
+  * { box-sizing: border-box; overflow-wrap: break-word; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); line-height: 1.55; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 900px; margin: 0 auto; padding: 44px 20px 90px; }
+  .kicker { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); margin: 0 0 8px; }
+  h1 { font-family: var(--serif); font-weight: 400; font-size: 25px; margin: 0 0 6px; }
+  .sub { font-size: 12.5px; color: var(--ink-faint); margin: 0 0 30px; font-family: var(--mono); }
+
+  .totals { display: flex; gap: 10px; margin-bottom: 30px; flex-wrap: wrap; }
+  .totals .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; font-size: 12px; }
+  .totals .card b { display: block; font-family: var(--mono); font-size: 16px; }
+
+  .tree { overflow-x: auto; padding-bottom: 10px; }
+  .lane { display: flex; gap: 30px; align-items: center; min-width: 900px; padding: 10px 0; }
+  .node { position: relative; flex: none; width: 168px; }
+  .node .card { background: var(--card); border: 1.5px solid var(--line); border-radius: 12px; padding: 12px 13px; cursor: pointer; transition: border-color .15s ease, transform .15s ease; }
+  .node .card:hover { transform: translateY(-2px); }
+  .node.root .card { border-color: var(--gold); background: linear-gradient(180deg, var(--gold-soft), var(--card) 70%); }
+  .node.wait .card { border-color: var(--wait); }
+  .node.selected .card { border-color: var(--gold); box-shadow: 0 0 0 2px var(--gold-soft); }
+  .node.done .card { border-color: var(--done); background: linear-gradient(180deg, var(--done-soft), var(--card) 70%); }
+  .node .col { font-family: var(--mono); font-size: 9.5px; color: var(--ink-faint); text-transform: uppercase; }
+  .node .icon { font-size: 13px; margin-left: 4px; }
+  .node .label { font-size: 13px; font-weight: 600; margin: 6px 0 0; }
+  .arrow { flex: none; color: var(--ink-faint); font-family: var(--mono); font-size: 18px; }
+
+  .detail { margin-top: 30px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; }
+  .detail h2 { font-family: var(--serif); font-weight: 400; font-size: 19px; margin: 0 0 10px; }
+  .detail p, .detail li { font-size: 13.5px; color: var(--ink-dim); }
+  .detail code { background: var(--bg); border: 1px solid var(--line); border-radius: 5px; padding: 1px 6px; font-family: var(--mono); font-size: 12.5px; color: var(--ink); }
+  .detail ol { padding-left: 20px; }
+  .mark-done { margin-top: 14px; font-family: var(--mono); font-size: 11.5px; border: 1px solid var(--done); color: var(--done); background: var(--done-soft); border-radius: 999px; padding: 6px 14px; cursor: pointer; }
+
+  footer { margin-top: 40px; font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint); text-align: center; }
+</style>
+
+<div class="wrap">
+  <p class="kicker">예나 교재 · Skill Tree</p>
+  <h1>Google Search Console 등록 + sitemap 제출</h1>
+  <p class="sub">GUIDE_SOP.md 빌드트리 문법(Column/Lane/Deps) 적용 · releasepilot-reports 사이트 기준</p>
+
+  <div class="totals" id="totalsMount"></div>
+
+  <div class="tree">
+    <div class="lane" id="laneMount"></div>
+  </div>
+
+  <div class="detail" id="detailMount"></div>
+
+  <footer>진행 상태는 이 브라우저에만 저장됩니다(localStorage) · 데이터 소스: 이 페이지에 내장된 노드 정의</footer>
+</div>
+
+<script>
+  const NODES = [
+    { id: "add-property", col: 0, label: "속성 추가", wait: false,
+      detail: `<h2>1 · 속성 추가</h2><p>search.google.com/search-console 접속 후 로그인 → 왼쪽 상단 <b>"속성 추가"</b> 클릭.</p>` , deps: [] },
+    { id: "url-prefix", col: 1, label: "URL 접두어 입력", wait: false,
+      detail: `<h2>2 · URL 접두어</h2><p>두 칸 중 "도메인"이 아니라 <b>"URL 접두어"</b> 칸에 입력:</p><p><code>https://delight0517.github.io/releasepilot-reports/</code></p><p>도메인 칸은 DNS 인증이 필요해서 GitHub Pages 하위 경로에는 안 맞음.</p>`, deps: ["add-property"] },
+    { id: "html-verify", col: 2, label: "HTML 파일 인증", wait: false,
+      detail: `<h2>3 · 소유권 인증</h2><ol><li>"HTML 파일" 방식 선택</li><li>다운로드된 <code>googleXXXX.html</code> 파일 이름·내용을 그대로 세션에 전달</li><li>세션이 사이트 루트에 커밋·푸시</li><li>1~2분 뒤 "확인" 버튼 클릭</li></ol>`, deps: ["url-prefix"] },
+    { id: "sitemap", col: 3, label: "Sitemap 제출", wait: true,
+      detail: `<h2>4 · Sitemap 제출</h2><p>왼쪽 메뉴 "Sitemaps" → 입력칸에 <code>sitemap.xml</code>만 입력 → 제출.</p><p>상태가 "성공"으로 바뀌는 데 몇 시간~며칠 걸림 — 대기 단계.</p>`, deps: ["html-verify"] },
+    { id: "index-request", col: 4, label: "핵심 페이지 색인 요청", wait: false,
+      detail: `<h2>5 · 즉시 색인 요청 (선택)</h2><p>상단 검색창에 페이지 전체 URL 붙여넣기 → "URL 검사" → <b>"색인 생성 요청"</b>.</p><p>새로 만든 페이지(video-editor, game-artist, links 등)에 우선 사용 — 페이지당 개별 요청, 하루 한도 있음.</p>`, deps: ["sitemap"] },
+  ];
+
+  const STORAGE_KEY = "gsc-guide-progress";
+  const done = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"));
+
+  function render() {
+    const laneMount = document.getElementById("laneMount");
+    laneMount.innerHTML = "";
+    NODES.forEach((n, i) => {
+      const wrap = document.createElement("div");
+      wrap.style.display = "contents";
+
+      const node = document.createElement("div");
+      node.className = "node" + (n.deps.length === 0 ? " root" : "") + (n.wait ? " wait" : "") + (done.has(n.id) ? " done" : "");
+      node.innerHTML = `<div class="card">
+        <span class="col">COL ${n.col}</span><span class="icon">${n.wait ? "⏳" : done.has(n.id) ? "✅" : ""}</span>
+        <p class="label">${n.label}</p>
+      </div>`;
+      node.onclick = () => { selectNode(n.id); };
+      node.dataset.id = n.id;
+      laneMount.appendChild(node);
+
+      if (i < NODES.length - 1) {
+        const arrow = document.createElement("div");
+        arrow.className = "arrow";
+        arrow.textContent = "→";
+        laneMount.appendChild(arrow);
+      }
+    });
+
+    document.getElementById("totalsMount").innerHTML = `
+      <div class="card"><b>${NODES.length}</b>전체 단계</div>
+      <div class="card"><b>${done.size}</b>완료</div>
+      <div class="card"><b>${NODES.filter(n => n.wait).length}</b>대기 단계(⏳)</div>`;
+  }
+
+  function selectNode(id) {
+    document.querySelectorAll(".node").forEach(el => el.classList.toggle("selected", el.dataset.id === id));
+    const n = NODES.find(x => x.id === id);
+    const mount = document.getElementById("detailMount");
+    mount.innerHTML = n.detail + `<button class="mark-done" id="markDoneBtn">${done.has(id) ? "완료 취소" : "완료로 표시"}</button>`;
+    document.getElementById("markDoneBtn").onclick = () => {
+      if (done.has(id)) done.delete(id); else done.add(id);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify([...done]));
+      render();
+      selectNode(id);
+    };
+  }
+
+  render();
+  selectNode(NODES[0].id);
+</script>
