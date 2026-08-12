@@ -2,27 +2,39 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>포트폴리오 — rogan</title>
-<meta name="description" content="사진과 글을 한곳에 모은 개인 포트폴리오.">
+<meta name="description" content="사진·3D·영상·웹툰·글을 한곳에 모은 개인 포트폴리오. 매체마다 다른 방식으로 보여줍니다.">
 <link rel="apple-touch-icon" href="../icons/icon-180.png">
 <link rel="icon" href="../icons/icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Portfolio">
-<meta name="theme-color" content="#14100f">
+<meta name="theme-color" content="#0e0b0a">
+<script type="module" src="https://unpkg.com/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
 <style>
   /*
-    포트폴리오 — apps/gallery/의 다크룸 컨셉(근흑 배경 + safelight red 액센트,
-    세리프 헤드라인)을 그대로 이어받는다. 사진(apps/gallery/photos.json 재사용)과
-    글(이 폴더의 posts.json)을 탭으로 묶는다.
-    2026-08-10: Firebase(로그인+웹업로드)는 이 허브의 "정적 파일 + git만" 원칙과
-    안 맞고 설정 부담만 커서 정적 JSON 방식으로 되돌림 — 사진/글 추가는 파일을
-    넣고 json에 한 줄 추가한 뒤 commit/push로 처리(단일 관리자 rogan 본인 전용).
+    2026-08-12 리디자인 (클로이 박) — 기존 "다크룸"(근흑 배경 + safelight red) 정체성은
+    유지하되, 사진/글 두 탭짜리 아카이브에서 5개 매체(사진·3D·영상·웹툰·글)를 각기 다른
+    "장비의 붉은 불빛" 컨셉으로 분리한다: 매체마다 고유 액센트 색(사진=safelight red,
+    3D=스캐너 시안, 영상=필름 앰버, 웹툰=잉크 바이올렛, 글=중성 톤)을 두어 그리드에
+    ArtStation류 균질한 카드가 아니라 "이건 다른 매체구나"가 즉시 느껴지게 만든다.
+    참고한 실제 사이트: Bruno Simon(3D 인터랙션), Jordan Breton/JReyes MC(장면형 3D
+    내비게이션), Sarah Oh(매체 간 톤 전환) — 다만 이 페이지는 Three.js 씬을 새로 짓는
+    대신 <model-viewer>(구글, glTF/GLB 웹 컴포넌트)로 실제 3D 오브젝트를 그대로 회전·
+    확대해서 볼 수 있게 하는 실용적 절충을 택했다.
+    콘텐츠 관리 원칙은 그대로: Firebase 없이 정적 JSON + 파일만 커밋/push (rogan 본인
+    전용 — 세션에 부탁하면 대신 처리). 각 매체 폴더의 README.md에 형식이 적혀 있다.
   */
   :root {
-    --bg: #14100f; --bg-2: #1c1613; --line: rgba(255,255,255,0.09);
+    --bg: #0e0b0a; --bg-2: #17120f; --bg-3: #1f1815; --line: rgba(255,255,255,0.09);
     --ink: #f3ede6; --ink-dim: #b9ada2; --ink-faint: #756a61;
-    --accent: #c8452c; --accent-soft: rgba(200,69,44,0.16); --accent-ink: #ff8a6e;
-    --good: #4f8f6d; --bad: #c8452c;
+
+    --m-photo: #c8452c; --m-photo-soft: rgba(200,69,44,0.16);
+    --m-3d: #4fd6c8; --m-3d-soft: rgba(79,214,200,0.14);
+    --m-video: #e0a83e; --m-video-soft: rgba(224,168,62,0.16);
+    --m-webtoon: #a879e8; --m-webtoon-soft: rgba(168,121,232,0.16);
+    --m-writing: #d8cdbf; --m-writing-soft: rgba(216,205,191,0.12);
+    --accent: var(--m-photo); --accent-soft: var(--m-photo-soft); --accent-ink: #ff8a6e;
+
     --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Noto Serif KR", serif;
     --sans: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", sans-serif;
     --mono: ui-monospace, "SF Mono", Menlo, monospace;
@@ -32,95 +44,171 @@
   html { scroll-behavior: smooth; }
   body {
     margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans);
-    line-height: 1.5; -webkit-font-smoothing: antialiased;
+    line-height: 1.5; -webkit-font-smoothing: antialiased; overflow-wrap: break-word;
   }
   a { color: inherit; }
-  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px 96px; }
+  img, video { max-width: 100%; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px 96px; }
 
-  header.hero { padding: 56px 4px 28px; text-align: center; }
+  /* ── hero ─────────────────────────────────────────────────── */
+  header.hero { padding: 60px 4px 20px; text-align: center; position: relative; }
   .eyebrow {
     display: inline-block; font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em;
     text-transform: uppercase; color: var(--accent-ink); background: var(--accent-soft);
-    border-radius: 999px; padding: 5px 14px; margin: 0 0 18px;
+    border-radius: 999px; padding: 5px 14px; margin: 0 0 18px; transition: color .3s, background .3s;
   }
-  h1 {
-    font-family: var(--serif); font-weight: 400; font-size: clamp(32px, 7vw, 48px);
-    letter-spacing: 0; margin: 0 0 10px;
-  }
-  header.hero p { margin: 0 auto; font-size: 14px; color: var(--ink-dim); max-width: 46ch; }
-  .native-note {
-    margin: 14px auto 0; max-width: 46ch; font-size: 11.5px; line-height: 1.6; color: var(--ink-faint);
-  }
+  h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(32px, 7vw, 50px); margin: 0 0 10px; }
+  header.hero p.sub { margin: 0 auto; font-size: 14px; color: var(--ink-dim); max-width: 50ch; }
+  .native-note { margin: 14px auto 0; max-width: 46ch; font-size: 11.5px; line-height: 1.6; color: var(--ink-faint); }
 
-  /* tabs */
-  .tabs { display: flex; justify-content: center; gap: 8px; margin: 30px 0 6px; }
+  /* ── media rail (필름 컨택트시트 느낌의 탭) ──────────────────── */
+  .rail { display: flex; justify-content: center; gap: 0; margin: 32px 0 4px; overflow-x: auto;
+    padding: 6px; -ms-overflow-style: none; scrollbar-width: none; }
+  .rail::-webkit-scrollbar { display: none; }
+  .rail-inner { display: flex; gap: 6px; background: var(--bg-2); border: 1px solid var(--line); border-radius: 999px; padding: 5px; }
   .tab {
-    font-family: var(--sans); font-size: 13.5px; background: transparent; color: var(--ink-dim);
-    border: 1px solid var(--line); border-radius: 999px; padding: 8px 20px; cursor: pointer;
-    transition: border-color .15s, color .15s, background .15s;
+    font-family: var(--sans); font-size: 13px; font-weight: 600; background: transparent; color: var(--ink-dim);
+    border: none; border-radius: 999px; padding: 9px 18px; cursor: pointer; white-space: nowrap;
+    display: flex; align-items: center; gap: 7px; transition: background .18s, color .18s;
   }
-  .tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
-  .tab:hover:not(.active) { border-color: var(--accent); color: var(--accent-ink); }
+  .tab .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: .5; }
+  .tab.active { color: #16110e; }
+  .tab:hover:not(.active) { color: var(--ink); }
+  .tab[data-panel="photos"].active { background: var(--m-photo); }
+  .tab[data-panel="models"].active { background: var(--m-3d); }
+  .tab[data-panel="videos"].active { background: var(--m-video); }
+  .tab[data-panel="webtoons"].active { background: var(--m-webtoon); }
+  .tab[data-panel="posts"].active { background: var(--m-writing); }
 
-  /* admin note (static, replaces old Firebase config warning) */
   .configwarn {
     max-width: 640px; margin: 20px auto; background: var(--bg-2); border: 1px dashed var(--accent);
-    border-radius: 10px; padding: 16px 18px; font-size: 13px; color: var(--ink-dim);
+    border-radius: 10px; padding: 14px 18px; font-size: 12.5px; color: var(--ink-dim); text-align: center;
+    transition: border-color .3s;
   }
   .configwarn code { color: var(--accent-ink); }
 
-  /* panels */
   .panel { display: none; }
   .panel.active { display: block; }
+  .panel-head { max-width: 640px; margin: 40px auto 0; text-align: center; }
+  .panel-head h2 { font-family: var(--serif); font-weight: 400; font-size: 26px; margin: 0 0 6px; }
+  .panel-head p { font-size: 13px; color: var(--ink-dim); margin: 0; }
 
-  /* view mode tabs (grid / story) for photos panel */
   .viewtabs { display: flex; justify-content: center; gap: 8px; margin: 20px 0 6px; }
   .viewtab {
     font-family: var(--sans); font-size: 13px; background: transparent; color: var(--ink-dim);
     border: 1px solid var(--line); border-radius: 999px; padding: 6px 16px; cursor: pointer;
     transition: border-color .15s, color .15s, background .15s;
   }
-  .viewtab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
-  .viewtab:hover:not(.active) { border-color: var(--accent); color: var(--accent-ink); }
+  .viewtab.active { background: var(--m-photo); border-color: var(--m-photo); color: #16110e; }
+  .viewtab:hover:not(.active) { border-color: var(--m-photo); color: var(--accent-ink); }
 
-  /* ── photos panel (mirrors apps/gallery/) ───────────────── */
-  .sheet {
-    margin-top: 36px; display: grid; gap: 6px;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  }
+  /* ── photos panel ─────────────────────────────────────────── */
+  .sheet { margin-top: 36px; display: grid; gap: 6px; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
   figure.shot {
-    margin: 0; position: relative; overflow: hidden; background: #0c0a09;
-    border-radius: 2px; opacity: 0; transform: translateY(14px);
-    transition: opacity .6s ease, transform .6s ease;
+    margin: 0; position: relative; overflow: hidden; background: #0c0a09; border-radius: 2px;
+    opacity: 0; transform: translateY(14px); transition: opacity .6s ease, transform .6s ease;
   }
   figure.shot.in { opacity: 1; transform: translateY(0); }
   figure.shot img, figure.shot video { display: block; width: 100%; height: auto; }
   figure.shot figcaption {
-    position: absolute; left: 0; right: 0; bottom: 0; padding: 10px 12px 8px;
-    font-size: 12px; color: var(--ink); background: linear-gradient(transparent, rgba(0,0,0,0.75));
-    opacity: 0; transition: opacity .2s;
+    position: absolute; left: 0; right: 0; bottom: 0; padding: 10px 12px 8px; font-size: 12px; color: var(--ink);
+    background: linear-gradient(transparent, rgba(0,0,0,0.75)); opacity: 0; transition: opacity .2s;
   }
   figure.shot:hover figcaption, figure.shot:focus-within figcaption { opacity: 1; }
   .empty { text-align: center; color: var(--ink-faint); font-size: 13px; padding: 60px 0; }
 
-  .story {
-    display: none; margin-top: 20px; height: 100dvh; overflow-y: auto;
-    scroll-snap-type: y mandatory; scroll-behavior: smooth; border-radius: 10px;
-  }
+  .story { display: none; margin-top: 20px; height: 100dvh; overflow-y: auto;
+    scroll-snap-type: y mandatory; scroll-behavior: smooth; border-radius: 10px; }
   .story.active { display: block; }
   .sheet.hidden-mode { display: none; }
   .story figure.storyshot {
     margin: 0; height: 100dvh; scroll-snap-align: start; scroll-snap-stop: always;
-    position: relative; display: flex; align-items: center; justify-content: center;
-    background: #0c0a09; overflow: hidden;
+    position: relative; display: flex; align-items: center; justify-content: center; background: #0c0a09; overflow: hidden;
   }
-  .story figure.storyshot img, .story figure.storyshot video {
-    max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain;
-  }
+  .story figure.storyshot img, .story figure.storyshot video { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; }
   .story figure.storyshot figcaption {
-    position: absolute; left: 0; right: 0; bottom: 0; padding: 18px 20px 22px;
-    font-size: 13px; color: var(--ink); background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    position: absolute; left: 0; right: 0; bottom: 0; padding: 18px 20px 22px; font-size: 13px; color: var(--ink);
+    background: linear-gradient(transparent, rgba(0,0,0,0.8));
   }
+
+  /* ── 3D panel ─────────────────────────────────────────────── */
+  .grid-3d { margin-top: 36px; display: grid; gap: 18px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+  .card-3d {
+    background: var(--bg-2); border: 1px solid var(--line); border-radius: 14px; overflow: hidden;
+    opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease, border-color .2s;
+  }
+  .card-3d.in { opacity: 1; transform: translateY(0); }
+  .card-3d:hover { border-color: var(--m-3d); }
+  .card-3d model-viewer {
+    width: 100%; height: 280px; background: radial-gradient(120% 140% at 50% 20%, #22302e 0%, #0c0a09 75%);
+    --poster-color: transparent;
+  }
+  .card-3d .meta { padding: 14px 16px 16px; }
+  .card-3d .meta h3 { font-family: var(--serif); font-weight: 400; font-size: 17px; margin: 0 0 4px; color: var(--ink); }
+  .card-3d .meta p { font-size: 12.5px; color: var(--ink-dim); margin: 0; }
+  .card-3d .hint { font-family: var(--mono); font-size: 10px; letter-spacing: .04em; text-transform: uppercase;
+    color: var(--m-3d); margin: 8px 0 0; }
+
+  /* ── video panel (필름 릴) ────────────────────────────────── */
+  .reel { margin-top: 36px; display: grid; gap: 18px; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+  .reel-card {
+    background: var(--bg-2); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; cursor: pointer;
+    opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease, border-color .2s;
+  }
+  .reel-card.in { opacity: 1; transform: translateY(0); }
+  .reel-card:hover { border-color: var(--m-video); }
+  .reel-thumb { position: relative; aspect-ratio: 16/9; background: #0c0a09; }
+  .reel-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .reel-thumb .play {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  }
+  .reel-thumb .play span {
+    width: 46px; height: 46px; border-radius: 50%; background: var(--m-video); color: #16110e;
+    display: flex; align-items: center; justify-content: center; font-size: 16px;
+  }
+  .reel-meta { padding: 12px 14px 14px; }
+  .reel-meta h3 { font-family: var(--serif); font-weight: 400; font-size: 15.5px; margin: 0 0 4px; }
+  .reel-meta p { font-size: 12px; color: var(--ink-dim); margin: 0; }
+  .lightbox {
+    position: fixed; inset: 0; background: rgba(6,4,3,0.92); display: none; align-items: center; justify-content: center;
+    z-index: 40; padding: 24px;
+  }
+  .lightbox.open { display: flex; }
+  .lightbox .box { width: 100%; max-width: 900px; }
+  .lightbox .yt-wrap { position: relative; width: 100%; padding-top: 56.25%; border-radius: 10px; overflow: hidden; background: #000; }
+  .lightbox .yt-wrap iframe, .lightbox video { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .lightbox-close {
+    margin-top: 14px; display: block; margin-left: auto; margin-right: auto; background: transparent; color: var(--ink-dim);
+    border: 1px solid var(--line); border-radius: 999px; padding: 8px 18px; font-size: 12.5px; cursor: pointer;
+  }
+
+  /* ── webtoon panel (세로 스크롤 리딩) ─────────────────────── */
+  .toon-list { margin-top: 36px; display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+  .toon-card {
+    background: var(--bg-2); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; cursor: pointer;
+    opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease, border-color .2s;
+  }
+  .toon-card.in { opacity: 1; transform: translateY(0); }
+  .toon-card:hover { border-color: var(--m-webtoon); }
+  .toon-cover { aspect-ratio: 3/4; background: #0c0a09; overflow: hidden; }
+  .toon-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .toon-card .meta { padding: 12px 14px 14px; }
+  .toon-card .meta h3 { font-family: var(--serif); font-weight: 400; font-size: 15.5px; margin: 0 0 4px; }
+  .toon-card .meta p { font-size: 12px; color: var(--ink-dim); margin: 0; }
+
+  .toon-reader { position: fixed; inset: 0; background: #0c0a09; display: none; z-index: 40; flex-direction: column; }
+  .toon-reader.open { display: flex; }
+  .toon-reader-bar {
+    position: sticky; top: 0; z-index: 2; display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 18px; background: rgba(14,11,10,0.92); backdrop-filter: blur(6px); border-bottom: 1px solid var(--line);
+  }
+  .toon-reader-bar h3 { font-family: var(--serif); font-weight: 400; font-size: 15px; margin: 0; }
+  .toon-reader-close {
+    background: transparent; color: var(--ink-dim); border: 1px solid var(--line); border-radius: 999px;
+    padding: 6px 14px; font-size: 12px; cursor: pointer;
+  }
+  .toon-strip { flex: 1; overflow-y: auto; max-width: 640px; margin: 0 auto; width: 100%; }
+  .toon-strip img { display: block; width: 100%; }
 
   /* ── posts panel ─────────────────────────────────────────── */
   .posts { max-width: 640px; margin: 36px auto 0; display: flex; flex-direction: column; gap: 22px; }
@@ -129,31 +217,20 @@
     opacity: 0; transform: translateY(10px); transition: opacity .5s ease, transform .5s ease;
   }
   article.post.in { opacity: 1; transform: translateY(0); }
-  article.post h2 {
-    font-family: var(--serif); font-weight: 400; font-size: 22px; margin: 0 0 6px; color: var(--ink);
-  }
+  article.post h2 { font-family: var(--serif); font-weight: 400; font-size: 22px; margin: 0 0 6px; color: var(--ink); }
   article.post .meta { font-size: 11.5px; color: var(--ink-faint); margin-bottom: 12px; font-family: var(--mono); }
   article.post .body { font-size: 14px; color: var(--ink-dim); white-space: pre-wrap; }
-  article.post .yt-wrap {
-    position: relative; width: 100%; padding-top: 56.25%; margin-top: 14px;
-    border-radius: 8px; overflow: hidden; background: #000;
-  }
-  article.post .yt-wrap iframe {
-    position: absolute; inset: 0; width: 100%; height: 100%; border: 0;
-  }
+  article.post .yt-wrap { position: relative; width: 100%; padding-top: 56.25%; margin-top: 14px; border-radius: 8px; overflow: hidden; background: #000; }
+  article.post .yt-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 
-  /* ── contact (mirrors about/index.html CONTACT block) ────── */
-  .contact-section { max-width: 640px; margin: 60px auto 0; text-align: center; }
-  .contact-section .section-label {
-    font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
-    color: var(--accent-ink); margin: 0 0 8px;
-  }
+  /* ── contact ──────────────────────────────────────────────── */
+  .contact-section { max-width: 640px; margin: 70px auto 0; text-align: center; }
+  .contact-section .section-label { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent-ink); margin: 0 0 8px; }
   .contact-section h2 { font-family: var(--serif); font-weight: 400; font-size: 24px; margin: 0 0 18px; }
   .contact-links { display: flex; flex-direction: column; gap: 10px; }
   .contact-links a.link {
     display: flex; align-items: center; justify-content: space-between; text-decoration: none;
-    background: var(--bg-2); border: 1px solid var(--line); border-radius: 10px; padding: 14px 18px;
-    color: var(--ink); transition: border-color .15s;
+    background: var(--bg-2); border: 1px solid var(--line); border-radius: 10px; padding: 14px 18px; color: var(--ink); transition: border-color .15s;
   }
   .contact-links a.link:hover { border-color: var(--accent); }
   .contact-links .name { font-size: 13px; color: var(--ink-dim); }
@@ -166,30 +243,30 @@
 
 <div class="wrap">
   <header class="hero">
-    <span class="eyebrow">PORTFOLIO</span>
+    <span class="eyebrow" id="eyebrow">PORTFOLIO</span>
     <h1>포트폴리오</h1>
-    <p>사진과 글을 한곳에.</p>
+    <p class="sub">사진 · 3D · 영상 · 웹툰 · 글 — 매체마다 다른 방식으로 보여줍니다.</p>
     <p class="native-note">
-      이 페이지는 반응형 웹으로 iOS Safari에서도 그대로 동작하도록 만들었습니다 —
-      "공유 → 홈 화면에 추가"로 앱처럼 아이콘을 만들어 쓸 수 있습니다. 별도 네이티브
-      iOS 앱이 필요한지는 아직 확인되지 않았고(가정 사항), 필요성이 분명해지면 그때
-      다시 판단합니다.
+      반응형 웹으로 iOS Safari에서도 그대로 동작합니다 — "공유 → 홈 화면에 추가"로
+      아이콘을 만들어 쓸 수 있습니다.
     </p>
   </header>
 
-  <div class="configwarn">
-    사진/글 추가는 웹에서 업로드하지 않고, 사진은 <code>apps/gallery/photos/</code> +
-    <code>apps/gallery/photos.json</code>, 글은 이 폴더의 <code>posts.json</code>을
-    직접 고쳐 commit/push로 반영합니다(rogan 본인 전용 — Claude Code 세션에 부탁하면
-    대신 처리).
+  <div class="rail"><div class="rail-inner" id="railInner">
+    <button class="tab active" data-panel="photos"><span class="dot"></span>사진</button>
+    <button class="tab" data-panel="models"><span class="dot"></span>3D</button>
+    <button class="tab" data-panel="videos"><span class="dot"></span>영상</button>
+    <button class="tab" data-panel="webtoons"><span class="dot"></span>웹툰</button>
+    <button class="tab" data-panel="posts"><span class="dot"></span>글</button>
+  </div></div>
+
+  <div class="configwarn" id="configwarn">
+    콘텐츠 추가는 웹 업로드가 아니라, 각 매체 폴더의 <code>README.md</code>에 적힌 형식대로
+    파일 + <code>*.json</code>을 고쳐 commit/push로 반영합니다(rogan 본인 전용 —
+    Claude Code 세션에 부탁하면 대신 처리).
   </div>
 
-  <div class="tabs">
-    <button class="tab active" id="tabPhotosBtn" data-panel="photos">사진</button>
-    <button class="tab" id="tabPostsBtn" data-panel="posts">글</button>
-  </div>
-
-  <!-- ── PHOTOS PANEL ─────────────────────────────────────── -->
+  <!-- ── PHOTOS ───────────────────────────────────────────── -->
   <section id="panelPhotos" class="panel active">
     <div class="viewtabs">
       <button class="viewtab active" id="gridBtn" data-mode="grid">격자</button>
@@ -200,7 +277,37 @@
     <div id="emptyPhotos" class="empty" style="display:none">아직 올라온 사진이 없습니다.</div>
   </section>
 
-  <!-- ── POSTS PANEL ──────────────────────────────────────── -->
+  <!-- ── 3D ───────────────────────────────────────────────── -->
+  <section id="panelModels" class="panel">
+    <div class="panel-head">
+      <h2>3D</h2>
+      <p>드래그로 회전, 스크롤로 확대 — glTF/GLB 오브젝트를 그대로 올려서 보여줍니다.</p>
+    </div>
+    <div id="gridModels" class="grid-3d"></div>
+    <div id="emptyModels" class="empty" style="display:none">아직 올라온 3D 작업이 없습니다.</div>
+  </section>
+
+  <!-- ── VIDEOS ───────────────────────────────────────────── -->
+  <section id="panelVideos" class="panel">
+    <div class="panel-head">
+      <h2>영상</h2>
+      <p>필름 릴처럼 펼쳐놓은 영상 — 클릭하면 그 자리에서 재생됩니다.</p>
+    </div>
+    <div id="gridVideos" class="reel"></div>
+    <div id="emptyVideos" class="empty" style="display:none">아직 올라온 영상이 없습니다.</div>
+  </section>
+
+  <!-- ── WEBTOONS ─────────────────────────────────────────── -->
+  <section id="panelWebtoons" class="panel">
+    <div class="panel-head">
+      <h2>웹툰</h2>
+      <p>실제 웹툰처럼 세로로 이어서 읽습니다.</p>
+    </div>
+    <div id="gridWebtoons" class="toon-list"></div>
+    <div id="emptyWebtoons" class="empty" style="display:none">아직 올라온 웹툰이 없습니다.</div>
+  </section>
+
+  <!-- ── POSTS ────────────────────────────────────────────── -->
   <section id="panelPosts" class="panel">
     <div id="posts" class="posts"></div>
     <div id="emptyPosts" class="empty" style="display:none">아직 게시된 글이 없습니다.</div>
@@ -227,87 +334,52 @@
   </footer>
 </div>
 
+<!-- video lightbox -->
+<div class="lightbox" id="videoLightbox">
+  <div class="box">
+    <div id="lightboxBody"></div>
+    <button class="lightbox-close" id="lightboxClose">닫기 ✕</button>
+  </div>
+</div>
+
+<!-- webtoon reader -->
+<div class="toon-reader" id="toonReader">
+  <div class="toon-reader-bar">
+    <h3 id="toonReaderTitle"></h3>
+    <button class="toon-reader-close" id="toonReaderClose">닫기 ✕</button>
+  </div>
+  <div class="toon-strip" id="toonStrip"></div>
+</div>
+
 <script type="module">
   const $ = (id) => document.getElementById(id);
+  const MEDIA_COLOR = {
+    photos: "var(--m-photo)", models: "var(--m-3d)", videos: "var(--m-video)",
+    webtoons: "var(--m-webtoon)", posts: "var(--m-writing)",
+  };
+  const MEDIA_LABEL = { photos: "PHOTOS", models: "3D WORKS", videos: "VIDEOS", webtoons: "WEBTOON", posts: "WRITING" };
 
-  const tabBtns = [$("tabPhotosBtn"), $("tabPostsBtn")];
-  const panels = { photos: $("panelPhotos"), posts: $("panelPosts") };
+  const tabBtns = Array.from(document.querySelectorAll(".rail .tab"));
+  const panels = {
+    photos: $("panelPhotos"), models: $("panelModels"), videos: $("panelVideos"),
+    webtoons: $("panelWebtoons"), posts: $("panelPosts"),
+  };
+  const eyebrow = $("eyebrow"), configwarn = $("configwarn");
   tabBtns.forEach(btn => btn.addEventListener("click", () => {
+    const name = btn.dataset.panel;
     tabBtns.forEach(b => b.classList.toggle("active", b === btn));
-    Object.entries(panels).forEach(([name, el]) => el.classList.toggle("active", name === btn.dataset.panel));
+    Object.entries(panels).forEach(([k, el]) => el.classList.toggle("active", k === name));
+    eyebrow.textContent = MEDIA_LABEL[name];
+    eyebrow.style.color = MEDIA_COLOR[name];
+    eyebrow.style.background = "color-mix(in srgb, " + MEDIA_COLOR[name] + " 18%, transparent)";
+    configwarn.style.borderColor = MEDIA_COLOR[name];
   }));
 
-  const sheetEl = $("sheet"), storyEl = $("story"), emptyPhotosEl = $("emptyPhotos");
-  const isVideo = (file) => /\.(mp4|mov)$/i.test(file || "");
-
-  fetch("../apps/gallery/photos.json")
-    .then((r) => r.json())
-    .then((photos) => renderSheet(Array.isArray(photos) ? photos : []))
-    .catch((e) => {
-      emptyPhotosEl.style.display = "block";
-      emptyPhotosEl.textContent = "photos.json을 불러오지 못했습니다.";
-      console.error(e);
-    });
-
-  function renderSheet(photos) {
-    sheetEl.innerHTML = "";
-    storyEl.innerHTML = "";
-    emptyPhotosEl.style.display = photos.length ? "none" : "block";
-    photos.forEach((p) => sheetEl.appendChild(shotEl(p, false)));
-    photos.forEach((p) => storyEl.appendChild(shotEl(p, true)));
-    requestAnimationFrame(() => observeIn("figure.shot:not(.in), figure.storyshot:not(.in)"));
-  }
-
-  function mediaEl(p) {
-    if (isVideo(p.file)) {
-      const v = document.createElement("video");
-      v.src = `../apps/gallery/photos/${p.file}`; v.controls = true; v.playsInline = true;
-      return v;
-    }
-    const img = document.createElement("img");
-    img.src = `../apps/gallery/photos/${p.file}`; img.loading = "lazy"; img.alt = p.caption || "";
-    return img;
-  }
-
-  function shotEl(p, story) {
-    const fig = document.createElement("figure");
-    fig.className = story ? "storyshot" : "shot";
-    fig.appendChild(mediaEl(p));
-
-    const cap = document.createElement("figcaption");
-    cap.textContent = p.caption || "";
-    fig.appendChild(cap);
-    return fig;
-  }
-
-  const gridBtn = $("gridBtn"), storyBtn = $("storyBtn");
-  function setViewMode(mode) {
-    gridBtn.classList.toggle("active", mode === "grid");
-    storyBtn.classList.toggle("active", mode === "story");
-    sheetEl.classList.toggle("hidden-mode", mode === "story");
-    storyEl.classList.toggle("active", mode === "story");
-  }
-  gridBtn.addEventListener("click", () => setViewMode("grid"));
-  storyBtn.addEventListener("click", () => setViewMode("story"));
-
-  const postsEl = $("posts"), emptyPostsEl = $("emptyPosts");
-  fetch("./posts.json")
-    .then((r) => r.json())
-    .then((posts) => renderPosts(Array.isArray(posts) ? posts : []))
-    .catch((e) => {
-      emptyPostsEl.style.display = "block";
-      emptyPostsEl.textContent = "posts.json을 불러오지 못했습니다.";
-      console.error(e);
-    });
-
-  function renderPosts(posts) {
-    postsEl.innerHTML = "";
-    emptyPostsEl.style.display = posts.length ? "none" : "block";
-    posts.forEach(p => postsEl.appendChild(postEl(p)));
-    requestAnimationFrame(() => {
-      observeIn("article.post:not(.in)");
-      observeYoutubeAutoplay();
-    });
+  function observeIn(selector) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+    }, { threshold: 0.08 });
+    document.querySelectorAll(selector).forEach(el => io.observe(el));
   }
 
   // matches youtube.com/watch?v=, youtu.be/, /shorts/, /embed/
@@ -317,79 +389,180 @@
     return m ? m[1] : null;
   }
 
-  function postEl(p) {
-    const art = document.createElement("article");
-    art.className = "post";
+  /* ── PHOTOS (기존 로직 그대로) ────────────────────────────── */
+  const sheetEl = $("sheet"), storyEl = $("story"), emptyPhotosEl = $("emptyPhotos");
+  const isVideo = (file) => /\.(mp4|mov)$/i.test(file || "");
 
-    const h2 = document.createElement("h2");
-    h2.textContent = p.title || "(제목 없음)";
-    art.appendChild(h2);
+  fetch("../apps/gallery/photos.json").then(r => r.json()).then(photos => renderSheet(Array.isArray(photos) ? photos : []))
+    .catch(e => { emptyPhotosEl.style.display = "block"; emptyPhotosEl.textContent = "photos.json을 불러오지 못했습니다."; console.error(e); });
 
-    const meta = document.createElement("div");
-    meta.className = "meta";
-    meta.textContent = p.date || "";
-    art.appendChild(meta);
+  function renderSheet(photos) {
+    sheetEl.innerHTML = ""; storyEl.innerHTML = "";
+    emptyPhotosEl.style.display = photos.length ? "none" : "block";
+    photos.forEach(p => sheetEl.appendChild(shotEl(p, false)));
+    photos.forEach(p => storyEl.appendChild(shotEl(p, true)));
+    requestAnimationFrame(() => observeIn("figure.shot:not(.in), figure.storyshot:not(.in)"));
+  }
+  function mediaEl(p) {
+    if (isVideo(p.file)) { const v = document.createElement("video"); v.src = `../apps/gallery/photos/${p.file}`; v.controls = true; v.playsInline = true; return v; }
+    const img = document.createElement("img"); img.src = `../apps/gallery/photos/${p.file}`; img.loading = "lazy"; img.alt = p.caption || ""; return img;
+  }
+  function shotEl(p, story) {
+    const fig = document.createElement("figure"); fig.className = story ? "storyshot" : "shot";
+    fig.appendChild(mediaEl(p));
+    const cap = document.createElement("figcaption"); cap.textContent = p.caption || ""; fig.appendChild(cap);
+    return fig;
+  }
+  const gridBtn = $("gridBtn"), storyBtn = $("storyBtn");
+  function setViewMode(mode) {
+    gridBtn.classList.toggle("active", mode === "grid"); storyBtn.classList.toggle("active", mode === "story");
+    sheetEl.classList.toggle("hidden-mode", mode === "story"); storyEl.classList.toggle("active", mode === "story");
+  }
+  gridBtn.addEventListener("click", () => setViewMode("grid"));
+  storyBtn.addEventListener("click", () => setViewMode("story"));
 
-    if (p.body) {
-      const bodyEl = document.createElement("div");
-      bodyEl.className = "body";
-      bodyEl.textContent = p.body;
-      art.appendChild(bodyEl);
-    }
+  /* ── 3D ───────────────────────────────────────────────────── */
+  const gridModels = $("gridModels"), emptyModels = $("emptyModels");
+  fetch("./models.json").then(r => r.json()).then(items => renderModels(Array.isArray(items) ? items : []))
+    .catch(e => { emptyModels.style.display = "block"; emptyModels.textContent = "models.json을 불러오지 못했습니다."; console.error(e); });
 
-    const ytId = extractYoutubeId(p.youtube || p.youtubeUrl);
+  function renderModels(items) {
+    gridModels.innerHTML = "";
+    emptyModels.style.display = items.length ? "none" : "block";
+    items.forEach(m => {
+      const card = document.createElement("div"); card.className = "card-3d";
+      const mv = document.createElement("model-viewer");
+      mv.setAttribute("src", `./models/${m.file}`);
+      if (m.poster) mv.setAttribute("poster", `./models/${m.poster}`);
+      mv.setAttribute("camera-controls", ""); mv.setAttribute("auto-rotate", ""); mv.setAttribute("shadow-intensity", "1");
+      mv.setAttribute("exposure", "0.9"); mv.setAttribute("loading", "lazy");
+      card.appendChild(mv);
+      const meta = document.createElement("div"); meta.className = "meta";
+      meta.innerHTML = `<h3></h3><p></p><p class="hint">DRAG TO ROTATE</p>`;
+      meta.querySelector("h3").textContent = m.title || "(제목 없음)";
+      meta.querySelector("p").textContent = m.caption || "";
+      card.appendChild(meta);
+      gridModels.appendChild(card);
+    });
+    requestAnimationFrame(() => observeIn(".card-3d:not(.in)"));
+  }
+
+  /* ── VIDEOS ───────────────────────────────────────────────── */
+  const gridVideos = $("gridVideos"), emptyVideos = $("emptyVideos");
+  const videoLightbox = $("videoLightbox"), lightboxBody = $("lightboxBody"), lightboxClose = $("lightboxClose");
+  fetch("./videos.json").then(r => r.json()).then(items => renderVideos(Array.isArray(items) ? items : []))
+    .catch(e => { emptyVideos.style.display = "block"; emptyVideos.textContent = "videos.json을 불러오지 못했습니다."; console.error(e); });
+
+  function renderVideos(items) {
+    gridVideos.innerHTML = "";
+    emptyVideos.style.display = items.length ? "none" : "block";
+    items.forEach(v => {
+      const card = document.createElement("div"); card.className = "reel-card";
+      const thumb = document.createElement("div"); thumb.className = "reel-thumb";
+      const img = document.createElement("img"); img.loading = "lazy"; img.alt = v.title || "";
+      img.src = v.thumbnail ? `./videos/${v.thumbnail}` : (extractYoutubeId(v.youtube) ? `https://i.ytimg.com/vi/${extractYoutubeId(v.youtube)}/hqdefault.jpg` : "");
+      thumb.appendChild(img);
+      const play = document.createElement("div"); play.className = "play"; play.innerHTML = "<span>▶</span>"; thumb.appendChild(play);
+      card.appendChild(thumb);
+      const meta = document.createElement("div"); meta.className = "reel-meta";
+      meta.innerHTML = `<h3></h3><p></p>`;
+      meta.querySelector("h3").textContent = v.title || "(제목 없음)";
+      meta.querySelector("p").textContent = v.date || "";
+      card.appendChild(meta);
+      card.addEventListener("click", () => openVideo(v));
+      gridVideos.appendChild(card);
+    });
+    requestAnimationFrame(() => observeIn(".reel-card:not(.in)"));
+  }
+  function openVideo(v) {
+    lightboxBody.innerHTML = "";
+    const ytId = extractYoutubeId(v.youtube);
     if (ytId) {
-      const wrap = document.createElement("div");
-      wrap.className = "yt-wrap";
-      wrap.dataset.ytId = ytId;
-      art.appendChild(wrap);
+      const wrap = document.createElement("div"); wrap.className = "yt-wrap";
+      const iframe = document.createElement("iframe");
+      iframe.src = `https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&playsinline=1&rel=0`;
+      iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+      iframe.allowFullscreen = true; wrap.appendChild(iframe); lightboxBody.appendChild(wrap);
+    } else if (v.file) {
+      const video = document.createElement("video"); video.src = `./videos/${v.file}`; video.controls = true; video.autoplay = true; video.playsInline = true;
+      lightboxBody.appendChild(video);
     }
+    videoLightbox.classList.add("open");
+  }
+  function closeVideo() { videoLightbox.classList.remove("open"); lightboxBody.innerHTML = ""; }
+  lightboxClose.addEventListener("click", closeVideo);
+  videoLightbox.addEventListener("click", (e) => { if (e.target === videoLightbox) closeVideo(); });
+
+  /* ── WEBTOONS ─────────────────────────────────────────────── */
+  const gridWebtoons = $("gridWebtoons"), emptyWebtoons = $("emptyWebtoons");
+  const toonReader = $("toonReader"), toonReaderTitle = $("toonReaderTitle"), toonStrip = $("toonStrip"), toonReaderClose = $("toonReaderClose");
+  fetch("./webtoons.json").then(r => r.json()).then(items => renderWebtoons(Array.isArray(items) ? items : []))
+    .catch(e => { emptyWebtoons.style.display = "block"; emptyWebtoons.textContent = "webtoons.json을 불러오지 못했습니다."; console.error(e); });
+
+  function renderWebtoons(items) {
+    gridWebtoons.innerHTML = "";
+    emptyWebtoons.style.display = items.length ? "none" : "block";
+    items.forEach(t => {
+      const card = document.createElement("div"); card.className = "toon-card";
+      const cover = document.createElement("div"); cover.className = "toon-cover";
+      const img = document.createElement("img"); img.loading = "lazy"; img.alt = t.title || "";
+      img.src = t.cover ? `./webtoons/${t.slug}/${t.cover}` : "";
+      cover.appendChild(img); card.appendChild(cover);
+      const meta = document.createElement("div"); meta.className = "meta";
+      meta.innerHTML = `<h3></h3><p></p>`;
+      meta.querySelector("h3").textContent = t.title || "(제목 없음)";
+      meta.querySelector("p").textContent = (t.panels ? t.panels.length : 0) + "컷";
+      card.appendChild(meta);
+      card.addEventListener("click", () => openToon(t));
+      gridWebtoons.appendChild(card);
+    });
+    requestAnimationFrame(() => observeIn(".toon-card:not(.in)"));
+  }
+  function openToon(t) {
+    toonReaderTitle.textContent = t.title || "";
+    toonStrip.innerHTML = "";
+    (t.panels || []).forEach(p => { const img = document.createElement("img"); img.loading = "lazy"; img.src = `./webtoons/${t.slug}/${p}`; toonStrip.appendChild(img); });
+    toonReader.classList.add("open"); toonStrip.scrollTop = 0;
+  }
+  toonReaderClose.addEventListener("click", () => toonReader.classList.remove("open"));
+
+  /* ── POSTS (기존 로직 그대로) ─────────────────────────────── */
+  const postsEl = $("posts"), emptyPostsEl = $("emptyPosts");
+  fetch("./posts.json").then(r => r.json()).then(posts => renderPosts(Array.isArray(posts) ? posts : []))
+    .catch(e => { emptyPostsEl.style.display = "block"; emptyPostsEl.textContent = "posts.json을 불러오지 못했습니다."; console.error(e); });
+
+  function renderPosts(posts) {
+    postsEl.innerHTML = ""; emptyPostsEl.style.display = posts.length ? "none" : "block";
+    posts.forEach(p => postsEl.appendChild(postEl(p)));
+    requestAnimationFrame(() => { observeIn("article.post:not(.in)"); observeYoutubeAutoplay(); });
+  }
+  function postEl(p) {
+    const art = document.createElement("article"); art.className = "post";
+    const h2 = document.createElement("h2"); h2.textContent = p.title || "(제목 없음)"; art.appendChild(h2);
+    const meta = document.createElement("div"); meta.className = "meta"; meta.textContent = p.date || ""; art.appendChild(meta);
+    if (p.body) { const bodyEl = document.createElement("div"); bodyEl.className = "body"; bodyEl.textContent = p.body; art.appendChild(bodyEl); }
+    const ytId = extractYoutubeId(p.youtube || p.youtubeUrl);
+    if (ytId) { const wrap = document.createElement("div"); wrap.className = "yt-wrap"; wrap.dataset.ytId = ytId; art.appendChild(wrap); }
     return art;
   }
-
-  function observeIn(selector) {
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
-    }, { threshold: 0.08 });
-    document.querySelectorAll(selector).forEach(el => io.observe(el));
-  }
-
-  // youtube embeds: build iframe with autoplay only while in view; tear down when scrolled away.
   function observeYoutubeAutoplay() {
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const wraps = document.querySelectorAll(".yt-wrap[data-yt-id]");
+    const wraps = document.querySelectorAll(".posts .yt-wrap[data-yt-id]");
     if (!wraps.length) return;
-
     function buildIframe(wrap, autoplay) {
       const id = wrap.dataset.ytId;
-      const params = autoplay
-        ? "autoplay=1&mute=1&playsinline=1&rel=0"
-        : "playsinline=1&rel=0";
+      const params = autoplay ? "autoplay=1&mute=1&playsinline=1&rel=0" : "playsinline=1&rel=0";
       const iframe = document.createElement("iframe");
       iframe.src = `https://www.youtube-nocookie.com/embed/${id}?${params}`;
       iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-      iframe.allowFullscreen = true;
-      wrap.innerHTML = "";
-      wrap.appendChild(iframe);
+      iframe.allowFullscreen = true; wrap.innerHTML = ""; wrap.appendChild(iframe);
     }
-
-    if (reduceMotion) {
-      wraps.forEach((wrap) => buildIframe(wrap, false));
-      return;
-    }
-
+    if (reduceMotion) { wraps.forEach(wrap => buildIframe(wrap, false)); return; }
     const io = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        const wrap = entry.target;
-        if (entry.isIntersecting) {
-          buildIframe(wrap, true);
-        } else {
-          wrap.innerHTML = ""; // stop playback by removing the iframe
-        }
-      });
+      entries.forEach(entry => { const wrap = entry.target;
+        if (entry.isIntersecting) buildIframe(wrap, true); else wrap.innerHTML = ""; });
     }, { threshold: 0.6 });
-
-    wraps.forEach((wrap) => io.observe(wrap));
+    wraps.forEach(wrap => io.observe(wrap));
   }
 </script>
 <!-- 방문자 분석(GoatCounter, 쿠키 없음) — 실제 코드값은 ../analytics-config.js 한 곳에서만 관리 -->
