@@ -1,0 +1,88 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VIVID 개인 브랜딩 사용 가이드</title><style>
+  :root {
+    --ink: #1c2333; --ink-soft: #2a3348; --parchment: #f6f1e6; --parchment-card: #fffdf7;
+    --line: #ded2b8; --accent: #4f7cac; --accent-strong: #34597a;
+    --text: #241f14; --text-soft: #5c5644; --text-faint: #8b8368;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink: #0f1420; --parchment: #171c26; --parchment-card: #1f2532; --line: #333c4d;
+      --accent: #7fa8d6; --accent-strong: #a9c6e8;
+      --text: #ece6d8; --text-soft: #b8b19c; --text-faint: #7b7663;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ink: #0f1420; --parchment: #171c26; --parchment-card: #1f2532; --line: #333c4d;
+    --accent: #7fa8d6; --accent-strong: #a9c6e8;
+    --text: #ece6d8; --text-soft: #b8b19c; --text-faint: #7b7663;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--parchment); color: var(--text); font-family: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", "Segoe UI", sans-serif; line-height: 1.6; }
+  .page { max-width: 680px; margin: 0 auto; padding: 0 0 64px; }
+  .masthead { background: linear-gradient(180deg, var(--ink) 0%, var(--ink-soft) 100%); color: #eef3f8; padding: 28px 20px 24px; }
+  .eyebrow { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #c3d3e6; margin: 0 0 6px; font-weight: 600; }
+  .masthead h1 { font-family: Georgia, serif; font-size: 27px; margin: 0 0 8px; }
+  .masthead p.sub { margin: 0; font-size: 14px; color: #c9d6e4; max-width: 50ch; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .meta-chip { font-size: 12px; padding: 5px 10px; border-radius: 999px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.16); color: #e3ecf5; }
+  .linktree-banner { margin-top: 16px; padding: 14px 16px; border-radius: 14px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14); }
+  .linktree-label { margin: 0 0 4px; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #c3d3e6; font-weight: 700; }
+  .linktree-copy { margin: 0 0 10px; font-size: 13px; color: #e4edf6; }
+  .linktree-button { display: inline-block; padding: 8px 12px; border-radius: 999px; background: #f8fafc; color: #1f2937; font-size: 13px; font-weight: 700; text-decoration: none; border: 1px solid rgba(255,255,255,0.22); }
+  .linktree-button:hover { background: #ffffff; }
+  .download-button { display: inline-block; margin-top: 14px; padding: 10px 16px; border-radius: 999px; background: var(--accent, #4f7cac); color: #fff; font-size: 14px; font-weight: 700; text-decoration: none; }
+  .download-button:hover { filter: brightness(1.08); }
+  section { padding: 22px 20px 4px; }
+  .section-label { display: flex; align-items: baseline; gap: 8px; margin-bottom: 12px; }
+  .section-label .num { font-size: 12px; color: var(--accent-strong); font-weight: 700; letter-spacing: 0.06em; }
+  .section-label h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-soft); margin: 0; font-weight: 700; }
+  .card { background: var(--parchment-card); border: 1px solid var(--line); border-radius: 14px; padding: 18px; }
+  .ug-plain-list { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+  .ug-plain-list li { font-size: 12.5px; color: var(--text-soft); }
+  .ug-desc { font-size: 13px; color: var(--text-soft); margin: 0 0 10px; }
+  .review-row { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .review-row:last-child { border-bottom: none; }
+  .review-badge { flex: none; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-size: 12px; font-weight: 700; margin-top: 1px; }
+  .review-badge.pass { background: #d7ead9; color: #2f6b3a; }
+  .review-badge.fail { background: #f3d9d6; color: #a53d3d; }
+  .review-badge.hold { background: #f0e3bf; color: #8a7233; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .review-badge.pass { background: #1e3a24; color: #86c79a; }
+    :root:not([data-theme="light"]) .review-badge.fail { background: #3a2226; color: #e08585; }
+    :root:not([data-theme="light"]) .review-badge.hold { background: #332c17; color: #e0c375; }
+  }
+  .review-body { flex: 1; min-width: 0; }
+  .review-title { font-size: 13.5px; font-weight: 700; color: var(--text); margin: 0 0 2px; }
+  .review-detail { font-size: 12px; color: var(--text-soft); margin: 0; line-height: 1.55; }
+  .review-scoreline { display: flex; gap: 14px; margin: 4px 0 10px; }
+  .review-scoreline .n { font-family: Georgia, serif; font-size: 20px; font-weight: 700; }
+  .review-scoreline .n.fail { color: #a53d3d; } .review-scoreline .n.pass { color: #2f6b3a; }
+  .review-scoreline .lbl { font-size: 10.5px; color: var(--text-faint); display: block; }
+  footer { padding: 24px 20px 0; font-size: 11.5px; color: var(--text-faint); text-align: center; }
+  * { overflow-wrap: break-word; }
+  img, svg { max-width: 100%; height: auto; }
+  table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: nowrap; }
+  @media (max-width: 640px) {
+    body { font-size: 15px; }
+    .page { padding: 32px 16px 80px; }
+  }
+</style><div class="page"><div class="masthead">
+  <p class="eyebrow">VIVID 개인 브랜딩 · 사용법 기획서 + 작업 일지</p>
+  <h1>VIVID 개인 브랜딩 사용 가이드</h1>
+  <p class="sub">클로이 박 — 신규 '무대(stage)' 페이지 신설</p>
+  <div class="meta-row"><span class="meta-chip">v1.3.0</span><span class="meta-chip">개정판 4</span></div>
+  <div class="linktree-banner">
+    <p class="linktree-label">More work from the creator</p>
+    <p class="linktree-copy">If you want to see more portfolio pieces and other projects, visit the creator's Linktree.</p>
+    <a class="linktree-button" href="https://linktr.ee/rogankimwashere" target="_blank" rel="noopener noreferrer">https://linktr.ee/rogankimwashere</a>
+  </div>
+</div><section>
+  <div class="section-label"><span class="num">01</span><h2>무대(stage) 페이지 신설 — 3줄 요약</h2></div>
+  <div class="card"><div class="review-row"><div class="review-badge pass">✓</div><div class="review-body"><p class="review-title">신설 완료</p><p class="review-detail">releasepilot-reports/stage/ — 영상 등장·기획서·글·사진을 한 페이지에 통합, 허브·about 양쪽 nav에 연결.</p></div></div><div class="review-row"><div class="review-badge hold">!</div><div class="review-body"><p class="review-title">영상/기획서/추가 사진</p><p class="review-detail">아직 실제 콘텐츠 없음 — "공개 예정" 플레이스홀더로 정직하게 표시, 지어내지 않음.</p></div></div><div class="review-row"><div class="review-badge pass">✓</div><div class="review-body"><p class="review-title">실 콘텐츠 반영</p><p class="review-detail">글 3편(브런치)·프로필 사진은 about/에 이미 게시된 실제 링크 재사용.</p></div></div></div>
+</section><section>
+  <div class="section-label"><span class="num">02</span><h2>디자인 참고</h2></div>
+  <div class="card"><p class="ug-desc">"복합 미디어를 개성있게, MC 자리처럼" 요청에 맞춰 방송 스포트라이트(탈리 라이트 붉은 점, 스포트라이트 그라데이션)와 매거진 컨트리뷰터 페이지(에디토리얼 리스트, 넘버링)를 결합한 방향으로 설계 — 기존 about/dev-portfolio와 같은 serif+sans+mono 타입 시스템은 유지해 허브 전체 톤은 깨지지 않게 함. 375/1280px 반응형, 라이트/다크 테마 실측 통과.</p></div>
+</section><footer>VIVID 개인 브랜딩 자동 생성 (LaunchPad) · 사용법 기획서(개정 4)</footer></div>
