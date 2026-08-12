@@ -101,3 +101,35 @@ convenience." `activeWindows`를 받아서 즉석으로 Windows의 단일-구간
 
 지금 상태(`status: acknowledged`)는 그대로 둡니다 — 데이터 유실 자체는 이미 안전
 정책으로 막혀있는 상태(조용히 무시될 뿐, 잘못 적용되진 않음)라 급한 사고는 아닙니다.
+
+## 진행 확인 (Windows, 2026-08-12)
+
+`timer1` 소스를 다시 열어보니 위 1~4번 계획이 **이미 코드로 구현돼 있었습니다**
+(어느 세션에서 했는지 커밋 기록은 없음 — 아래 참고):
+
+- `lib/models/mac_lock_window.dart` — 계획한 대로 `MacLockWindow` 모델
+  (`startMin`/`endMin`/`label`, `isActiveAt`).
+- `lib/services/mac_lock_window_service.dart` — 저장/병합, `source:'mac'` 태그.
+- `lib/services/mac_sync_service.dart`의 `applyRemoteLockSchedule()` — 원격
+  `activeWindows` 수신·적용.
+- `lib/services/lock_screen_service.dart` — 기존 판정에 Mac 창 판정 추가.
+- 설정 탭에 `MacLockWindowsReadOnlyList` — "Mac에서 온 잠금 시간대" 읽기 전용 표시.
+
+`flutter analyze` 통과 확인 후 `scripts\build_and_relaunch.ps1`로 실제 빌드해서
+새 인스턴스가 정상 기동하는 것까지 확인했습니다.
+
+**아직 안 한 것**: 5번 "실기기에서 라이브로 잠금이 걸리고 풀리는 것까지 확인"은
+이번에도 수행하지 않았습니다. 이 프로젝트에는 과거 잠금 기능이 폭주해서 컴퓨터가
+안 풀렸던 실제 사고 이력이 있고(`EMERGENCY_PROTOCOL.md`, "비상비상" 긴급 해제
+절차), 이 요청 자체도 계획 5번에서 "라이브 확인 전엔 완료 처리하지 말 것"을
+명시적으로 못박아둔 상태입니다. 그래서 무인 자동화 세션에서 잠금을 실제로
+트리거해보는 건 하지 않았습니다.
+
+또한 이 프로젝트(`timer1`) 저장소 자체가 이 기능 포함 매우 큰 규모의 미커밋
+변경사항을 오래 갖고 있는 상태입니다(기존에 이미 파악된 별도 이슈,
+`2026-08-08_timer1-uncommitted-backlog-needs-commit-plan.md` 참고) — 이번 기능
+관련 파일만 골라서 커밋하는 것도 그 백로그와 뒤섞여 있어 리스크가 있다고 판단해
+git 커밋은 하지 않았습니다.
+
+**상태는 `acknowledged`로 유지**합니다 — done 처리는 (a) timer1 세션에서 커밋
+계획을 세운 뒤, (b) 실기기 라이브 잠금 확인까지 마친 다음으로 미룹니다.

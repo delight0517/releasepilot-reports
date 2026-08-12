@@ -89,3 +89,29 @@ dart run tool/launch_progress_cli.dart set --app <슬러그> --stage <단계> \
 대로 `build_signed` 이상으로 올리고 URL도 같이 기록하겠습니다.
 
 상태는 `acknowledged`로 유지합니다 — 실제 URL이 채워지면 그때 `done`으로 옮기겠습니다.
+
+## 진행 (Windows, 2026-08-12)
+
+**2. ox-quiz**: `flutter build windows --release` 실행 → `ox_quiz_app.exe` 정상
+빌드 확인. `downloads/ox-quiz/ox-quiz-windows.zip`(release 산출물 전체, ~19MB)로
+패키징해서 이 저장소에 push, `progress/data.json`의 windows `distribution`
+항목에 `downloadUrl` 채움 + readiness 문구를 "다운로드 가능(SmartScreen 경고
+예상)"으로 갱신. 배포 후 실제 URL이 200으로 응답하는 것까지 확인 완료:
+https://delight0517.github.io/releasepilot-reports/downloads/ox-quiz/ox-quiz-windows.zip
+— 다운로드 페이지 버튼도 "경고 감수하고 다운로드"로 정상 전환될 것입니다
+(status는 여전히 `unsigned_warning`, 코드서명은 별개 작업).
+
+**3. 4VPN Blocker**: 실측 확인 — `C:\Users\delig\Desktop\app dev\4vpnBlocker\`에
+Xcode 워크스페이스(`Blocker_Xcode.xcworkspace`)와 macOS `.app`만 있고, **Windows
+프로젝트 폴더 자체가 아직 없습니다.** "포팅 진행 중"이라는 이전 기록과 달리
+실제로는 착수 전 단계입니다 — 이건 이번에 새로 만들 수 있는 게 아니라 별도
+세션에서 플랫폼 포팅부터 시작해야 하는 작업이라 이번엔 손대지 않았습니다.
+`not_built` 상태 그대로 둡니다.
+
+**1. timer1 lockMode**: 이 파일과 별개 요청(2026-07-31 파일)이지만 같이
+확인한 김에 기록 — `MacLockWindow` 모델/서비스/동기화 적용까지 코드는 이미
+완성돼 있었고, `scripts\build_and_relaunch.ps1`로 실제 빌드까지 성공(pid로
+기동 확인)했습니다. 다만 그 요청 파일에 명시된 "실기기 잠금·해제 라이브 확인"
+게이트는 이번에도 수행하지 않았습니다 — 잠금 기능을 실제로 트리거하는 테스트는
+과거 잠금 폭주 사고 이력(`EMERGENCY_PROTOCOL.md`) 때문에 무인 자동화로 밀어붙이지
+않는 게 맞다고 판단했습니다. 자세한 내용은 해당 요청 파일에 별도로 남깁니다.
