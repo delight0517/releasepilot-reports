@@ -1,0 +1,207 @@
+<!doctype html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>김근후 — 3D Game Artist × AI-assisted Creative Designer</title>
+<meta name="description" content="김근후, 3D Game Artist. 3ds Max와 Substance 3D Painter로 게임용 에셋을 제작하고, AI를 리서치·기획·반복 개선에 결합합니다.">
+<link rel="icon" href="../icons/icon-192.png">
+<meta name="theme-color" content="#0e1512">
+<style>
+  :root {
+    --bg: #0e1512; --card: #16201b; --line: #26362e;
+    --ink: #edf3ec; --ink-dim: #b7c4bb; --ink-faint: #718077;
+    --moss: #7fd68a; --moss-soft: rgba(127,214,138,0.14);
+    --clay: #d69a5a; --clay-soft: rgba(214,154,90,0.14);
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Noto Serif KR", serif;
+    --sans: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  :root[data-theme="light"] {
+    --bg: #f3f6f1; --card: #ffffff; --line: #dbe4d7;
+    --ink: #16201b; --ink-dim: #47564d; --ink-faint: #85947f;
+    --moss: #2f8f45; --moss-soft: rgba(47,143,69,0.10);
+    --clay: #b06a2c; --clay-soft: rgba(176,106,44,0.10);
+  }
+  * { box-sizing: border-box; overflow-wrap: break-word; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: radial-gradient(800px 460px at 50% -10%, var(--moss-soft), transparent 60%), var(--bg);
+    color: var(--ink); font-family: var(--sans); line-height: 1.62; -webkit-font-smoothing: antialiased; }
+  a { color: inherit; }
+  .wrap { max-width: 820px; margin: 0 auto; padding: 0 22px 100px; }
+
+  .hero { padding: 88px 0 44px; text-align: center; }
+  .eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--moss); margin: 0 0 18px; }
+  h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(28px, 5.6vw, 42px); margin: 0 0 14px; line-height: 1.25; text-wrap: balance; }
+  h1 .x { color: var(--ink-faint); font-size: 0.7em; margin: 0 6px; }
+  .lede { max-width: 58ch; margin: 0 auto; font-size: 15px; color: var(--ink-dim); }
+
+  .role-map { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 34px auto 0; max-width: 640px; }
+  .role-tier { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 12px; }
+  .role-tier.core { border-color: var(--moss); background: linear-gradient(180deg, var(--moss-soft), var(--card) 65%); }
+  .role-tier .k { font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-faint); margin: 0 0 6px; }
+  .role-tier.core .k { color: var(--moss); }
+  .role-tier .v { font-size: 12.5px; color: var(--ink); line-height: 1.4; }
+
+  section { padding: 56px 0 0; scroll-margin-top: 20px; }
+  .section-head { margin-bottom: 20px; }
+  .section-eyebrow { display: block; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--moss); margin-bottom: 6px; }
+  .section-head h2 { font-family: var(--serif); font-weight: 400; font-size: 23px; margin: 0; }
+  .section-head p { margin: 6px 0 0; font-size: 13px; color: var(--ink-faint); max-width: 60ch; }
+
+  .job-card { border: 1px solid var(--line); border-radius: 14px; padding: 20px 22px; margin-bottom: 14px; background: var(--card); }
+  .job-card .rank { font-family: var(--mono); font-size: 10px; color: var(--clay); text-transform: uppercase; letter-spacing: 0.06em; }
+  .job-card h3 { font-family: var(--serif); font-weight: 400; font-size: 18px; margin: 6px 0 10px; }
+  .job-card p { font-size: 13.5px; color: var(--ink-dim); margin: 0 0 10px; }
+  .skills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .skills span { font-family: var(--mono); font-size: 10.5px; background: var(--bg); border: 1px solid var(--line); color: var(--ink-dim); border-radius: 999px; padding: 3px 10px; }
+
+  .evidence-list { padding-left: 18px; font-size: 13px; color: var(--ink-dim); }
+  .evidence-list li { margin-bottom: 6px; }
+
+  .slot { border: 1.5px dashed var(--line); border-radius: 14px; aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center;
+    text-align: center; padding: 20px; font-family: var(--mono); font-size: 11.5px; color: var(--ink-faint); background: var(--card); }
+  .slot-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+
+  .principle { margin-top: 64px; border-top: 1px solid var(--line); padding-top: 26px; text-align: center; }
+  .principle p { font-family: var(--serif); font-size: 15.5px; color: var(--ink-dim); max-width: 48ch; margin: 0 auto; }
+
+  footer { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--line); font-size: 12px; color: var(--ink-faint); text-align: center; }
+
+  @media (max-width: 640px) {
+    body { font-size: 15px; }
+    .role-map { grid-template-columns: 1fr; }
+    .slot-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+
+<div class="wrap">
+  <div class="hero">
+    <p class="eyebrow">Portfolio · 3D Game Art</p>
+    <h1>김근후<span class="x">×</span>3D Game Artist<span class="x">×</span>AI-assisted Creative Designer</h1>
+    <p class="lede">
+      3ds Max와 Substance 3D Painter를 기반으로 게임용 3D 에셋을 제작하고, 형태·텍스처·색채·조명·세계관을
+      함께 고민합니다. AI는 리서치와 아이디어 생성뿐 아니라 문제 분석·기획·반복 개선까지 연결해
+      더 빠르게 해결책을 탐색하는 데 씁니다.
+    </p>
+
+    <div class="role-map">
+      <div class="role-tier core">
+        <p class="k">핵심 직무</p>
+        <p class="v">3D Game Artist<br>Prop / Environment / Stylized Art</p>
+      </div>
+      <div class="role-tier">
+        <p class="k">확장 역량</p>
+        <p class="v">Visual Development<br>Game / Interactive Content Design</p>
+      </div>
+      <div class="role-tier">
+        <p class="k">차별화 역량</p>
+        <p class="v">AI-assisted Creative Workflow<br>Problem Solving & Rapid Research</p>
+      </div>
+    </div>
+  </div>
+
+  <section id="core">
+    <div class="section-head">
+      <span class="section-eyebrow">01 · 가장 직접적인 연결점</span>
+      <h2>Junior 3D Game Artist — Prop / Environment</h2>
+      <p>3ds Max 모델링부터 Substance 3D Painter 텍스처링까지, 실제로 다룬 제작 단계 중심으로 정리.</p>
+    </div>
+    <div class="job-card">
+      <span class="rank">Modeling</span>
+      <h3>3ds Max — 형태 개발</h3>
+      <p>게임 오브젝트(검 등)를 모델링 대상으로 선정해 형태를 분석하고, 실루엣 수정 → 형태 개선 → 색감 단계 개선 순으로
+        결과물을 단계적으로 발전시키는 방식으로 작업했습니다.</p>
+    </div>
+    <div class="job-card">
+      <span class="rank">Texturing</span>
+      <h3>Substance 3D Painter — 핸드페인팅 워크플로우</h3>
+      <ul class="evidence-list">
+        <li>Paint Layer 기반 핸드페인팅, Polygon Fill을 이용한 영역 작업</li>
+        <li>뒷면까지 페인트가 묻는 문제 해결 — Camera Occlusion / Backface 설정 탐색</li>
+        <li>브러시 투명도 조절, 레이어 및 기존 페인팅 결과 수정</li>
+        <li>스포이드로 색상 추출, 환경광·HDRI 방향 조절</li>
+        <li>배경 이미지와 오브젝트 색 조화 확인, 텍스처 출력 및 재활용 방법 탐색</li>
+      </ul>
+      <p style="margin-top:10px;">즉 Modeling → Texturing → Lighting/Presentation → Revision으로 이어지는
+        게임 아트 제작 흐름을 실제 문제를 풀면서 익히는 중입니다.</p>
+      <div class="skills">
+        <span>3ds Max</span><span>Substance 3D Painter</span><span>HDRI Lighting</span><span>Hand Painting</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="stylized">
+    <div class="section-head">
+      <span class="section-eyebrow">02 · 방향성</span>
+      <h2>Stylized 3D Artist / Hand-painted Game Artist</h2>
+      <p>사실적 재현보다 색감·실루엣·분위기·세계관의 조화를 우선한다.</p>
+    </div>
+    <div class="job-card">
+      <p>Substance Painter를 포토샵처럼 활용해 직접 색을 그리고 수정하는 Hand Painting 방식에 관심을 두며,
+        배경 이미지와 조명까지 설정해 "게임 안에서 이 오브젝트가 어떻게 보이는가"를 판단하려 합니다.
+        형태 + 색 + 분위기 + 세계관을 함께 디자인하는 Stylized Game Art와 방향이 맞습니다.</p>
+    </div>
+  </section>
+
+  <section id="worldbuilding">
+    <div class="section-head">
+      <span class="section-eyebrow">03 · 확장 방향 (현재는 기반을 쌓는 단계)</span>
+      <h2>Visual Development / World-building</h2>
+      <p>캐릭터·소품·공간·색채·조명·이야기를 하나의 경험으로 연결하려는 경향.</p>
+    </div>
+    <div class="job-card">
+      <p>서울 도시 누아르, 웹툰식 공간, 현대 도시의 생활감처럼 하나의 장면 전체를 설계하는 방식에
+        관심을 보여왔습니다. 다만 현재 시점에서는 <strong>3D 제작 능력을 기반으로 Visual Development
+        역량을 확장하고 있는 단계</strong>로 표현하는 것이 정확합니다.</p>
+    </div>
+  </section>
+
+  <section id="planning">
+    <div class="section-head">
+      <span class="section-eyebrow">04 · 함께 발전시킬 역량</span>
+      <h2>Game / Interactive Content Planner</h2>
+      <p>기능을 나열하지 않고 단계로 분해하는 사고 — 시스템 문서/프로토타입이 붙으면 더 강해지는 영역.</p>
+    </div>
+    <div class="job-card">
+      <p>사용자 문제 → 발생 조건 → 사용자 행동 → 개입 → 피드백 → 다음 행동, 이런 식으로 단계를 나누는
+        경향이 있습니다. 행동 시스템을 설계할 때도 작동 조건·단계별 행동·완료 확인·예외 상황·환경 변화·
+        출력 형식까지 나눠 설계한 사례가 있습니다 — interaction flow와 rule system을 만드는 사고방식에
+        가깝습니다.</p>
+    </div>
+  </section>
+
+  <section id="ai">
+    <div class="section-head">
+      <span class="section-eyebrow">05 · 차별점</span>
+      <h2>AI-assisted Creative Designer</h2>
+      <p>AI를 답을 받는 도구가 아니라 리서치·기획·검증 파트너로 반복 투입.</p>
+    </div>
+    <div class="job-card">
+      <p>문제 정의 → 자료 조사 → 아이디어 생성 → 반론 → 개선 → 구조화 → 다시 제작, 이 과정을
+        AI와 반복합니다. 복잡한 기능 요청을 우선순위화하거나 사용자 행동에 따라 다른 반응을 설계하는
+        프롬프트 시스템을 만드는 방식이 여기 해당합니다.</p>
+    </div>
+  </section>
+
+  <section id="proof">
+    <div class="section-head">
+      <span class="section-eyebrow">포트폴리오</span>
+      <h2>제작물 (업로드 예정)</h2>
+      <p>실제 결과물 이미지는 아직 이 사이트에 올라오지 않았습니다 — 지어낸 이미지나 점수 대신,
+        준비되는 대로 실제 스틸컷/턴테이블로 채웁니다.</p>
+    </div>
+    <div class="slot-grid">
+      <div class="slot">Prop 모델링<br>실루엣 → 완성 단계컷<br>(업로드 예정)</div>
+      <div class="slot">텍스처링 과정<br>Substance Painter 뷰포트<br>(업로드 예정)</div>
+      <div class="slot">최종 프레젠테이션<br>조명·배경 합성컷<br>(업로드 예정)</div>
+    </div>
+  </section>
+
+  <div class="principle">
+    <p>이 페이지는 3D Game Art 취업/의뢰만을 위한 페이지입니다. 다른 트랙(영상 편집·개발·연기)은
+      여기서 다루지 않습니다 — <a href="../links/" style="color:var(--moss);">전체 링크</a>에서 확인하세요.</p>
+  </div>
+
+  <footer>
+    <p>생성: releasepilot-reports · game-artist/ · 내용 출처: 본인 제공 작업 서술(3ds Max·Substance 3D Painter 실사용 경험) — AI Profile Index 등 검증 불가능한 점수는 의도적으로 배제</p>
+  </footer>
+</div>
