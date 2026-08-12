@@ -18,6 +18,15 @@
     "readMinutes": 9
   },
   {
+    "id": "library-without-a-librarian",
+    "file": "library-without-a-librarian.html",
+    "channel": "인프라 · 기술 에세이",
+    "title": "도서관에 사서가 없다면",
+    "snippet": "멜빌 듀이의 카드 목록부터 오늘의 검색엔진까지 — 아무리 좋은 사이트도 카드가 없으면 발견되지 않는다는 이야기. 근성장 허브가 오늘 실제로 겪은 문제.",
+    "publishedAt": "2026-08-13T00:00:00.000Z",
+    "readMinutes": 5
+  },
+  {
     "id": "why-i-write-and-draw",
     "file": "why-i-write-and-draw.html",
     "channel": "에세이 · 창작 노트",

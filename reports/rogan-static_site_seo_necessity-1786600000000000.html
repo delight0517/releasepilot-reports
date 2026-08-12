@@ -1,0 +1,111 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GitHub Pages류 정적 사이트에 SEO 설정이 필수인 이유</title>
+<style>
+  :root {
+    --bg: #faf7f2; --bg-raised: #ffffff; --fg: #211f2e; --muted: #6b6a7c;
+    --border: #e7e1d6; --accent: #c9711f; --accent-soft: #f6e6d3;
+    --risk: #a13a3a; --risk-soft: #f6e2df; --good: #2f7a63; --good-soft: #dcefe8;
+    --info: #2a5f8f; --info-soft: #dbe8f2;
+    --serif: Iowan Old Style, Georgia, "Noto Serif KR", ui-serif, serif;
+    --sans: -apple-system, "Pretendard", "Apple SD Gothic Neo", "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) { :root { --bg: #16151d; --bg-raised: #201f29; --fg: #ede9e0; --muted: #9a97ab; --border: #322f3d; --accent: #e2a262; --accent-soft: #3a2f22; --risk: #e08787; --risk-soft: #3a2325; --good: #7fc6ac; --good-soft: #1f332c; --info: #7fb0e0; --info-soft: #1f2c3a; } }
+  :root[data-theme="dark"] { --bg: #16151d; --bg-raised: #201f29; --fg: #ede9e0; --muted: #9a97ab; --border: #322f3d; --accent: #e2a262; --accent-soft: #3a2f22; --risk: #e08787; --risk-soft: #3a2325; --good: #7fc6ac; --good-soft: #1f332c; --info: #7fb0e0; --info-soft: #1f2c3a; }
+  :root[data-theme="light"] { --bg: #faf7f2; --bg-raised: #ffffff; --fg: #211f2e; --muted: #6b6a7c; --border: #e7e1d6; --accent: #c9711f; --accent-soft: #f6e6d3; --risk: #a13a3a; --risk-soft: #f6e2df; --good: #2f7a63; --good-soft: #dcefe8; --info: #2a5f8f; --info-soft: #dbe8f2; }
+  * { box-sizing: border-box; overflow-wrap: break-word; }
+  body { background: var(--bg); color: var(--fg); font-family: var(--sans); line-height: 1.66; -webkit-font-smoothing: antialiased; }
+  .page { max-width: 800px; margin: 0 auto; padding: 56px 24px 96px; }
+  .eyebrow { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; }
+  h1 { font-family: var(--serif); font-size: clamp(24px, 5vw, 34px); font-weight: 600; line-height: 1.24; margin: 0 0 6px; text-wrap: balance; }
+  .subtitle { color: var(--muted); font-size: 14px; margin: 0 0 32px; }
+  section { margin-bottom: 40px; }
+  h2 { font-family: var(--serif); font-size: 20px; font-weight: 600; margin: 0 0 6px; }
+  .section-lede { color: var(--muted); font-size: 13.5px; margin: 0 0 16px; }
+  .callout { border-radius: 12px; padding: 18px 20px; margin-bottom: 20px; border: 1px solid transparent; }
+  .callout.info { background: var(--info-soft); border-color: color-mix(in srgb, var(--info) 35%, transparent); }
+  .callout.risk { background: var(--risk-soft); border-color: color-mix(in srgb, var(--risk) 35%, transparent); }
+  .callout p { margin: 0; }
+  .callout .tag { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.04em; border-radius: 999px; padding: 2px 10px; margin-bottom: 8px; }
+  .callout.info .tag { color: var(--info); border: 1px solid var(--info); }
+  .callout.risk .tag { color: var(--risk); border: 1px solid var(--risk); }
+  ol.plain, ul.plain { padding-left: 20px; font-size: 13.5px; }
+  ol.plain li, ul.plain li { margin-bottom: 8px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; display: block; overflow-x: auto; white-space: nowrap; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); }
+  th { color: var(--muted); font-weight: 600; font-size: 11px; text-transform: uppercase; }
+  .linkbar { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+  .linkbar a { font-size: 13px; border: 1px solid var(--border); border-radius: 999px; padding: 7px 14px; text-decoration: none; color: var(--fg); background: var(--bg-raised); }
+  .linkbar a:hover { border-color: var(--accent); color: var(--accent); }
+  footer { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted); }
+  @media (max-width: 640px) { body { font-size: 15px; } .page { padding: 32px 16px 80px; } }
+</style>
+
+<div class="page">
+  <p class="eyebrow">차차차 리포트 · SEO / 인프라</p>
+  <h1>GitHub Pages류 정적 사이트에는 SEO 설정이 왜 "선택"이 아니라 "필수"인가</h1>
+  <p class="subtitle">2026-08-13 작성 · releasepilot-reports · 근성장(김근후) 사이트 실제 적용 사례 기준</p>
+
+  <div class="callout risk">
+    <span class="tag">기본값의 함정</span>
+    <p>
+      GitHub Pages, Netlify, Vercel 같은 정적 호스팅은 "URL이 생긴다"와 "구글이 그 URL을 안다"를
+      혼동하게 만든다. 사이트가 배포됐다고 자동으로 검색에 뜨는 게 아니다 — 실제로 이 허브의
+      11개 사이트가 오늘 이전까지 <strong>단 하나도</strong> title/description 메타태그가 없었고,
+      sitemap.xml에는 최근 만든 사이트 절반이 빠져 있었다. "일단 만들면 된다"는 가정이 틀렸다는
+      직접적 증거다.
+    </p>
+  </div>
+
+  <section>
+    <h2>1. 왜 정적 사이트가 특히 더 취약한가</h2>
+    <ul class="plain">
+      <li><strong>백링크가 0에 수렴</strong> — 워드프레스 블로그 등 기존 CMS 사이트는 플러그인이
+        기본 사이트맵·메타태그를 자동 생성해주지만, 직접 짠 정적 HTML은 아무것도 자동으로 안 붙는다.</li>
+      <li><strong>공유 미리보기가 깨진다</strong> — OG 태그가 없으면 카카오톡/트위터에 링크를 붙였을 때
+        제목도 이미지도 없는 텅 빈 카드로 뜬다. 이건 SEO보다 먼저, 지금 당장 신뢰도를 깎는 문제다.</li>
+      <li><strong>신생 도메인 페널티</strong> — <code>delight0517.github.io</code>는 만들어진 지 얼마
+        안 된 하위 경로라 구글이 "이게 진짜 사이트인지" 판단할 기존 신호가 거의 없다. 메타데이터가
+        완비돼 있어야 그나마 있는 신호(관련성)라도 최대한 활용할 수 있다.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>2. 오늘 적용한 최소 기준선</h2>
+    <table>
+      <tr><th>항목</th><th>상태(2026-08-13 기준)</th></tr>
+      <tr><td>robots.txt 크롤링 허용</td><td>이미 되어 있었음</td></tr>
+      <tr><td>sitemap.xml에 전체 페이지 등록</td><td>완료 — 11개 사이트 + 가이드 2개</td></tr>
+      <tr><td>모든 페이지 title/description/canonical</td><td>완료</td></tr>
+      <tr><td>OG/Twitter 카드(공유 미리보기)</td><td>완료</td></tr>
+      <tr><td>Google Search Console 소유권 인증</td><td>완료(본인 진행)</td></tr>
+      <tr><td>sitemap 제출</td><td>완료(본인 진행)</td></tr>
+      <tr><td>핵심 페이지 색인 요청</td><td>진행 중</td></tr>
+      <tr><td>백링크 확보</td><td>미착수 — 아래 3번 참고</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>3. 아직 안 끝난 것 — 백링크는 시간이 필요하다</h2>
+    <p style="font-size:13.5px;">
+      메타태그·sitemap·Search Console은 "구글이 존재를 알게 하는" 최소선이고, <strong>순위</strong>를
+      끌어올리는 건 다른 사이트가 이 사이트를 링크하는 빈도(백링크)다. 이건 하루 만에 만들 수
+      없다 — 브런치 글, 아트스테이션 프로필, 인스타그램 바이오 링크 등 이미 있는 채널에서
+      꾸준히 이 허브 URL을 언급하는 것이 가장 현실적인 축적 경로다. 자세한 원리는 아래 SEO 기초
+      가이드에 다이어그램으로 정리해 뒀다.
+    </p>
+  </section>
+
+  <section>
+    <h2>바로가기</h2>
+    <div class="linkbar">
+      <a href="../guides/google-search-console/">Search Console 등록 교재 →</a>
+      <a href="../guides/seo-basics/">검색엔진 순위 결정 원리 교재 →</a>
+      <a href="../articles/">관련 기사 — 클로이 박</a>
+    </div>
+  </section>
+
+  <footer>
+    <p>생성: releasepilot-reports · reports/ 채널 · 차차차(홍보·수익 팀장)</p>
+  </footer>
+</div>
