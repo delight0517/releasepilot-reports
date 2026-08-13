@@ -4,21 +4,21 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>자료실</title>
-<meta name="description" content="노션처럼 폴더 안에 폴더를 넣어 자료를 정리하는 자료실 — 유저명+PIN으로 어디서든 접근 가능" />
+<meta name="description" content="노션처럼 폴더 안에 폴더를 넣어 자료를 정리하는 자료실 — 닉네임만으로 바로 시작" />
 <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <section id="screen-login">
+  <!-- 최초 방문 시에만 뜨는 닉네임 입력 화면. 이후 방문부터는 localStorage에 저장된
+       닉네임으로 바로 건너뛴다(자동 로그인) — 비밀번호/PIN 없음. -->
+  <section id="screen-nickname" style="display:none">
     <div class="login-card">
       <h1>🗂️ 자료실</h1>
-      <p class="hint">유저명 + 4자리 PIN만으로 이용합니다. 처음 쓰는 유저명이면 그 자리에서 새 계정이 만들어지고, 다음에 올 때 같은 유저명+PIN을 입력하면 이어서 볼 수 있습니다.</p>
-      <label for="login-username-input">유저명</label>
-      <input id="login-username-input" type="text" placeholder="한/영/숫자, 2~24자" maxlength="24" autocomplete="username" />
-      <label for="login-pin-input">PIN (숫자 4자리)</label>
-      <input id="login-pin-input" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="••••" autocomplete="current-password" />
-      <button id="btn-login" class="primary-btn full-width">시작하기</button>
-      <p id="login-status" class="hint error"></p>
-      <p class="hint faint">⚠️ 임시 자료실입니다 — PIN 4자리라 보안이 강하지 않습니다. 민감한 정보는 저장하지 마세요. PIN을 잊으면 그 유저명은 되찾을 방법이 없습니다.</p>
+      <p class="hint">이름(닉네임)을 입력하면 바로 시작됩니다 — 비밀번호는 없어요. 다음에 이 브라우저로 다시 오면 자동으로 이어서 볼 수 있습니다.</p>
+      <label for="nickname-input">이름(닉네임)</label>
+      <input id="nickname-input" type="text" placeholder="예: rogan2534" maxlength="24" autocomplete="off" />
+      <button id="btn-nickname-start" class="primary-btn full-width">시작하기</button>
+      <p id="nickname-status" class="hint error"></p>
+      <p class="hint faint">⚠️ 이 이름은 잠금장치가 아니라 그냥 구분용 별명이에요. 자료는 이 브라우저에만 저장되며, 아래 "GitHub에 백업"으로 내보내야 다른 기기에서도 같은 이름으로 불러올 수 있습니다.</p>
     </div>
   </section>
 
@@ -29,15 +29,23 @@
         <span id="account-badge" class="account-badge"></span>
         <button id="btn-import" class="icon-btn" title="가져오기">📥</button>
         <button id="btn-export" class="icon-btn" title="내보내기">📤</button>
-        <button id="btn-backups" class="icon-btn" title="하루 단위 백업에서 복구">🕐</button>
-        <button id="btn-logout" class="icon-btn" title="로그아웃">🚪</button>
+        <button id="btn-github-backup" class="icon-btn" title="GitHub에 백업">💾</button>
       </div>
       <input id="import-file-input" type="file" accept="application/json" style="display:none" />
     </header>
 
+    <p class="hint faint">👤 <span id="username-label"></span> · <button id="btn-change-nickname" class="linklike">다른 이름으로 시작</button><br>이 브라우저에만 저장됩니다 — 다른 기기/브라우저에서 이어보려면 "GitHub에 백업"을 사용하세요.</p>
+
+    <p id="github-backup-hint" class="hint faint" style="display:none"></p>
+
+    <div class="search-bar">
+      <input id="search-input" type="text" placeholder="🔍 전체 검색 (폴더 위치 상관없이 제목/내용/폴더명)" autocomplete="off" />
+    </div>
+
     <p id="sync-status" class="hint sync-status"></p>
 
     <main>
+      <div id="search-results" class="browser-list" style="display:none"></div>
       <div id="browser-list" class="browser-list"></div>
     </main>
 
@@ -60,17 +68,6 @@
     <div class="read-body">
       <h2 id="read-title"></h2>
       <div id="read-content" class="read-content"></div>
-    </div>
-  </div>
-
-  <div id="modal-backups" class="modal" style="display:none">
-    <div class="modal-card">
-      <h2>하루 단위 백업</h2>
-      <p class="hint">매일 그날의 첫 저장 직전 상태가 자동으로 남습니다. 실수로 지웠다면 여기서 되돌릴 날짜를 고르세요.</p>
-      <div id="backups-list" class="backups-list"></div>
-      <div class="modal-actions">
-        <button id="btn-backups-close" class="secondary-btn">닫기</button>
-      </div>
     </div>
   </div>
 

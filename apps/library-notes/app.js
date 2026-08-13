@@ -1,123 +1,78 @@
 // 자료실 — 노션처럼 폴더 안에 폴더를 넣을 수 있는 자료 정리 웹앱.
-// 2026-08-11부터 유저명+4자리 PIN 계정 시스템(Cloudflare Worker + KV)을 붙여서
-// 외부 사용자도 다른 기기에서 같은 유저명+PIN으로 이어서 쓸 수 있게 했다 —
-// 이전의 "이 기기에만 저장" 방식은 내보내기/가져오기(.json)로 여전히 남겨둔다
-// (계정 서버가 응답 안 할 때의 백업 수단으로도 씀).
-//
-// 보안 원칙: PIN은 메모리에만 들고 있고(로그인 세션 변수), localStorage에는
-// 절대 쓰지 않는다 — 새로고침하면 다시 로그인해야 하는 게 의도된 동작이다
-// (4자리 PIN은 애초에 강한 인증이 아니므로, 그나마 브라우저 저장소에 평문으로
-// 남기지 않는 걸로 최소한의 안전판을 둔다).
+// 2026-08-13: 서버(Cloudflare Worker) 계정 시스템을 걷어내고, 서버 없는 멀티유저
+// 방식으로 전환했다 — GitHub Pages 정적 사이트라는 조건에서, "닉네임"을 그냥
+// 구분용 로컬 식별자로 쓰고 데이터는 브라우저 localStorage에 유저명별로 저장한다.
+// 비밀번호/PIN 없음 (서버가 없으니 강제할 수도 없고, 사용자가 번거로운 걸 원치 않음).
+// 최초 방문에만 닉네임을 묻고, 이후 방문부터는 저장된 닉네임으로 자동 진입한다.
+// 기기 간 동기화는 "GitHub에 백업" 버튼으로 유저명.json을 내려받아 이 저장소의
+// apps/library-notes/data/ 아래 수동으로 올려두는 방식(정적 사이트라 클라이언트에서
+// 직접 GitHub에 쓸 수 없음 — 쓰기 토큰을 클라이언트에 두는 건 보안상 금지).
 
-// 실제로 배포된 저장 서버 — 배포 전까지는 PLACEHOLDER로 남아 있고, 이 상태에서는
-// 로그인 화면에 "서버 준비 중" 안내만 뜬다(2026-08-11, balance-game과 같은 패턴).
-const STORAGE_API_URL = "https://library-notes-storage.PLACEHOLDER.workers.dev";
-const LAST_USERNAME_KEY = "libraryNotesWeb_lastUsername_v1"; // 유저명만 기억, PIN은 절대 저장 안 함
+const CURRENT_USERNAME_KEY = "libraryNotesWeb_username_v1"; // 현재 이 브라우저에서 쓰는 닉네임
+const DATA_KEY_PREFIX = "libraryNotesWeb_data_"; // + username → 그 유저의 {folders, documents}
 const FONT_SIZE_KEY = "libraryNotesWeb_readFontSize_v1";
 
 let data = { folders: [], documents: [] };
 let currentFolderId = null; // null = 최상위
-let session = null; // { username, pin } — 메모리에만 존재
+let username = null; // 현재 로컬 "로그인" 유저명 — 인증 아님, 그냥 구분용
 let saveTimer = null;
 
 const el = (id) => document.getElementById(id);
 const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
 
-function isServerReady() {
-  return !STORAGE_API_URL.includes("PLACEHOLDER");
+function dataKey(name) {
+  return DATA_KEY_PREFIX + name;
 }
 
-// ── 인증 ──────────────────────────────────────────────────────────────────
-async function login(username, pin) {
-  if (!isServerReady()) {
-    throw new Error("서버 준비 중입니다 — 조금 있다가 다시 시도해주세요.");
-  }
-  const res = await fetch(`${STORAGE_API_URL}/api/auth`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, pin }),
-  });
-  const body = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(body.error || `로그인 실패 (${res.status})`);
-  return body;
-}
-
-async function persistToServer() {
-  if (!session || !isServerReady()) return;
+// ── 데이터 로드/저장 (localStorage, 유저명별) ───────────────────────────────
+function loadLocalData(name) {
+  const raw = localStorage.getItem(dataKey(name));
+  if (!raw) return null;
   try {
-    const res = await fetch(`${STORAGE_API_URL}/api/save`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username: session.username, pin: session.pin, folders: data.folders, documents: data.documents }),
-    });
-    const body = await res.json().catch(() => ({}));
-    if (!res.ok) throw new Error(body.error || `저장 실패 (${res.status})`);
-    el("sync-status").textContent = `✅ 저장됨 (${new Date().toLocaleTimeString()})`;
+    const parsed = JSON.parse(raw);
+    if (parsed && Array.isArray(parsed.folders) && Array.isArray(parsed.documents)) return parsed;
   } catch (e) {
-    el("sync-status").textContent = `⚠️ 서버 저장 실패 — 이 기기에는 남아있습니다: ${e.message}`;
+    /* 무시하고 아래에서 null 취급 */
   }
+  return null;
 }
 
-// ── 하루 단위 백업 / 복구 ──────────────────────────────────────────────────
-async function fetchBackups() {
-  const url = `${STORAGE_API_URL}/api/backups?username=${encodeURIComponent(session.username)}&pin=${encodeURIComponent(session.pin)}`;
-  const res = await fetch(url);
-  const body = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(body.error || `백업 목록을 불러오지 못했습니다 (${res.status})`);
-  return body.backups || [];
+function persistLocal() {
+  localStorage.setItem(dataKey(username), JSON.stringify(data));
+  el("sync-status").textContent = `✅ 저장됨 (${new Date().toLocaleTimeString()})`;
 }
 
-async function restoreBackup(date) {
-  const res = await fetch(`${STORAGE_API_URL}/api/restore`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username: session.username, pin: session.pin, date }),
-  });
-  const body = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(body.error || `복구 실패 (${res.status})`);
-  return body.data;
-}
-
-async function openBackupsModal() {
-  const list = el("backups-list");
-  list.innerHTML = '<p class="hint">불러오는 중...</p>';
-  el("modal-backups").style.display = "flex";
-  try {
-    const backups = await fetchBackups();
-    if (!backups.length) {
-      list.innerHTML = '<p class="hint">아직 백업이 없습니다 — 내일부터 매일 하나씩 쌓입니다.</p>';
-      return;
-    }
-    list.innerHTML = "";
-    backups.forEach((b) => {
-      const row = document.createElement("button");
-      row.className = "backup-row";
-      row.innerHTML = `<span class="backup-date">${b.date}</span><span class="backup-meta">폴더 ${b.folderCount}개 · 자료 ${b.documentCount}개</span>`;
-      row.onclick = async () => {
-        if (!confirm(`${b.date} 시점으로 되돌릴까요? 지금 상태는 오늘자 백업으로 남습니다.`)) return;
-        try {
-          const restored = await restoreBackup(b.date);
-          data = restored;
-          currentFolderId = null;
-          el("modal-backups").style.display = "none";
-          renderBrowser();
-          el("sync-status").textContent = `✅ ${b.date} 시점으로 복구했습니다.`;
-        } catch (e) {
-          alert(`복구 실패: ${e.message}`);
-        }
-      };
-      list.appendChild(row);
-    });
-  } catch (e) {
-    list.innerHTML = `<p class="hint error">${escapeHtml(e.message)}</p>`;
-  }
-}
-
-// 저장 호출을 짧게 묶어서(연타 방지) 서버 부하를 줄인다.
+// 저장 호출을 짧게 묶어서(연타 방지) 저장을 줄인다.
 function save() {
   if (saveTimer) clearTimeout(saveTimer);
   el("sync-status").textContent = "저장 중...";
-  saveTimer = setTimeout(persistToServer, 400);
+  saveTimer = setTimeout(persistLocal, 400);
+}
+
+// GitHub JSON 시드: 이 유저명으로 로컬에 저장된 데이터가 아직 없을 때만, 정적 파일
+// apps/library-notes/data/<username>.json 을 시도해본다. 대부분의 유저명은 이 파일이
+// 없으므로 404는 조용히 무시하고 빈 데이터로 시작한다.
+async function tryLoadSeed(name) {
+  try {
+    const res = await fetch(`./data/${encodeURIComponent(name)}.json`, { cache: "no-store" });
+    if (!res.ok) return null;
+    const parsed = await res.json();
+    if (parsed && Array.isArray(parsed.folders) && Array.isArray(parsed.documents)) return parsed;
+  } catch (e) {
+    /* 네트워크 오류 등도 조용히 무시 — 시드는 있으면 좋고 없어도 그만 */
+  }
+  return null;
+}
+
+async function loadDataForUser(name) {
+  const local = loadLocalData(name);
+  if (local) return local;
+  const seed = await tryLoadSeed(name);
+  if (seed) {
+    localStorage.setItem(dataKey(name), JSON.stringify(seed));
+    return seed;
+  }
+  return { folders: [], documents: [] };
 }
 
 // ── 데이터 조작 ───────────────────────────────────────────────────────────
@@ -135,9 +90,9 @@ function folderById(id) {
   return data.folders.find((f) => f.id === id) || null;
 }
 
-function breadcrumbPath() {
+function breadcrumbPath(folderId) {
   const path = [];
-  let f = folderById(currentFolderId);
+  let f = folderById(folderId !== undefined ? folderId : currentFolderId);
   while (f) {
     path.unshift(f);
     f = folderById(f.parentId);
@@ -206,6 +161,7 @@ function renderBreadcrumb() {
   rootBtn.textContent = "🗂️ 자료실";
   rootBtn.onclick = () => {
     currentFolderId = null;
+    exitSearch();
     renderBrowser();
   };
   wrap.appendChild(rootBtn);
@@ -219,6 +175,7 @@ function renderBreadcrumb() {
     btn.textContent = `${f.emoji} ${f.name}`;
     btn.onclick = () => {
       currentFolderId = f.id;
+      exitSearch();
       renderBrowser();
     };
     wrap.appendChild(btn);
@@ -312,6 +269,108 @@ function openNewFolderDialog() {
   renderBrowser();
 }
 
+// ── 전체 검색 ─────────────────────────────────────────────────────────────
+let searchDebounceTimer = null;
+
+function folderPathLabel(folderId) {
+  const path = breadcrumbPath(folderId);
+  if (!path.length) return "🗂️ 자료실";
+  return "🗂️ 자료실 › " + path.map((f) => `${f.emoji} ${f.name}`).join(" › ");
+}
+
+function buildSnippet(text, keywords) {
+  const t = text || "";
+  if (!t) return "";
+  const lower = t.toLowerCase();
+  let idx = -1;
+  for (const kw of keywords) {
+    const i = lower.indexOf(kw);
+    if (i !== -1 && (idx === -1 || i < idx)) idx = i;
+  }
+  const windowSize = 55;
+  let start, end;
+  if (idx === -1) {
+    start = 0;
+    end = Math.min(t.length, windowSize);
+  } else {
+    start = Math.max(0, idx - 20);
+    end = Math.min(t.length, start + windowSize);
+    start = Math.max(0, end - windowSize);
+  }
+  let snippet = t.slice(start, end).replace(/\s+/g, " ").trim();
+  if (start > 0) snippet = "…" + snippet;
+  if (end < t.length) snippet = snippet + "…";
+  return snippet;
+}
+
+function runSearch(query) {
+  const keywords = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  const results = [];
+
+  if (keywords.length) {
+    data.folders.forEach((f) => {
+      const hay = f.name.toLowerCase();
+      if (keywords.every((kw) => hay.includes(kw))) {
+        results.push({ type: "folder", folder: f });
+      }
+    });
+    data.documents.forEach((d) => {
+      const folder = folderById(d.folderId);
+      const hay = `${d.title}\n${d.content || ""}\n${folder ? folder.name : ""}`.toLowerCase();
+      if (keywords.every((kw) => hay.includes(kw))) {
+        const snippetSource = `${d.title}\n${d.content || ""}`;
+        results.push({ type: "doc", doc: d, snippet: buildSnippet(snippetSource, keywords) });
+      }
+    });
+  }
+
+  renderSearchResults(results, keywords.length > 0);
+}
+
+function renderSearchResults(results, active) {
+  const box = el("search-results");
+  const browser = el("browser-list");
+  if (!active) {
+    box.style.display = "none";
+    browser.style.display = "flex";
+    return;
+  }
+  box.style.display = "flex";
+  browser.style.display = "none";
+  box.innerHTML = "";
+
+  if (!results.length) {
+    box.innerHTML = '<p class="empty-hint">검색 결과가 없습니다.</p>';
+    return;
+  }
+
+  results.forEach((r) => {
+    const row = document.createElement("div");
+    row.className = "row-item";
+    if (r.type === "folder") {
+      row.innerHTML = `<span class="row-icon">${r.folder.emoji}</span><span class="row-title">${escapeHtml(r.folder.name)}<span class="search-result-path">${escapeHtml(folderPathLabel(r.folder.parentId))}</span></span><span class="row-chevron">›</span>`;
+      row.onclick = () => {
+        currentFolderId = r.folder.id;
+        exitSearch();
+        renderBrowser();
+      };
+    } else {
+      row.innerHTML = `<span class="row-icon">📄</span><span class="row-title">${escapeHtml(r.doc.title)}<span class="search-result-snippet">${escapeHtml(r.snippet)}</span><span class="search-result-path">${escapeHtml(folderPathLabel(r.doc.folderId))}</span></span>`;
+      row.onclick = () => {
+        currentFolderId = r.doc.folderId;
+        exitSearch();
+        openReadView(r.doc);
+      };
+    }
+    box.appendChild(row);
+  });
+}
+
+function exitSearch() {
+  el("search-input").value = "";
+  renderSearchResults([], false);
+}
+
 // ── 읽기 화면 (기본 진입점 — 편하게 읽기 위해 편집과 분리) ───────────────────
 let readingDocId = null;
 
@@ -372,15 +431,26 @@ function saveEditor() {
   }
 }
 
-// ── 내보내기/가져오기 (서버 응답 안 될 때의 백업 수단으로도 유지) ─────────────
-function exportJson() {
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json;charset=utf-8" });
+// ── 내보내기/가져오기/GitHub 백업 ────────────────────────────────────────
+function downloadJson(obj, filename) {
+  const blob = new Blob([JSON.stringify(obj, null, 2)], { type: "application/json;charset=utf-8" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `library_notes_${Date.now()}.json`;
+  a.download = filename;
   a.click();
   URL.revokeObjectURL(url);
+}
+
+function exportJson() {
+  downloadJson(data, `library_notes_${Date.now()}.json`);
+}
+
+function githubBackup() {
+  downloadJson(data, `${username}.json`);
+  const hint = el("github-backup-hint");
+  hint.textContent = `다운로드한 파일을 apps/library-notes/data/${username}.json 에 올려두면 다른 기기/브라우저에서도 이 이름으로 시작할 때 불러올 수 있어요.`;
+  hint.style.display = "block";
 }
 
 function importJsonFile(file) {
@@ -401,63 +471,58 @@ function importJsonFile(file) {
   reader.readAsText(file);
 }
 
-// ── 로그인/로그아웃 ───────────────────────────────────────────────────────
-function showApp() {
-  el("screen-login").style.display = "none";
+// ── 닉네임(자동 로그인) ───────────────────────────────────────────────────
+async function enterApp(name) {
+  username = name;
+  data = await loadDataForUser(name);
+  currentFolderId = null;
+  el("username-label").textContent = username;
+  el("screen-nickname").style.display = "none";
   el("screen-app").style.display = "block";
-  el("account-badge").textContent = `👤 ${session.username}`;
+  el("account-badge").textContent = `👤 ${username}`;
+  el("github-backup-hint").style.display = "none";
   renderBrowser();
 }
 
-async function handleLoginSubmit() {
-  const username = el("login-username-input").value;
-  const pin = el("login-pin-input").value;
-  el("login-status").textContent = "";
-  try {
-    const result = await login(username.trim().toLowerCase(), pin);
-    session = { username: username.trim().toLowerCase(), pin };
-    data = result.data;
-    localStorage.setItem(LAST_USERNAME_KEY, session.username);
-    showApp();
-    if (result.isNew) {
-      el("sync-status").textContent = "✅ 새 계정이 만들어졌습니다 — 이 유저명+PIN을 기억해두세요.";
-    }
-  } catch (e) {
-    el("login-status").textContent = `❌ ${e.message}`;
+async function handleNicknameSubmit() {
+  const name = el("nickname-input").value.trim();
+  if (!name) {
+    el("nickname-status").textContent = "❌ 이름을 입력해주세요.";
+    return;
   }
+  el("nickname-status").textContent = "";
+  localStorage.setItem(CURRENT_USERNAME_KEY, name);
+  await enterApp(name);
 }
 
-function logout() {
-  session = null;
+// "닉네임 바꾸기" — 현재 브라우저의 "누구로 시작할지" 포인터만 지운다.
+// 그 유저명 아래 저장된 데이터(libraryNotesWeb_data_<name>)는 그대로 남아있어서,
+// 나중에 같은 이름으로 다시 시작하면 그 데이터가 그대로 복원된다.
+function changeNickname() {
+  if (!confirm("다른 이름으로 시작할까요? (지금 이름의 자료는 이 브라우저에 그대로 남아있고, 나중에 같은 이름으로 돌아오면 다시 보입니다)")) return;
+  localStorage.removeItem(CURRENT_USERNAME_KEY);
+  username = null;
   data = { folders: [], documents: [] };
   currentFolderId = null;
-  el("login-pin-input").value = "";
+  el("nickname-input").value = "";
+  el("nickname-status").textContent = "";
   el("screen-app").style.display = "none";
-  el("screen-login").style.display = "flex";
+  el("screen-nickname").style.display = "flex";
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  const lastUsername = localStorage.getItem(LAST_USERNAME_KEY);
-  if (lastUsername) el("login-username-input").value = lastUsername;
-  if (!isServerReady()) {
-    el("login-status").textContent = "🚧 서버 준비 중입니다 — 조금 있다가 다시 시도해주세요.";
-  }
-
-  el("btn-login").onclick = handleLoginSubmit;
-  el("login-pin-input").addEventListener("keydown", (e) => {
-    if (e.key === "Enter") handleLoginSubmit();
+document.addEventListener("DOMContentLoaded", async () => {
+  el("btn-nickname-start").onclick = handleNicknameSubmit;
+  el("nickname-input").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") handleNicknameSubmit();
   });
-  el("btn-logout").onclick = () => {
-    if (confirm("로그아웃할까요? (데이터는 서버에 저장되어 있어 다시 로그인하면 그대로 보입니다)")) logout();
-  };
+  el("btn-change-nickname").onclick = changeNickname;
 
   el("btn-add-folder").onclick = openNewFolderDialog;
   el("btn-add-document").onclick = () => openEditor(null);
   el("btn-editor-save").onclick = saveEditor;
   el("btn-editor-cancel").onclick = closeEditor;
   el("btn-export").onclick = exportJson;
-  el("btn-backups").onclick = openBackupsModal;
-  el("btn-backups-close").onclick = () => { el("modal-backups").style.display = "none"; };
+  el("btn-github-backup").onclick = githubBackup;
   el("btn-import").onclick = () => el("import-file-input").click();
   el("import-file-input").onchange = (e) => {
     if (e.target.files && e.target.files[0]) importJsonFile(e.target.files[0]);
@@ -471,4 +536,17 @@ document.addEventListener("DOMContentLoaded", () => {
   };
   el("btn-font-smaller").onclick = () => setFontSize(getFontSize() - 2);
   el("btn-font-bigger").onclick = () => setFontSize(getFontSize() + 2);
+
+  el("search-input").addEventListener("input", (e) => {
+    const q = e.target.value;
+    if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
+    searchDebounceTimer = setTimeout(() => runSearch(q), 180);
+  });
+
+  const savedUsername = localStorage.getItem(CURRENT_USERNAME_KEY);
+  if (savedUsername) {
+    await enterApp(savedUsername);
+  } else {
+    el("screen-nickname").style.display = "flex";
+  }
 });
