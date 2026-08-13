@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>김예나 · 커리어 성장 트리</title>
+<meta name="description" content="김예나 커리어 로드맵을 게임 스킬트리처럼 하나씩 깨나가는 성장 체크리스트.">
+<link rel="canonical" href="https://delight0517.github.io/releasepilot-reports/growth/yena_career/">
+<meta name="robots" content="noindex">
+<style>
+  /*
+    growth/<slug>/index.html 팔레트 — growth/geunhoo/index.html을 템플릿으로
+    복사한 인스턴스(docs/growth_tree_schema.md 참고). 김근후와는 인물·내용
+    모두 무관한 별도 슬러그(yena_career)이며, 데이터 파일도 완전히 분리돼 있다.
+    2026-08-13 작성. 팔레트는 원본과 동일한 남색/골드를 유지.
+    이 파일 자체는 본인 확인(비밀번호) 후에만 '완료로 표시'가 로컬에 저장되도록
+    하는 잠금 레이어가 추가된 것 외에는 geunhoo 템플릿과 동일한 구조다.
+  */
+  :root {
+    --bg: #0d1220; --bg-2: #121a2c; --card: #182339; --card-2: #1e2c48;
+    --line: #2a3a5c; --line-soft: #202e4a;
+    --ink: #eef1f9; --ink-dim: #a7b3cc; --ink-faint: #838fac;
+    --gold: #e7b84a; --gold-soft: rgba(231,184,74,0.14); --gold-ink: #f2cf7c;
+    --good: #4fae86; --good-soft: rgba(79,174,134,0.14);
+    --warn: #d98a42; --warn-soft: rgba(217,138,66,0.14);
+    --locked: #4a5670;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Noto Serif KR", serif;
+    --sans: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  * { box-sizing: border-box; overflow-wrap: break-word; }
+  body {
+    margin: 0; background: radial-gradient(1200px 600px at 50% -10%, #1a2440 0%, var(--bg) 55%);
+    color: var(--ink); font-family: var(--sans); line-height: 1.6; -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 0 18px 96px; }
+  .back-link {
+    position: fixed; top: 16px; left: 16px; z-index: 30; font-family: var(--mono); font-size: 10.5px;
+    color: var(--ink-faint); text-decoration: none; background: var(--card); border: 1px solid var(--line);
+    border-radius: 999px; padding: 6px 12px;
+  }
+  .back-link:hover { color: var(--gold-ink); border-color: var(--gold); }
+
+  .lock-toggle {
+    position: fixed; top: 16px; right: 16px; z-index: 30; font-family: var(--mono); font-size: 10.5px;
+    color: var(--ink-faint); background: var(--card); border: 1px solid var(--line); cursor: pointer;
+    border-radius: 999px; padding: 6px 12px; display: flex; align-items: center; gap: 6px;
+  }
+  .lock-toggle:hover { border-color: var(--gold); color: var(--gold-ink); }
+  .lock-toggle .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--warn); }
+  body.unlocked .lock-toggle .dot { background: var(--good); }
+
+  header.hero { padding: 64px 4px 8px; text-align: center; }
+  .eyebrow {
+    display: inline-block; font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--gold-ink); background: var(--gold-soft);
+    border: 1px solid rgba(231,184,74,0.35); border-radius: 999px; padding: 5px 14px; margin: 0 0 18px;
+  }
+  h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(28px, 6vw, 42px); margin: 0 0 10px; text-wrap: balance; }
+  header.hero p.lede { margin: 0 auto; font-size: 14.5px; color: var(--ink-dim); max-width: 56ch; }
+  .guide-badge {
+    margin: 18px auto 0; max-width: 56ch; font-size: 12.5px; color: var(--ink-faint);
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .guide-badge .avatar {
+    width: 22px; height: 22px; border-radius: 50%; background: var(--gold-soft); color: var(--gold-ink);
+    display: flex; align-items: center; justify-content: center; font-size: 12px; flex: none;
+  }
+
+  /* progress */
+  .progress-block { margin: 34px auto 8px; max-width: 560px; text-align: center; }
+  .progress-num { font-family: var(--serif); font-size: clamp(40px, 9vw, 56px); color: var(--gold-ink); line-height: 1; }
+  .progress-sub { font-size: 12.5px; color: var(--ink-faint); margin-top: 6px; }
+  .progress-bar-track {
+    margin-top: 16px; height: 10px; border-radius: 999px; background: var(--card-2);
+    border: 1px solid var(--line); overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%; border-radius: 999px;
+    background: linear-gradient(90deg, #b98325, var(--gold) 60%, var(--gold-ink));
+    width: 0%; transition: width 900ms cubic-bezier(.22,.61,.36,1);
+    box-shadow: 0 0 14px rgba(231,184,74,0.45);
+  }
+
+  /* source link */
+  .source-note {
+    max-width: 640px; margin: 22px auto 0; background: var(--card); border: 1px dashed var(--line);
+    border-radius: 10px; padding: 14px 16px; font-size: 12.5px; color: var(--ink-dim); text-align: center;
+  }
+  .source-note code { color: var(--gold-ink); }
+  .source-note a { color: var(--gold-ink); text-decoration: underline; }
+
+  /* tiers */
+  .tiers { margin-top: 52px; display: flex; flex-direction: column; }
+  .tier-block { position: relative; }
+  .tier-head {
+    display: flex; align-items: baseline; gap: 10px; padding: 0 2px 14px;
+  }
+  .tier-pip {
+    width: 30px; height: 30px; border-radius: 50%; background: var(--gold-soft); color: var(--gold-ink);
+    border: 1px solid rgba(231,184,74,0.4); display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono); font-size: 13px; flex: none;
+  }
+  .tier-title { font-family: var(--serif); font-weight: 400; font-size: 19px; margin: 0; }
+  .tier-hint { font-family: var(--mono); font-size: 10px; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.06em; }
+
+  .node-row {
+    display: flex; gap: 14px; flex-wrap: wrap; padding: 0 2px 8px;
+  }
+  .connector {
+    width: 2px; height: 34px; margin: 0 0 0 30px;
+    background: linear-gradient(var(--line), var(--gold-soft));
+  }
+
+  .node-card {
+    flex: 1 1 260px; max-width: 320px; min-width: 240px; text-align: left; cursor: pointer;
+    background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 16px 14px;
+    opacity: 0; transform: translateY(14px); transition: opacity 560ms ease, transform 560ms ease,
+      border-color .15s ease, box-shadow .15s ease;
+    font: inherit; color: inherit; display: block; position: relative;
+  }
+  .node-card.in { opacity: 1; transform: translateY(0); }
+  .node-card:not(.locked):hover { border-color: var(--gold); box-shadow: 0 10px 26px -14px rgba(231,184,74,0.35); }
+  .node-card.done { border-color: rgba(79,174,134,0.55); background: linear-gradient(180deg, rgba(79,174,134,0.08), var(--card)); }
+  .node-card.locked { opacity: .55; cursor: not-allowed; filter: grayscale(0.35); }
+  .node-card.locked.in { opacity: .55; }
+
+  .node-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+  .node-cat {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--ink-faint); background: var(--bg-2); border: 1px solid var(--line-soft);
+    border-radius: 999px; padding: 3px 9px;
+  }
+  .node-weight {
+    font-family: var(--mono); font-size: 11px; color: var(--gold-ink); background: var(--gold-soft);
+    border-radius: 999px; padding: 3px 8px; flex: none;
+  }
+  .node-title { font-family: var(--sans); font-weight: 600; font-size: 14.5px; margin: 10px 0 0; line-height: 1.4; }
+  .node-status { margin-top: 10px; font-size: 12px; display: flex; align-items: center; gap: 6px; }
+  .node-status.todo { color: var(--ink-faint); }
+  .node-status.done { color: var(--good); }
+  .node-status.locked { color: var(--locked); }
+  .lock-icon { font-size: 13px; }
+
+  /* detail panel (drawer) */
+  .scrim {
+    position: fixed; inset: 0; background: rgba(6,9,17,0.6); backdrop-filter: blur(2px);
+    opacity: 0; pointer-events: none; transition: opacity .2s ease; z-index: 40;
+  }
+  .scrim.open { opacity: 1; pointer-events: auto; }
+  .drawer {
+    position: fixed; top: 0; right: 0; bottom: 0; width: min(440px, 100%);
+    background: var(--bg-2); border-left: 1px solid var(--line); z-index: 41;
+    transform: translateX(100%); transition: transform .28s cubic-bezier(.22,.61,.36,1);
+    overflow-y: auto; padding: 22px 22px 60px;
+  }
+  .drawer.open { transform: translateX(0); }
+  .drawer-close {
+    position: sticky; top: 0; float: right; background: var(--card); border: 1px solid var(--line);
+    color: var(--ink-dim); border-radius: 999px; width: 30px; height: 30px; cursor: pointer; font-size: 14px;
+  }
+  .drawer-close:hover { color: var(--gold-ink); border-color: var(--gold); }
+  .drawer .node-cat { display: inline-block; margin: 4px 0 10px; }
+  .drawer h2 { font-family: var(--serif); font-weight: 400; font-size: 22px; margin: 4px 0 4px; clear: both; }
+  .drawer .source-ref { font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint); margin-bottom: 18px; }
+  .drawer-section { margin-top: 18px; }
+  .drawer-section h3 {
+    font-family: var(--mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--ink-faint); margin: 0 0 8px;
+  }
+  .drawer-section p { font-size: 13.5px; color: var(--ink-dim); margin: 0; line-height: 1.7; }
+  .drawer-section p b { color: var(--ink); }
+  .effect-row { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+  .effect-card { border-radius: 12px; padding: 12px 14px; font-size: 13px; line-height: 1.6; }
+  .effect-card.good { background: var(--good-soft); border: 1px solid rgba(79,174,134,0.4); color: #cdeadd; }
+  .effect-card.warn { background: var(--warn-soft); border: 1px solid rgba(217,138,66,0.4); color: #f1d9bd; }
+  .effect-card .eff-label { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; opacity: .85; }
+  .journey-note { font-size: 13px; color: var(--ink-dim); line-height: 1.7; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+  .glossary-list { display: flex; flex-direction: column; gap: 8px; }
+  .glossary-item { font-size: 13px; line-height: 1.6; color: var(--ink-dim); }
+  .glossary-item b { color: var(--gold-ink); font-weight: 600; }
+  .why-toggle { background: none; border: none; color: var(--ink-faint); font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.04em; cursor: pointer; padding: 0; margin-top: 8px; text-decoration: underline; }
+  .why-toggle:hover { color: var(--gold-ink); }
+  .why-formal { display: none; margin-top: 8px; font-size: 12.5px; color: var(--ink-faint); line-height: 1.6; border-left: 2px solid var(--line); padding-left: 10px; }
+  .why-formal.open { display: block; }
+  .action-box {
+    margin-top: 8px; background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 12px 14px; font-size: 13px; color: var(--ink);
+  }
+  .locked-note {
+    margin-top: 18px; background: var(--card); border: 1px dashed var(--line-soft); border-radius: 10px;
+    padding: 12px 14px; font-size: 12.5px; color: var(--ink-faint);
+  }
+  .mark-btn {
+    margin-top: 22px; width: 100%; padding: 12px 16px; border-radius: 10px; border: 1px solid var(--gold);
+    background: var(--gold-soft); color: var(--gold-ink); font-family: var(--sans); font-weight: 600;
+    font-size: 13.5px; cursor: pointer; transition: background .15s ease;
+  }
+  .mark-btn:hover { background: rgba(231,184,74,0.24); }
+  .mark-btn.is-done { border-color: var(--good); background: var(--good-soft); color: #cdeadd; }
+  .mark-warn {
+    margin-top: 10px; font-size: 11.5px; color: var(--ink-faint); background: var(--bg); border: 1px dashed var(--line-soft);
+    border-radius: 8px; padding: 10px 12px;
+  }
+  .mark-warn code { color: var(--gold-ink); }
+  .locked-edit-note {
+    margin-top: 22px; font-size: 11.5px; color: var(--ink-faint); background: var(--bg);
+    border: 1px dashed var(--line-soft); border-radius: 8px; padding: 10px 12px;
+  }
+
+  footer { text-align: center; margin-top: 64px; font-size: 11px; color: var(--ink-faint); }
+  footer a.back { color: var(--ink-dim); }
+
+  /* password modal */
+  .modal-scrim {
+    position: fixed; inset: 0; background: rgba(6,9,17,0.65); z-index: 50;
+    display: none; align-items: center; justify-content: center; padding: 16px;
+  }
+  .modal-scrim.open { display: flex; }
+  .modal-box {
+    width: 100%; max-width: 300px; background: var(--card); border: 1px solid var(--line);
+    border-radius: 14px; padding: 22px;
+  }
+  .modal-box h3 { font-family: var(--serif); font-weight: 400; font-size: 18px; margin: 0 0 6px; }
+  .modal-box p { font-size: 12.5px; color: var(--ink-faint); margin: 0 0 14px; }
+  .modal-box input {
+    width: 100%; font-size: 18px; letter-spacing: 0.35em; text-align: center;
+    padding: 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg);
+    color: var(--ink); font-family: var(--mono);
+  }
+  .modal-err { font-size: 11.5px; color: var(--warn); min-height: 1.2em; margin-top: 8px; }
+  .modal-actions { display: flex; gap: 8px; margin-top: 14px; }
+  .modal-actions button {
+    flex: 1; padding: 9px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg);
+    color: var(--ink-dim); font-family: var(--sans); font-weight: 600; font-size: 12.5px; cursor: pointer;
+  }
+  .modal-actions button.primary { border-color: var(--gold); background: var(--gold-soft); color: var(--gold-ink); }
+
+  @media (max-width: 640px) {
+    .node-row { flex-wrap: nowrap; overflow-x: auto; scroll-snap-type: x proximity; padding-bottom: 6px; }
+    .node-card { scroll-snap-align: start; flex: 0 0 78vw; max-width: 78vw; }
+    .connector { margin-left: 15px; }
+    .drawer { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<a class="back-link" href="../../index.html">‹ 리포트 허브로</a>
+<button type="button" class="lock-toggle" id="lockToggle"><span class="dot"></span><span id="lockLabel">🔒 보기 전용</span></button>
+
+<div class="wrap">
+  <header class="hero">
+    <span class="eyebrow">GROWTH TREE · SKILL PATH</span>
+    <h1>김예나의 커리어 성장 트리</h1>
+    <p class="lede">
+      본업 → 외부 유료 강의 → 콘텐츠화 → Instagram Portfolio → 제안 → Speaker.
+      게임 스킬트리처럼 <b>하나씩 깨나가는 체크리스트</b>로 정리했습니다.
+      먼저 할 일부터 순서대로 열립니다 — 순서를 건너뛰면 다음 칸이 잠겨 있어요.
+    </p>
+    <div class="guide-badge">
+      <span class="avatar">예</span>
+      <span>예나(AI 컨설턴트 페르소나)가 원문을 쉬운 말로 풀어드립니다 — 각 칸의 원문 근거 위치(§)는 상세 패널에, 원문 전체는 아래 링크에서 확인할 수 있어요.</span>
+    </div>
+  </header>
+
+  <div class="progress-block">
+    <div class="progress-num" id="progressNum">0%</div>
+    <div class="progress-sub" id="progressSub">완료한 칸의 무게 합 ÷ 100 — 화면에서 유일한 숫자형 진행도입니다.</div>
+    <div class="progress-bar-track"><div class="progress-bar-fill" id="progressFill"></div></div>
+  </div>
+
+  <div class="source-note" id="sourceNote">불러오는 중…</div>
+
+  <div class="tiers" id="tiers"></div>
+
+  <footer>
+    <a class="back" href="../../index.html">← 리포트 허브로 돌아가기</a><br>
+    본인 확인(오른쪽 상단 🔒) 후에만 이 브라우저에서 체크 상태가 저장됩니다 · 다른 방문자에게는 보기 전용으로 표시됩니다.
+  </footer>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true"></aside>
+
+<div class="modal-scrim" id="modalScrim">
+  <div class="modal-box">
+    <h3 id="modalTitle">비밀번호 입력</h3>
+    <p id="modalDesc">본인만 체크 상태를 저장할 수 있어요.</p>
+    <input type="password" id="pwInput" inputmode="numeric" maxlength="8" autocomplete="off" placeholder="••••">
+    <div class="modal-err" id="modalErr"></div>
+    <div class="modal-actions">
+      <button type="button" id="modalCancel">취소</button>
+      <button type="button" class="primary" id="modalConfirm">확인</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// growth/yena_career/index.html — 이 폴더의 growth_tree.json을 상대경로로 읽는다.
+const DATA_URL = './growth_tree.json';
+const PW = '2534';
+const STORAGE_KEY = 'yena_career_done_v1';
+const UNLOCK_KEY = 'yena_career_unlocked';
+
+let TREE = null;
+
+function loadPersistedDone() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? new Set(JSON.parse(raw)) : new Set();
+  } catch (e) { return new Set(); }
+}
+function savePersistedDone(set) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify([...set])); } catch (e) {}
+}
+let PERSISTED_DONE = loadPersistedDone();
+
+function isUnlocked() {
+  try { return sessionStorage.getItem(UNLOCK_KEY) === '1'; } catch (e) { return false; }
+}
+function setUnlocked(v) {
+  try { sessionStorage.setItem(UNLOCK_KEY, v ? '1' : '0'); } catch (e) {}
+  document.body.classList.toggle('unlocked', v);
+  document.getElementById('lockLabel').textContent = v ? '🔓 편집 가능' : '🔒 보기 전용';
+}
+
+function isDone(node) {
+  return node.status === 'done' || PERSISTED_DONE.has(node.id);
+}
+function isNodeUnlocked(node) {
+  if (!node.requires || node.requires.length === 0) return true;
+  return node.requires.every(reqId => {
+    const req = TREE.nodes.find(n => n.id === reqId);
+    return req && isDone(req);
+  });
+}
+function requiredTitles(node) {
+  return node.requires.map(reqId => {
+    const req = TREE.nodes.find(n => n.id === reqId);
+    return req ? req.title : reqId;
+  });
+}
+
+function renderProgress() {
+  const total = TREE.nodes.reduce((s, n) => s + n.weight, 0);
+  const done = TREE.nodes.filter(isDone).reduce((s, n) => s + n.weight, 0);
+  const pct = Math.round((done / total) * 100);
+  document.getElementById('progressNum').textContent = pct + '%';
+  document.getElementById('progressFill').style.width = pct + '%';
+  const doneCount = TREE.nodes.filter(isDone).length;
+  document.getElementById('progressSub').textContent =
+    `완료 ${doneCount} / ${TREE.nodes.length}칸 · weight 합 ${done}/100 완료`;
+}
+
+function nodeCardHtml(node) {
+  const unlocked = isNodeUnlocked(node);
+  const done = isDone(node);
+  const cls = ['node-card'];
+  if (!unlocked) cls.push('locked');
+  if (done) cls.push('done');
+  let statusHtml;
+  if (done) statusHtml = `<span class="node-status done">✓ 완료</span>`;
+  else if (!unlocked) statusHtml = `<span class="node-status locked"><span class="lock-icon">🔒</span> 잠김</span>`;
+  else statusHtml = `<span class="node-status todo">○ 시작 가능</span>`;
+  return `
+    <button type="button" class="${cls.join(' ')}" data-id="${node.id}">
+      <div class="node-top">
+        <span class="node-cat">${node.category}</span>
+        <span class="node-weight">+${node.weight}</span>
+      </div>
+      <p class="node-title">${node.title}</p>
+      ${statusHtml}
+    </button>`;
+}
+
+function renderTiers() {
+  const tiersEl = document.getElementById('tiers');
+  const tierNums = [...new Set(TREE.nodes.map(n => n.tier))].sort((a, b) => a - b);
+  const TIER_HINT = {
+    1: '8월 — 지금 바로 시작, 선행 조건 없음',
+    2: '9월 — 1단계를 마치면 열림',
+    3: '10월 — 콘텐츠가 쌓인 뒤의 실행 단계',
+    4: '11월 — 포트폴리오로 묶는 단계',
+    5: '12월 — 먼저 제안하고 수익을 확인하는 마지막 단계',
+  };
+  tiersEl.innerHTML = '';
+  tierNums.forEach((tierNum, i) => {
+    const nodes = TREE.nodes.filter(n => n.tier === tierNum);
+    const block = document.createElement('div');
+    block.className = 'tier-block';
+    block.innerHTML = `
+      <div class="tier-head">
+        <span class="tier-pip">${tierNum}</span>
+        <h2 class="tier-title">${tierNum}단계</h2>
+        <span class="tier-hint">${TIER_HINT[tierNum] || ''}</span>
+      </div>
+      <div class="node-row">${nodes.map(nodeCardHtml).join('')}</div>
+    `;
+    tiersEl.appendChild(block);
+    if (i < tierNums.length - 1) {
+      const conn = document.createElement('div');
+      conn.className = 'connector';
+      tiersEl.appendChild(conn);
+    }
+  });
+
+  tiersEl.querySelectorAll('.node-card').forEach(el => {
+    el.addEventListener('click', () => openDrawer(el.dataset.id));
+  });
+
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: 0.15 });
+    tiersEl.querySelectorAll('.node-card').forEach(el => io.observe(el));
+  } else {
+    tiersEl.querySelectorAll('.node-card').forEach(el => el.classList.add('in'));
+  }
+}
+
+function openDrawer(nodeId) {
+  const node = TREE.nodes.find(n => n.id === nodeId);
+  if (!node) return;
+  const unlocked = isNodeUnlocked(node);
+  const drawer = document.getElementById('drawer');
+  const scrim = document.getElementById('scrim');
+
+  if (!unlocked) {
+    const need = requiredTitles(node).join(', ');
+    drawer.innerHTML = `
+      <button class="drawer-close" id="drawerClose">✕</button>
+      <span class="node-cat">${node.category}</span>
+      <h2>${node.title}</h2>
+      <div class="locked-note">
+        🔒 아직 잠겨 있어요. 먼저 <b>${need}</b> 칸을 완료로 표시하면 열립니다.
+      </div>`;
+  } else {
+    const done = isDone(node);
+    const simple = node.whySimple || node.why;
+    const glossaryEntries = Object.entries(node.glossary || {});
+    const glossaryHtml = glossaryEntries.length
+      ? `<div class="drawer-section"><h3>용어 설명</h3><div class="glossary-list">${
+          glossaryEntries.map(([term, def]) => `<div class="glossary-item"><b>${term}</b> — ${def}</div>`).join('')
+        }</div></div>`
+      : '';
+    const canEdit = isUnlocked();
+    const markSection = canEdit
+      ? `<button class="mark-btn ${done ? 'is-done' : ''}" id="markBtn">
+          ${done ? '✓ 완료로 표시됨' : '완료로 표시'}
+        </button>
+        <div class="mark-warn">
+          이 체크는 <b>이 브라우저</b>에만 저장돼요(비밀번호로 잠긴 로컬 저장). 다른 기기·다른 사람에게는 보이지 않고,
+          모두에게 보이는 형태로 영구 반영하려면 Claude Code 세션에 "growth/yena_career에서
+          <code>${node.id}</code> 완료 표시해줘"라고 말하거나
+          <code>scripts/mark_growth_node.sh yena_career ${node.id} done</code>을 실행하세요.
+        </div>`
+      : `<div class="locked-edit-note">🔒 보기 전용이에요. 오른쪽 상단 자물쇠에서 비밀번호를 입력하면 이 브라우저에서 체크할 수 있어요.</div>`;
+    drawer.innerHTML = `
+      <button class="drawer-close" id="drawerClose">✕</button>
+      <span class="node-cat">${node.category}</span>
+      <h2>${node.title}</h2>
+      <div class="source-ref">원문 근거: ${node.sourceSection}</div>
+
+      <div class="drawer-section">
+        <h3>왜 필요한가요?</h3>
+        <p>${simple}</p>
+        <button class="why-toggle" id="whyToggle">원문 근거 문장 보기</button>
+        <div class="why-formal" id="whyFormal">${node.why}</div>
+      </div>
+
+      <div class="drawer-section">
+        <h3>이 트리에서 어디쯤인가요?</h3>
+        <div class="journey-note">${node.journeyContext || ''}</div>
+      </div>
+
+      <div class="drawer-section">
+        <h3>뭘 하면 되나요?</h3>
+        <div class="action-box">${node.action}</div>
+      </div>
+
+      <div class="drawer-section">
+        <h3>하면 / 안 하면</h3>
+        <div class="effect-row">
+          <div class="effect-card good">
+            <div class="eff-label">✓ 하면</div>
+            ${node.successEffect}
+          </div>
+          <div class="effect-card warn">
+            <div class="eff-label">△ 안 하면</div>
+            ${node.failureCost}
+          </div>
+        </div>
+      </div>
+
+      ${glossaryHtml}
+
+      ${markSection}`;
+    if (canEdit) {
+      document.getElementById('markBtn').addEventListener('click', () => {
+        if (PERSISTED_DONE.has(node.id)) PERSISTED_DONE.delete(node.id);
+        else PERSISTED_DONE.add(node.id);
+        savePersistedDone(PERSISTED_DONE);
+        renderProgress();
+        renderTiers();
+        openDrawer(node.id);
+      });
+    }
+    document.getElementById('whyToggle').addEventListener('click', () => {
+      document.getElementById('whyFormal').classList.toggle('open');
+    });
+  }
+
+  document.getElementById('drawerClose').addEventListener('click', closeDrawer);
+  drawer.classList.add('open');
+  scrim.classList.add('open');
+  drawer.setAttribute('aria-hidden', 'false');
+}
+function closeDrawer() {
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('scrim').classList.remove('open');
+  document.getElementById('drawer').setAttribute('aria-hidden', 'true');
+}
+document.getElementById('scrim').addEventListener('click', closeDrawer);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+
+// password modal wiring
+const modalScrim = document.getElementById('modalScrim');
+const pwInput = document.getElementById('pwInput');
+const modalErr = document.getElementById('modalErr');
+document.getElementById('lockToggle').addEventListener('click', () => {
+  if (isUnlocked()) {
+    setUnlocked(false);
+    return;
+  }
+  modalErr.textContent = '';
+  pwInput.value = '';
+  modalScrim.classList.add('open');
+  setTimeout(() => pwInput.focus(), 30);
+});
+document.getElementById('modalCancel').addEventListener('click', () => modalScrim.classList.remove('open'));
+modalScrim.addEventListener('click', e => { if (e.target === modalScrim) modalScrim.classList.remove('open'); });
+document.getElementById('modalConfirm').addEventListener('click', () => {
+  if (pwInput.value === PW) {
+    setUnlocked(true);
+    modalScrim.classList.remove('open');
+  } else {
+    modalErr.textContent = '비밀번호가 올바르지 않습니다.';
+    pwInput.value = '';
+    pwInput.focus();
+  }
+});
+pwInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('modalConfirm').click();
+  if (e.key === 'Escape') modalScrim.classList.remove('open');
+});
+setUnlocked(isUnlocked());
+
+fetch(DATA_URL).then(r => {
+  if (!r.ok) throw new Error('growth_tree.json fetch 실패: ' + r.status);
+  return r.json();
+}).then(data => {
+  TREE = data;
+  const total = TREE.nodes.reduce((s, n) => s + n.weight, 0);
+  document.getElementById('sourceNote').innerHTML =
+    `원본: <b>${TREE.sourceReport.title}</b> (${TREE.sourceReport.date}) ·
+     <a href="./${TREE.sourceReport.file}">보고서 원문 보기</a> ·
+     총 ${TREE.nodes.length}칸, weight 합 ${total}` +
+    (total !== 100 ? ` <span style="color:var(--warn)">(⚠ 100이 아닙니다 — 데이터 확인 필요)</span>` : '');
+  renderProgress();
+  renderTiers();
+}).catch(err => {
+  document.getElementById('sourceNote').textContent = '불러오기 실패: ' + err.message;
+  document.getElementById('tiers').innerHTML =
+    `<p style="text-align:center;color:var(--ink-faint)">growth_tree.json을 불러오지 못했습니다.</p>`;
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,202 @@
+{
+  "schemaVersion": 1,
+  "person": "김예나",
+  "slug": "yena_career",
+  "topic": "커리어 로드맵 — 본업에서 Speaker까지",
+  "sourceReport": {
+    "title": "김예나 커리어 로드맵 — 인스타그램은 직업이 아니라 직업 증폭기다",
+    "date": "2026-08-13",
+    "file": "source_report.md"
+  },
+  "generatedAt": "2026-08-13",
+  "guide": "예나",
+  "note": "각 노드의 successEffect/failureCost/why는 source_report.md의 실제 문장을 근거로 한다 — 확률이나 %를 지어내지 않았다. 화면에 보이는 유일한 숫자형 %는 '완료한 노드의 weight 합 ÷ 100'인 진행도뿐이다. 여기서 안내를 맡은 '예나'는 AI 컨설턴트 페르소나이며, 이 트리의 대상자인 김예나 본인과는 별개다. 이 트리는 김근후의 인스타그램 성장 트리와 인물·내용 모두 무관하다.",
+  "nodes": [
+    {
+      "id": "apply_instructor_pools",
+      "tier": 1,
+      "weight": 12,
+      "title": "8월: 강사 Pool 2곳 + 외부기관 지원 5건",
+      "category": "지원",
+      "requires": [],
+      "status": "todo",
+      "sourceSection": "§1, §3 AUGUST",
+      "why": "목표는 영상 10개가 아니야. 강사 Pool 2곳 들어가기. 그리고 외부기관에 지원 5건. 우선순위는: 진로교육 → 과학체험 → AI교육 보조강사 → STEM → 영어 STEM 순.",
+      "action": "진로교육 강사 Pool, 과학체험/STEM 강사 Pool에 지원. 충남 AI디지털배움터(8/6~9/6 모집)와 KTxAI 등 외부기관 지원을 합쳐 5건 채우기.",
+      "successEffect": "돈 받는 외부 일정이 먼저 잡혀서 이후 콘텐츠·인스타 단계가 의지가 아니라 실제 일정에 의해 굴러가기 시작한다.",
+      "failureCost": "외부 일정 없이 인스타부터 키우면 모든 걸 혼자 만들어야 하는 순간 일이 너무 커져서 멈출 가능성이 있다.",
+      "whySimple": "이 트리의 <b>첫 문</b>이에요. 인스타를 먼저 키우는 게 아니라, 돈 받는 일정부터 잡아야 다음 칸(콘텐츠화)이 저절로 따라와요.",
+      "journeyContext": "1단계(tier 1)의 시작 칸이에요. 여기서 지원한 것 중 하나라도 실제 활동으로 이어져야 2단계의 '콘텐츠화'가 열려요.",
+      "glossary": {}
+    },
+    {
+      "id": "reel_once_a_week_cap",
+      "tier": 1,
+      "weight": 8,
+      "title": "8월엔 Reel 주 1개만, 그 이상 하지 않기",
+      "category": "습관",
+      "requires": [],
+      "status": "todo",
+      "sourceSection": "§3 AUGUST, §5",
+      "why": "'매주 릴스 3개 올리겠습니다' 같은 계획은 의지에 기대는 약한 시스템이야. 아무도 안 기다림. 안 올려도 아무 일도 안 생김. 그래서 어느 날 귀찮으면 끝.",
+      "action": "8월 한 달은 Reel 주 1개로 제한. 그 이상 만들려는 욕심을 의도적으로 누른다.",
+      "successEffect": "콘텐츠 제작에 에너지를 다 쓰지 않아, 강사 Pool 지원 같은 실제 마감에 집중할 여력이 남는다.",
+      "failureCost": "초반에 릴스 제작에 힘을 다 쏟으면 정작 외부 일정 지원(이 트리의 관문)이 뒤로 밀린다.",
+      "whySimple": "처음부터 열심히 올리면 오히려 지쳐요. 그래서 <b>일주일에 딱 하나만</b>, 그 이상은 안 하기로 미리 정해두는 거예요.",
+      "journeyContext": "1단계의 또 다른 칸이에요. apply_instructor_pools와 함께 tier 2를 여는 두 조건 중 하나예요.",
+      "glossary": {}
+    },
+    {
+      "id": "join_agency_first",
+      "tier": 1,
+      "weight": 10,
+      "title": "강사 회사(기관)를 통해 먼저 들어가기",
+      "category": "포지셔닝",
+      "requires": [],
+      "status": "todo",
+      "sourceSection": "§7",
+      "why": "처음부터 수업 기획, PPT, 교구, 학교 영업, 계약, 강의, 촬영, 편집 전부 예나가 하지 마 — 미친 노동량이 됨. 초반에는 회사에서 교안과 프로그램을 주는 프리랜서 강사를 일부러 들어가.",
+      "action": "표준 교안·교구를 제공하는 기관/강사 회사의 프리랜서 강사로 지원. 학교 영업·일정·프로그램은 회사가, 예나는 강의만.",
+      "successEffect": "남의 프로그램 10개쯤 경험하며 '이 구조는 좋다', '이 연령은 이렇게 해야겠다'는 감이 생긴다 — 이게 나중에 YENA 프로그램을 만드는 밑거름이 된다.",
+      "failureCost": "처음부터 모든 걸 혼자 기획·영업·제작하면 일이 너무 커져서 시작도 못 하고 지친다.",
+      "whySimple": "혼자 식당을 차리는 대신, 처음엔 <b>이미 있는 프랜차이즈에서 요리사로 일해보는 것</b>과 같아요. 레시피(교안)는 회사가 주고, 예나는 요리(강의)에만 집중하면 돼요.",
+      "journeyContext": "1단계의 세 번째 칸이에요. tier 1의 세 칸을 모두 마쳐야 tier 2(콘텐츠화)로 넘어가요.",
+      "glossary": {}
+    },
+    {
+      "id": "six_outputs_per_activity",
+      "tier": 2,
+      "weight": 15,
+      "title": "외부활동 1건에서 6개 콘텐츠 뽑기",
+      "category": "콘텐츠",
+      "requires": [
+        "apply_instructor_pools",
+        "join_agency_first"
+      ],
+      "status": "todo",
+      "sourceSection": "§2, §3 SEPTEMBER",
+      "why": "토요일에 CSI 진로체험 강의를 하나 했다면, 그 한 번의 알바에서 ① 돈 ② 경력 ③ Reel ④ Carousel ⑤ Portfolio Case ⑥ Review, 이렇게 6개를 뽑아내는 거야. 그러면 인스타 운영을 위해 새로운 삶을 만들 필요가 없어.",
+      "action": "9월 첫 유료 외부활동 이후: 그 활동에서 Reel 1개, Carousel 1개(왜/어떻게 설명형), 기관·학생 피드백(리뷰) 1건까지 뽑아낸다.",
+      "successEffect": "네가 사는 삶 자체가 콘텐츠가 되어 지속가능한 구조가 만들어진다 — 콘텐츠를 따로 기획할 필요가 없어진다.",
+      "failureCost": "활동과 콘텐츠를 분리해서 생각하면, 강의도 하고 콘텐츠도 따로 기획해야 하는 이중 노동이 된다.",
+      "whySimple": "한 번의 강의에서 <b>여섯 가지를 동시에</b> 뽑아내는 거예요. 케이크 하나를 자르면 여러 조각이 나오듯, 강의 한 번이 돈·경력·릴스·캐러셀·포트폴리오·리뷰로 한꺼번에 쪼개져요.",
+      "journeyContext": "tier 1을 모두 마쳐야 열리는 tier 2의 핵심 관문이에요. 이 콘텐츠들이 이후 3-Deadline System과 포트폴리오 확장의 재료가 돼요.",
+      "glossary": {}
+    },
+    {
+      "id": "three_deadline_system",
+      "tier": 2,
+      "weight": 10,
+      "title": "YENA 3-Deadline System 운영",
+      "category": "습관",
+      "requires": [
+        "reel_once_a_week_cap"
+      ],
+      "status": "todo",
+      "sourceSection": "§6",
+      "why": "한 달에 딱 3개의 외부 마감만 유지하는 거야. MONEY Deadline — 매달 유료 외부 일 1건. CAREER Deadline — 매달 새 강의/프로젝트 3곳 지원. CONTENT Deadline — 한 달에 Reel 4개. 끝. 그 이상 하지 마.",
+      "action": "매달 이 3개만 확인: 유료 외부 일 1건, 지원 3곳, Reel 4개. 그 이상 벌이지 않는다.",
+      "successEffect": "일주일에 하나꼴이라 사람이 기다리고 있으면 하게 되는 구조가 유지된다.",
+      "failureCost": "마감을 더 늘리면 다시 '의지에 기대는 약한 시스템'으로 돌아가 어느 날 귀찮으면 끝나버린다.",
+      "whySimple": "한 달에 <b>딱 3개의 숙제</b>만 남기고 나머지는 신경 끄는 거예요. 숙제가 너무 많으면 결국 아무것도 안 하게 되니까요.",
+      "journeyContext": "tier 2의 두 번째 칸이에요. 8월의 습관(주 1회 제한)이 여기서 '매달 3개 마감' 시스템으로 정착돼요.",
+      "glossary": {}
+    },
+    {
+      "id": "video_editing_after_footage",
+      "tier": 3,
+      "weight": 10,
+      "title": "10월: 소재가 쌓인 뒤에 영상편집 배우기",
+      "category": "실행",
+      "requires": [
+        "six_outputs_per_activity"
+      ],
+      "status": "todo",
+      "sourceSection": "§3 OCTOBER",
+      "why": "내일배움카드로 영상편집. 왜 이때냐면 이미 찍을 소재가 있기 때문이야. Premiere 배워서 '뭐 만들지?' 하면 또 멈춰. 반대로 지난달 강의 영상 있는데 이걸 제대로 만들고 싶다 하면 기술을 바로 써먹게 돼.",
+      "action": "내일배움카드로 영상편집(Premiere) 강좌 신청. 9월에 찍어둔 영상으로 바로 편집 연습.",
+      "successEffect": "배운 기술을 곧바로 실제 소재에 써먹을 수 있어 학습이 헛돌지 않는다.",
+      "failureCost": "소재 없이 먼저 기술부터 배우면 '뭐 만들지?' 하고 멈춰버릴 가능성이 크다.",
+      "whySimple": "재료도 없이 요리 학원부터 다니면 배운 걸 금방 잊어요. 그래서 <b>먼저 재료(영상 소재)를 모으고 나서</b> 요리(편집)를 배우는 순서예요.",
+      "journeyContext": "tier 2의 콘텐츠 축적을 마쳐야 열리는 tier 3의 시작 칸이에요.",
+      "glossary": {}
+    },
+    {
+      "id": "outsource_editing_when_paid",
+      "tier": 3,
+      "weight": 10,
+      "title": "수입이 생기면 편집을 외주로 넘기기",
+      "category": "확장",
+      "requires": [
+        "three_deadline_system"
+      ],
+      "status": "todo",
+      "sourceSection": "§8",
+      "why": "외부강의 수입이 생기기 시작하면 일부를 다시 콘텐츠에 투자했으면 좋겠어. 강의료 받음 → 콘텐츠 제작비 적립 → 자막/컷편집 외주 → 예나는 생각+촬영+말하기에 집중. 네 최종직업은 편집자가 아니잖아. Speaker야.",
+      "action": "외부 강의료 일부를 콘텐츠 제작비로 적립. 여유가 생기면 자막·컷편집을 외주로 돌리고, 예나는 기획·촬영·말하기에만 집중한다.",
+      "successEffect": "시간이 갈수록 예나만 할 수 있는 것(생각·촬영·말하기)의 비율이 높아진다.",
+      "failureCost": "편집까지 계속 혼자 붙잡고 있으면 최종 목표인 Speaker 단계로 갈 시간과 에너지가 줄어든다.",
+      "whySimple": "예나의 최종 목표는 <b>말하는 사람(Speaker)</b>이지 편집자가 아니에요. 그래서 돈이 생기기 시작하면 편집은 남에게 맡기고, 예나는 예나만 할 수 있는 일에 시간을 써요.",
+      "journeyContext": "tier 3의 두 번째 칸이에요. 여기서 확보한 여유 시간이 tier 4의 포트폴리오 확장에 쓰인다.",
+      "glossary": {}
+    },
+    {
+      "id": "portfolio_project_stack",
+      "tier": 4,
+      "weight": 15,
+      "title": "11월: PROJECT 001·002·003으로 포트폴리오 쌓기",
+      "category": "포트폴리오",
+      "requires": [
+        "video_editing_after_footage",
+        "outsource_editing_when_paid"
+      ],
+      "status": "todo",
+      "sourceSection": "§3 NOVEMBER",
+      "why": "이때부터 Instagram에 PROJECT 001 CSI Science Class / PROJECT 002 AI Education / PROJECT 003 Kids Science처럼 실제 프로젝트를 쌓아.",
+      "action": "지금까지 쌓인 콘텐츠를 PROJECT 001(CSI Science Class), PROJECT 002(AI Education), PROJECT 003(Kids Science) 형태로 정리해 Instagram에 올린다.",
+      "successEffect": "6개월 시점의 YENA Portfolio 완성으로 이어지는 실제 증거 자산이 만들어진다.",
+      "failureCost": "활동은 했지만 프로젝트 단위로 정리하지 않으면, 나중에 기관에 보낼 '증거'가 흩어진 채로 남는다.",
+      "whySimple": "낱개로 흩어진 사진을 <b>앨범 3권</b>으로 정리하는 것과 같아요. 흩어진 활동을 'PROJECT 001·002·003'이라는 이름표로 묶어야 남에게 보여줄 수 있어요.",
+      "journeyContext": "tier 3의 편집 체계가 갖춰져야 열리는 tier 4의 시작 칸이에요. 여기서 만든 포트폴리오가 마지막 단계(제안)의 첨부 자료가 돼요.",
+      "glossary": {}
+    },
+    {
+      "id": "proactive_outreach_december",
+      "tier": 5,
+      "weight": 6,
+      "title": "12월: 기다리지 않고 먼저 제안 보내기",
+      "category": "제안",
+      "requires": [
+        "portfolio_project_stack"
+      ],
+      "status": "todo",
+      "sourceSection": "§3 DECEMBER",
+      "why": "이제 기다리지 않는다. 청소년센터 / 교육회사 / 진로교육기관 / 학교 연계기관 등에 '이런 프로그램 운영 가능합니다.'를 보낼 수 있게 되는 거야. 링크 하나: yena Instagram / portfolio 첨부.",
+      "action": "'이런 프로그램 운영 가능합니다' 제안서를 작성해 Instagram/포트폴리오 링크와 함께 청소년센터, 교육회사, 진로교육기관, 학교 연계기관에 발송.",
+      "successEffect": "지원받는 입장에서 먼저 제안하는 입장으로 바뀐다 — 12월 안에 처음으로 실물 제안이 나간다.",
+      "failureCost": "제안을 보내지 않으면 계속 기관이 먼저 연락해주기를 기다리는 수동적인 상태에 머문다.",
+      "whySimple": "이제까지는 <b>불러주길 기다렸다면</b>, 여기부터는 '저 이런 거 할 수 있어요'라고 먼저 손을 드는 거예요.",
+      "journeyContext": "tier 4의 포트폴리오를 마쳐야 열리는 마지막 tier 5의 첫 칸이에요. 이 제안이 실제로 닿으면 money_milestones의 첫 마일스톤으로 이어질 수 있어요.",
+      "glossary": {}
+    },
+    {
+      "id": "money_milestones",
+      "tier": 5,
+      "weight": 4,
+      "title": "Instagram으로 처음 돈 받은 날 → 누적 100만원 → 500만원",
+      "category": "측정",
+      "requires": [
+        "proactive_outreach_december"
+      ],
+      "status": "todo",
+      "sourceSection": "§4, §9",
+      "why": "인스타 팔로워 1만 명보다 먼저 목표를 'Instagram 때문에 처음으로 돈을 받은 날'로 잡겠어. 그다음 목표는 Instagram을 통해 들어온 누적 매출 100만원. 그 다음이 500만원.",
+      "action": "팔로워 수 대신 이 세 지점을 기록: 기관 담당자가 계정을 보고 먼저 연락해 온 첫 순간 / 인스타 경로로 들어온 누적 매출 100만원 / 누적 매출 500만원.",
+      "successEffect": "Instagram이 '나 열심히 해야 되는데ㅠ'가 아니라 실제로 커리어와 돈을 만들어주는 자산이 돼서 지속할 이유가 생긴다.",
+      "failureCost": "팔로워 수만 목표로 삼으면 실제로 돈과 커리어로 이어지는지 확인할 방법이 없다.",
+      "whySimple": "숫자로는 <b>팔로워가 아니라 '돈이 실제로 들어온 순간'</b>을 세는 거예요. 그게 이 여정이 진짜로 작동하고 있다는 증거니까요.",
+      "journeyContext": "이 트리의 마지막 칸이에요. tier 1의 첫 지원부터 여기까지 이어진 흐름이 실제 수익으로 확인되는 지점이에요.",
+      "glossary": {}
+    }
+  ]
+}
