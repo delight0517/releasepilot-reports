@@ -76,6 +76,20 @@
 
   footer { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--line); font-size: 12px; color: var(--ink-faint); text-align: center; }
 
+  .article-card { border: 1px solid var(--line); border-radius: 14px; background: var(--card); margin-bottom: 12px; overflow: hidden; }
+  .article-card summary { list-style: none; cursor: pointer; padding: 16px 20px; display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .article-card summary::-webkit-details-marker { display: none; }
+  .article-card .a-meta { font-family: var(--mono); font-size: 10px; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.06em; }
+  .article-card .a-title { font-family: var(--serif); font-size: 15.5px; margin: 4px 0 0; }
+  .article-card .a-snippet { font-size: 12.5px; color: var(--ink-dim); margin: 4px 0 0; }
+  .article-card .a-toggle { font-family: var(--mono); font-size: 10.5px; color: var(--moss); flex: none; white-space: nowrap; }
+  .article-card[open] .a-toggle::after { content: " 접기"; }
+  .article-card:not([open]) .a-toggle::after { content: " 펼치기"; }
+  .article-body { padding: 0 20px 22px; border-top: 1px solid var(--line); font-size: 14px; color: var(--ink-dim); max-height: 60vh; overflow-y: auto; }
+  .article-body :is(h1,h2,h3) { font-family: var(--serif); font-weight: 400; color: var(--ink); }
+  .article-body img { max-width: 100%; border-radius: 8px; }
+  .article-loading { padding: 20px; font-family: var(--mono); font-size: 11px; color: var(--ink-faint); }
+
   @media (max-width: 640px) {
     body { font-size: 15px; }
     .role-map { grid-template-columns: 1fr; }
@@ -221,6 +235,15 @@
     </div>
   </section>
 
+  <section id="related-articles">
+    <div class="section-head">
+      <span class="section-eyebrow">더 읽기</span>
+      <h2>관련 글</h2>
+      <p>페이지를 벗어나지 않고 바로 펼쳐 읽을 수 있습니다 — 태그로 자동 매칭 (AI 판단 없이 정적 필터링).</p>
+    </div>
+    <div id="related-articles-list"></div>
+  </section>
+
   <section id="contact">
     <div class="section-head">
       <span class="section-eyebrow">연락처</span>
@@ -243,3 +266,63 @@
     <p>생성: releasepilot-reports · game-artist/ · 내용 출처: 본인 제공 작업 서술(3ds Max·Substance 3D Painter 실사용 경험) — AI Profile Index 등 검증 불가능한 점수는 의도적으로 배제</p>
   </footer>
 </div>
+
+<script>
+// 이 포트폴리오와 관련된 기사를 찾아 인라인으로 펼쳐 보여준다 — 순수 정적 필터링/fetch만
+// 쓰고 런타임에 AI 호출이 없다 (한 번 manifest.json에 태그를 붙여두면 그 뒤로는 브라우저가
+// 알아서 매칭한다). 페이지 이동이 없으므로 브라우저 "뒤로가기"도 항상 이 포트폴리오로 돌아온다.
+(function () {
+  var RELEVANT_TAGS = ["game-art", "3d"];
+  var list = document.getElementById("related-articles-list");
+  if (!list) return;
+
+  fetch("../articles/manifest.json")
+    .then(function (r) { return r.json(); })
+    .then(function (articles) {
+      var matched = articles.filter(function (a) {
+        return Array.isArray(a.tags) && a.tags.some(function (t) { return RELEVANT_TAGS.indexOf(t) !== -1; });
+      });
+      if (!matched.length) {
+        list.innerHTML = '<p style="font-size:13px;color:var(--ink-faint);">아직 태그가 매칭되는 글이 없습니다.</p>';
+        return;
+      }
+      matched.forEach(function (a) {
+        var details = document.createElement("details");
+        details.className = "article-card";
+        var date = (a.publishedAt || "").slice(0, 10);
+        details.innerHTML =
+          '<summary>' +
+            '<span>' +
+              '<span class="a-meta">' + (a.channel || "") + ' · ' + date + ' · ' + (a.readMinutes || "?") + '분</span>' +
+              '<p class="a-title">' + a.title + '</p>' +
+              '<p class="a-snippet">' + a.snippet + '</p>' +
+            '</span>' +
+            '<span class="a-toggle"></span>' +
+          '</summary>' +
+          '<div class="article-body"><p class="article-loading">불러오는 중…</p></div>';
+
+        var loaded = false;
+        details.addEventListener("toggle", function () {
+          if (!details.open || loaded) return;
+          loaded = true;
+          var body = details.querySelector(".article-body");
+          fetch("../articles/" + a.file)
+            .then(function (r) { return r.text(); })
+            .then(function (html) {
+              var doc = new DOMParser().parseFromString(html, "text/html");
+              var content = doc.querySelector("article, main, .page, .prose");
+              body.innerHTML = content ? content.innerHTML : '<p>내용을 불러오지 못했습니다. — <a href="../articles/' + a.file + '" target="_blank" rel="noopener" style="color:var(--moss);">새 탭에서 열기</a></p>';
+            })
+            .catch(function () {
+              body.innerHTML = '<p>불러오기 실패 — <a href="../articles/' + a.file + '" target="_blank" rel="noopener" style="color:var(--moss);">새 탭에서 열기</a></p>';
+            });
+        });
+
+        list.appendChild(details);
+      });
+    })
+    .catch(function () {
+      list.innerHTML = '<p style="font-size:13px;color:var(--ink-faint);">관련 글을 불러오지 못했습니다.</p>';
+    });
+})();
+</script>
