@@ -172,6 +172,12 @@
   .glossary-list { display: flex; flex-direction: column; gap: 8px; }
   .glossary-item { font-size: 13px; line-height: 1.6; color: var(--ink-dim); }
   .glossary-item b { color: var(--gold-ink); font-weight: 600; }
+  .resource-list { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 7px; }
+  .resource-list li { font-size: 13px; line-height: 1.5; }
+  .resource-list a { color: var(--gold-ink); text-decoration: underline; text-underline-offset: 2px; }
+  .resource-list a:hover { color: var(--gold); }
+  .idea-list { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 10px; }
+  .idea-list li { font-size: 13.5px; line-height: 1.65; color: var(--ink-dim); }
   .why-toggle { background: none; border: none; color: var(--ink-faint); font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.04em; cursor: pointer; padding: 0; margin-top: 8px; text-decoration: underline; }
   .why-toggle:hover { color: var(--gold-ink); }
   .why-formal { display: none; margin-top: 8px; font-size: 12.5px; color: var(--ink-faint); line-height: 1.6; border-left: 2px solid var(--line); padding-left: 10px; }
@@ -385,6 +391,18 @@ function openDrawer(nodeId) {
           glossaryEntries.map(([term, def]) => `<div class="glossary-item"><b>${term}</b> — ${def}</div>`).join('')
         }</div></div>`
       : '';
+    const resources = node.resources || [];
+    const resourcesHtml = resources.length
+      ? `<div class="drawer-section"><h3>어디서 찾나요?</h3><ul class="resource-list">${
+          resources.map(r => `<li><a href="${r.url}" target="_blank" rel="noopener">${r.label} ↗</a></li>`).join('')
+        }</ul></div>`
+      : '';
+    const personalIdeas = node.personalIdeas || [];
+    const personalIdeasHtml = personalIdeas.length
+      ? `<div class="drawer-section"><h3>${TREE.person}님 맞춤 아이디어</h3><ul class="idea-list">${
+          personalIdeas.map(i => `<li>${i}</li>`).join('')
+        }</ul></div>`
+      : '';
     drawer.innerHTML = `
       <button class="drawer-close" id="drawerClose">✕</button>
       <span class="node-cat">${node.category}</span>
@@ -422,6 +440,8 @@ function openDrawer(nodeId) {
         </div>
       </div>
 
+      ${resourcesHtml}
+      ${personalIdeasHtml}
       ${glossaryHtml}
 
       <button class="mark-btn ${done ? 'is-done' : ''}" id="markBtn">

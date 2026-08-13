@@ -85,7 +85,35 @@
       "failureCost": "테스트할 콘텐츠 자체가 없어 이후 모든 노드(Trial Reels, 변수 실험, 성과 측정)가 시작조차 못 한다.",
       "whySimple": "이 트리에서 가장 중요한 <b>첫 관문</b>이에요. 시험을 보려면 문제집이 있어야 하듯, 뒤에 나오는 모든 실험(테스트·비교·측정)은 이 릴스 6개가 있어야 시작할 수 있어요.",
       "journeyContext": "tier 1을 모두 마쳐야 열리는 tier 2의 시작 칸이자, 이 트리 전체의 핵심 관문이에요 — tier 3의 모든 실험(목적 태깅·Trial Reels·A/B 테스트)이 이 릴스 없이는 시작할 수 없어요.",
-      "glossary": {}
+      "glossary": {},
+      "resources": [
+        {
+          "label": "인스타 자체 트렌드 오디오 대시보드 (프로페셔널 계정 전용)",
+          "url": "https://www.socialpilot.co/blog/instagram-reels-trends"
+        },
+        {
+          "label": "매주 갱신되는 릴스 트렌드 정리 (Later)",
+          "url": "https://later.com/blog/instagram-reels-trends/"
+        },
+        {
+          "label": "매주 갱신되는 유행 오디오 정리 (Buffer)",
+          "url": "https://buffer.com/resources/trending-audio-instagram/"
+        },
+        {
+          "label": "월별 갱신 릴스 트렌드 (Anijam)",
+          "url": "https://www.anijam.ai/blog/instagram-reels-trends/"
+        },
+        {
+          "label": "POV 릴스 만드는 법 — 구체적 상황 하나를 정해 끊지 않고 촬영",
+          "url": "https://startuprabbit.in/digital-marketing/pov-reel-ideas-2026/"
+        }
+      ],
+      "personalIdeas": [
+        "포지티브·네거티브 한 릴스 안에 담기(§6 훅 구조 그대로): 0~1초 — 완성 직전 렌더에서 뭔가 잘못됨을 본 순간의 진짜 표정(끊지 않고 정면, POV 스킷 방식) → 1~3초 문제 지점 확대 → 3~12초 실제로 고치는 손/화면 → 마지막 2~3초 완성 렌더 + 안도하는 한 마디. '절망→해결→기쁨'을 한 호흡에 보여주는 형태.",
+        "다큐 톤 반전 개그: 잔잔하고 웅장한 배경음(다큐 스타일) 위에, 인터뷰하듯 진지하게 '이 상자의 UV가 겹쳐서 사흘째 잠을 설쳤습니다'처럼 사소한 3D 작업 문제를 대사로 진지하게 말하기 — 음악의 무게와 내용의 사소함 사이 괴리가 웃음 포인트(참고: 다큐 반전 포맷).",
+        "'기쁨으로 돌아오는 여정' 편집: 한 프로젝트를 만드는 동안 있었던 작은 승리 순간들(텍스처가 딱 맞아떨어진 순간, AI 제안을 거절하고 직접 고친 순간, 완성 렌더를 처음 본 순간)만 모아서 잔잔하고 뭉클한 음악 + 텍스트 오버레이로 엮기 — §5-A '변화 과정' 콘텐츠와 자연스럽게 겹친다.",
+        "POV 스킷 응용: 'POV: 3D 아티스트가 AI 제안을 그대로 안 쓰기로 한 순간' — 구체적인 직업+구체적인 상황 조합(POV 포맷의 핵심)으로, §4 차별화 문장('AI에게 답을 받는 사람이 아니라, AI와 함께 실험하는 사람')을 실제 장면으로 보여준다."
+      ]
     },
     {
       "id": "save_carousel",
