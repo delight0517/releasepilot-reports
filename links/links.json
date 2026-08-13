@@ -12,5 +12,8 @@
   { "label": "영어 1:1 과외", "sub": "", "url": "../english-tutor/", "emoji": "🇬🇧" },
   { "label": "영어 통역·번역", "sub": "", "url": "../translation/", "emoji": "🌐" },
   { "label": "ArtStation", "sub": "", "url": "https://www.artstation.com/kaito_ren", "emoji": "↗" },
-  { "label": "브런치", "sub": "사유의 공간", "url": "https://brunch.co.kr/@rogan2534", "emoji": "↗" }
+  { "label": "브런치", "sub": "사유의 공간", "url": "https://brunch.co.kr/@rogan2534", "emoji": "↗" },
+  { "label": "이메일", "sub": "delight0517@hongik.ac.kr", "url": "mailto:delight0517@hongik.ac.kr", "emoji": "✉️", "pinned": true },
+  { "label": "전화", "sub": "010-7570-0569", "url": "tel:+821075700569", "emoji": "☎️" },
+  { "label": "카카오톡 오픈채팅", "sub": "영상 기획 · 김근후", "url": "https://open.kakao.com/me/rogan_kim", "emoji": "💬", "pinned": true }
 ]
