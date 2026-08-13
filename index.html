@@ -5,6 +5,7 @@
 <meta name="description" content="ReleasePilot이 게시한 사용법 기획서·전략 리포트를 앱별로 모아보는 허브">
 <!-- 네이버 서치어드바이저 사이트 등록 → HTML 태그 검증 발급값. 안내: docs/naver_search_setup_walkthrough.md -->
 <meta name="naver-site-verification" content="여기에_나중에_채울_값">
+<script src="assets/owner-gate.js"></script>
 <link rel="canonical" href="https://delight0517.github.io/releasepilot-reports/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="리포트 허브 · ReleasePilot">
@@ -433,6 +434,11 @@
       <span><span style="display:block;font-weight:700;color:var(--accent-ink);">앱 개발</span>
       <span style="display:block;font-size:13px;color:var(--ink-faint);">기획부터 배포까지 직접 한 앱 케이스 스터디</span></span>
     </a>
+  </div>
+  <!-- 콘텐츠/사진 자료가 아직 없는 미완성 카테고리 — 방문자에게는 숨기고
+       ReleasePilot(Mac 앱)에서 소유자 키로 연 브라우저에서만 노출한다.
+       (assets/owner-gate.js, 2026-08-13) -->
+  <div id="owner-only-more" style="display:none;flex-direction:column;gap:10px;margin-top:10px;">
     <a href="acting/" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:var(--card);text-decoration:none;color:inherit;">
       <span style="font-size:28px;line-height:1;">🎭</span>
       <span><span style="display:block;font-weight:700;color:var(--accent-ink);">배우</span>
@@ -459,6 +465,12 @@
       <span style="display:block;font-size:13px;color:var(--ink-faint);">영상 동시통역 · 문서 번역 (구조 준비, 콘텐츠 대기중)</span></span>
     </a>
   </div>
+  <script>
+    if (window.isVividOwner && window.isVividOwner()) {
+      var ownerMore = document.getElementById('owner-only-more');
+      if (ownerMore) ownerMore.style.display = 'flex';
+    }
+  </script>
 
   <p class="empty" id="empty" style="display:none;">아직 게시된 리포트 없음.</p>
   <footer>VIVID · ReleasePilot Report Hub · <a href="about/" style="color:inherit;">만든 사람</a> · <a href="connect-survey/" style="color:inherit;">사계기록 커넥트 설문(베타)</a></footer>
