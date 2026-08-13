@@ -77,7 +77,8 @@
   footer { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--line); font-size: 12px; color: var(--ink-faint); text-align: center; }
 
   .article-card { border: 1px solid var(--line); border-radius: 14px; background: var(--card); margin-bottom: 12px; overflow: hidden; }
-  .article-card summary { list-style: none; cursor: pointer; padding: 16px 20px; display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .article-card summary { list-style: none; cursor: pointer; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; gap: 14px; }
+  .article-card .a-thumb { width: 72px; height: 72px; object-fit: cover; border-radius: 10px; flex: none; }
   .article-card summary::-webkit-details-marker { display: none; }
   .article-card .a-meta { font-family: var(--mono); font-size: 10px; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.06em; }
   .article-card .a-title { font-family: var(--serif); font-size: 15.5px; margin: 4px 0 0; }
@@ -89,6 +90,20 @@
   .article-body :is(h1,h2,h3) { font-family: var(--serif); font-weight: 400; color: var(--ink); }
   .article-body img { max-width: 100%; border-radius: 8px; }
   .article-loading { padding: 20px; font-family: var(--mono); font-size: 11px; color: var(--ink-faint); }
+
+  .work-card { display: flex; flex-direction: column; border-radius: 14px; overflow: hidden; border: 1px solid var(--line);
+    background: var(--card); text-decoration: none; color: var(--ink); aspect-ratio: 4/3; position: relative; }
+  .work-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .work-card span { position: absolute; left: 0; right: 0; bottom: 0; padding: 8px 10px; font-size: 11px;
+    background: linear-gradient(0deg, rgba(0,0,0,0.72), transparent); color: #fff; }
+
+  .emoji-grid { grid-template-columns: repeat(5, 1fr); }
+  .emoji-tile { width: 100%; aspect-ratio: 1/1; object-fit: contain; border: 1px solid var(--line); border-radius: 12px;
+    background: var(--card); padding: 6px; }
+
+  @media (max-width: 640px) {
+    .emoji-grid { grid-template-columns: repeat(3, 1fr); }
+  }
 
   @media (max-width: 640px) {
     body { font-size: 15px; }
@@ -122,6 +137,15 @@
       </div>
     </div>
   </div>
+
+  <section id="related-articles">
+    <div class="section-head">
+      <span class="section-eyebrow">더 읽기</span>
+      <h2>관련 글</h2>
+      <p>페이지를 벗어나지 않고 바로 펼쳐 읽을 수 있습니다 — 태그로 자동 매칭 (AI 판단 없이 정적 필터링).</p>
+    </div>
+    <div id="related-articles-list"></div>
+  </section>
 
   <section id="core">
     <div class="section-head">
@@ -209,15 +233,64 @@
   <section id="proof">
     <div class="section-head">
       <span class="section-eyebrow">포트폴리오</span>
-      <h2>제작물 (업로드 예정)</h2>
-      <p>실제 결과물 이미지는 아직 이 사이트에 올라오지 않았습니다 — 지어낸 이미지나 점수 대신,
-        준비되는 대로 실제 스틸컷/턴테이블로 채웁니다.</p>
+      <h2>제작물</h2>
+      <p>ArtStation에 실제로 올라온 작업 중 3D/게임 아트 트랙과 맞닿는 것들만 골랐습니다.</p>
     </div>
-    <div class="slot-grid">
-      <div class="slot">Prop 모델링<br>실루엣 → 완성 단계컷<br>(업로드 예정)</div>
-      <div class="slot">텍스처링 과정<br>Substance Painter 뷰포트<br>(업로드 예정)</div>
-      <div class="slot">최종 프레젠테이션<br>조명·배경 합성컷<br>(업로드 예정)</div>
+    <div class="slot-grid work-grid">
+      <a class="work-card" href="https://www.artstation.com/artwork/xdzYE1" target="_blank" rel="noopener">
+        <img src="assets/artstation/medieval_bucket_3d.jpg" alt="Medieval Bucket 3D" loading="lazy">
+        <span>Medieval Bucket 3D</span>
+      </a>
+      <a class="work-card" href="https://www.artstation.com/artwork/x31J5E" target="_blank" rel="noopener">
+        <img src="assets/artstation/grass_unreal_engine.jpg" alt="Grass, Unreal Engine" loading="lazy">
+        <span>Grass, Unreal Engine</span>
+      </a>
+      <a class="work-card" href="https://www.artstation.com/artwork/rl1BEG" target="_blank" rel="noopener">
+        <img src="assets/artstation/haetae_dragon.jpg" alt="HaeTae-inspired Dragon" loading="lazy">
+        <span>HaeTae-inspired Dragon</span>
+      </a>
+      <a class="work-card" href="https://www.artstation.com/artwork/XJwLGD" target="_blank" rel="noopener">
+        <img src="assets/artstation/future_concept_weapon.jpg" alt="Future Concept Weapon" loading="lazy">
+        <span>Future Concept Weapon</span>
+      </a>
+      <a class="work-card" href="https://www.artstation.com/artwork/oJeVbw" target="_blank" rel="noopener">
+        <img src="assets/artstation/skull_of_lamb.jpg" alt="Skull of Lamb" loading="lazy">
+        <span>Skull of Lamb</span>
+      </a>
+      <a class="work-card" href="https://www.artstation.com/artwork/1NoJNe" target="_blank" rel="noopener">
+        <img src="assets/artstation/desert_crystal_beast.jpg" alt="The Desert Crystal Beast" loading="lazy">
+        <span>The Desert Crystal Beast</span>
+      </a>
+      <a class="work-card" href="https://www.artstation.com/artwork/EzWyEv" target="_blank" rel="noopener">
+        <img src="assets/artstation/sonic_time_sweeper.jpg" alt="Sonic - Time Sweeper" loading="lazy">
+        <span>Sonic — Time Sweeper</span>
+      </a>
       <div class="slot">환경 컨셉아트 프로세스 시트<br>실루엣 → 라인 → 컬러 → 라이팅 → 디테일 → 최종 렌더<br>(파일 전달 예정)</div>
+    </div>
+    <p style="font-size:12px;color:var(--ink-faint);margin-top:14px;">전체 22개 작업은 <a href="https://www.artstation.com/kaito_ren" target="_blank" rel="noopener" style="color:var(--moss);">ArtStation 프로필</a>에서 볼 수 있습니다.</p>
+  </section>
+
+  <section id="emoticons">
+    <div class="section-head">
+      <span class="section-eyebrow">07 · 사이드 프로젝트</span>
+      <h2>3D 이모티콘</h2>
+      <p>3D 캐릭터를 짧은 루프 애니메이션으로 제작한 이모티콘 세트.</p>
+    </div>
+    <div class="slot-grid emoji-grid">
+      <img class="emoji-tile" src="assets/emoticons/emoticon_1.gif" alt="이모티콘 - sleep" loading="lazy">
+      <img class="emoji-tile" src="assets/emoticons/emoticon_2.gif" alt="이모티콘 - knock" loading="lazy">
+      <img class="emoji-tile" src="assets/emoticons/emoticon_3.gif" alt="이모티콘 - love" loading="lazy">
+      <img class="emoji-tile" src="assets/emoticons/emoticon_4.gif" alt="이모티콘 - tv watching" loading="lazy">
+      <img class="emoji-tile" src="assets/emoticons/emoticon_5.gif" alt="이모티콘 - driving" loading="lazy">
+      <img class="emoji-tile" src="assets/emoticons/emoticon_6.gif" alt="이모티콘 - tv off" loading="lazy">
+      <img class="emoji-tile" src="assets/emoticons/emoticon_7.gif" alt="이모티콘 - good" loading="lazy">
+      <img class="emoji-tile" src="assets/emoticons/emoticon_8.gif" alt="이모티콘 - bye bye" loading="lazy">
+      <img class="emoji-tile" src="assets/emoticons/emoticon_9.gif" alt="이모티콘 - tear sad" loading="lazy">
+      <img class="emoji-tile" src="assets/emoticons/emoticon_10.gif" alt="이모티콘 - dance" loading="lazy">
+      <img class="emoji-tile" src="assets/emoticons/emoticon_11.png" alt="이모티콘 - what" loading="lazy">
+      <img class="emoji-tile" src="assets/emoticons/emoticon_12.png" alt="이모티콘 - 캐릭터" loading="lazy">
+      <img class="emoji-tile" src="assets/emoticons/emoticon_13.png" alt="이모티콘 - 캐릭터" loading="lazy">
+      <img class="emoji-tile" src="assets/emoticons/emoticon_14.png" alt="이모티콘 - 캐릭터" loading="lazy">
     </div>
   </section>
 
@@ -233,15 +306,6 @@
         처리 가능합니다. 실제 적용 사례: <a href="https://marpple.shop/kr/Vivid_Wave_shop" target="_blank" rel="noopener" style="color:var(--moss);">Vivid_Wave_shop</a>
         (그래픽 티셔츠·맨투맨·바람막이 등 마플샵 판매 중).</p>
     </div>
-  </section>
-
-  <section id="related-articles">
-    <div class="section-head">
-      <span class="section-eyebrow">더 읽기</span>
-      <h2>관련 글</h2>
-      <p>페이지를 벗어나지 않고 바로 펼쳐 읽을 수 있습니다 — 태그로 자동 매칭 (AI 판단 없이 정적 필터링).</p>
-    </div>
-    <div id="related-articles-list"></div>
   </section>
 
   <section id="contact">
@@ -290,8 +354,10 @@
         var details = document.createElement("details");
         details.className = "article-card";
         var date = (a.publishedAt || "").slice(0, 10);
+        var thumb = a.thumbnail ? '<img class="a-thumb" src="' + a.thumbnail + '" alt="" loading="lazy">' : '';
         details.innerHTML =
           '<summary>' +
+            thumb +
             '<span>' +
               '<span class="a-meta">' + (a.channel || "") + ' · ' + date + ' · ' + (a.readMinutes || "?") + '분</span>' +
               '<p class="a-title">' + a.title + '</p>' +
