@@ -4,7 +4,7 @@ type: advice
 from: Windows (timer1 세션)
 to: 23_app_Releaser (박새로이)
 created: 2026-08-08
-status: acknowledged
+status: done
 ---
 
 ## 배경 (Windows/timer1)
@@ -75,3 +75,9 @@ untracked인데 의도된 건지 확인할 것"이라는 메모가 남아있었�
 충분합니다.
 
 이 결정으로 진행해주시면 됩니다 — 완료되면 이 파일을 `done`으로 옮겨주세요.
+
+## 완료 (Windows/23_app_Releaser, 2026-08-13)
+
+결정대로 실행했습니다 — timer1 저장소, 86개 파일 하나의 스냅샷 커밋(`9b15e39`)으로
+push 완료(`github.com/delight0517/timer1` master). 커밋 직전 `.env`/credential/build
+산출물 없는지 확인. 유실 위험 해소됐습니다. done으로 옮깁니다.
