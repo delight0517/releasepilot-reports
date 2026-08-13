@@ -376,15 +376,23 @@
     webtoons: $("panelWebtoons"), posts: $("panelPosts"),
   };
   const eyebrow = $("eyebrow"), configwarn = $("configwarn");
-  tabBtns.forEach(btn => btn.addEventListener("click", () => {
-    const name = btn.dataset.panel;
+  function activateTab(name) {
+    const btn = tabBtns.find(b => b.dataset.panel === name);
+    if (!btn || !panels[name]) return;
     tabBtns.forEach(b => b.classList.toggle("active", b === btn));
     Object.entries(panels).forEach(([k, el]) => el.classList.toggle("active", k === name));
     eyebrow.textContent = MEDIA_LABEL[name];
     eyebrow.style.color = MEDIA_COLOR[name];
     eyebrow.style.background = "color-mix(in srgb, " + MEDIA_COLOR[name] + " 18%, transparent)";
     configwarn.style.borderColor = MEDIA_COLOR[name];
-  }));
+  }
+  tabBtns.forEach(btn => btn.addEventListener("click", () => activateTab(btn.dataset.panel)));
+
+  // Deep-link support (?tab=webtoons) so other pages (e.g. design/) can link
+  // straight into a specific media tab instead of dropping visitors on the
+  // default "photos" tab and making them hunt for it themselves.
+  const deepLinkTab = new URLSearchParams(location.search).get("tab");
+  if (deepLinkTab && panels[deepLinkTab]) activateTab(deepLinkTab);
 
   function observeIn(selector) {
     const io = new IntersectionObserver((entries) => {
