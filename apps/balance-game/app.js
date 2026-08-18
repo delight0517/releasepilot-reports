@@ -16,7 +16,7 @@ const MODEL = "claude-sonnet-5";
 // 없도록 기본값으로 박아둔다(2026-08-11 전까지는 빈 값이라 "제출하기"가 아무도
 // 모르게 항상 실패했었음 — 이 기본값이 그 버그의 실제 수정이다). 설정 칸은
 // 다른 배포본을 테스트하고 싶을 때를 위해 남겨두되, 비워두면 이 기본값을 쓴다.
-const DEFAULT_COLLECTOR_URL = "https://balance-game-survey-collector.PLACEHOLDER.workers.dev";
+const DEFAULT_COLLECTOR_URL = "https://balance-game-survey-collector.rogan2534.workers.dev";
 
 // SNS 모드의 "어디서 실제로 구할 수 있는지"는 AI가 지어내지 않도록 여기 고정
 // 텍스트로 박아둔다(2026-08-12) — 개인화는 AI가 촬영 소재/콘텐츠 방향만 맡고,
