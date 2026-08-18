@@ -1,0 +1,428 @@
+<!doctype html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>브레인와이어 — 던져 넣으면 외워지는 학습 로드맵</title>
+<meta name="description" content="유튜브 링크나 노트를 던져 넣기만 하면 AI가 분류하고, 인출·연결·적용·창조 4단계 질문과 간격 반복으로 진짜 기억에 남게 만드는 학습 앱. 지금 바로 체험해보세요.">
+<link rel="apple-touch-icon" href="../../icons/icon-180.png">
+<link rel="icon" href="../../icons/icon-192.png">
+<meta name="theme-color" content="#F7F9FA">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F7F9FA; --card:#fff; --line:#E5E5E5;
+    --ink:#3C3C3C; --ink-dim:#767676;
+    --primary:#58CC02; --primary-dark:#4CAF00;
+    --blue:#1CB0F6; --blue-dark:#1899D6;
+    --gold:#FFC800; --gold-dark:#E5B400;
+    --red:#FF4B4B; --red-dark:#E63E3E;
+    --display:'Baloo 2','Segoe UI Rounded','Segoe UI',sans-serif;
+    --body:'Nunito','Segoe UI Rounded','Segoe UI',sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);line-height:1.5;}
+  .top-nav{position:fixed;top:16px;right:16px;z-index:20;}
+  .back-link{font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;color:var(--ink-dim);
+    text-decoration:none;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 12px;}
+  .back-link:hover{color:var(--primary-dark);border-color:var(--primary);}
+
+  .hero{padding:76px 20px 28px;text-align:center;max-width:600px;margin:0 auto;}
+  .eyebrow{display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--primary-dark);background:#E8F7D4;border-radius:999px;padding:5px 14px;margin:0 0 20px;}
+  .hero h1{font-family:var(--display);font-weight:800;font-size:clamp(30px,7vw,44px);line-height:1.15;margin:0 0 14px;}
+  .hero p{margin:0 auto;font-size:15px;line-height:1.65;color:var(--ink-dim);max-width:46ch;}
+  .demo-badge{margin:18px auto 0;max-width:44ch;font-size:12px;line-height:1.6;color:var(--ink-dim);
+    background:#FFF6D9;border:1px solid #F5E3A8;border-radius:12px;padding:10px 16px;}
+
+  .app-frame{max-width:480px;margin:34px auto 0;background:var(--card);border:2px solid var(--line);border-radius:22px;
+    overflow:hidden;box-shadow:0 12px 28px -12px rgba(29,27,23,.16);}
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 18px;
+    background:#fff;border-bottom:2px solid var(--line);}
+  .logo{font-family:var(--display);font-weight:800;font-size:16px;color:var(--primary);display:flex;align-items:center;gap:6px;}
+  .stats{display:flex;gap:12px;}
+  .stat-pill{display:flex;align-items:center;gap:4px;font-weight:800;font-family:var(--display);font-size:13px;}
+  .stat-pill.streak{color:var(--red);}
+  .stat-pill.gems{color:var(--blue);}
+  .stat-pill.xp{color:var(--gold-dark);}
+  main{min-height:420px;padding:16px;}
+
+  .btn{font-family:var(--display);font-weight:800;letter-spacing:.3px;border:none;border-radius:12px;
+    padding:11px 16px;cursor:pointer;font-size:12.5px;text-transform:uppercase;transition:transform .05s;}
+  .btn:active{transform:translateY(2px);}
+  .btn-primary{background:var(--primary);color:#fff;box-shadow:0 4px 0 var(--primary-dark);}
+  .btn-primary:active{box-shadow:none;}
+  .btn-blue{background:var(--blue);color:#fff;box-shadow:0 4px 0 var(--blue-dark);}
+  .btn-blue:active{box-shadow:none;}
+  .btn-outline{background:#fff;color:var(--ink-dim);border:2px solid var(--line);box-shadow:0 4px 0 var(--line);}
+  .btn-outline:active{box-shadow:none;}
+  .btn-block{width:100%;}
+  .btn:disabled{opacity:.5;cursor:not-allowed;}
+
+  .ingest{background:var(--bg);border:2px dashed var(--line);border-radius:14px;padding:14px;margin-bottom:16px;}
+  .ingest textarea{width:100%;border:2px solid var(--line);border-radius:10px;padding:10px 12px;font-family:var(--body);
+    font-size:13px;resize:vertical;min-height:56px;margin-bottom:8px;}
+  .ingest textarea:focus{outline:none;border-color:var(--blue);}
+  .ingest-hint{font-size:11.5px;color:var(--ink-dim);margin:0 0 8px;}
+
+  .notice{border-radius:10px;padding:9px 12px;background:#E8F7D4;color:#3F7A00;font-weight:700;font-size:12px;
+    border:1px solid #CDEBA6;margin-bottom:14px;}
+  .notice.pending{background:#FFF6D9;color:var(--gold-dark);border-color:#F5E3A8;}
+
+  .section-title{font-family:var(--display);font-weight:800;font-size:13px;margin:0 0 8px;color:var(--ink-dim);
+    text-transform:uppercase;letter-spacing:.04em;}
+  .due-card{display:flex;align-items:center;gap:8px;background:#fff;border:2px solid var(--line);border-radius:12px;
+    padding:10px 12px;cursor:pointer;width:100%;text-align:left;font-family:var(--body);margin-bottom:8px;}
+  .due-card:hover{border-color:var(--blue);}
+  .stage-chip{display:inline-block;background:var(--blue);color:#fff;font-family:var(--display);font-weight:800;
+    font-size:10px;padding:3px 8px;border-radius:999px;flex-shrink:0;}
+  .due-title{flex:1;font-weight:800;font-size:13px;}
+
+  .path-wrap{padding-top:4px;}
+  .unit-banner{border-radius:14px;padding:12px 16px;margin:18px 0 22px;color:#fff;background:var(--unit-color);}
+  .unit-banner .eyebrow2{font-size:10px;opacity:.85;font-weight:700;letter-spacing:.5px;text-transform:uppercase;}
+  .unit-banner .unit-name{font-family:var(--display);font-size:15px;font-weight:800;margin-top:2px;}
+  .node-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+  .node{width:52px;height:52px;flex-shrink:0;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;
+    font-size:20px;cursor:pointer;background:var(--node-color);color:#fff;box-shadow:0 5px 0 var(--shadow-color);}
+  .node:active{transform:translateY(5px);box-shadow:none;}
+  .node.mastered{box-shadow:0 5px 0 var(--shadow-color),0 0 0 4px #FFF0B8;}
+  .lesson-title-under{font-size:12.5px;font-weight:700;}
+  .lesson-sub{font-size:11px;color:var(--ink-dim);}
+
+  .modal-overlay{position:fixed;inset:0;background:rgba(60,60,60,.55);display:flex;align-items:center;justify-content:center;
+    z-index:100;padding:16px;}
+  .modal-overlay.hidden{display:none;}
+  .modal{background:#fff;border-radius:20px;max-width:440px;width:100%;max-height:88vh;overflow-y:auto;padding:26px 22px;position:relative;}
+  .modal-close{position:absolute;top:12px;right:12px;background:none;border:none;font-size:18px;cursor:pointer;color:var(--ink-dim);}
+  .modal h2{font-family:var(--display);font-size:17px;margin:0 0 4px;}
+  .modal-sub{color:var(--ink-dim);font-size:12.5px;margin-bottom:14px;}
+  .question-box{background:var(--bg);border-radius:12px;padding:14px;margin-bottom:14px;font-weight:700;line-height:1.6;font-size:14px;}
+  .feedback-box{background:var(--bg);border-radius:12px;padding:14px;line-height:1.6;font-size:13px;margin-bottom:14px;}
+  textarea#answer-input{width:100%;padding:10px 12px;border:2px solid var(--line);border-radius:10px;font-family:var(--body);
+    font-size:13.5px;resize:vertical;margin-bottom:10px;}
+  textarea#answer-input:focus{outline:none;border-color:var(--blue);}
+  .spinner{width:30px;height:30px;border:5px solid var(--line);border-top-color:var(--primary);border-radius:50%;
+    animation:spin .8s linear infinite;margin:18px auto;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .loading-text{text-align:center;color:var(--ink-dim);font-weight:700;font-size:13px;}
+
+  .section-head{padding:0 2px 14px;margin-top:56px;max-width:600px;}
+  .eyebrow2{font-family:var(--mono);font-size:10.5px;color:var(--primary-dark);text-transform:uppercase;letter-spacing:.06em;}
+  .section-head h2{font-family:var(--display);font-weight:800;font-size:22px;margin:6px 0 8px;}
+  .section-head p{font-size:13.5px;color:var(--ink-dim);margin:0;max-width:52ch;}
+  .steps{display:flex;flex-direction:column;gap:0;margin-top:8px;max-width:600px;}
+  .step{display:flex;gap:14px;padding:16px 2px;position:relative;}
+  .step:not(:last-child)::before{content:'';position:absolute;left:21px;top:48px;bottom:-16px;width:2px;background:var(--line);}
+  .step-num{flex:none;width:42px;height:42px;border-radius:12px;background:#E8F7D4;color:var(--primary-dark);
+    display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;font-family:var(--display);z-index:1;}
+  .step-title{font-size:14.5px;font-weight:800;margin:0 0 4px;}
+  .step-desc{font-size:13px;line-height:1.6;color:var(--ink-dim);margin:0;}
+
+  .wrap{max-width:720px;margin:0 auto;padding:0 20px 80px;}
+  footer{margin-top:60px;padding-top:22px;border-top:1px solid var(--line);font-family:var(--mono);font-size:10.5px;
+    color:var(--ink-dim);text-align:center;letter-spacing:.02em;}
+  footer a{color:inherit;}
+</style>
+
+<div class="top-nav"><a class="back-link" href="../../">‹ 허브로</a></div>
+
+<div class="wrap">
+  <div class="hero">
+    <p class="eyebrow">🧠 브레인와이어</p>
+    <h1>던져 넣으면,<br>AI가 알아서 외워지게 만듭니다.</h1>
+    <p>유튜브 링크든 플레이리스트든 그냥 글이든 — 뭘 붙여넣든 AI가 코스·유닛·색상까지
+      알아서 분류하고, 단순 암기가 아니라 인출→연결→적용→창조 4단계로 진짜 이해시킵니다.</p>
+    <p class="demo-badge">⬇️ 아래는 실제 화면 그대로 움직이는 체험판입니다 (계정 없이,
+      이 브라우저에만 저장). AI 응답은 미리 준비된 예시로 대체되어 있어요 — 실제 앱은
+      Claude가 직접 질문을 만들고 채점합니다.</p>
+  </div>
+
+  <div class="app-frame">
+    <div class="topbar">
+      <div class="logo">🧠 브레인와이어</div>
+      <div class="stats">
+        <div class="stat-pill streak">🔥 <span id="stat-streak">0</span></div>
+        <div class="stat-pill gems">💎 <span id="stat-gems">0</span></div>
+        <div class="stat-pill xp">⚡ <span id="stat-xp">0</span></div>
+      </div>
+    </div>
+    <main id="main"></main>
+  </div>
+
+  <div class="modal-overlay hidden" id="quiz-modal">
+    <div class="modal" id="quiz-modal-body"></div>
+  </div>
+
+  <div class="section-head" id="how">
+    <span class="eyebrow2">How it works</span>
+    <h2>운영 방식</h2>
+    <p>붙여넣기 한 번이면 끝 — 코스 이름도, 색상도, 질문도 전부 AI가 정합니다.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="step-num">1</div><div>
+      <p class="step-title">아무거나 던져 넣어요</p>
+      <p class="step-desc">유튜브 링크 하나, 재생목록·"나중에 볼 동영상" 페이지 통째 복붙, 그냥 텍스트 —
+        형식 안 가립니다. 링크만 정규식으로 건져내고, 나머지는 AI가 처리해요.</p>
+    </div></div>
+    <div class="step"><div class="step-num">2</div><div>
+      <p class="step-title">AI가 분류·정리해요</p>
+      <p class="step-desc">기존 코스/유닛에 맞으면 그대로 꽂고, 없으면 이름·테마 색상까지 새로 정합니다.
+        긴 글(노션 페이지 등)은 개념 단위로 먼저 쪼갠 뒤 분류해요.</p>
+    </div></div>
+    <div class="step"><div class="step-num">3</div><div>
+      <p class="step-title">4단계 질문으로 진짜 이해시켜요</p>
+      <p class="step-desc">인출(자기 말로 재구성) → 연결(다른 레슨과 엮기) → 적용(새 상황에 판단) →
+        창조(직접 만들기). 빠른 확인이 필요한 개념은 근거 인용까지 붙는 OX 형식으로도 나와요.</p>
+    </div></div>
+    <div class="step"><div class="step-num">4</div><div>
+      <p class="step-title">간격 반복으로 잊기 직전에 다시</p>
+      <p class="step-desc">점수가 다음 복습 시점을 직접 결정합니다(SM-2 축약판). 정답이든 오답이든
+        매번 "정확한 정의 재확인 + 왜 그런지 + 내 답과의 비교" 설명 카드까지 받아요.</p>
+    </div></div>
+  </div>
+
+  <footer>브레인와이어 · 개발자(김근후)의 실사용 학습 도구 · <a href="../../">리포트 허브로 돌아가기</a></footer>
+</div>
+
+<script>
+/* ==================== 체험판 — 전부 클라이언트에서만 동작, 실서버 없음 ====================
+   실제 앱은 로컬 웹앱 + GitHub 저장 + Claude 배치 처리 잡큐를 씁니다.
+   이 데모는 그 AI 응답 자리를 미리 준비된 예시로 대체한 것입니다. */
+const STAGES = [
+  {key:'recall',  label:'인출', desc:'개념을 자기 말로 재구성'},
+  {key:'connect', label:'연결', desc:'다른 레슨의 개념과 엮기'},
+  {key:'apply',   label:'적용', desc:'새로운 상황에 넣어 판단'},
+  {key:'create',  label:'창조', desc:'직접 만들어보기'},
+];
+const PALETTE = [
+  {color:'#58CC02', dark:'#4CAF00'}, {color:'#1CB0F6', dark:'#1899D6'},
+  {color:'#FF9600', dark:'#E08600'}, {color:'#CE82FF', dark:'#B368E0'},
+];
+
+const DEMO_KEY = 'brainwire_demo_v1';
+function defaultState(){
+  return {
+    courses: [{
+      id:'c1', name:'경제학 첫걸음', color:'#58CC02', colorDark:'#4CAF00',
+      units:[{ id:'u1', name:'유닛 1', sub:'수요와 공급', color:'#58CC02', colorDark:'#4CAF00', lessons:[
+        { id:'l1', title:'수요와 공급이 가격을 정하는 원리', stageIndex:0, dueDate:null, intervalDays:0,
+          questions:[
+            {stage:'recall', format:'ox', text:'수요가 늘면 가격은 오른다.', answer:true,
+             sourceExcerpt:'수요가 늘면 가격은 오르고, 공급이 늘면 가격은 내린다.'},
+            {stage:'connect', format:'written', text:'"기회비용" 개념을 가져와서, 가격이 오를 때 소비자가 왜 다른 선택지를 다시 고려하게 되는지 엮어서 설명해보세요.'},
+            {stage:'apply', format:'written', text:'폭염으로 에어컨 수요가 급증했습니다. 공급이 그대로일 때 가격과 거래량이 어떻게 움직일지 설명해보세요.'},
+            {stage:'create', format:'written', text:'수요·공급을 모르는 친구에게, 콘서트 암표가 비싸지는 이유를 3문장 이내로 가르쳐보세요.'},
+          ]},
+        { id:'l2', title:'기회비용과 선택의 대가', stageIndex:0, dueDate:null, intervalDays:0, questions:[
+            {stage:'recall', format:'written', text:'기회비용이 단순히 "돈으로 계산되는 비용"과 뭐가 다른지 자신의 말로 설명해보세요.'},
+            {stage:'connect', format:'written', text:'"수요와 공급이 가격을 정하는 원리"와 엮어서, 가격이 오르면 왜 대안을 다시 고려하게 되는지 설명해보세요.'},
+            {stage:'apply', format:'written', text:'주말에 아르바이트를 할지 여행을 갈지 고민 중입니다. 이 선택의 기회비용을 짚어보세요.'},
+            {stage:'create', format:'written', text:'기회비용이 없는 세상을 상상해서, 그 세상에서 사람들의 선택이 어떻게 달라질지 지어내 설명해보세요.'},
+          ]},
+      ]}]
+    }],
+    inbox: [], pendingJobs: [],
+    progress:{ streak:0, xp:0, gems:0, lastStudyDate:null },
+    selectedCourseId:'c1', activeTab:'path',
+  };
+}
+let state = null;
+try{ state = JSON.parse(localStorage.getItem(DEMO_KEY) || 'null'); }catch(e){ state = null; }
+if(!state) state = defaultState();
+function saveState(){ localStorage.setItem(DEMO_KEY, JSON.stringify(state)); }
+let ingestNotice = null; // { text, pending } — render()가 매번 #main을 통째로 새로 그리므로 DOM에 직접 쓰지 않는다
+
+function escapeHtml(str){
+  if(str===undefined||str===null) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function uid(p){ return p+'_'+Math.random().toString(36).slice(2,8); }
+function today(){ return new Date().toISOString().slice(0,10); }
+function daysFromNow(n){ const d=new Date(); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); }
+function allLessons(){
+  const out=[];
+  state.courses.forEach(c=>c.units.forEach(u=>u.lessons.forEach(l=>out.push({course:c, unit:u, lesson:l}))));
+  return out;
+}
+function findLessonContext(id){ return allLessons().find(x=>x.lesson.id===id) || null; }
+function dueLessons(){
+  return allLessons().filter(x=>{
+    const l=x.lesson;
+    if(l.awaitingGrade) return false;
+    return !l.dueDate || l.dueDate<=today();
+  });
+}
+
+/* ==================== 붙여넣기 데모 (canned classify) ==================== */
+const CANNED_TITLES = [
+  '로마 제국은 왜 무너졌는가', '복리의 마법 — 시간이 돈이 되는 원리', '광합성은 어떻게 일어나는가',
+  '민주주의와 다수결의 함정', '뉴턴의 운동 법칙 세 가지',
+];
+async function ingestDemo(raw){
+  const text=(raw||'').trim();
+  if(!text) return;
+  ingestNotice = { text: '🧠 AI가 분류하는 중... (체험판 — 1.2초 후 예시 결과)', pending: true };
+  render();
+  await new Promise(r=>setTimeout(r, 1200));
+
+  const title = CANNED_TITLES[Math.floor(Math.random()*CANNED_TITLES.length)];
+  const course = state.courses[0];
+  const unit = course.units[0];
+  unit.lessons.push({
+    id: uid('l'), title, stageIndex:0, dueDate:null, intervalDays:0,
+    questions: [
+      {stage:'recall', format:'written', text:`"${title}"의 핵심 개념을 자신의 말로 재구성해서 설명해보세요.`},
+      {stage:'connect', format:'written', text:'같은 유닛의 다른 레슨과 엮어서 설명해보세요.'},
+      {stage:'apply', format:'written', text:'새로운 구체적 상황을 하나 지어내서 이 개념을 적용해보세요.'},
+      {stage:'create', format:'written', text:'이 개념을 처음 듣는 사람에게 3문장 이내로 가르쳐보세요.'},
+    ],
+  });
+  saveState();
+  ingestNotice = { text: `✅ "${title}" 레슨으로 분류해서 "${course.name} · ${unit.name}"에 추가했어요 (체험판 예시).`, pending: false };
+  render();
+}
+
+/* ==================== 채점 (canned) ==================== */
+function finalizeAnswer(lesson, score, feedback, explanation){
+  lesson.lastScore = score; lesson.lastFeedback = feedback; lesson.lastExplanation = explanation;
+  const prev = lesson.intervalDays || 1;
+  let next;
+  if(score>=90){ next=Math.max(4, Math.round(prev*2.5)); lesson.stageIndex=Math.min(STAGES.length-1,(lesson.stageIndex||0)+1); }
+  else if(score>=70){ next=Math.max(2, Math.round(prev*1.7)); lesson.stageIndex=Math.min(STAGES.length-1,(lesson.stageIndex||0)+1); }
+  else if(score>=50){ next=2; }
+  else { next=1; lesson.stageIndex=Math.max(0,(lesson.stageIndex||0)-1); }
+  lesson.intervalDays=next; lesson.dueDate=daysFromNow(next);
+  const xpGain = Math.max(5, Math.round(score/10)+5);
+  state.progress.xp += xpGain; state.progress.gems += 5;
+  const t=today(); const last=state.progress.lastStudyDate;
+  if(last!==t){ const y=new Date(); y.setDate(y.getDate()-1); const yd=y.toISOString().slice(0,10);
+    state.progress.streak=(last===yd)?state.progress.streak+1:1; state.progress.lastStudyDate=t; }
+}
+const CANNED_FEEDBACK = [
+  {score:88, feedback:'핵심 개념을 정확히 짚었어요. 다음엔 예시를 하나 더 붙여보면 더 단단해질 거예요.',
+   explanation:'정확한 정의를 다시 짚자면 — 이 개념은 원인과 결과가 명확한 인과관계로 이어져 있습니다. 방금 쓴 답도 그 인과관계를 잘 짚었어요. (체험판 — 실제로는 노트 내용에 맞춰 Claude가 매번 새로 씁니다.)'},
+];
+async function submitWritten(){
+  const ctx = findLessonContext(quiz.lessonId);
+  const lesson = ctx.lesson;
+  quiz.phase = 'grading'; renderModal();
+  await new Promise(r=>setTimeout(r, 1000));
+  const c = CANNED_FEEDBACK[0];
+  finalizeAnswer(lesson, c.score, c.feedback, c.explanation);
+  quiz.phase = 'result'; quiz.score = c.score; quiz.nextDueDate = lesson.dueDate;
+  saveState(); renderModal(); render();
+}
+function submitOx(userAnswer){
+  const ctx = findLessonContext(quiz.lessonId);
+  const lesson = ctx.lesson;
+  const correct = userAnswer === quiz.question.answer;
+  finalizeAnswer(lesson, correct?95:20,
+    correct?'정확히 맞혔어요!':'아니에요 — 근거 문장을 다시 확인해보세요.',
+    quiz.question.sourceExcerpt ? `근거: "${quiz.question.sourceExcerpt}"` : '');
+  quiz.phase='ox-result'; quiz.correct=correct; quiz.nextDueDate=lesson.dueDate;
+  saveState(); renderModal(); render();
+}
+
+/* ==================== 퀴즈 모달 ==================== */
+let quiz = null;
+function openQuiz(lessonId){
+  const ctx = findLessonContext(lessonId);
+  if(!ctx) return;
+  const lesson = ctx.lesson;
+  const idx = Math.min(lesson.stageIndex||0, lesson.questions.length-1);
+  quiz = { lessonId, phase:'ask', question: lesson.questions[idx] };
+  document.getElementById('quiz-modal').classList.remove('hidden');
+  renderModal();
+}
+function closeModal(){ document.getElementById('quiz-modal').classList.add('hidden'); quiz=null; render(); }
+
+function renderModal(){
+  const ctx = quiz ? findLessonContext(quiz.lessonId) : null;
+  const body = document.getElementById('quiz-modal-body');
+  if(!ctx || !quiz){ body.innerHTML=''; return; }
+  const lesson = ctx.lesson;
+  let inner = `<button class="modal-close" onclick="closeModal()">✕</button><h2>${escapeHtml(lesson.title)}</h2>`;
+
+  if(quiz.phase==='ask'){
+    const stage = STAGES.find(s=>s.key===quiz.question.stage) || STAGES[0];
+    inner += `<div class="modal-sub"><span class="stage-chip">${escapeHtml(stage.label)}</span> ${escapeHtml(stage.desc)}</div>
+      <div class="question-box">${escapeHtml(quiz.question.text)}</div>`;
+    if(quiz.question.format==='ox'){
+      if(quiz.question.sourceExcerpt) inner += `<div class="feedback-box" style="font-size:12px;">근거: "${escapeHtml(quiz.question.sourceExcerpt)}"</div>`;
+      inner += `<div style="display:flex;gap:8px;">
+        <button class="btn btn-primary" style="flex:1;" onclick="submitOx(true)">⭕ 맞다</button>
+        <button class="btn btn-blue" style="flex:1;" onclick="submitOx(false)">❌ 아니다</button></div>`;
+    } else {
+      inner += `<textarea id="answer-input" rows="5" placeholder="여기에 자신의 말로 답을 써보세요..."></textarea>
+        <button class="btn btn-primary btn-block" onclick="submitWritten()">제출하기</button>`;
+    }
+  } else if(quiz.phase==='grading'){
+    inner += `<div class="modal-sub">예나가 답변을 살펴보고 있어요</div><div class="spinner"></div>
+      <div class="loading-text">채점 중... (체험판 — 실제로는 배치로 처리돼요)</div>`;
+  } else if(quiz.phase==='result'){
+    inner += `<div class="modal-sub">예나의 피드백</div>
+      <div class="feedback-box"><strong>${quiz.score}점</strong><br>${escapeHtml(CANNED_FEEDBACK[0].feedback)}</div>
+      <div class="feedback-box" style="font-size:12.5px;">${escapeHtml(CANNED_FEEDBACK[0].explanation)}</div>
+      <div class="notice">📅 다음 복습: ${escapeHtml(quiz.nextDueDate)}</div>
+      <button class="btn btn-primary btn-block" onclick="closeModal()">확인</button>`;
+  } else if(quiz.phase==='ox-result'){
+    inner += `<div class="modal-sub">${quiz.correct?'⭕ 정답이에요!':'❌ 아쉬워요'}</div>
+      <div class="feedback-box">${escapeHtml(quiz.correct?'정확히 맞혔어요!':'아니에요 — 근거 문장을 다시 확인해보세요.')}</div>
+      <div class="notice">📅 다음 복습: ${escapeHtml(quiz.nextDueDate)}</div>
+      <button class="btn btn-primary btn-block" onclick="closeModal()">확인</button>`;
+  }
+  body.innerHTML = inner;
+}
+
+/* ==================== 메인 렌더 ==================== */
+function render(){
+  document.getElementById('stat-streak').textContent = state.progress.streak;
+  document.getElementById('stat-gems').textContent = state.progress.gems;
+  document.getElementById('stat-xp').textContent = state.progress.xp;
+
+  const due = dueLessons();
+  let html = `<div class="ingest">
+    <p class="ingest-hint">📦 아무거나 넣어보세요 (유튜브 링크, 글 아무거나 — 체험판은 예시 결과로 응답해요)</p>
+    <textarea id="ingest-input" rows="2" placeholder="여기에 붙여넣기..."></textarea>
+    <button class="btn btn-blue btn-block" onclick="ingestDemo(document.getElementById('ingest-input').value)">재고에 넣기</button>
+    ${ingestNotice ? `<div class="notice ${ingestNotice.pending?'pending':''}" style="margin-top:8px;">${escapeHtml(ingestNotice.text)}</div>` : ''}
+  </div>`;
+
+  if(due.length){
+    html += `<div class="section-title">오늘 복습할 것 ${due.length}개</div>`;
+    due.forEach(x=>{
+      const stage = STAGES[Math.min(x.lesson.stageIndex||0, STAGES.length-1)];
+      html += `<button class="due-card" onclick="openQuiz('${x.lesson.id}')">
+        <span class="stage-chip">${escapeHtml(stage.label)}</span>
+        <span class="due-title">${escapeHtml(x.lesson.title)}</span></button>`;
+    });
+  }
+
+  html += `<div class="path-wrap">`;
+  state.courses.forEach(course=>{
+    course.units.forEach(unit=>{
+      html += `<div class="unit-banner" style="--unit-color:${unit.color}">
+        <div class="eyebrow2" style="color:#fff;">${escapeHtml(course.name)}</div>
+        <div class="unit-name">${escapeHtml(unit.sub)}</div></div>`;
+      unit.lessons.forEach(lesson=>{
+        const stage = STAGES[Math.min(lesson.stageIndex||0, STAGES.length-1)];
+        const mastered = (lesson.stageIndex||0) >= STAGES.length-1 && (lesson.lastScore||0)>=90;
+        html += `<div class="node-row">
+          <button class="node ${mastered?'mastered':''}" style="--node-color:${unit.color};--shadow-color:${unit.colorDark}"
+            onclick="openQuiz('${lesson.id}')">${mastered?'✓':'▶'}</button>
+          <div><div class="lesson-title-under">${escapeHtml(lesson.title)}</div>
+          <div class="lesson-sub">${escapeHtml(stage.label)}${lesson.lastScore!=null?` · ${lesson.lastScore}점`:''}${lesson.dueDate?` · 다음 복습 ${escapeHtml(lesson.dueDate)}`:''}</div></div>
+        </div>`;
+      });
+    });
+  });
+  html += `</div>`;
+
+  document.getElementById('main').innerHTML = html;
+}
+
+render();
+</script>
+<!-- 방문자 분석(GoatCounter, 쿠키 없음) — 실제 코드값은 ../../analytics-config.js 한 곳에서만 관리 -->
+<script src="../../analytics-config.js"></script>
