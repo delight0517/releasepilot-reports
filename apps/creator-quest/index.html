@@ -1,0 +1,434 @@
+<!doctype html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Creator Discovery Test</title>
+<meta name="description" content="18문항으로 나에게 맞는 크리에이터 방향을 찾아보는 버튼식 테스트. 데이터는 서버로 전송되지 않고 이 브라우저에만 저장됩니다.">
+<style>
+  :root {
+    --bg: #fbfaf7; --card: #ffffff; --card-2: #f6f3ec; --line: #e9e3d6;
+    --ink: #1d1b17; --ink-dim: #6b6a5f; --ink-faint: #a3a091;
+    --accent: #c9711f; --accent-soft: #f6e6d3; --accent-ink: #7a4413;
+    --good: #2f7a63; --good-soft: #dcefe8;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Noto Serif KR", serif;
+    --sans: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans);
+    line-height: 1.55; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 0 20px 100px; }
+  .hero { padding: 40px 0 20px; text-align: center; }
+  .eyebrow {
+    display: inline-block; font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--accent-ink); background: var(--accent-soft);
+    border-radius: 999px; padding: 5px 14px; margin: 0 0 18px;
+  }
+  h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(24px, 7vw, 32px); margin: 0 0 12px; }
+  .hero p { color: var(--ink-dim); font-size: 14px; max-width: 44ch; margin: 0 auto; }
+
+  .privacy {
+    background: var(--good-soft); color: #1f4d3c; border-radius: 12px; padding: 12px 16px;
+    font-size: 12px; margin: 20px 0; line-height: 1.6;
+  }
+
+  .progress-wrap { margin: 24px 0 8px; }
+  .progress-bar { height: 6px; background: var(--card-2); border-radius: 999px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--accent); width: 0%; transition: width .3s ease; }
+  .progress-label { font-family: var(--mono); font-size: 11px; color: var(--ink-faint); margin-top: 8px; text-align: center; }
+
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 24px 20px; margin-top: 16px; }
+  .section-tag { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent-ink); background: var(--accent-soft); border-radius: 999px; padding: 4px 12px; display: inline-block; margin-bottom: 14px; }
+  .qtext { font-family: var(--serif); font-size: clamp(18px, 5vw, 22px); font-weight: 400; margin: 0 0 6px; }
+  .qhint { font-size: 12px; color: var(--ink-dim); margin: 0 0 18px; }
+
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .opt {
+    font-family: var(--sans); font-size: 15px; text-align: left; padding: 14px 16px; border-radius: 12px;
+    border: 1px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .opt:active { transform: scale(0.99); }
+  .opt.selected { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .opt .rank-badge {
+    font-family: var(--mono); font-size: 11px; font-weight: 700; background: rgba(255,255,255,0.25);
+    border-radius: 999px; width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .opt.selected .rank-badge { background: #fff; color: var(--accent); }
+
+  .next-btn {
+    display: block; width: 100%; margin-top: 18px; padding: 14px; border: none; border-radius: 12px;
+    background: var(--accent); color: #fff; font-size: 15px; font-weight: 600; cursor: pointer;
+  }
+  .next-btn:disabled { background: var(--card-2); color: var(--ink-faint); cursor: not-allowed; }
+
+  .back-btn {
+    display: inline-block; margin-top: 14px; background: none; border: none; color: var(--ink-faint);
+    font-size: 12.5px; cursor: pointer; padding: 6px;
+  }
+
+  .result h2 { font-family: var(--serif); font-weight: 400; font-size: 20px; margin: 0 0 14px; }
+  .result-item { border-bottom: 1px solid var(--line); padding: 10px 0; font-size: 13.5px; }
+  .result-item:last-child { border-bottom: none; }
+  .result-q { color: var(--ink-dim); font-size: 12px; margin: 0 0 4px; }
+  .result-a { font-weight: 600; }
+
+  .action-row { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+  .action-btn {
+    flex: 1; min-width: 140px; padding: 13px; border-radius: 10px; border: 1px solid var(--accent);
+    background: var(--accent-soft); color: var(--accent-ink); font-size: 13.5px; font-weight: 600; cursor: pointer;
+  }
+  .mail-note { margin-top: 12px; font-size: 12px; color: var(--ink-dim); line-height: 1.6; }
+
+  .closed { text-align: center; padding: 80px 20px; }
+  .closed h1 { font-family: var(--serif); font-size: 24px; }
+  .closed p { color: var(--ink-dim); }
+
+  .resume-banner {
+    background: var(--accent-soft); color: var(--accent-ink); border-radius: 12px; padding: 12px 16px;
+    font-size: 12.5px; margin-top: 16px; display: flex; justify-content: space-between; align-items: center; gap: 10px;
+  }
+  .resume-banner button { border: none; background: var(--accent); color: #fff; border-radius: 8px; padding: 8px 12px; font-size: 12px; cursor: pointer; flex-shrink: 0; }
+
+  footer { margin-top: 64px; padding-top: 20px; border-top: 1px solid var(--line); font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint); text-align: center; }
+</style>
+
+<!-- ============================================================
+     범용 버튼식 설문/테스트 빌더 (재사용 템플릿)
+     - QUIZ 데이터 객체만 바꾸면 다른 설문에도 그대로 재사용 가능.
+     - 문항 타입: single(단일선택, 클릭 즉시 다음 문항) / multi(복수선택
+       + 다음 버튼) / rank(순위선택, 지정된 순위 수만큼 순서대로 클릭).
+     - 전송 없음 — fetch/XHR을 전혀 쓰지 않는다. 저장은 localStorage뿐.
+     ============================================================ -->
+
+<!-- 테스트 종료(폐쇄) 플래그: 개발자가 이 값을 false로 바꾸고 재배포하면
+     문항 화면 대신 "이 테스트는 종료되었습니다" 안내만 뜬다. -->
+<script>const TEST_ACTIVE = true;</script>
+
+<div class="wrap" id="app"></div>
+
+<script>
+// ---------------------------------------------------------------
+// 1. 데이터 객체 (이 부분만 바꾸면 다른 설문으로 재사용 가능)
+// ---------------------------------------------------------------
+const QUIZ = {
+  id: 'creator-discovery-test',
+  title: 'Creator Discovery Test',
+  intro: '18개의 질문에 답하면서 나에게 맞는 크리에이터 방향을 찾아보세요. 정답은 없습니다 — 지금 끌리는 것을 고르면 됩니다.',
+  mailTo: 'rogan2534@gmail.com',
+  sections: [
+    {
+      name: 'A. CAMERA',
+      questions: [
+        { id: 'q1', type: 'single', text: '카메라를 켰을 때 가장 하고 싶은 건?',
+          options: ['사람에게 말하기', '무언가 보여주기', '상황을 기록하기', '내 생각을 이야기하기'] },
+        { id: 'q2', type: 'single', text: '얼굴이 영상의 중심이 되는 것은?',
+          options: ['좋음', '상관없음', '가끔', '별로'] },
+        { id: 'q3', type: 'single', text: '10분 동안 카메라 앞에서 이야기하라고 하면?',
+          options: ['매우 쉬움', '가능', '준비하면 가능', '싫음'] },
+      ]
+    },
+    {
+      name: 'B. CONTENT',
+      questions: [
+        { id: 'q4', type: 'single', text: '사람들이 나를 보고 가장 많이 했으면 하는 말은?',
+          options: ['"설명 진짜 잘한다."', '"수업 진짜 재밌겠다."', '"이 사람 생각이 재밌다."', '"영상 진짜 잘 만든다."', '"저 사람처럼 살고 싶다."'] },
+        { id: 'q5', type: 'multi', text: '가장 만들고 싶은 콘텐츠는?', hint: '여러 개 선택 가능',
+          options: ['과학 설명', '실험', '교육법', '진로 이야기', '사람/심리/생각', 'AI', '일상'] },
+        { id: 'q6', type: 'single', text: '과학 콘텐츠를 만들 때 더 끌리는 것은?',
+          options: ['정확한 설명', '신기한 현상', '실험', '사회와 연결', '아이에게 가르치기', '직업과 연결'] },
+      ]
+    },
+    {
+      name: 'C. AUDIENCE',
+      questions: [
+        { id: 'q7', type: 'single', text: '누가 내 영상을 가장 봤으면 좋겠어?',
+          options: ['아이', '부모', '교사', '20대', '회사/기관 담당자', '과학 좋아하는 일반인', '아직 모르겠음'] },
+        { id: 'q8', type: 'single', text: '10만 명에게 알려지는 것과 교육기관 담당자 100명에게 알려지는 것 중?',
+          options: ['10만 명', '담당자 100명', '둘 다'] },
+      ]
+    },
+    {
+      name: 'D. CREATOR STYLE',
+      questions: [
+        { id: 'q9', type: 'single', text: '좋아하는 영상 스타일?',
+          options: ['사람이 계속 말함', '빠른 편집', 'Documentary', '감성', '예능', '강연', '실험'] },
+        { id: 'q10', type: 'single', text: '내 영상에서 웃기는 요소는?',
+          options: ['많았으면 좋겠다.', '조금', '필요 없다.'] },
+        { id: 'q11', type: 'single', text: '편집 3시간짜리 영상과 말 잘해서 편집 30분 하는 영상 중?',
+          options: ['편집 3시간도 괜찮음', '30분', '주제에 따라'] },
+      ]
+    },
+    {
+      name: 'E. CAREER',
+      questions: [
+        { id: 'q12', type: 'single', text: 'Instagram이 잘 됐을 때 가장 원하는 결과는?',
+          options: ['강의 요청', '취업', '브랜드 협업', '온라인 강의', '유튜브 확장', '책', '방송', '내 교육사업'] },
+        { id: 'q13', type: 'single', text: '5년 후 제일 멋있어 보이는 모습은?',
+          options: ['강연 무대에 서 있음', '교육 프로그램을 운영', '유명한 Science Creator', '교육회사 Director', '책을 쓰는 사람', '콘텐츠 회사를 운영'] },
+        { id: 'q14', type: 'rank', ranks: 2, text: '사람들이 나를 어떤 단어로 기억했으면 좋겠어?', hint: '1순위, 2순위 순서대로 두 번 클릭',
+          options: ['Teacher', 'Creator', 'Scientist', 'Speaker', 'Director'] },
+      ]
+    },
+    {
+      name: 'F. ENERGY',
+      questions: [
+        { id: 'q15', type: 'single', text: '혼자 제작하는 게 좋은가?',
+          options: ['매우 좋음', '괜찮음', '사람과 함께해야 재미있음'] },
+        { id: 'q16', type: 'single', text: '인터뷰 콘텐츠는?',
+          options: ['너무 하고 싶음', '한번 해보고 싶음', '관심 없음'] },
+        { id: 'q17', type: 'single', text: '밖으로 돌아다니면서 촬영하는 것은?',
+          options: ['재밌음', '가끔', '귀찮음'] },
+        { id: 'q18', type: 'single', text: '수업을 직접 하는 것과 수업 프로그램을 만드는 것 중?',
+          options: ['직접 가르치기', '만들기', '둘 다'] },
+      ]
+    },
+  ]
+};
+
+// ---------------------------------------------------------------
+// 2. 범용 렌더링 엔진 (설문 데이터가 바뀌어도 이 아래는 그대로 재사용)
+// ---------------------------------------------------------------
+const STORAGE_KEY = 'quizProgress:' + QUIZ.id;
+const flatQuestions = QUIZ.sections.flatMap(s => s.questions.map(q => ({ ...q, section: s.name })));
+const app = document.getElementById('app');
+
+function loadProgress() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : { index: 0, answers: {} };
+  } catch (e) { return { index: 0, answers: {} }; }
+}
+function saveProgress(state) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+}
+
+let state = loadProgress();
+let resumeDismissed = false;
+
+function render() {
+  if (!TEST_ACTIVE) { renderClosed(); return; }
+  if (state.index >= flatQuestions.length) { renderResult(); return; }
+  renderQuestion();
+}
+
+function renderClosed() {
+  app.innerHTML = `
+    <div class="closed">
+      <p class="eyebrow">${escapeHtml(QUIZ.title)}</p>
+      <h1>이 테스트는 종료되었습니다</h1>
+      <p>응답을 받아주셔서 감사합니다. 더 이상 새 응답을 받지 않습니다.</p>
+    </div>`;
+}
+
+function renderQuestion() {
+  const q = flatQuestions[state.index];
+  const total = flatQuestions.length;
+  const pct = Math.round((state.index / total) * 100);
+  const showResume = !resumeDismissed && state.index > 0 && Object.keys(state.answers).length > 0 && state.justLoaded;
+
+  app.innerHTML = `
+    <div class="hero">
+      <p class="eyebrow">${escapeHtml(QUIZ.title)}</p>
+      <p style="color:var(--ink-dim);font-size:13px;">${escapeHtml(QUIZ.intro)}</p>
+    </div>
+    <div class="privacy">🔒 답변은 서버로 전송되지 않고 <b>이 브라우저에만 저장</b>됩니다. 창을 닫아도 이어서 할 수 있어요.</div>
+    ${showResume ? `<div class="resume-banner" id="resumeBanner"><span>이전에 ${state.index}번 문항까지 답한 기록이 있어요.</span><button id="resumeDismiss">계속하기</button></div>` : ''}
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <p class="progress-label">${state.index + 1} / ${total}</p>
+    </div>
+    <div class="card">
+      <span class="section-tag">${escapeHtml(q.section)}</span>
+      <p class="qtext">${escapeHtml(q.text)}</p>
+      ${q.hint ? `<p class="qhint">${escapeHtml(q.hint)}</p>` : ''}
+      <div class="options" id="optWrap"></div>
+      ${q.type !== 'single' ? '<button class="next-btn" id="nextBtn" disabled>다음</button>' : ''}
+    </div>
+    ${state.index > 0 ? '<button class="back-btn" id="backBtn">← 이전 문항</button>' : ''}
+  `;
+
+  const resumeBtn = document.getElementById('resumeDismiss');
+  if (resumeBtn) resumeBtn.addEventListener('click', () => { resumeDismissed = true; render(); });
+
+  const optWrap = document.getElementById('optWrap');
+  const existing = state.answers[q.id];
+
+  if (q.type === 'single') {
+    q.options.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'opt' + (existing === opt ? ' selected' : '');
+      btn.type = 'button';
+      btn.textContent = opt;
+      btn.addEventListener('click', () => {
+        state.answers[q.id] = opt;
+        state.index += 1;
+        saveProgress(state);
+        render();
+      });
+      optWrap.appendChild(btn);
+    });
+  } else if (q.type === 'multi') {
+    const selected = new Set(existing || []);
+    const nextBtn = document.getElementById('nextBtn');
+    const updateNext = () => { nextBtn.disabled = selected.size === 0; };
+    q.options.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'opt' + (selected.has(opt) ? ' selected' : '');
+      btn.type = 'button';
+      btn.textContent = opt;
+      btn.addEventListener('click', () => {
+        selected.has(opt) ? selected.delete(opt) : selected.add(opt);
+        btn.classList.toggle('selected');
+        updateNext();
+      });
+      optWrap.appendChild(btn);
+    });
+    updateNext();
+    nextBtn.addEventListener('click', () => {
+      state.answers[q.id] = [...selected];
+      state.index += 1;
+      saveProgress(state);
+      render();
+    });
+  } else if (q.type === 'rank') {
+    const picks = (existing && existing.length) ? [...existing] : [];
+    const nextBtn = document.getElementById('nextBtn');
+    const btnMap = new Map();
+    const refresh = () => {
+      q.options.forEach(opt => {
+        const btn = btnMap.get(opt);
+        const rankIdx = picks.indexOf(opt);
+        btn.classList.toggle('selected', rankIdx !== -1);
+        const badge = btn.querySelector('.rank-badge');
+        if (badge) badge.remove();
+        if (rankIdx !== -1) {
+          const b = document.createElement('span');
+          b.className = 'rank-badge';
+          b.textContent = rankIdx + 1;
+          btn.prepend(b);
+        }
+      });
+      nextBtn.disabled = picks.length !== q.ranks;
+    };
+    q.options.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'opt';
+      btn.type = 'button';
+      btn.textContent = opt;
+      btn.addEventListener('click', () => {
+        const idx = picks.indexOf(opt);
+        if (idx !== -1) {
+          picks.splice(idx, 1);
+        } else if (picks.length < q.ranks) {
+          picks.push(opt);
+        }
+        refresh();
+      });
+      btnMap.set(opt, btn);
+      optWrap.appendChild(btn);
+    });
+    refresh();
+    nextBtn.addEventListener('click', () => {
+      state.answers[q.id] = picks;
+      state.index += 1;
+      saveProgress(state);
+      render();
+    });
+  }
+
+  const backBtn = document.getElementById('backBtn');
+  if (backBtn) backBtn.addEventListener('click', () => {
+    state.index -= 1;
+    saveProgress(state);
+    render();
+  });
+}
+
+function formatAnswer(q) {
+  const a = state.answers[q.id];
+  if (Array.isArray(a)) {
+    if (q.type === 'rank') return a.map((v, i) => `${i + 1}순위: ${v}`).join(' / ');
+    return a.join(', ');
+  }
+  return a || '(답변 없음)';
+}
+
+function buildResultText() {
+  let lines = [`${QUIZ.title} — 응답 결과`, ''];
+  QUIZ.sections.forEach(sec => {
+    lines.push(`■ ${sec.name}`);
+    sec.questions.forEach(q => {
+      lines.push(`${q.text}`);
+      lines.push(`→ ${formatAnswer(q)}`);
+      lines.push('');
+    });
+  });
+  return lines.join('\n');
+}
+
+function renderResult() {
+  const resultText = buildResultText();
+  app.innerHTML = `
+    <div class="hero">
+      <p class="eyebrow">${escapeHtml(QUIZ.title)}</p>
+      <h1>결과 정리</h1>
+      <p>지금까지 고른 답을 정리했어요. 아래 버튼으로 복사하거나 메일로 보낼 수 있습니다.</p>
+    </div>
+    <div class="privacy">🔒 이 결과는 자동으로 어디에도 전송되지 않습니다. 복사하거나 직접 메일을 보내야만 전달됩니다.</div>
+    <div class="card result" id="resultCard">
+      <h2>Q&A 요약</h2>
+      ${QUIZ.sections.map(sec => `
+        <p class="result-q" style="font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--accent-ink);margin-top:14px;">${escapeHtml(sec.name)}</p>
+        ${sec.questions.map(q => `
+          <div class="result-item">
+            <p class="result-q">${escapeHtml(q.text)}</p>
+            <p class="result-a">${escapeHtml(formatAnswer(q))}</p>
+          </div>
+        `).join('')}
+      `).join('')}
+      <div class="action-row">
+        <button class="action-btn" id="copyBtn">결과 복사하기</button>
+        <a class="action-btn" id="mailBtn" style="text-decoration:none;display:flex;align-items:center;justify-content:center;">응답 보내기</a>
+      </div>
+      <p class="mail-note">"응답 보내기"를 누르면 메일 앱이 열리고 결과가 미리 채워집니다 — <b>메일 앱에서 실제로 "보내기"를 눌러야</b> 개발자에게 전달됩니다. 자동으로 전송되지 않습니다.</p>
+      <button class="back-btn" id="restartBtn" style="margin-top:16px;">처음부터 다시 하기</button>
+    </div>
+    <footer>${escapeHtml(QUIZ.title)} · 프로토타입 · 데이터 미전송 · 이 브라우저에만 저장</footer>
+  `;
+
+  document.getElementById('copyBtn').addEventListener('click', async () => {
+    const btn = document.getElementById('copyBtn');
+    try {
+      await navigator.clipboard.writeText(resultText);
+      const original = btn.textContent;
+      btn.textContent = '복사됨 ✓';
+      setTimeout(() => { btn.textContent = original; }, 1500);
+    } catch (e) {
+      btn.textContent = '복사 실패 — 직접 선택해 복사해주세요';
+    }
+  });
+
+  const mailBtn = document.getElementById('mailBtn');
+  const subject = encodeURIComponent(`${QUIZ.title} 응답`);
+  const body = encodeURIComponent(resultText);
+  mailBtn.href = `mailto:${QUIZ.mailTo}?subject=${subject}&body=${body}`;
+
+  document.getElementById('restartBtn').addEventListener('click', () => {
+    state = { index: 0, answers: {} };
+    saveProgress(state);
+    render();
+  });
+}
+
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+state.justLoaded = state.index > 0;
+render();
+</script>
+<!-- 방문자 분석(GoatCounter, 쿠키 없음) — 실제 코드값은 ../analytics-config.js 한 곳에서만 관리 -->
+<script src="../analytics-config.js"></script>
