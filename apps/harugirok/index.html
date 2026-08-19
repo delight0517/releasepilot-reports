@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>사계기록 웹</title>
+<meta name="description" content="사계기록(하루기록) 웹 — 중독/습관 극복 온보딩과 체크인을 폰 브라우저에서 바로" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- 최초 방문 시에만 뜨는 로그인 화면. localStorage에 유저명+PIN을 저장해두고
+       로그아웃 전까지는 다시 접속해도 자동 로그인된다. -->
+  <section id="screen-login" style="display:none">
+    <div class="login-card">
+      <h1>🌿 사계기록 웹</h1>
+      <p class="hint">앱과 별개로 웹에서도 중독/습관 극복 온보딩과 체크인을 이어갈 수 있어요.</p>
+      <label for="login-username">유저명 (2~24자)</label>
+      <input id="login-username" type="text" placeholder="예: rogan2534" maxlength="24" autocomplete="off" />
+      <label for="login-pin">PIN (숫자 4자리)</label>
+      <input id="login-pin" type="password" inputmode="numeric" maxlength="4" placeholder="0000" autocomplete="off" />
+      <button id="btn-login" class="primary-btn full-width">시작하기</button>
+      <p id="login-status" class="hint error"></p>
+      <p class="hint faint">⚠️ PIN은 보안용 비밀번호가 아니라 구분용 숫자예요(개인용 도구). 처음 쓰는 유저명이면 그 자리에서 새 계정이 만들어져요.</p>
+    </div>
+  </section>
+
+  <section id="screen-app" style="display:none">
+    <header>
+      <h1>🌿 사계기록 웹</h1>
+      <div class="header-actions">
+        <span id="account-badge" class="account-badge"></span>
+        <button id="btn-feedback" class="icon-btn" title="피드백 보내기">💬</button>
+        <button id="btn-logout" class="icon-btn" title="로그아웃">🚪</button>
+      </div>
+    </header>
+    <p id="sync-status" class="sync-status"></p>
+
+    <div class="tab-bar">
+      <button class="tab-btn active" data-tab="addiction">🛡️ 중독/습관</button>
+      <button class="tab-btn" data-tab="checkin">📔 오늘 체크인</button>
+    </div>
+
+    <!-- 요청 1: 버튼 기반 증상 제시 → 중독 모듈 시작 -->
+    <div id="tab-addiction" class="tab-panel active">
+      <p class="hint">요즘 반복돼서 힘든 게 있다면 아래에서 가장 가까운 걸 하나 골라주세요. 판단하지 않아요 — 매일 조금씩 도와드리는 게 목표예요.</p>
+      <div id="preset-grid" class="preset-grid"></div>
+      <div id="custom-input-wrap" style="display:none; margin-bottom:12px;">
+        <input id="custom-label-input" type="text" placeholder="예: 야식, 온라인 쇼핑, 넷플릭스 몰아보기" />
+      </div>
+      <button id="btn-start-module" class="primary-btn full-width" style="display:none">이 문제, 도와주세요</button>
+
+      <h3 style="margin-top:24px; font-size:14px;">진행 중인 모듈</h3>
+      <div id="module-list"></div>
+    </div>
+
+    <!-- 요청 1 보조: 일기 체크인 핵심 흐름 -->
+    <div id="tab-checkin" class="tab-panel">
+      <p class="hint">오늘 하루를 짧게 남겨보세요.</p>
+      <div class="checkin-form">
+        <input id="checkin-date" type="date" />
+        <div class="outcome-row">
+          <button id="btn-outcome-good" class="outcome-btn good" data-outcome="good">🙂 좋은 하루</button>
+          <button id="btn-outcome-tough" class="outcome-btn tough" data-outcome="tough">😮‍💨 힘든 하루</button>
+        </div>
+        <input id="checkin-tags" type="text" placeholder="태그 (쉼표로 구분, 선택)" />
+        <textarea id="checkin-note" placeholder="메모 (선택)"></textarea>
+        <button id="btn-save-checkin" class="primary-btn">저장</button>
+      </div>
+      <h3 style="font-size:14px;">최근 기록</h3>
+      <div id="checkin-list"></div>
+    </div>
+  </section>
+
+  <!-- 요청 2: 피드백 버튼 -->
+  <div id="modal-feedback" class="modal" style="display:none">
+    <div class="modal-card">
+      <h2>피드백 보내기</h2>
+      <p class="hint">버그나 의견을 적어주세요. 체크인/일기 내용은 절대 함께 보내지 않아요 — 화면 이름·브라우저 정보 정도만 같이 보내요.</p>
+      <textarea id="feedback-text" placeholder="예: 저장이 안 돼요 / 이런 기능이 있으면 좋겠어요" style="min-height:100px;"></textarea>
+      <div class="modal-actions">
+        <button id="btn-feedback-cancel" class="secondary-btn">취소</button>
+        <button id="btn-feedback-send" class="primary-btn">보내기</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

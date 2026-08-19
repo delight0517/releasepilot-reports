@@ -1,0 +1,10 @@
+name = "harugirok-storage"
+main = "worker.js"
+compatibility_date = "2026-08-01"
+
+# After creating the namespace with:
+#   wrangler kv namespace create HARUGIROK_KV
+# paste the returned "id" below.
+[[kv_namespaces]]
+binding = "HARUGIROK_KV"
+id = "4428245a53fa4d5ea29c800690fd2df3"
