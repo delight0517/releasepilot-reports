@@ -43,3 +43,21 @@ Mac 쪽 전역 규칙 파일(`~/.claude/CLAUDE.md` 또는 해당하는 `AGENTS.m
 
 급하지 않음 — 위 도구/가이드는 이미 hub에 있어서 당장 참고만 해도 되고,
 전역 규칙 반영은 여유 될 때 하시면 됩니다.
+
+## 추가 요청 (2026-08-19 갱신 — 자동 정리 기능)
+
+이후 사용자가 "자동으로 정리까지 되게 해달라"고 추가 요청해서, Windows
+쪽에 `timer1/scripts/auto_archive_todo.ps1`을 만들었습니다 — 완료
+마킹(`완료`/`폐기`/`취소`)이 헤더 줄에 명시된 항목만 `TODO_ARCHIVE.md`로
+자동 이동, 모든 쓰기는 `safe_doc_write.ps1`(백업+40%축소 거부+자동 commit)을
+거침. `check_persona_load.sh`가 OVERLOAD 감지 시 이 스크립트를
+`-Apply`로 자동 실행하도록 연결했습니다(`guides/persona_overload_protocol.md`
+"자동 정리" 절 참고). 이미 timer1에서 실행해서 845→821줄로 확인.
+
+이건 PowerShell이라 Mac에서 그대로는 못 돌립니다. Mac 쪽에서도 자동
+아카이빙을 원하시면, 같은 패턴(헤더+완료마커 opt-in, 모든 프로젝트에
+일괄 적용 금지 — 형식이 확인된 프로젝트에만)으로 bash 버전
+(`safe_doc_write`에 해당하는 Mac 쪽 안전 스크립트를 거쳐서)을 만들어
+`check_persona_load.sh` 옆에 추가해주시면 될 것 같습니다. 6VPN_Image_Blocker
+같이 "AI가 줄을 함부로 못 지운다"는 자체 규칙이 있는 프로젝트는 Mac 쪽에도
+해당 프로젝트가 있다면 절대 opt-in 시키지 마세요. 이것도 급하지 않습니다.
