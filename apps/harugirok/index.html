@@ -37,7 +37,8 @@
 
     <div class="tab-bar">
       <button class="tab-btn active" data-tab="addiction">🛡️ 중독/습관</button>
-      <button class="tab-btn" data-tab="checkin">📔 오늘 체크인</button>
+      <button class="tab-btn" data-tab="checkin">📔 일기</button>
+      <button class="tab-btn" data-tab="goals">🎯 목표</button>
     </div>
 
     <!-- 요청 1: 버튼 기반 증상 제시 → 중독 모듈 시작 -->
@@ -53,21 +54,40 @@
       <div id="module-list"></div>
     </div>
 
-    <!-- 요청 1 보조: 일기 체크인 핵심 흐름 -->
+    <!-- 일기 작성/조회: 폰앱 log_entry_screen.dart의 핵심(총평+카테고리 1-5점+메모)만
+         가져왔다. 날짜 하나에 항목 하나(같은 날짜로 저장하면 그 날짜 기록을 덮어씀) —
+         과거 날짜를 골라서 소급 작성/수정도 가능. -->
     <div id="tab-checkin" class="tab-panel">
-      <p class="hint">오늘 하루를 짧게 남겨보세요.</p>
+      <p class="hint">날짜를 고르고 하루를 남겨보세요. 같은 날짜로 다시 저장하면 그 날짜 기록이 수정돼요. 과거 날짜도 골라서 쓸 수 있어요.</p>
       <div class="checkin-form">
         <input id="checkin-date" type="date" />
         <div class="outcome-row">
           <button id="btn-outcome-good" class="outcome-btn good" data-outcome="good">🙂 좋은 하루</button>
           <button id="btn-outcome-tough" class="outcome-btn tough" data-outcome="tough">😮‍💨 힘든 하루</button>
         </div>
+        <button id="btn-outcome-clear" class="linklike" style="align-self:flex-start;">총평 지우기(건너뛰기)</button>
+
+        <h3 style="font-size:13px; margin:10px 0 0;">오늘 체크인 (1~5점, 답 안 해도 돼요)</h3>
+        <div id="rating-grid" class="rating-grid"></div>
+
         <input id="checkin-tags" type="text" placeholder="태그 (쉼표로 구분, 선택)" />
         <textarea id="checkin-note" placeholder="메모 (선택)"></textarea>
         <button id="btn-save-checkin" class="primary-btn">저장</button>
+        <button id="btn-cancel-edit" class="secondary-btn" style="display:none;">새 날짜로 새로 쓰기</button>
       </div>
-      <h3 style="font-size:14px;">최근 기록</h3>
+      <h3 style="font-size:14px;">날짜별 기록</h3>
       <div id="checkin-list"></div>
+    </div>
+
+    <!-- 목표 관리: 폰앱 goals_screen.dart의 핵심(추가/조회/완료체크)만. -->
+    <div id="tab-goals" class="tab-panel">
+      <p class="hint">일기와는 별개로, 오래 두고 보고 싶은 목표나 꿈을 적어보세요.</p>
+      <div class="checkin-form">
+        <input id="goal-title" type="text" placeholder="목표 제목 (예: 게임 캐릭터 아티스트로 취업하기)" />
+        <textarea id="goal-desc" placeholder="왜 중요한지, 어떤 모습인지 (선택)"></textarea>
+        <button id="btn-add-goal" class="primary-btn">목표 추가</button>
+      </div>
+      <div id="goal-list"></div>
     </div>
   </section>
 

@@ -1,8 +1,13 @@
 // harugirok-storage — Cloudflare Worker backend for the 사계기록(하루기록) web
 // companion + the native app's "피드백 보내기" button.
 // Storage: one Workers KV namespace (binding name: HARUGIROK_KV).
-//   account:<username>        -> { pin, data: {checkins, addictionModules}, updatedAt }
+//   account:<username>        -> { pin, data: {checkins, addictionModules, goals}, updatedAt }
 //   feedback:<timestamp>      -> { message, diagnostics, createdAt }
+//
+// 2026-08-19: data에 goals 필드 추가(목표 관리, 폰앱 goals_screen.dart 대응).
+// checkins 안의 일반 체크인 항목(moduleId 없는 것)이 이제 categoryRatings
+// 필드도 실어 나른다(폰앱 일기 카테고리 1-5점 척도) — 새 필드일 뿐 스키마
+// 자체는 그대로라 옛 데이터도 문제없이 읽힌다.
 //
 // Username+4-digit PIN is deliberately weak auth (same pattern as
 // library-notes-storage's app.js comment) — this is a personal recovery
@@ -61,7 +66,7 @@ async function handleAuth(env, req) {
   if (!account) {
     account = {
       pin,
-      data: { checkins: [], addictionModules: [] },
+      data: { checkins: [], addictionModules: [], goals: [] },
       updatedAt: new Date().toISOString(),
     };
     await putAccount(env, username, account);
@@ -69,17 +74,20 @@ async function handleAuth(env, req) {
   } else if (account.pin !== pin) {
     return json({ error: "PIN이 일치하지 않습니다." }, 401);
   }
+  // 옛 계정(goals 필드 생기기 전에 만들어진 계정)도 항상 배열이 있게 보정.
+  if (!Array.isArray(account.data.goals)) account.data.goals = [];
   return json({ data: account.data, isNew });
 }
 
 async function handleSave(env, req) {
-  const { username, pin, checkins, addictionModules } = await req.json().catch(() => ({}));
+  const { username, pin, checkins, addictionModules, goals } = await req.json().catch(() => ({}));
   const { account, error } = await requireAuth(env, username, pin);
   if (error) return error;
 
   account.data = {
     checkins: checkins || [],
     addictionModules: addictionModules || [],
+    goals: goals || [],
   };
   account.updatedAt = new Date().toISOString();
   await putAccount(env, username, account);

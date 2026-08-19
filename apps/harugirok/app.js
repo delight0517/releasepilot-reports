@@ -7,14 +7,29 @@ const STORAGE_API_URL = "https://harugirok-storage.rogan2534.workers.dev";
 const CREDS_KEY = "harugirokWeb_creds_v1"; // {username, pin} — 로그아웃 전까지 자동 로그인
 
 let creds = null; // {username, pin}
-let data = { checkins: [], addictionModules: [] };
+let data = { checkins: [], addictionModules: [], goals: [] };
 let selectedPreset = null;
-let selectedOutcome = null;
+let selectedOutcome = null; // "good" | "tough" | null(건너뜀)
 let saveTimer = null;
+let editingCheckinId = null; // 날짜별 일기를 수정 중이면 그 항목의 id, 새 글이면 null
 
 const el = (id) => document.getElementById(id);
 const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
 const todayStr = () => new Date().toISOString().slice(0, 10);
+
+// 폰앱 lib/models/entry.dart의 TagCatalog.defaultScaleAnchors를 그대로
+// 반영한 카테고리+1점/5점 라벨. 앱과 다른 카테고리를 새로 만들지 않는다.
+const CATEGORIES = [
+  { key: "학업", low: "많이 밀렸어요", high: "잘 소화했어요" },
+  { key: "수면", low: "많이 부족했어요", high: "충분히 잤어요" },
+  { key: "운동/건강", low: "전혀 못 챙겼어요", high: "잘 챙겼어요" },
+  { key: "대인관계(친구)", low: "교류가 거의 없었어요", high: "만족스러웠어요" },
+  { key: "신앙/영성", low: "공허했어요", high: "충만했어요" },
+  { key: "감정 상태", low: "많이 힘들었어요", high: "좋았어요" },
+  { key: "업무/일과", low: "많이 밀렸어요", high: "잘 해냈어요" },
+  { key: "피로도", low: "많이 피곤했어요", high: "개운했어요" },
+];
+let categoryRatings = {}; // { "학업": 4, ... } — 답 안 한 카테고리는 키 자체가 없음
 
 const PRESETS = [
   { id: "food", label: "음식/식습관", emoji: "🍔" },
@@ -52,6 +67,7 @@ async function apiSave() {
         pin: creds.pin,
         checkins: data.checkins,
         addictionModules: data.addictionModules,
+        goals: data.goals,
       }),
     });
     if (!res.ok) throw new Error("저장 실패");
@@ -99,7 +115,8 @@ async function handleLogin() {
     const result = await apiAuth(username, pin);
     creds = { username, pin };
     localStorage.setItem(CREDS_KEY, JSON.stringify(creds));
-    data = result.data || { checkins: [], addictionModules: [] };
+    data = result.data || { checkins: [], addictionModules: [], goals: [] };
+    if (!data.goals) data.goals = [];
     enterApp();
   } catch (e) {
     el("login-status").textContent = `❌ ${e.message}`;
@@ -110,7 +127,7 @@ function logout() {
   if (!confirm("로그아웃할까요? 저장된 데이터는 서버에 그대로 남아있어요.")) return;
   localStorage.removeItem(CREDS_KEY);
   creds = null;
-  data = { checkins: [], addictionModules: [] };
+  data = { checkins: [], addictionModules: [], goals: [] };
   el("screen-app").style.display = "none";
   el("screen-login").style.display = "flex";
   el("login-username").value = "";
@@ -124,7 +141,9 @@ function enterApp() {
   el("checkin-date").value = todayStr();
   renderPresetGrid();
   renderModuleList();
+  renderRatingGrid();
   renderCheckinList();
+  renderGoalList();
 }
 
 // ── 요청 1: 버튼식 온보딩 ────────────────────────────────────────────────
@@ -235,49 +254,140 @@ function renderModuleList() {
   });
 }
 
-// ── 요청 1 보조: 체크인 ──────────────────────────────────────────────────
+// ── 일기: 카테고리 1-5점 체크인 ──────────────────────────────────────────
+function renderRatingGrid() {
+  const grid = el("rating-grid");
+  grid.innerHTML = "";
+  CATEGORIES.forEach((cat) => {
+    const row = document.createElement("div");
+    row.className = "rating-row";
+    const scoreButtons = [1, 2, 3, 4, 5]
+      .map(
+        (n) =>
+          `<button type="button" class="rating-score-btn${categoryRatings[cat.key] === n ? " selected" : ""}" data-cat="${cat.key}" data-score="${n}">${n}</button>`
+      )
+      .join("");
+    row.innerHTML = `
+      <div class="rating-label">${cat.key}<span class="rating-anchor">1: ${cat.low} · 5: ${cat.high}</span></div>
+      <div class="rating-scores">${scoreButtons}</div>
+    `;
+    grid.appendChild(row);
+  });
+  grid.querySelectorAll(".rating-score-btn").forEach((btn) => {
+    btn.onclick = () => {
+      const cat = btn.dataset.cat;
+      const score = Number(btn.dataset.score);
+      // 같은 점수를 다시 누르면 답을 지운다(스킵 가능해야 하므로).
+      if (categoryRatings[cat] === score) delete categoryRatings[cat];
+      else categoryRatings[cat] = score;
+      renderRatingGrid();
+    };
+  });
+}
+
+// ── 요청 1 보조: 일기(날짜별 자유 텍스트 + 카테고리 점수) ──────────────────
+// 날짜당 하나(같은 날짜로 다시 저장하면 그 항목을 덮어씀) — 소급 작성/수정 지원.
 function saveCheckin() {
   const date = el("checkin-date").value || todayStr();
   const tags = el("checkin-tags").value.split(",").map((t) => t.trim()).filter(Boolean);
   const note = el("checkin-note").value.trim();
-  data.checkins.push({
-    id: uid(),
-    date,
-    outcome: selectedOutcome,
-    tags,
-    note,
-    createdAt: new Date().toISOString(),
-  });
+
+  const existing = editingCheckinId
+    ? data.checkins.find((c) => c.id === editingCheckinId)
+    : data.checkins.find((c) => !c.moduleId && c.date === date);
+
+  if (existing) {
+    existing.date = date;
+    existing.outcome = selectedOutcome;
+    existing.tags = tags;
+    existing.note = note;
+    existing.categoryRatings = { ...categoryRatings };
+    existing.updatedAt = new Date().toISOString();
+  } else {
+    data.checkins.push({
+      id: uid(),
+      date,
+      outcome: selectedOutcome,
+      tags,
+      note,
+      categoryRatings: { ...categoryRatings },
+      createdAt: new Date().toISOString(),
+    });
+  }
   save();
+  resetCheckinForm();
+  renderCheckinList();
+}
+
+function resetCheckinForm() {
+  editingCheckinId = null;
+  categoryRatings = {};
+  el("checkin-date").value = todayStr();
   el("checkin-note").value = "";
   el("checkin-tags").value = "";
   selectedOutcome = null;
   el("btn-outcome-good").classList.remove("selected");
   el("btn-outcome-tough").classList.remove("selected");
+  el("btn-cancel-edit").style.display = "none";
+  renderRatingGrid();
+}
+
+// 목록에서 날짜 하나를 눌러 그날 일기를 폼에 불러온다(조회 + 수정 진입점) —
+// 과거 날짜 일기도 이 방식으로 조회 가능.
+function loadCheckinForEdit(id) {
+  const c = data.checkins.find((x) => x.id === id);
+  if (!c) return;
+  editingCheckinId = id;
+  el("checkin-date").value = c.date;
+  el("checkin-note").value = c.note || "";
+  el("checkin-tags").value = (c.tags || []).join(", ");
+  selectedOutcome = c.outcome || null;
+  el("btn-outcome-good").classList.toggle("selected", selectedOutcome === "good");
+  el("btn-outcome-tough").classList.toggle("selected", selectedOutcome === "tough");
+  categoryRatings = { ...(c.categoryRatings || {}) };
+  el("btn-cancel-edit").style.display = "block";
+  renderRatingGrid();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function deleteCheckin(id) {
+  if (!confirm("이 날짜의 일기를 삭제할까요?")) return;
+  data.checkins = data.checkins.filter((c) => c.id !== id);
+  if (editingCheckinId === id) resetCheckinForm();
+  save();
   renderCheckinList();
 }
 
 function renderCheckinList() {
   const list = el("checkin-list");
   const entries = data.checkins
-    .filter((c) => !c.moduleId) // 모듈 발생 기록이 아니라 일반 체크인만
+    .filter((c) => !c.moduleId) // 모듈 발생 기록이 아니라 일반 일기만
     .slice()
-    .sort((a, b) => (b.date || "").localeCompare(a.date || ""))
-    .slice(0, 15);
+    .sort((a, b) => (b.date || "").localeCompare(a.date || ""));
   if (!entries.length) {
-    list.innerHTML = '<p class="empty-hint">아직 체크인이 없어요.</p>';
+    list.innerHTML = '<p class="empty-hint">아직 일기가 없어요.</p>';
     return;
   }
   list.innerHTML = "";
   entries.forEach((c) => {
     const row = document.createElement("div");
-    row.className = "entry-row";
+    row.className = "entry-row entry-row-clickable";
     const outcomeLabel = c.outcome === "good" ? "🙂 좋은 하루" : c.outcome === "tough" ? "😮‍💨 힘든 하루" : "";
+    const ratingsText = c.categoryRatings && Object.keys(c.categoryRatings).length
+      ? Object.entries(c.categoryRatings).map(([k, v]) => `${k} ${v}점`).join(" · ")
+      : "";
     row.innerHTML = `
       <div class="date">${c.date} ${outcomeLabel}</div>
-      ${c.tags && c.tags.length ? `<div class="note">${c.tags.join(", ")}</div>` : ""}
+      ${ratingsText ? `<div class="note">${escapeHtml(ratingsText)}</div>` : ""}
+      ${c.tags && c.tags.length ? `<div class="note">${escapeHtml(c.tags.join(", "))}</div>` : ""}
       ${c.note ? `<div class="note">${escapeHtml(c.note)}</div>` : ""}
+      <button type="button" class="icon-btn entry-delete" title="삭제">🗑️</button>
     `;
+    row.querySelector(".entry-delete").onclick = (e) => {
+      e.stopPropagation();
+      deleteCheckin(c.id);
+    };
+    row.onclick = () => loadCheckinForEdit(c.id);
     list.appendChild(row);
   });
 }
@@ -286,6 +396,74 @@ function escapeHtml(s) {
   const div = document.createElement("div");
   div.textContent = String(s == null ? "" : s);
   return div.innerHTML;
+}
+
+// ── 목표 관리 (폰앱 goals_screen.dart의 핵심: 추가/조회/완료체크) ──────────
+function addGoal() {
+  const title = el("goal-title").value.trim();
+  if (!title) {
+    el("goal-title").focus();
+    return;
+  }
+  const description = el("goal-desc").value.trim();
+  data.goals.push({
+    id: uid(),
+    title,
+    description: description || null,
+    createdAt: new Date().toISOString(),
+    isAchieved: false,
+    achievedAt: null,
+  });
+  save();
+  el("goal-title").value = "";
+  el("goal-desc").value = "";
+  renderGoalList();
+}
+
+function toggleGoalAchieved(id) {
+  const g = data.goals.find((x) => x.id === id);
+  if (!g) return;
+  g.isAchieved = !g.isAchieved;
+  g.achievedAt = g.isAchieved ? new Date().toISOString() : null;
+  save();
+  renderGoalList();
+}
+
+function deleteGoal(id) {
+  if (!confirm("이 목표를 삭제할까요?")) return;
+  data.goals = data.goals.filter((g) => g.id !== id);
+  save();
+  renderGoalList();
+}
+
+function renderGoalList() {
+  const list = el("goal-list");
+  const goals = data.goals || [];
+  const active = goals.filter((g) => !g.isAchieved);
+  const achieved = goals.filter((g) => g.isAchieved);
+  if (!goals.length) {
+    list.innerHTML = '<p class="empty-hint">아직 등록한 목표가 없어요.</p>';
+    return;
+  }
+  const renderGoal = (g) => `
+    <div class="goal-card" data-id="${g.id}">
+      <div class="goal-title${g.isAchieved ? " achieved" : ""}">${g.isAchieved ? "🏆" : "🚩"} ${escapeHtml(g.title)}</div>
+      ${g.description ? `<div class="goal-desc">${escapeHtml(g.description)}</div>` : ""}
+      <div class="goal-meta">${g.isAchieved ? `${(g.achievedAt || "").slice(0, 10)}에 달성` : `${(g.createdAt || "").slice(0, 10)}에 등록`}</div>
+      <div class="actions">
+        <button class="secondary-btn btn-toggle-goal">${g.isAchieved ? "달성 취소" : "달성했어요"}</button>
+        <button class="secondary-btn btn-delete-goal">삭제</button>
+      </div>
+    </div>
+  `;
+  list.innerHTML =
+    active.map(renderGoal).join("") +
+    (achieved.length ? `<h3 style="font-size:13px; color:#6b8c82;">달성한 목표</h3>` + achieved.map(renderGoal).join("") : "");
+  list.querySelectorAll(".goal-card").forEach((card) => {
+    const id = card.dataset.id;
+    card.querySelector(".btn-toggle-goal").onclick = () => toggleGoalAchieved(id);
+    card.querySelector(".btn-delete-goal").onclick = () => deleteGoal(id);
+  });
 }
 
 // ── 탭 ───────────────────────────────────────────────────────────────────
@@ -333,6 +511,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     el("btn-outcome-tough").classList.add("selected");
     el("btn-outcome-good").classList.remove("selected");
   };
+  el("btn-outcome-clear").onclick = () => {
+    selectedOutcome = null;
+    el("btn-outcome-good").classList.remove("selected");
+    el("btn-outcome-tough").classList.remove("selected");
+  };
+  el("btn-cancel-edit").onclick = resetCheckinForm;
+  el("btn-add-goal").onclick = addGoal;
   el("btn-feedback").onclick = openFeedback;
   el("btn-feedback-cancel").onclick = closeFeedback;
   el("btn-feedback-send").onclick = sendFeedback;
@@ -346,7 +531,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
       creds = JSON.parse(savedCreds);
       const result = await apiAuth(creds.username, creds.pin);
-      data = result.data || { checkins: [], addictionModules: [] };
+      data = result.data || { checkins: [], addictionModules: [], goals: [] };
+      if (!data.goals) data.goals = [];
       enterApp();
       return;
     } catch (e) {

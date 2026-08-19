@@ -76,9 +76,32 @@ header h1 { font-size: 18px; margin: 0; }
 .outcome-btn.good.selected { background: #e0fff2; border-color: #33c99a; }
 .outcome-btn.tough.selected { background: #ffe9ee; border-color: #ff6e73; }
 
-.entry-row { padding: 12px 14px; border: 1px solid #d9f6ec; border-radius: 12px; background: white; margin-bottom: 8px; }
+.entry-row { padding: 12px 14px; border: 1px solid #d9f6ec; border-radius: 12px; background: white; margin-bottom: 8px; position: relative; }
 .entry-row .date { font-weight: 700; font-size: 13px; }
 .entry-row .note { font-size: 12.5px; color: #6b8c82; margin-top: 4px; white-space: pre-wrap; }
+.entry-row-clickable { cursor: pointer; }
+.entry-row .entry-delete { position: absolute; top: 8px; right: 8px; }
+
+/* ── 일기 카테고리 1-5점 척도 ─────────────────────────────────────────── */
+.rating-grid { display: flex; flex-direction: column; gap: 10px; }
+.rating-row { padding: 10px; border: 1px solid #d9f6ec; border-radius: 10px; background: #f8fffd; }
+.rating-label { font-size: 12.5px; font-weight: 700; display: flex; flex-direction: column; gap: 2px; margin-bottom: 6px; }
+.rating-anchor { font-size: 10.5px; font-weight: 400; color: #6b8c82; }
+.rating-scores { display: flex; gap: 6px; }
+.rating-score-btn {
+  flex: 1; padding: 8px 0; border-radius: 8px; border: 1px solid #d9f6ec; background: white;
+  cursor: pointer; font-family: inherit; font-weight: 700; font-size: 13px;
+}
+.rating-score-btn.selected { background: #1f6f5d; color: white; border-color: #1f6f5d; }
+
+/* ── 목표 관리 ────────────────────────────────────────────────────────── */
+.goal-card { padding: 14px; border-radius: 14px; background: #f8fffd; border: 1px solid #d9f6ec; margin-bottom: 10px; }
+.goal-title { font-weight: 700; font-size: 14px; }
+.goal-title.achieved { text-decoration: line-through; color: #6b8c82; }
+.goal-desc { font-size: 12.5px; color: #6b8c82; margin-top: 4px; white-space: pre-wrap; }
+.goal-meta { font-size: 11px; color: #6b8c82; margin-top: 6px; }
+.goal-card .actions { display: flex; gap: 8px; margin-top: 10px; }
+.goal-card .actions button { flex: 1; }
 
 /* ── 모달(피드백) ─────────────────────────────────────────────────────── */
 .modal {
@@ -103,4 +126,7 @@ header h1 { font-size: 18px; margin: 0; }
   .login-card input, .checkin-form input, .checkin-form textarea { background: #17302a; border-color: #234a41; color: #eafff6; }
   .secondary-btn { border-color: #234a41; color: #eafff6; }
   .modal-card { background: #17302a; color: #eafff6; }
+  .rating-row { background: #17302a; border-color: #234a41; }
+  .rating-score-btn { background: #10211d; border-color: #234a41; color: #eafff6; }
+  .goal-card { background: #17302a; border-color: #234a41; }
 }
