@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>반복 작업 캘린더</title>
+<style>
+  :root {
+    --ink: #1c2333; --ink-soft: #2a3348; --parchment: #f6f1e6; --parchment-card: #fffdf7;
+    --line: #ded2b8; --accent: #4f7cac; --accent-strong: #34597a;
+    --text: #241f14; --text-soft: #5c5644; --text-faint: #8b8368;
+    --report-dot: #b3562e; --infra-dot: #7a8471; --today-ring: #34597a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink: #0f1420; --parchment: #171c26; --parchment-card: #1f2532; --line: #333c4d;
+      --accent: #7fa8d6; --accent-strong: #a9c6e8;
+      --text: #ece6d8; --text-soft: #b8b19c; --text-faint: #7b7663;
+      --report-dot: #e08a5c; --infra-dot: #9aa693; --today-ring: #a9c6e8;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ink: #0f1420; --parchment: #171c26; --parchment-card: #1f2532; --line: #333c4d;
+    --accent: #7fa8d6; --accent-strong: #a9c6e8;
+    --text: #ece6d8; --text-soft: #b8b19c; --text-faint: #7b7663;
+    --report-dot: #e08a5c; --infra-dot: #9aa693; --today-ring: #a9c6e8;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--parchment); color: var(--text);
+    font-family: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", "Segoe UI", sans-serif;
+    line-height: 1.6; }
+  .page { max-width: 760px; margin: 0 auto; padding: 0 0 72px; }
+  .masthead { background: linear-gradient(180deg, var(--ink) 0%, var(--ink-soft) 100%); color: #eef3f8;
+    padding: 30px 20px 26px; }
+  .eyebrow { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #c3d3e6;
+    margin: 0 0 6px; font-weight: 600; }
+  .masthead h1 { font-family: Georgia, serif; font-size: 26px; margin: 0 0 8px; }
+  .masthead p { margin: 0; color: #c3d3e6; font-size: 13.5px; max-width: 60ch; }
+
+  .section { padding: 26px 20px 0; }
+  .section h2 { font-family: Georgia, serif; font-size: 18px; margin: 0 0 4px; }
+  .section .sub { color: var(--text-soft); font-size: 12.5px; margin: 0 0 16px; }
+
+  .cal-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .cal-nav button { background: var(--parchment-card); border: 1px solid var(--line); color: var(--text);
+    border-radius: 8px; padding: 6px 12px; font-size: 13px; cursor: pointer; font-weight: 600; }
+  .cal-nav button:hover { border-color: var(--accent); color: var(--accent-strong); }
+  .cal-nav .month-label { font-family: Georgia, serif; font-size: 16px; font-weight: 700; }
+
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  .cal-dow { text-align: center; font-size: 11px; font-weight: 700; color: var(--text-faint);
+    padding: 4px 0 6px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .cal-day { background: var(--parchment-card); border: 1px solid var(--line); border-radius: 8px;
+    min-height: 64px; padding: 5px 6px; position: relative; }
+  .cal-day.pad { background: transparent; border-color: transparent; }
+  .cal-day .num { font-size: 11.5px; color: var(--text-soft); font-variant-numeric: tabular-nums; }
+  .cal-day.today .num { color: var(--today-ring); font-weight: 800; }
+  .cal-day.today { box-shadow: inset 0 0 0 2px var(--today-ring); }
+  .cal-dots { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 4px; }
+  .cal-dot { width: 7px; height: 7px; border-radius: 50%; flex: 0 0 auto; }
+  .cal-dot.report { background: var(--report-dot); }
+  .cal-dot.infra { background: var(--infra-dot); }
+
+  .legend { display: flex; gap: 16px; margin-top: 12px; font-size: 12px; color: var(--text-soft); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend .dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  .task-list { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+  .task-card { background: var(--parchment-card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 13px 15px; }
+  .task-card .row1 { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+  .task-card .name { font-weight: 800; font-size: 14px; }
+  .task-card .freq { font-size: 11.5px; color: var(--accent-strong); font-weight: 700; white-space: nowrap; }
+  .task-card .project { font-size: 11.5px; color: var(--text-faint); margin-top: 2px; }
+  .task-card .purpose { font-size: 12.5px; color: var(--text-soft); margin-top: 6px; }
+  .task-card .meta { font-size: 10.5px; color: var(--text-faint); margin-top: 8px; border-top: 1px dashed var(--line);
+    padding-top: 6px; }
+  .task-card.flag { border-color: var(--report-dot); }
+  .task-card .flagline { font-size: 11.5px; color: var(--report-dot); font-weight: 700; margin-top: 6px; }
+
+  .prune-hint { background: var(--parchment-card); border: 1px dashed var(--line); border-radius: 12px;
+    padding: 14px 16px; font-size: 12.5px; color: var(--text-soft); margin-top: 16px; }
+  .prune-hint b { color: var(--text); }
+
+  #loading, #error { padding: 20px; color: var(--text-soft); font-size: 13px; }
+  #error { color: var(--report-dot); display: none; }
+
+  @media (max-width: 480px) {
+    .cal-day { min-height: 52px; }
+    .task-card .row1 { flex-direction: column; gap: 2px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="masthead">
+    <div class="eyebrow">Ops Calendar</div>
+    <h1>반복 작업 캘린더</h1>
+    <p>이 PC 전체에 걸친 주기적 자동화(클라우드 루틴 + 예약 작업)를 한곳에서. 쓸모없어진 반복
+      작업은 담당 세션에게 정리를 요청하면 여기서도 사라집니다.</p>
+  </div>
+
+  <div id="loading">불러오는 중…</div>
+  <div id="error">registry.json을 불러오지 못했어요. GitHub Pages로 접속했는지 확인해주세요
+    (file://로 열면 fetch가 막힙니다).</div>
+
+  <div id="content" style="display:none;">
+    <div class="section">
+      <h2>이번 달</h2>
+      <p class="sub">점 하나 = 그날 도는 리포트/작업 하나. 주황 = 산출물(리포트), 초록 = 인프라(동기화 등).</p>
+      <div class="cal-nav">
+        <button id="prevMonth">‹ 이전 달</button>
+        <div class="month-label" id="monthLabel"></div>
+        <button id="nextMonth">다음 달 ›</button>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+      <div class="legend">
+        <span><span class="dot" style="background:var(--report-dot)"></span>산출물(리포트)</span>
+        <span><span class="dot" style="background:var(--infra-dot)"></span>인프라(동기화/헬스체크)</span>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>산출물 만드는 작업</h2>
+      <p class="sub">캘린더에 실제로 뭔가를 만들어내는 것들 — 정리 대상 1순위.</p>
+      <div class="task-list" id="reportList"></div>
+    </div>
+
+    <div class="section">
+      <h2>상시 실행 (인프라)</h2>
+      <p class="sub">동기화/헬스체크/워치독 — 산출물은 없지만 계속 도는 것들.</p>
+      <div class="task-list" id="infraList"></div>
+    </div>
+
+    <div class="section">
+      <div class="prune-hint">
+        <b>정리하고 싶다면?</b> 담당 프로젝트 세션에게 "이 반복 작업 없애줘"라고 말하면
+        실제 트리거(클라우드 루틴 또는 Windows 예약 작업)를 끄고, 이 캘린더의 레지스트리에서도
+        지워서 다음부턴 여기 안 보이게 처리합니다. 매주 텔레그램으로 오는 요약에도 같이 반영됩니다.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const KST_OFFSET_MIN = 9 * 60;
+  function toKstDate(d){ return new Date(d.getTime() + (KST_OFFSET_MIN + d.getTimezoneOffset()) * 60000); }
+  function ymd(d){ return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
+  function daysBetween(a, b){ return Math.round((b - a) / 86400000); }
+
+  // 이 작업이 특정 날짜(KST 자정 기준)에 도는지 계산.
+  function occursOn(entry, dateKst){
+    const r = entry.recurrence;
+    if(!r || r.type === 'frequent') return false;
+    const weekday = dateKst.getDay();
+    if(r.type === 'daily') return true;
+    if(r.type === 'weekly') return weekday === r.weekday;
+    if(r.type === 'interval'){
+      if(r.weekday !== undefined && weekday !== r.weekday) return false;
+      const anchor = toKstDate(new Date(r.anchorDate + 'T00:00:00Z'));
+      anchor.setHours(0,0,0,0);
+      const cur = new Date(dateKst); cur.setHours(0,0,0,0);
+      const diff = daysBetween(anchor, cur);
+      return diff >= 0 && diff % r.days === 0;
+    }
+    return false;
+  }
+
+  function buildCalendar(container, monthDate, entries){
+    container.innerHTML = '';
+    const year = monthDate.getFullYear(), month = monthDate.getMonth();
+    const first = new Date(year, month, 1);
+    const startPad = first.getDay();
+    const daysInMonth = new Date(year, month+1, 0).getDate();
+    const dows = ['일','월','화','수','목','금','토'];
+    dows.forEach(d => {
+      const el = document.createElement('div');
+      el.className = 'cal-dow'; el.textContent = d;
+      container.appendChild(el);
+    });
+    const todayStr = ymd(toKstDate(new Date()));
+    for(let i=0;i<startPad;i++){
+      const el = document.createElement('div');
+      el.className = 'cal-day pad';
+      container.appendChild(el);
+    }
+    for(let day=1; day<=daysInMonth; day++){
+      const dateKst = new Date(year, month, day);
+      const el = document.createElement('div');
+      const isToday = ymd(dateKst) === todayStr;
+      el.className = 'cal-day' + (isToday ? ' today' : '');
+      const num = document.createElement('div');
+      num.className = 'num'; num.textContent = day;
+      el.appendChild(num);
+      const dots = document.createElement('div');
+      dots.className = 'cal-dots';
+      entries.forEach(entry => {
+        if(entry.status && entry.status.indexOf('active') === -1 && entry.status !== 'active') return;
+        if(occursOn(entry, dateKst)){
+          const dot = document.createElement('div');
+          dot.className = 'cal-dot ' + entry.category;
+          dot.title = entry.project + ' — ' + (entry.scheduleText || '');
+          dots.appendChild(dot);
+        }
+      });
+      el.appendChild(dots);
+      container.appendChild(el);
+    }
+  }
+
+  function renderTaskCard(entry){
+    const div = document.createElement('div');
+    const isDisabled = entry.status && entry.status.indexOf('disabled') !== -1;
+    div.className = 'task-card' + (isDisabled ? ' flag' : '');
+    div.innerHTML =
+      '<div class="row1"><div class="name">' + escapeHtml(entry.project) + '</div>' +
+      '<div class="freq">' + escapeHtml((entry.scheduleText||'').split(',')[0].split('—')[0].trim()) + '</div></div>' +
+      '<div class="purpose">' + escapeHtml(entry.purpose) + '</div>' +
+      (isDisabled ? '<div class="flagline">⚠ 상태: ' + escapeHtml(entry.status) + '</div>' : '') +
+      '<div class="meta">' + escapeHtml(entry.source) + '</div>';
+    return div;
+  }
+
+  function escapeHtml(s){
+    return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  let current = new Date();
+  let allEntries = [];
+
+  function refresh(){
+    document.getElementById('monthLabel').textContent = current.getFullYear() + '년 ' + (current.getMonth()+1) + '월';
+    buildCalendar(document.getElementById('calGrid'), current, allEntries);
+  }
+
+  fetch('registry.json', {cache:'no-store'}).then(r => r.json()).then(data => {
+    allEntries = data.entries || [];
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('content').style.display = 'block';
+    refresh();
+
+    const reportList = document.getElementById('reportList');
+    const infraList = document.getElementById('infraList');
+    allEntries.filter(e => e.category === 'report').forEach(e => reportList.appendChild(renderTaskCard(e)));
+    allEntries.filter(e => e.category === 'infra').forEach(e => infraList.appendChild(renderTaskCard(e)));
+
+    document.getElementById('prevMonth').addEventListener('click', () => {
+      current = new Date(current.getFullYear(), current.getMonth()-1, 1); refresh();
+    });
+    document.getElementById('nextMonth').addEventListener('click', () => {
+      current = new Date(current.getFullYear(), current.getMonth()+1, 1); refresh();
+    });
+  }).catch(err => {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('error').style.display = 'block';
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,190 @@
+{
+  "_readme": "박새로이(23_app_Releaser)가 이 PC의 모든 프로젝트에 걸친 반복 실행(cron/heartbeat) 작업을 한곳에서 파악하기 위한 중앙 레지스트리. 새 주기 작업(스케줄, 워치독, 헬스체크 등)을 만들기 전에는 이 파일을 먼저 확인해 겹치는 시간대/목적이 없는지 보고, 만들고 나면 이 파일에 엔트리를 추가할 것. 'recurrence' 필드는 릴리저 웹사이트 캘린더(ops-calendar)가 실제 날짜를 계산하는 데 쓰는 기계 판독용 필드 — weekday는 0=일~6=토, hour/minute은 KST 기준. 2026-08-20부터: 이 파일이 갱신될 때마다 releasepilot-reports 저장소의 ops-calendar/registry.json에도 동일 내용을 미러링해서 커밋+푸시할 것 — 그래야 캘린더 페이지와 주간 텔레그램 다이제스트가 최신 상태를 반영한다. 반복 작업을 없앨 때는 실제 트리거(RemoteTrigger enabled:false 또는 Windows 예약 작업 비활성화/삭제)도 같이 처리하고 여기서 entry를 제거(또는 status:\"removed\"로 표시)할 것.",
+  "updatedAt": "2026-08-20",
+  "categories": {
+    "report": "사람이 읽는 산출물(리포트/기획안/카드뉴스 등)을 주기적으로 만들어내는 작업 — 캘린더에 표시, 쓸모없어지면 정리 대상 1순위",
+    "infra": "동기화/헬스체크/워치독처럼 산출물이 아니라 시스템을 계속 돌게 하는 작업 — '상시 실행' 묶음으로 별도 표시"
+  },
+  "entries": [
+    {
+      "id": "brainwire-instagram-card-news",
+      "category": "report",
+      "project": "brainwire",
+      "source": "claude.ai cloud routine (RemoteTrigger id: trig_012PmM43LRb9SxHGs8vXQT3s)",
+      "scheduleText": "매주 목요일 10:00 KST 기동, 지난 발행이 21일 미만이면 스킵 → 실질 주기 3주",
+      "recurrence": { "type": "interval", "days": 21, "anchorDate": "2026-08-20", "weekday": 4, "hour": 10, "minute": 0 },
+      "purpose": "브레인와이어 신규 개발 내용을 인스타그램 카드뉴스로 만들어 텔레그램(박새로이)으로 발송.",
+      "registeredAt": "2026-08-20",
+      "registeredBy": "Claude Code session (brainwire)",
+      "status": "active"
+    },
+    {
+      "id": "yena-career-checkin",
+      "category": "report",
+      "project": "releasepilot-reports (growth/yena_career)",
+      "source": "claude.ai cloud routine (RemoteTrigger id: trig_01VkGtf8tRFWgZSfMAigNZcF)",
+      "scheduleText": "매일 09:00 KST — 대부분 조용히 no-op, 정체 노드 있을 때만 실제로 말을 건다",
+      "recurrence": { "type": "daily", "hour": 9, "minute": 0 },
+      "purpose": "yena_career 성장 트리에서 4일 이상 정체된 노드가 있으면 '예나' 페르소나로 상담 대화 시작.",
+      "registeredAt": "2026-08-19",
+      "registeredBy": "Claude Code session (app dev root, 사용자 요청)",
+      "status": "active"
+    },
+    {
+      "id": "chloe-park-weekly-ux-review",
+      "category": "report",
+      "project": "releasepilot-reports (portfolio/about/dev-portfolio)",
+      "source": "claude.ai cloud routine (RemoteTrigger id: trig_01MSuc94yMoY3JH4pNkBSBeE)",
+      "scheduleText": "매주 월요일 09:17 KST",
+      "recurrence": { "type": "weekly", "weekday": 1, "hour": 9, "minute": 17 },
+      "purpose": "'클로이 박' 페르소나가 구직용 포트폴리오 사이트 구조/색감/이해도/직관성/개성을 점검, 기획안 PR. 30일 무활동+PR 2개 이상이면 자동 휴면.",
+      "registeredAt": "2026-08-13",
+      "registeredBy": "unknown (기존 등록 발견, 2026-08-20 레지스트리 보완)",
+      "status": "active"
+    },
+    {
+      "id": "chachacha-weekly-marketing-check",
+      "category": "report",
+      "project": "releasepilot-reports (portfolio/about/dev-portfolio)",
+      "source": "claude.ai cloud routine (RemoteTrigger id: trig_01AEnkQv3jYAXzkY9BkvEtU4)",
+      "scheduleText": "매주 월요일 09:07 KST",
+      "recurrence": { "type": "weekly", "weekday": 1, "hour": 9, "minute": 7 },
+      "purpose": "'차차차' 페르소나가 포트폴리오 사이트의 실제 마케팅/도달률을 검증 가능한 것만 점검해 growth tree로 발행. 같은 30일 휴면 게이트.",
+      "registeredAt": "2026-08-13",
+      "registeredBy": "unknown (기존 등록 발견, 2026-08-20 레지스트리 보완)",
+      "status": "active"
+    },
+    {
+      "id": "yena-brand-ops-biweekly",
+      "category": "report",
+      "project": "releasepilot-reports (brand-ops)",
+      "source": "claude.ai cloud routine (RemoteTrigger id: trig_01T964yupETtBY21CsCpJ8pD)",
+      "scheduleText": "매주 수요일 10:00 KST 기동, 13일 미경과면 스킵 → 실질 주기 2주",
+      "recurrence": { "type": "interval", "days": 14, "anchorDate": "2026-08-19", "weekday": 3, "hour": 10, "minute": 0 },
+      "purpose": "'예나'(냉정 버전) 페르소나가 brand-ops TODO 미완료 현황을 리포트로 발행, 28일 이상 방치 항목은 직접 지목. 30일 무활동이면 자동 휴면.",
+      "registeredAt": "2026-08-12",
+      "registeredBy": "unknown (기존 등록 발견, 2026-08-20 레지스트리 보완)",
+      "status": "active"
+    },
+    {
+      "id": "4vpn-critical-bug-autofix",
+      "category": "report",
+      "project": "4vpnBlocker (VeliMac, Mac 앱)",
+      "source": "claude.ai cloud routine (RemoteTrigger id: trig_01BJpyU5kjGeShmRseHyscqc)",
+      "scheduleText": "매주 월요일 12:00 KST 기동, 20일 미경과면 스킵 → 실질 주기 ~3주",
+      "recurrence": { "type": "interval", "days": 20, "anchorDate": "2026-08-17", "weekday": 1, "hour": 12, "minute": 0 },
+      "purpose": "critical-incidents.json의 반복 버그 패턴을 찾아 최소 수정 PR(직접 머지 안 함, 보수적). 30일 미사용이면 자동 휴면.",
+      "registeredAt": "2026-07-31",
+      "registeredBy": "unknown (기존 등록 발견, 2026-08-20 레지스트리 보완)",
+      "status": "active"
+    },
+    {
+      "id": "app-dev-weekly-error-todo-sweep",
+      "category": "infra",
+      "project": "app dev (전체 폴더 훑기)",
+      "source": "mcp scheduled-tasks (taskId: app-dev-weekly-error-todo-sweep)",
+      "scheduleText": "매주 월요일 09:00 KST",
+      "recurrence": { "type": "weekly", "weekday": 1, "hour": 9, "minute": 0 },
+      "purpose": "app dev 아래 모든 프로젝트를 훑어 명확한 코드 에러는 즉시 고치고, 판단 필요한 TODO는 보고만 함.",
+      "registeredAt": "2026-08-19",
+      "registeredBy": "Claude Code session (app dev root)",
+      "status": "active"
+    },
+    {
+      "id": "brainwire-weekly-quality-audit",
+      "category": "report",
+      "project": "brainwire",
+      "source": "Windows 예약 작업 (BrainwireWeeklyAudit)",
+      "scheduleText": "매주 월요일 09:00 KST",
+      "recurrence": { "type": "weekly", "weekday": 1, "hour": 9, "minute": 0 },
+      "purpose": "enqueue_quality_audit.js 실행 — brainwire quality_audit 잡을 큐에 등록.",
+      "registeredAt": "2026-08-18 (기존 등록 발견, 2026-08-20 레지스트리 보완)",
+      "registeredBy": "unknown",
+      "status": "active"
+    },
+    {
+      "id": "launchpad-persona-rule-audit",
+      "category": "report",
+      "project": "23_app_Releaser",
+      "source": "Windows 예약 작업 (LaunchPadPersonaRuleAudit)",
+      "scheduleText": "매주 월요일 09:00 KST",
+      "recurrence": { "type": "weekly", "weekday": 1, "hour": 9, "minute": 0 },
+      "purpose": "'박새로이'가 전역/프로젝트 CLAUDE.md + 페르소나 레지스트리를 훑어 중복/충돌 규칙을 files/Persona_Rule_Audit_<date>.md로 보고(리포트만).",
+      "registeredAt": "2026-08-20",
+      "registeredBy": "Claude Code session (23_app_Releaser)",
+      "status": "active"
+    },
+    {
+      "id": "launchpad-weekly-mac-request-check",
+      "category": "infra",
+      "project": "23_app_Releaser",
+      "source": "Windows 예약 작업 (LaunchPad_WeeklyMacRequestCheck)",
+      "scheduleText": "매주 월요일 09:00 KST",
+      "recurrence": { "type": "weekly", "weekday": 1, "hour": 9, "minute": 0 },
+      "purpose": "Mac 세션이 releasepilot-hub에 남긴 요청 확인.",
+      "registeredAt": "확인 필요 (기존 등록 발견, 2026-08-20 레지스트리 보완)",
+      "registeredBy": "unknown",
+      "status": "active"
+    },
+    {
+      "id": "35closer-weekly-hub-check",
+      "category": "infra",
+      "project": "35Closer_App",
+      "source": "Windows 예약 작업 (35CloserTimer_WeeklyHubCheck)",
+      "scheduleText": "매주 월요일 09:00 KST",
+      "recurrence": { "type": "weekly", "weekday": 1, "hour": 9, "minute": 0 },
+      "purpose": "35Closer Timer 관련 hub 상태 점검.",
+      "registeredAt": "확인 필요 (기존 등록 발견, 2026-08-20 레지스트리 보완)",
+      "registeredBy": "unknown",
+      "status": "active"
+    },
+    {
+      "id": "launchpad-hub-auto-sync",
+      "category": "infra",
+      "project": "23_app_Releaser",
+      "source": "Windows 예약 작업 (LaunchPad_HubAutoSync)",
+      "scheduleText": "매일 09:00 KST",
+      "recurrence": { "type": "daily", "hour": 9, "minute": 0 },
+      "purpose": "releasepilot-hub 로컬 클론을 최신으로 동기화 (산출물 없음, 순수 인프라).",
+      "registeredAt": "확인 필요",
+      "registeredBy": "unknown",
+      "status": "active"
+    },
+    {
+      "id": "launchpad-progress-update-reminder",
+      "category": "infra",
+      "project": "23_app_Releaser",
+      "source": "Windows 예약 작업 (LaunchPad_ProgressUpdateReminder)",
+      "scheduleText": "매일 09:30 KST",
+      "recurrence": { "type": "daily", "hour": 9, "minute": 30 },
+      "purpose": "진행상황 업데이트 리마인더 (산출물 없음, 알림성).",
+      "registeredAt": "확인 필요",
+      "registeredBy": "unknown",
+      "status": "active"
+    },
+    {
+      "id": "secom-auto-process",
+      "category": "infra",
+      "project": "23_app_Releaser (세콤 페르소나)",
+      "source": "Windows 예약 작업 (SecomAutoProcess)",
+      "scheduleText": "고빈도 반복 (정확한 간격 확인 필요, 하루 여러 번)",
+      "recurrence": { "type": "frequent" },
+      "purpose": "세콤 페르소나 자동 처리 루프.",
+      "registeredAt": "확인 필요",
+      "registeredBy": "unknown",
+      "status": "active"
+    },
+    {
+      "id": "launchpad-telegram-inbox-poll",
+      "category": "infra",
+      "project": "23_app_Releaser",
+      "source": "Windows 예약 작업 (LaunchPadTelegramInboxPoll)",
+      "scheduleText": "15분마다 (등록 기준 — 현재 Windows에서 Disabled 상태로 확인됨, 2026-08-20)",
+      "recurrence": { "type": "frequent" },
+      "purpose": "폰→PC 텔레그램 메시지를 telegram_inbox.md로 폴링. CLAUDE.md는 '동작 중'으로 서술하지만 실제로는 비활성화돼 있음 — 의도적 중단인지 확인 필요.",
+      "registeredAt": "2026-08-20 (기존 등록 발견)",
+      "registeredBy": "unknown",
+      "status": "disabled — 확인 필요"
+    }
+  ]
+}
