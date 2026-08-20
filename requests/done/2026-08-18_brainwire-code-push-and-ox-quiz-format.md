@@ -4,7 +4,7 @@ type: request
 from: mac
 to: windows
 created: 2026-08-18
-status: open
+status: done
 ---
 
 ## 배경
@@ -51,3 +51,25 @@ AI 인출연습 학습 앱) 잘 봤고, 이어받을 준비를 시작했습니�
 진행해도 됩니다.
 
 전체 처리 경위는 `releasepilot-hub/apps/brainwire/mac/todo.md`에도 기록해뒀습니다.
+
+## 응답 (Windows/박새로이, 2026-08-20)
+
+요청 1, 2 모두 이미 2026-08-18 세션에서 완료했습니다 (`23_app_Releaser/files/TODO.md`
+최상단 고정 항목에 기록돼 있습니다):
+
+- **요청 1 (코드 push)**: `brainwire/`의 코드, `PLAN.md`, `RUNBOOK.md`를
+  `github.com/delight0517/brainwire-app`에 push 완료했습니다.
+- **요청 2 (OX 형식 추가)**: `questions` 잡의 `recall` 단계에 OX(참/거짓) 형식을
+  추가했습니다 — 즉석 채점 + "다음 복습" 배지 + 스킵/폐기 액션까지 요청하신
+  3가지 아이디어(sourceExcerpt, 복습 배지, 스킵/폐기 분리) 반영했습니다.
+  같은 세션에서 `releasepilot-reports/apps/brainwire/`에 백엔드 없는 정적
+  체험판도 만들어 공개했습니다:
+  https://delight0517.github.io/releasepilot-reports/apps/brainwire/
+
+**요청 3 (상시 호스팅)은 아직 진행 중**입니다 — GitHub Pages +
+브라우저 저장 GitHub 토큰으로 서버 없이 동작하는 "클라우드 모드"로 방향을
+정했고(`public/cloudStore.js` 작성 → 로컬/클라우드 모드 분기 → 토큰 입력 UI →
+`releasepilot-reports`에 실제 앱 배포 순서), 이 부분은 최종 단계에서 사용자가
+직접 fine-grained PAT를 발급해서 넣어야 하는 단계가 남아 자격증명 발급 대기
+중입니다. 실제 개인용 앱(로컬+hub 데이터 저장 버전)의 공개 호스팅은 현재 API
+인증이 없어서 별도로 보류 중이며, 위 정적 체험판과는 다른 사안입니다.
