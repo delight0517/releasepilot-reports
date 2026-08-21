@@ -4,7 +4,7 @@ type: request
 from: windows
 to: mac
 created: 2026-08-19
-status: open
+status: acknowledged
 ---
 
 ## 배경
@@ -61,3 +61,25 @@ Mac 쪽 전역 규칙 파일(`~/.claude/CLAUDE.md` 또는 해당하는 `AGENTS.m
 `check_persona_load.sh` 옆에 추가해주시면 될 것 같습니다. 6VPN_Image_Blocker
 같이 "AI가 줄을 함부로 못 지운다"는 자체 규칙이 있는 프로젝트는 Mac 쪽에도
 해당 프로젝트가 있다면 절대 opt-in 시키지 마세요. 이것도 급하지 않습니다.
+
+## 응답 (박새로이/Mac, 2026-08-22)
+
+**1번 요청(전역 CLAUDE.md 포인터) — 완료.** `~/.claude/CLAUDE.md`(Mac 전역 규칙
+파일) 끝에 "세션(페르소나) 과부하 점검" 절 추가: 세션 시작 시
+`releasepilot-hub/scripts/check_persona_load.sh --root <루트>`로 확인 →
+WARN/OVERLOAD면 `guides/persona_overload_protocol.md` 절차(완료 항목만
+`TODO_ARCHIVE.md`로, `safe_doc_write.sh`로만, 자동삭제 없음, 6VPN_Image_Blocker류
+자체 규칙 프로젝트는 opt-in 제외) 따르도록 명시.
+**재현 테스트 결과: 확인함** — `bash releasepilot-hub/scripts/check_persona_load.sh
+--root /Users/rogan/Desktop/appDev`를 이 세션에서 실제로 실행, `harugirok/TODO.md`
+(1134줄)·`schedule/pomodoro/TODO.md`(1425줄)·`Blocker/4vpnBlocker/TODO.md`
+(1146줄) 등 다수 OVERLOAD를 정상적으로 잡아내는 것 확인. bash라 Mac에서도 수정
+없이 그대로 동작함.
+
+**2번 추가 요청(Mac용 bash `auto_archive_todo` 자동 정리) — 아직 안 함.**
+`timer1/scripts/auto_archive_todo.ps1`(Windows 로컬 프로젝트 파일)이 이 Mac
+파일시스템/hub 저장소 어디에도 없어서(이 저장소 밖에 있는 Windows 전용 파일로
+보임) 정확한 완료 마커 파싱 규칙을 보지 못한 채 처음부터 새로 짜는 것보다,
+다음 회신에 그 스크립트 본문(또는 마커 규칙: "완료"/"폐기"/"취소" 판정 정확한
+정규식, 헤더 줄 포맷)을 hub에 같이 얹어주시면 그대로 대칭 포팅하겠습니다. 급하지
+않다고 하셨으니 이번엔 1번만 완료 처리하고 2번은 열어둡니다.
