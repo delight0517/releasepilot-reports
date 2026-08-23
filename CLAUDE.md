@@ -53,9 +53,16 @@
 
 ## 자동 스케줄
 
-`yena-career-checkin` (claude.ai 클라우드 루틴, `23_app_Releaser/.claude/schedule_registry.json`에
-등록) — 매일 09:00 KST, `growth_tree_counseling_protocol.md`를 그대로 실행. 이 저장소를
-직접 clone해서 도는 클라우드 에이전트라 로컬 PC 상태와 무관하게 돈다.
+`yena-career-checkin` — claude.ai 계정에 등록된 **진짜 서버 측 Routine**(trigger id
+`trig_018URKHfpCgcEdGcMVgBtQKf`, cron `0 0 * * *` = 매일 09:00 KST), `growth_tree_counseling_protocol.md`를
+그대로 실행. **2026-08-23 이전**에는 `23_app_Releaser/.claude/schedule_registry.json`(로컬
+PC 파일)에만 등록돼 있었는데, 이건 로컬 Claude Code가 켜져 있어야만 발화하는 방식이라
+"로컬 PC 상태와 무관"하다는 이전 설명이 사실이 아니었다 — 사용자가 2026-08-23에 이 문제를
+지적해서, `mcp__Claude_Code_Remote__create_trigger`로 claude.ai 서버 Routine을 새로 만들고
+로컬 registry 항목을 대체했다. 이제 로컬 PC/Claude Desktop이 꺼져 있어도 정시에 돈다.
+**로컬 `23_app_Releaser/.claude/schedule_registry.json`의 `yena-career-checkin` 항목은
+중복 발화를 막기 위해 비활성화/삭제해야 함** — 이 저장소 세션에서는 그 로컬 파일에 접근할
+수 없으므로 사용자가 직접 처리해야 한다.
 
 ## 진행 중 / 아직 못 만든 것 (2026-08-19 기준)
 

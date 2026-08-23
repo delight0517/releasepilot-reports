@@ -90,8 +90,11 @@
 
 ## 4. 적용 현황
 
-- `yena_career` — 2026-08-19 적용, 스케줄: `23_app_Releaser/.claude/schedule_registry.json`의
-  `yena-career-checkin` 항목 참고.
+- `yena_career` — 2026-08-19 적용. 스케줄은 **claude.ai 서버 Routine**
+  (`yena-career-checkin`, trigger id `trig_018URKHfpCgcEdGcMVgBtQKf`, cron `0 0 * * *`
+  = 매일 09:00 KST)로 2026-08-23부터 운영. 이전에는 로컬
+  `23_app_Releaser/.claude/schedule_registry.json`에만 등록돼 있어 로컬 PC가 꺼지면 안
+  돌았다 — 자세한 경위는 `CLAUDE.md`의 "자동 스케줄" 절 참고.
 - 다른 트리(예: `geunhoo`)에 이 프로토콜을 붙이고 싶으면 같은 방식으로 `checkin_state.json`
-  생성 + 스케줄 등록만 하면 된다(로직은 트리마다 재작성할 필요 없음, `guide` 필드로 페르소나만
-  바뀜).
+  생성 + `mcp__Claude_Code_Remote__create_trigger`로 서버 Routine 등록만 하면 된다(로직은
+  트리마다 재작성할 필요 없음, `guide` 필드로 페르소나만 바뀜).
