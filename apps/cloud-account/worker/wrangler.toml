@@ -1,0 +1,10 @@
+name = "cloud-account-storage"
+main = "worker.js"
+compatibility_date = "2026-08-01"
+
+# After creating the namespace with:
+#   wrangler kv namespace create CLOUD_ACCOUNT_KV
+# paste the returned "id" below.
+[[kv_namespaces]]
+binding = "CLOUD_ACCOUNT_KV"
+id = "REPLACE_WITH_KV_NAMESPACE_ID"

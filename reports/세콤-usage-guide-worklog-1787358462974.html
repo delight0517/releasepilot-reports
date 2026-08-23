@@ -1,0 +1,170 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>세콤 사용 가이드</title><style>  :root {
+    --ink: #1c2333; --ink-soft: #2a3348; --parchment: #f6f1e6; --parchment-card: #fffdf7;
+    --line: #ded2b8; --accent: #4f7cac; --accent-strong: #34597a;
+    --text: #241f14; --text-soft: #5c5644; --text-faint: #8b8368;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink: #0f1420; --parchment: #171c26; --parchment-card: #1f2532; --line: #333c4d;
+      --accent: #7fa8d6; --accent-strong: #a9c6e8;
+      --text: #ece6d8; --text-soft: #b8b19c; --text-faint: #7b7663;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ink: #0f1420; --parchment: #171c26; --parchment-card: #1f2532; --line: #333c4d;
+    --accent: #7fa8d6; --accent-strong: #a9c6e8;
+    --text: #ece6d8; --text-soft: #b8b19c; --text-faint: #7b7663;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--parchment); color: var(--text); font-family: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", "Segoe UI", sans-serif; line-height: 1.6; }
+  .page { max-width: 680px; margin: 0 auto; padding: 0 0 64px; }
+  .masthead { background: linear-gradient(180deg, var(--ink) 0%, var(--ink-soft) 100%); color: #eef3f8; padding: 28px 20px 24px; }
+  .eyebrow { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #c3d3e6; margin: 0 0 6px; font-weight: 600; }
+  .masthead h1 { font-family: Georgia, serif; font-size: 27px; margin: 0 0 8px; }
+  .masthead p.sub { margin: 0; font-size: 14px; color: #c9d6e4; max-width: 50ch; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .meta-chip { font-size: 12px; padding: 5px 10px; border-radius: 999px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.16); color: #e3ecf5; }
+  section { padding: 22px 20px 4px; }
+  .section-label { display: flex; align-items: baseline; gap: 8px; margin-bottom: 12px; }
+  .section-label .num { font-size: 12px; color: var(--accent-strong); font-weight: 700; letter-spacing: 0.06em; }
+  .section-label h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-soft); margin: 0; font-weight: 700; }
+  .card { background: var(--parchment-card); border: 1px solid var(--line); border-radius: 14px; padding: 18px; }
+  .ug-step { border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin-top: 10px; }
+  .ug-step:first-child { margin-top: 0; }
+  .ug-step-head { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+  .ug-step-n { width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+  .ug-step-title { font-size: 14px; font-weight: 700; }
+  .ug-step-oneliner { font-size: 12.5px; color: var(--text-soft); margin: 0 0 8px; padding-left: 10px; border-left: 3px solid var(--accent); }
+  .ug-plain-list { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+  .ug-plain-list li { font-size: 12.5px; color: var(--text-soft); }
+  .ug-mini { font-size: 12px; font-weight: 700; color: var(--accent-strong); margin: 14px 0 4px; }
+  .ug-mini:first-of-type { margin-top: 0; }
+  .ug-desc { font-size: 13px; color: var(--text-soft); margin: 0 0 10px; }
+  .ug-done { color: var(--text-faint); }
+  .warn-card { background: #fff2e6; border: 1px solid #e8b98a; border-radius: 12px; padding: 14px 16px; margin-top: 10px; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .warn-card { background: #3a2a1a; border-color: #7a5a30; } }
+  :root[data-theme="dark"] .warn-card { background: #3a2a1a; border-color: #7a5a30; }
+  .warn-card p { margin: 0; font-size: 12.5px; color: var(--text-soft); }
+  footer { padding: 24px 20px 0; font-size: 11.5px; color: var(--text-faint); text-align: center; }
+
+  * { overflow-wrap: break-word; }
+  img, svg { max-width: 100%; height: auto; }
+  table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: nowrap; }
+  @media (max-width: 640px) {
+    body { font-size: 15px; }
+    .page { padding: 32px 16px 80px; }
+  }
+</style><div class="page"><div class="masthead">
+  <p class="eyebrow">세콤 (Secom Shorts Autopilot) · 사용법 기획서 + 작업 일지</p>
+  <h1>세콤 사용 가이드</h1>
+  <p class="sub">"내가 관심있어 할 소재를 가져오고 → 내가 노션에서 고르면 → 자동으로 더빙까지 입혀서 쇼츠를 만들어주는" 개인 비서형 자동화 파이프라인. 아직 계정/키 설정 전 단계.</p>
+  <div class="meta-row"><span class="meta-chip">v0.1.0 (스캐폴딩)</span><span class="meta-chip">개정판 1</span></div>
+</div><section>
+  <style>
+  .report-toc { position: sticky; top: 0; z-index: 20; background: var(--parchment-card, var(--bg, #fff));
+    border: 1px solid var(--line, #e5e0d5); border-radius: 10px; margin: 0 0 20px; padding: 10px 14px; }
+  .report-toc-toggle { display: none; }
+  .report-toc-list { display: flex; flex-wrap: wrap; gap: 6px; }
+  .report-toc-list a { font-size: 11px; font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    padding: 5px 10px; border-radius: 999px; border: 1px solid var(--line, #e5e0d5);
+    color: var(--text-soft, #6b6a5f); text-decoration: none; white-space: nowrap; }
+  .report-toc-list a.active { background: var(--accent-strong, #c9711f); color: #fff; border-color: transparent; }
+  .report-to-top { position: fixed; right: 18px; bottom: 18px; z-index: 20; display: none;
+    width: 40px; height: 40px; border-radius: 50%; align-items: center; justify-content: center;
+    background: var(--accent-strong, #c9711f); color: #fff; text-decoration: none; font-size: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2); border: none; cursor: pointer; }
+  @media (max-width: 700px) {
+    .report-toc-list { max-height: 0; overflow: hidden; transition: max-height .2s ease; width: 100%; }
+    .report-toc.open .report-toc-list { max-height: 400px; overflow-y: auto; }
+    .report-toc-toggle { display: block; font-size: 12px; font-family: ui-monospace, monospace;
+      background: none; border: 1px solid var(--line, #e5e0d5); border-radius: 999px; padding: 5px 12px;
+      color: var(--text-soft, #6b6a5f); cursor: pointer; }
+  }
+</style>
+<nav class="report-toc" id="report-toc">
+  <button class="report-toc-toggle" id="report-toc-toggle" type="button">☰ 목차</button>
+  <div class="report-toc-list" id="report-toc-list"></div>
+</nav>
+<button class="report-to-top" id="report-to-top" type="button" title="맨 위로">↑</button>
+<script>
+(function () {
+  var toc = document.getElementById('report-toc-list');
+  var sections = document.querySelectorAll('.section-label');
+  if (!toc || !sections.length) return;
+  sections.forEach(function (sec, i) {
+    var num = sec.querySelector('.num');
+    var h2 = sec.querySelector('h2');
+    if (!h2) return;
+    var id = 'toc-section-' + (i + 1);
+    sec.id = id;
+    var a = document.createElement('a');
+    a.href = '#' + id;
+    a.textContent = (num ? num.textContent.trim() + '. ' : '') + h2.textContent.trim();
+    toc.appendChild(a);
+  });
+  var links = toc.querySelectorAll('a');
+  if ('IntersectionObserver' in window) {
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          links.forEach(function (l) { l.classList.remove('active'); });
+          var link = toc.querySelector('a[href="#' + entry.target.id + '"]');
+          if (link) link.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-10% 0px -75% 0px' });
+    sections.forEach(function (s) { obs.observe(s); });
+  }
+  var toTop = document.getElementById('report-to-top');
+  window.addEventListener('scroll', function () {
+    toTop.style.display = window.scrollY > 500 ? 'flex' : 'none';
+  });
+  toTop.onclick = function () { window.scrollTo({ top: 0, behavior: 'smooth' }); };
+  var toggleBtn = document.getElementById('report-toc-toggle');
+  if (toggleBtn) {
+    toggleBtn.onclick = function () { document.getElementById('report-toc').classList.toggle('open'); };
+  }
+})();
+</script>
+
+<div class="section-label"><span class="num">01</span><h2>개요 — 이 도구는 무엇을 위한 것인가</h2></div>
+  <div class="card"><p class="ug-desc">"세콤"은 사용자 개인의 쇼츠(유튜브 Shorts) 채널 운영을 자동화하는 개인용 파이프라인이다. 관심 있을 만한 소재를 모으고, 사용자가 노션에서 직접 승인한 것만 골라서, 영상 소스 확보 → AI 더빙(TTS) → 자동 조립(편집이 아니라 규칙대로 합성) → 유튜브 업로드까지 자동으로 진행한다.</p><p class="ug-desc">가장 중요한 안전장치: 노션의 <code>소스유형</code> 값이 <code>stock</code>(라이선스 있는 스톡 영상) 또는 <code>self_filmed</code>(본인 직접 촬영)가 아니면, 파이프라인이 그 항목을 무조건 건너뛴다. 남의 영상을 그대로 재가공해서 올리는 건 유튜브 정책·저작권상 위험해서, 이번 버전에서는 이 기능 자체를 일부러 비활성화해뒀다.</p></div>
+</section><section>
+  <div class="section-label"><span class="num">02</span><h2>핵심 사용 흐름 (완성됐을 때 기준)</h2></div>
+  <div class="card"><div class="ug-step">
+  <div class="ug-step-head"><span class="ug-step-n">1</span><span class="ug-step-title">노션에 소재 올리기</span></div>
+  <p class="ug-step-oneliner">사용자가 관심 있는 소재를 노션 데이터베이스에 넣고, 쓸 만한 것만 "상태=승인"으로 표시한다.</p>
+</div><div class="ug-step">
+  <div class="ug-step-head"><span class="ug-step-n">2</span><span class="ug-step-title">동기화</span></div>
+  <p class="ug-step-oneliner"><code>notion_sync.js</code>가 "승인"된 항목만 읽어온다.</p>
+</div><div class="ug-step">
+  <div class="ug-step-head"><span class="ug-step-n">3</span><span class="ug-step-title">안전장치 통과 확인</span></div>
+  <p class="ug-step-oneliner"><code>source_gate.js</code>가 소스유형을 확인 — <code>stock</code>/<code>self_filmed</code>가 아니면 여기서 걸러진다.</p>
+</div><div class="ug-step">
+  <div class="ug-step-head"><span class="ug-step-n">4</span><span class="ug-step-title">더빙 + 자동 조립</span></div>
+  <p class="ug-step-oneliner"><code>tts_dub.js</code>가 대본을 읽어 자동으로 목소리를 입히고, <code>render.js</code>가 영상+더빙+자막을 규칙대로 합쳐 세로 영상(1080×1920)을 만든다. 사람이 직접 자르고 붙이는 편집이 아니라 자동 합성이다.</p>
+</div><div class="ug-step">
+  <div class="ug-step-head"><span class="ug-step-n">5</span><span class="ug-step-title">업로드</span></div>
+  <p class="ug-step-oneliner"><code>upload.js</code>가 유튜브에 올린다(기본은 비공개로 올라가서 사람이 확인 후 공개 전환).</p>
+</div></div>
+</section><section>
+  <div class="section-label"><span class="num">03</span><h2>구성 파일 — 빠른 레퍼런스</h2></div>
+  <div class="card"><h5 class="ug-mini">notion_sync.js</h5><p class="ug-desc">노션 DB에서 승인된 항목을 읽어온다.</p><h5 class="ug-mini">source_gate.js</h5><p class="ug-desc">저작권 안전장치. 소스유형이 stock/self_filmed가 아니면 무조건 스킵.</p><h5 class="ug-mini">fetch_source.js / tts_dub.js / render.js / upload.js</h5><p class="ug-desc">영상 확보 → 더빙 → 자동 조립 → 업로드, 순서대로 실행되는 단계별 스크립트.</p><h5 class="ug-mini">pipeline.js</h5><p class="ug-desc">위 단계를 한 번에 순서대로 돌리는 실행 명령.</p><h5 class="ug-mini">PLAN.md</h5><p class="ug-desc">전체 기획서 — 요구사항 원문, 저작권 리스크 경고, 시중 도구 리서치 결과.</p></div>
+</section><section>
+  <div class="section-label"><span class="num">04</span><h2>작업 일지</h2></div>
+  <div class="card"><h5 class="ug-mini">2026-08-21/22</h5><p class="ug-desc">최초 기획(PLAN.md) 작성 — 사용자 원문 보존, 노션/인스타 링크 실제 열람, 저작권 리스크 경고 섹션, 시중 도구 리서치(TTS/자동편집/업로드 자동화). 이어서 코드 스캐폴딩 12개 파일 구현(notion_sync/source_gate/fetch_source/tts_dub/render/upload/pipeline 등), 저작권 안전장치(source_gate.js) 하드 게이트로 구현, git 저장소화. 문법 검증(node --check)과 게이트 로직 테스트(8/8)까지 통과했으나, 실제 API 키가 없어 진짜 노션/TTS/유튜브 호출은 아직 검증 안 됨.</p></div>
+</section><section>
+  <div class="section-label"><span class="num">05</span><h2>TODO — 지금 당장 사용자가 해야 하는 것</h2></div>
+  <div class="card">
+  <div class="warn-card"><p>이 5가지를 순서대로 하셔야 실제로 돌아갑니다. 코드는 이미 다 준비돼 있어요.</p></div>
+  <ul class="ug-plain-list" style="padding-left:0;list-style:none;margin-top:10px;">
+  <li>☐ <b>1. 노션 페이지를 데이터베이스로 바꾸기</b> — 지금은 그냥 글이 나열된 페이지라 자동화가 못 읽는다. 표(데이터베이스) 형태로 바꾸고 다음 칸을 만든다: 제목 / 소스URL / 소스유형(<code>stock</code> 또는 <code>self_filmed</code>만, 영어로 오타 없이) / 상태(후보·승인·렌더중·완료) / 대본(TTS로 읽을 텍스트) / 업로드일정.</li>
+  <li>☐ <b>2. 노션 토큰 발급</b> — notion.so/my-integrations에서 새 통합 생성 → 토큰 복사. <b>중요:</b> 1번 데이터베이스 우측 상단 "..." → Connections에서 방금 만든 통합을 반드시 연결해야 한다(빠뜨리면 나중에 404 에러).</li>
+  <li>☐ <b>3. TTS(자동 더빙) 계정 만들기</b> — OpenAI 계정과 결제수단을 등록하고 API 키를 발급받는다(ElevenLabs로 바꾸고 싶으면 요청하면 된다).</li>
+  <li>☐ <b>4. 유튜브 업로드 권한 받기</b> — 구글 클라우드 콘솔에서 "YouTube Data API v3"를 켜고 OAuth 데스크톱 클라이언트를 만든다. 그 다음 <code>node scripts/youtube_auth.js</code>를 직접 실행해서 로그인 승인을 해야 한다(이 단계는 대신 눌러줄 수 없다).</li>
+  <li>☐ <b>5. 위 4개를 다 마치면 알려주기</b> — 발급받은 키들을 설정 파일에 채우고, 샘플 영상 3개로 실제 테스트를 한 번 돌려본다.</li>
+  </ul>
+  </div>
+</section><footer>세콤 자동 생성 · 사용법 기획서(개정 1) · <a href="../apps/23appdeveloperreleaser/index.html">23AppdeveloperReleaser</a></footer></div>

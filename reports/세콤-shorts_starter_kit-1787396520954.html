@@ -1,0 +1,117 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>세콤 쇼츠 제작 키트</title><style>
+  :root {
+    --ink: #1c2333; --ink-soft: #2a3348; --parchment: #f6f1e6; --parchment-card: #fffdf7;
+    --line: #ded2b8; --accent: #4f7cac; --accent-strong: #34597a;
+    --text: #241f14; --text-soft: #5c5644; --text-faint: #8b8368;
+    --tag-bg: #eef2f7; --tag-text: #34597a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink: #0f1420; --parchment: #171c26; --parchment-card: #1f2532; --line: #333c4d;
+      --accent: #7fa8d6; --accent-strong: #a9c6e8;
+      --text: #ece6d8; --text-soft: #b8b19c; --text-faint: #7b7663;
+      --tag-bg: #22293a; --tag-text: #a9c6e8;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ink: #0f1420; --parchment: #171c26; --parchment-card: #1f2532; --line: #333c4d;
+    --accent: #7fa8d6; --accent-strong: #a9c6e8;
+    --text: #ece6d8; --text-soft: #b8b19c; --text-faint: #7b7663;
+    --tag-bg: #22293a; --tag-text: #a9c6e8;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--parchment); color: var(--text); font-family: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", "Segoe UI", sans-serif; line-height: 1.6; }
+  .page { max-width: 700px; margin: 0 auto; padding: 0 0 64px; }
+  .masthead { background: linear-gradient(180deg, var(--ink) 0%, var(--ink-soft) 100%); color: #eef3f8; padding: 28px 20px 24px; }
+  .eyebrow { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #c3d3e6; margin: 0 0 6px; font-weight: 600; }
+  .masthead h1 { font-family: Georgia, serif; font-size: 26px; margin: 0 0 8px; text-wrap: balance; }
+  .masthead p.sub { margin: 0; font-size: 14px; color: #c9d6e4; max-width: 55ch; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .meta-chip { font-size: 12px; padding: 5px 10px; border-radius: 999px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.16); color: #e3ecf5; }
+  .meta-chip a { color: inherit; }
+  section { padding: 22px 20px 4px; }
+  .section-label { display: flex; align-items: baseline; gap: 8px; margin-bottom: 12px; }
+  .section-label .num { font-size: 12px; color: var(--accent-strong); font-weight: 700; letter-spacing: 0.06em; }
+  .section-label h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-soft); margin: 0; font-weight: 700; }
+  .card { background: var(--parchment-card); border: 1px solid var(--line); border-radius: 14px; padding: 18px; }
+  .path-card { border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; margin-top: 10px; background: var(--parchment-card); }
+  .path-card:first-child { margin-top: 0; }
+  .path-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .path-title { font-size: 15px; font-weight: 700; }
+  .tag { font-size: 11px; padding: 2px 9px; border-radius: 999px; background: var(--tag-bg); color: var(--tag-text); font-weight: 600; }
+  .path-desc { font-size: 13px; color: var(--text-soft); margin: 0 0 10px; }
+  .steps { margin: 0; padding-left: 18px; display: grid; gap: 5px; }
+  .steps li { font-size: 13px; color: var(--text-soft); }
+  .steps code, .path-desc code { font-family: ui-monospace, "SF Mono", Menlo, monospace; background: var(--parchment); padding: 1px 6px; border-radius: 4px; font-size: 12px; color: var(--text); }
+  .tool-list { margin: 8px 0 0; padding-left: 0; list-style: none; display: grid; gap: 6px; }
+  .tool-list li { font-size: 13px; }
+  .tool-list a { color: var(--accent-strong); font-weight: 600; text-decoration: none; }
+  .tool-list a:hover { text-decoration: underline; }
+  .tool-list span { color: var(--text-faint); font-size: 12px; }
+  .cta-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .cta { font-size: 13px; font-weight: 600; padding: 9px 16px; border-radius: 10px; background: var(--accent); color: #fff; text-decoration: none; display: inline-block; }
+  .cta.secondary { background: transparent; border: 1px solid var(--accent); color: var(--accent-strong); }
+  footer { padding: 24px 20px 0; font-size: 11.5px; color: var(--text-faint); text-align: center; }
+  * { overflow-wrap: break-word; }
+</style><div class="page"><div class="masthead">
+  <p class="eyebrow">세콤 · 쇼츠 운영 자동화</p>
+  <h1>지금 바로 쇼츠 만들기 — 시작 키트</h1>
+  <p class="sub">완전 자동 파이프라인이든, 상용 툴이든, 처음부터 끝까지 손으로 직접 하든 — 이 페이지에서 원하는 방식을 그때그때 골라서 바로 시작할 수 있게 모아뒀어요.</p>
+  <div class="meta-row">
+    <span class="meta-chip">2026-08-22 개설</span>
+    <span class="meta-chip"><a href="./세콤-shorts_material_checklist-1787395579361.html">소재 컨펌 →</a></span>
+    <span class="meta-chip"><a href="./세콤-shorts_trending_collection-1787396540000.html">쇼츠 모음 →</a></span>
+  </div>
+</div><section>
+  <div class="section-label"><span class="num">01</span><h2>지금 이 자리에서 3단계로 시작(수동)</h2></div>
+  <div class="card">
+    <p class="path-desc">아무 도구도 몰라도 지금 당장 첫 쇼츠 하나를 손으로 완성할 수 있는 최소 경로예요.</p>
+    <ol class="steps">
+      <li><b>1. 소재 고르기</b> — <a href="./세콤-shorts_material_checklist-1787395579361.html">소재 컨펌 페이지</a>나 아래 "쇼츠 모음"에서 쓸 영상 하나를 정한다.</li>
+      <li><b>2. 원본 영상 받기</b> — 링크를 <a href="https://ssyoutube.com" target="_blank" rel="noopener">ssyoutube</a>/<a href="https://snapinsta.app" target="_blank" rel="noopener">SnapInsta</a> 같은 웹 다운로더에 붙여넣거나, 세콤에게 "이거 받아줘"라고 텔레그램으로 보낸다.</li>
+      <li><b>3. 편집하기</b> — 이미 설치된 <b>Adobe Premiere Pro</b>에서 자르고 자막 붙이고 더빙까지 직접(또는 프리미어의 텍스트 음성변환 기능 사용) — 자동화를 하나도 안 써도 됨.</li>
+    </ol>
+  </div>
+</section><section>
+  <div class="section-label"><span class="num">02</span><h2>세콤 반자동 경로 — 부품만 자동, 편집은 내가</h2></div>
+  <div class="path-card">
+    <div class="path-head"><span class="path-title">더빙(TTS) 자동 생성</span><span class="tag">무료 · 즉시 사용 가능</span></div>
+    <p class="path-desc">대본만 쓰면 목소리 파일이 나온다. <code>python scripts\secom_shorts_tts.py "대본 텍스트" 출력.mp3</code></p>
+  </div>
+  <div class="path-card">
+    <div class="path-head"><span class="path-title">세로 변환 + 더빙 자동 합성</span><span class="tag">무료 · 즉시 사용 가능</span></div>
+    <p class="path-desc">원본 영상 + 더빙 mp3를 넣으면 1080×1920 세로 영상으로 자동 합성. <code>python scripts\secom_shorts_render.py 원본.mp4 더빙.mp3 출력.mp4</code> — 여기서 멈추고 나머지(자막·컷 타이밍)는 프리미어에서 마무리해도 됨.</p>
+  </div>
+  <div class="path-card">
+    <div class="path-head"><span class="path-title">원본 영상 다운로드</span><span class="tag">설치됨 · 세콤이 대신 실행</span></div>
+    <p class="path-desc">유튜브/인스타 링크를 세콤에게 텔레그램으로 보내면 <code>secom_shorts_download.py</code>로 받아둔다.</p>
+  </div>
+</section><section>
+  <div class="section-label"><span class="num">03</span><h2>상용 완전자동 툴 — 구독하고 바로 쓰기</h2></div>
+  <div class="card">
+    <p class="path-desc">직접 조립하지 않고 처음부터 끝까지(소재 선택 힌트+자막+세로 리프레임) 한 번에 해주는 툴. 지난 리서치 결과.</p>
+    <ul class="tool-list">
+      <li><a href="https://www.opus.pro" target="_blank" rel="noopener">Opus Clip</a> <span>— 롱폼/링크 → 하이라이트 자동 감지 → 세로 쇼츠, 이 카테고리 표준</span></li>
+      <li><a href="https://vizard.ai" target="_blank" rel="noopener">Vizard.ai</a> <span>— Opus Clip과 유사, 가격/UI 차이</span></li>
+      <li><a href="https://klap.app" target="_blank" rel="noopener">Klap</a> <span>— 동일 카테고리 대안</span></li>
+    </ul>
+  </div>
+</section><section>
+  <div class="section-label"><span class="num">04</span><h2>완전 무인(구독료 없이) — 셀프호스팅</h2></div>
+  <div class="card">
+    <p class="path-desc">노션 트리거부터 업로드까지 사람 개입 없이 돌리고 싶을 때. 직접 새로 짜는 대신 이미 있는 오픈소스를 가져다 쓰는 쪽을 권장.</p>
+    <ul class="tool-list">
+      <li><a href="https://github.com/Hritikraj8804/Autotube" target="_blank" rel="noopener">Autotube</a> <span>— n8n 기반, Docker 셀프호스팅, 무료, 노션 연동 가능</span></li>
+      <li><a href="https://github.com/SaarD00/AI-Youtube-Shorts-Generator" target="_blank" rel="noopener">AI-Youtube-Shorts-Generator</a> <span>— Gemini + Edge-TTS + FFmpeg, 세콤 반자동 경로와 부품 동일</span></li>
+    </ul>
+  </div>
+</section><section>
+  <div class="card" style="text-align:center;">
+    <div class="cta-row" style="justify-content:center;">
+      <a class="cta" href="./세콤-shorts_material_checklist-1787395579361.html">소재 컨펌하러 가기</a>
+      <a class="cta secondary" href="./세콤-shorts_trending_collection-1787396540000.html">쇼츠 모음 보기</a>
+    </div>
+  </div>
+</section><footer>세콤 · 시작 키트 (개정 1) · <a href="../apps/23appdeveloperreleaser/index.html">23AppdeveloperReleaser</a></footer></div>
