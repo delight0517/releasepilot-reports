@@ -41,7 +41,11 @@
   .app-name { font-size: 16.5px; font-weight: 700; font-family: var(--serif); }
   .app-ver { font-family: var(--mono); font-size: 11.5px; color: var(--ink-faint); }
   .app-pct { font-family: var(--mono); font-size: 12px; color: var(--accent-ink); margin-left: auto; }
-  .app-note { font-size: 12.5px; color: var(--ink-dim); margin: 8px 0 0; }
+  /* tagline(2026-08-25, 예나 실측 반영): 카드에 "무슨 앱인지"가 없어서 note(개발자용
+     상태 메모, 예: "development 서명, 등록 기기 2대 전용")만 보였다 — 처음 보는
+     사람에게는 암호문. tagline은 앱 이름 바로 아래, note보다 눈에 띄게 배치한다. */
+  .app-tagline { font-size: 13.5px; color: var(--ink); margin: 4px 0 0; width: 100%; }
+  .app-note { font-size: 11px; color: var(--ink-faint); margin: 6px 0 0; }
 
   /* 루트 index.html의 iconFor/glyphBadgeHtml과 같은 방식(2026-08-25) —
      다운로드 카드에도 색깔 이니셜 배지를 재사용해 앱 그리드와 시각적
@@ -60,7 +64,7 @@
   .pf-badge.warn { background: var(--warn-soft); color: var(--warn); }
   .pf-badge.ok { background: var(--good-soft); color: var(--good); }
   .pf-badge.limited { background: #ece3fb; color: #5a3aa8; }
-  .pf-btn { display: block; text-align: center; margin-top: 10px; padding: 8px; border-radius: 8px;
+  .pf-btn { display: block; text-align: center; margin-top: 10px; padding: 12px; border-radius: 8px;
     font-family: var(--mono); font-size: 11.5px; font-weight: 700; background: var(--off-soft); color: var(--off);
     border: 1px dashed var(--ink-faint); cursor: default; text-decoration: none; }
   .pf-btn.live { background: var(--good-soft); color: var(--good); border: 1px solid var(--good);
@@ -114,6 +118,19 @@
 
   <div id="apps"></div>
   <p class="empty" id="empty" style="display:none;">아직 등록된 앱이 없습니다.</p>
+
+  <div id="metaSection" style="display:none; margin-top:34px;">
+    <div style="padding:2px 4px 10px;">
+      <h2 style="font-family:var(--serif); font-weight:400; font-size:19px; margin:0 0 6px;">이 사이트의 모바일 앱</h2>
+      <p style="font-size:12.5px; color:var(--ink-dim); margin:0; max-width:52ch;">
+        위 앱들과 달리, 이건 이 웹사이트 자체를 앱처럼 열어보는 껍데기입니다.
+        안에는 개발자 본인 맥을 조종하는 원격 제어(GitHub 토큰 필요)와 개인용
+        포모도로 같은 <b>개발자 전용 기능</b>도 같이 들어있어, 다른 분이 받으셔도
+        사이트 열람 외에는 쓸 일이 거의 없습니다.
+      </p>
+    </div>
+    <div id="metaApps"></div>
+  </div>
   <footer>차실장 · ReleasePilot 다운로드 페이지 · 진행률/ETA는 <a href="../progress/" style="color:inherit">출시 현황판</a>과 같은 데이터를 씁니다</footer>
 </div>
 
@@ -176,10 +193,10 @@ fetch('../progress/data.json', {cache: 'no-store'}).then(r => r.ok ? r.json() : 
             <span class="pf-name">${PLATFORM_LABEL[dist.platform] || dist.platform}</span>
             <span class="pf-badge ${BADGE_CLASS[dist.status]}">${BADGE_LABEL[dist.status]}</span>
           </div>
+          ${dist.status === 'dev_signed_limited' ? `<p class="pf-limited-note">⚠️ 등록된 기기 2대만 설치 가능 — 공개 배포 아님</p>` : ''}
           ${dist.downloadUrl
             ? `<a class="pf-btn ${dist.status === 'dev_signed_limited' ? 'limited' : 'live'}" href="${dist.downloadUrl}">${BTN_LABEL[dist.status]}</a>`
             : `<div class="pf-btn">${BTN_LABEL[dist.status]}</div>`}
-          ${dist.status === 'dev_signed_limited' ? `<p class="pf-limited-note">⚠️ 등록된 기기 2대만 설치 가능 — 공개 배포 아님</p>` : ''}
           <p class="pf-readiness">${dist.readiness}</p>
           ${dist.policyNote ? `<p class="pf-policy">${dist.policyNote}</p>` : ''}
         </div>`).join('') + '</div>';
@@ -194,6 +211,7 @@ fetch('../progress/data.json', {cache: 'no-store'}).then(r => r.ok ? r.json() : 
         ${a.version ? `<span class="app-ver">v${a.version}</span>` : `<span class="app-ver">버전 확인 안 됨</span>`}
         <span class="app-pct">전체 진행 ${a.percentTotal}% · ${a.stageLabel}</span>
       </div>
+      ${a.tagline ? `<p class="app-tagline">${a.tagline}</p>` : ''}
       ${a.etaText ? `<div class="pf-eta">지금 속도 기준 수익화까지 예상 ${a.etaText} (근거: 과거 단계 전환 기록)</div>` : `<div class="pf-eta">ETA — 단계 전환 기록이 2건 미만이라 추정하지 않음(지어내지 않음)</div>`}
       ${a.note ? `<p class="app-note">${a.note}</p>` : ''}
       ${pfHtml}`;
@@ -206,7 +224,15 @@ fetch('../progress/data.json', {cache: 'no-store'}).then(r => r.ok ? r.json() : 
   const now = Date.now();
   const activeApps = [];
   const staleApps = [];
+  // ReportHubApp(2026-08-25, 예나 실측)은 다른 앱들과 성격이 다르다 —
+  // 이 사이트 자체를 띄우는 웹뷰 껍데기 + 개발자 본인 맥을 조종하는 원격
+  // 패널(GitHub 토큰 필요) + 개인용 포모도로라, 다른 사람이 받아도 사이트
+  // 열람 외엔 쓸 게 없다. 일반 앱 목록에 같이 놓으면 독립 제품처럼 보여
+  // 혼란을 준다 — 숨기지는 않되 별도 섹션(META_APP_SLUGS)으로 분리한다.
+  const META_APP_SLUGS = new Set(['ReportHubApp']);
+  const metaApps = [];
   d.apps.forEach(a => {
+    if (META_APP_SLUGS.has(a.slug)) { metaApps.push(a); return; }
     const t = a.lastActiveAt ? Date.parse(a.lastActiveAt) : NaN;
     if (!isNaN(t) && (now - t) <= THIRTY_DAYS_MS) activeApps.push(a);
     else staleApps.push(a);
@@ -222,6 +248,12 @@ fetch('../progress/data.json', {cache: 'no-store'}).then(r => r.ok ? r.json() : 
     details.appendChild(summary);
     staleApps.forEach(a => details.appendChild(buildAppCard(a)));
     wrap.appendChild(details);
+  }
+
+  if (metaApps.length) {
+    const metaWrap = document.getElementById('metaApps');
+    metaApps.forEach(a => metaWrap.appendChild(buildAppCard(a)));
+    document.getElementById('metaSection').style.display = '';
   }
 }).catch(() => { document.getElementById('empty').style.display = 'block'; });
 </script>
