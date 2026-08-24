@@ -1,0 +1,109 @@
+<!doctype html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Growth Tree Viewer — 성장 트리 리포트 iOS 뷰어</title>
+<meta name="description" content="releasepilot-reports에 공개 게시된 growth_tree.json 성장 트리 리포트를 읽는 iOS 전용 뷰어. 로그인·업로드 없음, 읽기 전용. 현재 개발기기 전용 배포.">
+<link rel="apple-touch-icon" href="../../icons/icon-180.png">
+<link rel="icon" href="../../icons/icon-192.png">
+<meta name="theme-color" content="#fbfaf7">
+<style>
+  :root {
+    --bg: #fbfaf7; --card: #ffffff; --card-2: #f6f3ec; --line: #e9e3d6;
+    --ink: #1d1b17; --ink-dim: #6b6a5f; --ink-faint: #a3a091;
+    --accent: #c9a3ea; --accent-soft: #ede1fa; --accent-ink: #5a3aa8;
+    --warn: #b3541e; --warn-soft: #fbe8dc;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Noto Serif KR", serif;
+    --sans: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, monospace;
+    --shadow-1: 0 1px 2px rgba(29,27,23,0.05), 0 1px 1px rgba(29,27,23,0.03);
+    --shadow-2: 0 12px 28px -12px rgba(29,27,23,0.16), 0 2px 6px rgba(29,27,23,0.05);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 0 20px 96px; }
+  .top-nav { position: fixed; top: 16px; right: 16px; z-index: 5; }
+  .back-link { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.04em; color: var(--ink-faint);
+    text-decoration: none; background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; }
+  .hero { padding: 76px 4px 24px; text-align: center; max-width: 600px; margin: 0 auto; }
+  .eyebrow { display: inline-block; font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent-ink); background: var(--accent-soft); border-radius: 999px; padding: 5px 14px; margin: 0 0 22px; }
+  h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(32px, 7vw, 46px); line-height: 1.15; margin: 0 0 16px; text-wrap: balance; }
+  .hero p { margin: 0 auto; font-size: 15px; line-height: 1.65; color: var(--ink-dim); max-width: 46ch; }
+  .cta-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 26px; }
+  .btn { font-family: var(--sans); font-size: 14px; font-weight: 700; text-decoration: none; border-radius: 999px;
+    padding: 12px 22px; display: inline-flex; align-items: center; gap: 6px; }
+  .btn-primary { background: var(--accent-ink); color: #fff; box-shadow: var(--shadow-2); }
+  .btn-secondary { background: var(--card); color: var(--ink); border: 1px solid var(--line); }
+
+  .honesty { background: var(--card); border: 1px solid var(--line); border-left: 3px solid var(--warn);
+    border-radius: 14px; padding: 16px 20px; margin-top: 30px; font-size: 13px; color: var(--ink-dim); line-height: 1.65; }
+  .honesty b { color: var(--ink); }
+
+  .section-head { padding: 0 2px 16px; margin-top: 56px; }
+  .section-head .eyebrow2 { font-family: var(--mono); font-size: 10.5px; color: var(--accent-ink); text-transform: uppercase; letter-spacing: 0.06em; }
+  .section-head h2 { font-family: var(--serif); font-weight: 400; font-size: 23px; margin: 6px 0 8px; }
+  .section-head p { font-size: 14px; color: var(--ink-dim); margin: 0; max-width: 52ch; }
+
+  .feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
+  @media (max-width: 480px) { .feature-grid { grid-template-columns: 1fr; } }
+  .feature-card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px; box-shadow: var(--shadow-1); }
+  .feature-glyph { font-size: 22px; margin-bottom: 8px; }
+  .feature-title { font-size: 14px; font-weight: 700; margin: 0 0 6px; }
+  .feature-desc { font-size: 12.5px; line-height: 1.6; color: var(--ink-dim); margin: 0; }
+
+  footer { margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--line); font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint); text-align: center; }
+  footer a { color: inherit; }
+</style>
+
+<div class="top-nav"><a class="back-link" href="../../">‹ 허브로</a></div>
+
+<div class="wrap">
+  <div class="hero">
+    <p class="eyebrow">🌳 Growth Tree Viewer</p>
+    <h1>성장 트리 리포트를<br>iOS에서 읽기 전용으로</h1>
+    <p>이 사이트(releasepilot-reports)에 공개 게시된 growth_tree.json 리포트를 iOS에서
+      바로 열어보는 뷰어입니다. 로그인도, 업로드도 없습니다 — 이미 게시된 것을 읽기만
+      합니다. 웹 버전(growth/geunhoo/)과 같은 팔레트·잠금/진행 표시 로직을 그대로 따릅니다.</p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="../../downloads/ios/growth_tree_viewer/">iOS 설치 페이지 →</a>
+      <a class="btn btn-secondary" href="../../downloads/">다운로드 전체 보기</a>
+    </div>
+  </div>
+
+  <div class="honesty">
+    <b>⚠️ 지금은 등록된 기기 2대에서만 설치됩니다.</b> Apple 개발자 development 서명이라
+    프로비저닝 프로파일에 등록된 UDID가 아니면 다운로드는 되지만 설치가 실패합니다.
+    App Store 정식 배포가 아닙니다.
+  </div>
+
+  <div class="section-head">
+    <span class="eyebrow2">What it does</span>
+    <h2>확인된 기능</h2>
+    <p>lib/main.dart 상단 주석과 코드 구조에서 실제로 확인된 것만 적었습니다.</p>
+  </div>
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="feature-glyph">📖</div>
+      <p class="feature-title">읽기 전용 뷰어</p>
+      <p class="feature-desc">공개 저장소(releasepilot-reports)의 growth_tree.json을 불러와 보여줄 뿐, 편집·업로드 기능은 없습니다.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-glyph">🔓</div>
+      <p class="feature-title">로그인 없음</p>
+      <p class="feature-desc">인증 없이 바로 열립니다 — 공개 게시된 리포트를 보는 용도입니다.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-glyph">🧩</div>
+      <p class="feature-title">노드 상세 보기</p>
+      <p class="feature-desc">트리의 각 노드(할 일 항목)를 탭하면 왜/무엇을/성공 시 효과/실패 시 비용 같은 상세 정보를 시트로 보여줍니다.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-glyph">🌐</div>
+      <p class="feature-title">웹 버전과 동일한 로직</p>
+      <p class="feature-desc">growth/geunhoo/index.html(웹판)과 같은 색상·잠금(선행 조건)·진행률 계산 로직을 그대로 따르도록 만들어졌습니다.</p>
+    </div>
+  </div>
+
+  <footer>Growth Tree Viewer · com.rogan.growthTreeViewer · v1.0.0 · <a href="../../downloads/ios/growth_tree_viewer/">설치 페이지</a> · <a href="../../">리포트 허브로 돌아가기</a></footer>
+</div>
+<script src="../../analytics-config.js"></script>
