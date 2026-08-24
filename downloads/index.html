@@ -54,7 +54,12 @@
     display: flex; align-items: center; justify-content: center; flex: none; font-family: var(--serif); }
 
   .platforms { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
-  @media (max-width: 480px) { .platforms { grid-template-columns: 1fr; } }
+  @media (max-width: 480px) {
+    .platforms { grid-template-columns: 1fr; }
+    /* 좁은 폭에선 진행률이 제 줄로 내려가는데, margin-left:auto 때문에 오른쪽 끝에
+       홀로 밀려 앞쪽에 빈 공간이 크게 생긴다(아이폰 375px 실측). 왼쪽 정렬로 되돌린다. */
+    .app-pct { margin-left: 0; }
+  }
   .pf-card { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; background: var(--card-2); }
   .pf-head { display: flex; align-items: center; gap: 8px; }
   .pf-name { font-weight: 700; font-size: 13.5px; }
@@ -102,8 +107,10 @@
     <ul>
       <li>🍎 macOS: Apple Developer Program(연 $99) 서명·공증 전까지는 Gatekeeper가 막습니다.</li>
       <li>🪟 Windows: 코드서명 인증서 전까지는 SmartScreen 경고가 뜹니다(실행 자체는 가능).</li>
-      <li>📱 iOS: 웹사이트 직접 설치는 애플 정책상 불가능 — TestFlight 또는 App Store 출시가 필요합니다.</li>
+      <li>📱 iOS: 이 사이트에서 바로 설치되긴 하지만, <b>개발자 서명이 특정 기기(UDID) 2대에만 묶여 있어</b>
+        그 외 기기에서는 내려받아도 설치가 실패합니다. 누구나 설치하려면 TestFlight 또는 App Store 출시가 필요합니다.</li>
       <li>🤖 Android: "출처를 알 수 없는 앱" 허용 시 APK 직접 설치가 실제로 가능합니다.</li>
+      <li>⏱️ 출시 예상 시점(ETA)은 과거 단계 전환 기록이 2건 이상 쌓인 앱에만 표시합니다 — 근거가 없으면 지어내지 않고 그냥 비워둡니다.</li>
     </ul>
   </div>
 
@@ -212,7 +219,7 @@ fetch('../progress/data.json', {cache: 'no-store'}).then(r => r.ok ? r.json() : 
         <span class="app-pct">전체 진행 ${a.percentTotal}% · ${a.stageLabel}</span>
       </div>
       ${a.tagline ? `<p class="app-tagline">${a.tagline}</p>` : ''}
-      ${a.etaText ? `<div class="pf-eta">지금 속도 기준 수익화까지 예상 ${a.etaText} (근거: 과거 단계 전환 기록)</div>` : `<div class="pf-eta">ETA — 단계 전환 기록이 2건 미만이라 추정하지 않음(지어내지 않음)</div>`}
+      ${a.etaText ? `<div class="pf-eta">지금 속도 기준 수익화까지 예상 ${a.etaText} (근거: 과거 단계 전환 기록)</div>` : ''}
       ${a.note ? `<p class="app-note">${a.note}</p>` : ''}
       ${pfHtml}`;
     return el;
