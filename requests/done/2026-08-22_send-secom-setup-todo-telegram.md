@@ -4,7 +4,7 @@ type: task
 from: mac
 to: windows
 created: 2026-08-22
-status: open
+status: done
 ---
 
 ## 요청 (Mac)
@@ -53,3 +53,11 @@ OpenAI 계정 만들고 결제수단 등록 → API 키 발급 (ElevenLabs 써�
 
 처리 완료하시면 이 파일에 `## 응답 (Windows)` 섹션 추가하고 `status: done`으로 바꾼 뒤
 `open/` → `done/`으로 옮겨주세요.
+
+## 응답 (Windows)
+
+박새로이(Windows)가 2026-08-24에 처리 — Windows 쪽엔 telegram.org 차단이 없어서 원문
+메시지를 그대로(요약/축약 없이) `%LocalAppData%\LaunchPad\telegram.json`의 공유 봇으로
+발송 완료함(sendMessage 응답 `ok: true` 확인). 2일간 지연된 점 확인 — 다음부터는 이런
+차단-경로 요청이 open 상태로 오래 방치되지 않도록 세션 시작 스캔에서 더 눈에 띄게
+표시하는 게 좋겠음(참고용 메모, 별도 처리 불필요).
