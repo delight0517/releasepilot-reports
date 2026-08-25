@@ -1,0 +1,114 @@
+<!doctype html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CutSync iOS — AI 오토파일럿 영상 편집</title>
+<meta name="description" content="여러 클립을 합치고, AI가 목표 길이에 맞춰 자동으로 컷을 골라내는 영상 편집 앱. 듀엣 스튜디오·보이스 레코더·유튜브 업로드 포함. 현재 개발기기 전용 배포.">
+<link rel="apple-touch-icon" href="../../icons/icon-180.png">
+<link rel="icon" href="../../icons/icon-192.png">
+<meta name="theme-color" content="#fbfaf7">
+<style>
+  :root {
+    --bg: #fbfaf7; --card: #ffffff; --card-2: #f6f3ec; --line: #e9e3d6;
+    --ink: #1d1b17; --ink-dim: #6b6a5f; --ink-faint: #a3a091;
+    --accent: #4f8f6d; --accent-soft: #dcefe4; --accent-ink: #1f5c3d;
+    --warn: #b3541e; --warn-soft: #fbe8dc;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Noto Serif KR", serif;
+    --sans: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, monospace;
+    --shadow-1: 0 1px 2px rgba(29,27,23,0.05), 0 1px 1px rgba(29,27,23,0.03);
+    --shadow-2: 0 12px 28px -12px rgba(29,27,23,0.16), 0 2px 6px rgba(29,27,23,0.05);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 0 20px 96px; }
+  .top-nav { position: fixed; top: 16px; right: 16px; z-index: 5; }
+  .back-link { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.04em; color: var(--ink-faint);
+    text-decoration: none; background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; }
+  .hero { padding: 76px 4px 24px; text-align: center; max-width: 600px; margin: 0 auto; }
+  .eyebrow { display: inline-block; font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent-ink); background: var(--accent-soft); border-radius: 999px; padding: 5px 14px; margin: 0 0 22px; }
+  h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(32px, 7vw, 46px); line-height: 1.15; margin: 0 0 16px; text-wrap: balance; }
+  .hero p { margin: 0 auto; font-size: 15px; line-height: 1.65; color: var(--ink-dim); max-width: 46ch; }
+  .cta-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 26px; }
+  .btn { font-family: var(--sans); font-size: 14px; font-weight: 700; text-decoration: none; border-radius: 999px;
+    padding: 12px 22px; display: inline-flex; align-items: center; gap: 6px; }
+  .btn-primary { background: var(--accent); color: #fff; box-shadow: var(--shadow-2); }
+  .btn-secondary { background: var(--card); color: var(--ink); border: 1px solid var(--line); }
+
+  .honesty { background: var(--card); border: 1px solid var(--line); border-left: 3px solid var(--warn);
+    border-radius: 14px; padding: 16px 20px; margin-top: 30px; font-size: 13px; color: var(--ink-dim); line-height: 1.65; }
+  .honesty b { color: var(--ink); }
+
+  .section-head { padding: 0 2px 16px; margin-top: 56px; }
+  .section-head .eyebrow2 { font-family: var(--mono); font-size: 10.5px; color: var(--accent-ink); text-transform: uppercase; letter-spacing: 0.06em; }
+  .section-head h2 { font-family: var(--serif); font-weight: 400; font-size: 23px; margin: 6px 0 8px; }
+  .section-head p { font-size: 14px; color: var(--ink-dim); margin: 0; max-width: 52ch; }
+
+  .feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
+  @media (max-width: 480px) { .feature-grid { grid-template-columns: 1fr; } }
+  .feature-card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px; box-shadow: var(--shadow-1); }
+  .feature-glyph { font-size: 22px; margin-bottom: 8px; }
+  .feature-title { font-size: 14px; font-weight: 700; margin: 0 0 6px; }
+  .feature-desc { font-size: 12.5px; line-height: 1.6; color: var(--ink-dim); margin: 0; }
+
+  footer { margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--line); font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint); text-align: center; }
+  footer a { color: inherit; }
+</style>
+
+<div class="top-nav"><a class="back-link" href="../../">‹ 허브로</a></div>
+
+<div class="wrap">
+  <div class="hero">
+    <p class="eyebrow">🎬 CutSync</p>
+    <h1>여러 클립을 합치고,<br>AI가 목표 길이로 잘라냅니다</h1>
+    <p>영상을 올리면 AI가 자막(말소리를 글로 옮긴 것)을 분석해 목표 길이에 맞는 구간을
+      자동으로 골라내 편집해주는 앱이에요. 노래를 들으며 화음을 녹음하는 "듀엣 스튜디오"
+      기능도 있고, 완성된 영상은 유튜브로 바로 올릴 수 있어요.</p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="../../downloads/ios/video_editor_auto_sync/">iOS 설치 페이지 →</a>
+      <a class="btn btn-secondary" href="../../downloads/">다운로드 전체 보기</a>
+    </div>
+  </div>
+
+  <div class="honesty">
+    <b>⚠️ 지금은 등록된 기기 2대에서만 설치됩니다.</b> Apple 개발자 development 서명이라
+    프로비저닝 프로파일에 등록된 UDID가 아니면 다운로드는 되지만 설치가 실패합니다.
+    App Store 정식 배포가 아닙니다.
+  </div>
+
+  <div class="section-head">
+    <span class="eyebrow2">What it does</span>
+    <h2>확인된 기능</h2>
+    <p>코드·TODO.md에서 실제로 확인된 것만 적었습니다(iOS 빌드 1.0.1+29 기준).</p>
+  </div>
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="feature-glyph">🔗</div>
+      <p class="feature-title">여러 클립 합치기(Merge)</p>
+      <p class="feature-desc">여러 영상 클립을 불러와 하나의 타임라인으로 합칩니다.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-glyph">🤖</div>
+      <p class="feature-title">AI 오토파일럿 자동 컷 편집</p>
+      <p class="feature-desc">목표 길이를 입력하면 자막 전체를 기준으로 구간을 자동 보정하고, 목표의 절반 미만이면 렌더링을 중단해 결과가 지나치게 짧게 나오는 걸 막습니다.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-glyph">🎙️</div>
+      <p class="feature-title">듀엣 스튜디오</p>
+      <p class="feature-desc">원본 영상에 화음(하모니)을 녹음해 mp4로 합성하는 기능이 있습니다.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-glyph">📼</div>
+      <p class="feature-title">보이스 레코더 스튜디오</p>
+      <p class="feature-desc">구간 녹음·테이크 비교·믹스 미리듣기 및 외부 오디오(카카오톡/드라이브) 가져오기를 지원합니다.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-glyph">📤</div>
+      <p class="feature-title">유튜브 자동 업로드</p>
+      <p class="feature-desc">Google 로그인을 연결하면 완성된 영상을 유튜브로 바로 올릴 수 있습니다(Mac 빌드는 OAuth 설정이 아직 필요).</p>
+    </div>
+  </div>
+
+  <footer>CutSync iOS · com.rogan.cutsync · v1.0.5 · <a href="../../downloads/ios/video_editor_auto_sync/">설치 페이지</a> · <a href="../../">리포트 허브로 돌아가기</a></footer>
+</div>
+<script src="../../analytics-config.js"></script>

@@ -1,0 +1,110 @@
+<!doctype html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>리포트 허브(ReportHub) — 리포트 뷰어 + 뽀모도로 잠금 iOS 앱</title>
+<meta name="description" content="이 사이트를 앱 안에서 보는 웹뷰 + 원격 명령 + Screen Time 기반 뽀모도로 앱 잠금을 함께 담은 iOS 앱. 현재 개발기기 전용 배포.">
+<link rel="apple-touch-icon" href="../../icons/icon-180.png">
+<link rel="icon" href="../../icons/icon-192.png">
+<meta name="theme-color" content="#fbfaf7">
+<style>
+  :root {
+    --bg: #fbfaf7; --card: #ffffff; --card-2: #f6f3ec; --line: #e9e3d6;
+    --ink: #1d1b17; --ink-dim: #6b6a5f; --ink-faint: #a3a091;
+    --accent: #7fc7e0; --accent-soft: #e2f2f7; --accent-ink: #0e2933;
+    --warn: #b3541e; --warn-soft: #fbe8dc;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Noto Serif KR", serif;
+    --sans: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, monospace;
+    --shadow-1: 0 1px 2px rgba(29,27,23,0.05), 0 1px 1px rgba(29,27,23,0.03);
+    --shadow-2: 0 12px 28px -12px rgba(29,27,23,0.16), 0 2px 6px rgba(29,27,23,0.05);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 0 20px 96px; }
+  .top-nav { position: fixed; top: 16px; right: 16px; z-index: 5; }
+  .back-link { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.04em; color: var(--ink-faint);
+    text-decoration: none; background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; }
+  .hero { padding: 76px 4px 24px; text-align: center; max-width: 600px; margin: 0 auto; }
+  .eyebrow { display: inline-block; font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent-ink); background: var(--accent-soft); border-radius: 999px; padding: 5px 14px; margin: 0 0 22px; }
+  h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(32px, 7vw, 46px); line-height: 1.15; margin: 0 0 16px; text-wrap: balance; }
+  .hero p { margin: 0 auto; font-size: 15px; line-height: 1.65; color: var(--ink-dim); max-width: 46ch; }
+  .cta-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 26px; }
+  .btn { font-family: var(--sans); font-size: 14px; font-weight: 700; text-decoration: none; border-radius: 999px;
+    padding: 12px 22px; display: inline-flex; align-items: center; gap: 6px; }
+  .btn-primary { background: var(--accent-ink); color: #fff; box-shadow: var(--shadow-2); }
+  .btn-secondary { background: var(--card); color: var(--ink); border: 1px solid var(--line); }
+
+  .honesty { background: var(--card); border: 1px solid var(--line); border-left: 3px solid var(--warn);
+    border-radius: 14px; padding: 16px 20px; margin-top: 30px; font-size: 13px; color: var(--ink-dim); line-height: 1.65; }
+  .honesty b { color: var(--ink); }
+
+  .section-head { padding: 0 2px 16px; margin-top: 56px; }
+  .section-head .eyebrow2 { font-family: var(--mono); font-size: 10.5px; color: var(--accent-ink); text-transform: uppercase; letter-spacing: 0.06em; }
+  .section-head h2 { font-family: var(--serif); font-weight: 400; font-size: 23px; margin: 6px 0 8px; }
+  .section-head p { font-size: 14px; color: var(--ink-dim); margin: 0; max-width: 52ch; }
+
+  .feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
+  @media (max-width: 480px) { .feature-grid { grid-template-columns: 1fr; } }
+  .feature-card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px; box-shadow: var(--shadow-1); }
+  .feature-glyph { font-size: 22px; margin-bottom: 8px; }
+  .feature-title { font-size: 14px; font-weight: 700; margin: 0 0 6px; }
+  .feature-desc { font-size: 12.5px; line-height: 1.6; color: var(--ink-dim); margin: 0; }
+
+  footer { margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--line); font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint); text-align: center; }
+  footer a { color: inherit; }
+</style>
+
+<div class="top-nav"><a class="back-link" href="../../">‹ 허브로</a></div>
+
+<div class="wrap">
+  <div class="hero">
+    <p class="eyebrow">📘 리포트 허브</p>
+    <h1>이 사이트를 앱으로,<br>거기에 뽀모도로 잠금까지</h1>
+    <p>지금 보고 계신 이 웹사이트를 앱 형태로 열어보는 껍데기 앱이에요. 홈/뒤로/목차
+      이동이 앱 버튼으로 더 편해집니다. 다만 안에 들어있는 "원격 제어"와 "포모도로"
+      기능은 개발자 본인의 맥을 조종하는 개인 전용 기능이라, 다른 분이 설치하셔도
+      사이트 열람 외에는 쓸 일이 없어요.</p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="../../downloads/ios/ReportHubApp/">iOS 설치 페이지 →</a>
+      <a class="btn btn-secondary" href="../../downloads/">다운로드 전체 보기</a>
+    </div>
+  </div>
+
+  <div class="honesty">
+    <b>⚠️ 지금은 등록된 기기 2대에서만 설치됩니다.</b> Apple 개발자 development 서명이라
+    프로비저닝 프로파일에 등록된 UDID가 아니면 다운로드는 되지만 설치가 실패합니다.
+    App Store 정식 배포가 아닙니다.
+  </div>
+
+  <div class="section-head">
+    <span class="eyebrow2">What it does</span>
+    <h2>확인된 기능</h2>
+    <p>Sources/ 코드와 TODO.md에서 실제로 확인된 것만 적었습니다.</p>
+  </div>
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="feature-glyph">🌐</div>
+      <p class="feature-title">이 사이트의 웹뷰 래퍼</p>
+      <p class="feature-desc">releasepilot-reports 사이트를 앱 안에서 그대로 열고, 하단 홈/목차 바로 어디서든 이동할 수 있습니다.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-glyph">🎮</div>
+      <p class="feature-title">원격 명령(Remote Control)</p>
+      <p class="feature-desc">별도 시트로 원격 명령을 보낼 수 있는 화면이 있습니다(RemoteCommandService).</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-glyph">🍅</div>
+      <p class="feature-title">뽀모도로 타이머</p>
+      <p class="feature-desc">집중/휴식을 나누는 타이머가 내장돼 있습니다.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-glyph">🔒</div>
+      <p class="feature-title">Screen Time 앱 잠금</p>
+      <p class="feature-desc">휴식 시간대·지정된 시간대에는 선택한 앱을 Screen Time(ManagedSettingsStore)으로 실제로 잠급니다. 백그라운드에서도 동작하도록 DeviceActivityMonitor 확장을 따로 둡니다. "작업용 앱을 쓰면 타이머 자동 시작" 옵션도 있습니다(감지는 분 단위 지연 있음, 즉시 감지 아님).</p>
+    </div>
+  </div>
+
+  <footer>리포트 허브 · com.delight0517.reporthub · v1.0 · <a href="../../downloads/ios/ReportHubApp/">설치 페이지</a> · <a href="../../">리포트 허브로 돌아가기</a></footer>
+</div>
+<script src="../../analytics-config.js"></script>
