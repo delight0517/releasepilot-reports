@@ -168,3 +168,25 @@ YENA_PERSONA.md의 정체성-역할 부합 프레임 그대로 적용 대상 —
 ①동의 시 → `growth_tree.json` 실제 재구성 + 콘텐츠 캘린더/첫 영상 기획 착수, ②수정
 요청 시 → 그 지점부터 9차로 이어서 대화 계속. 새 "대기 상태" 저장소를 만들지 말고
 `secom_inbox.md` 자체를 상태로 쓸 것(기존 원칙과 동일).
+
+## 2026-08-25 — 9차 (스케줄 자동 체크인, 첫 실제 서버 Routine 발화)
+
+`yena-career-checkin`이 처음으로 진짜 claude.ai 서버 Routine(trig_018URKHfpCgcEdGcMVgBtQKf)으로
+정시 발화함(2026-08-24 09:08 KST 큐잉 → 대화 중이라 2026-08-25에 처리). 이전까지는 로컬
+`23_app_Releaser/.claude/schedule_registry.json`이 가리키던 트리거 id(`trig_01VkGtf8tRFWgZSfMAigNZcF`)가
+실재하지 않는 죽은 id라서 체크인 자체가 한 번도 안 돌고 있었음 — 이번에 그 문제를 발견하고
+바로잡은 뒤의 첫 실행.
+
+`checkin_state.json` 정리: 7~8차 상담으로 트리가 이미 재구성돼서 `apply_instructor_pools`/
+`join_agency_first` 노드 자체가 `growth_tree.json`에서 사라졌는데, 상태 파일에는 옛 항목이
+그대로 남아 있었음 — 삭제하고, 새로 생긴 `build_3d_devlog_habit`(오늘 처음 확인, 아직 4일
+안 지남)을 새로 기록. `reel_once_a_week_cap`은 `unlockedFirstSeenAt` 2026-08-20부터
+5일째 `todo`라서 이번 체크인 대상.
+
+**이번에 건 질문(예나)**: "저번에 같이 정한 방향대로 하면, 이번 주엔 릴스는 딱 1개까지만
+올리기로 해뒀었잖아 — 근데 그거 말고 3D 빌드 장면 devlog 쪽도 아직 하나도 안 올라온 것
+같아서. 릴스 개수를 줄이는 것 자체가 부담이었던 건지, 아니면 애초에 그 소재(devlog든
+릴스든) 자체를 시작하는 게 아직 안 되고 있는 건지 궁금해 — 편하게 말해줘, 재촉하려는 거
+아니고 지금 뭐가 걸리는지 알고 싶어서 묻는 거야."
+
+사용자 응답 대기 중 — 다음 상담(자동이든 수동이든)은 이 질문에 대한 답부터 이어갈 것.
