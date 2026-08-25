@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-18T22:23:14.741250",
+  "generatedAt": "2026-08-26T08:26:57.798215",
   "stages": [
     {
       "id": "registered",
@@ -148,6 +148,158 @@
           "readiness": "앱 자체는 빌드됐지만 iOS는 스토어/TestFlight 없이는 배포 불가 (아래 정책 참고).",
           "policyNote": "iOS: 웹사이트에서 직접 설치는 애플 정책상 원천적으로 불가능합니다. TestFlight(개발자 계정 필요, 빌드당 90일 만료, 최대 1만 명) 또는 App Store 정식 출시가 필요합니다.",
           "downloadUrl": null
+        }
+      ]
+    },
+    {
+      "slug": "zerg333",
+      "name": "THE FORGE 333",
+      "stage": "build_signed",
+      "stageLabel": "빌드·서명",
+      "percentTotal": 45,
+      "percentToLaunch": 100,
+      "stagesDone": 6,
+      "stagesTotal": 11,
+      "remainingStages": [
+        "스토어 제출",
+        "심사 통과·출시",
+        "1차 사용자 피드백",
+        "광고·마케팅 집행",
+        "첫 수익"
+      ],
+      "commercialClear": null,
+      "blocked": null,
+      "waypoint": null,
+      "note": "com.rogan.zerg333 · development 서명, 등록 기기 2대 전용",
+      "latestReport": null,
+      "updatedAt": "2026-08-25T08:22:59.440217",
+      "lastActiveAt": "2026-08-25T08:22:59.440217",
+      "etaText": null,
+      "version": "2.0.18",
+      "platforms": [
+        "ios"
+      ],
+      "distribution": [
+        {
+          "platform": "ios",
+          "status": "dev_signed_limited",
+          "readiness": "개발기기 전용 배포 — 등록된 기기 2대에서만 설치됩니다. 그 외 기기는 다운로드는 되지만 설치가 실패합니다.",
+          "policyNote": "iOS: Apple 개발자 서명이 기기 UDID 단위로 제한되어 있어, 받아도 등록되지 않은 기기에서는 설치가 실패합니다. 공개 배포가 아니라 등록된 기기 전용입니다.",
+          "downloadUrl": "https://delight0517.github.io/releasepilot-reports/downloads/ios/zerg333/index.html"
+        }
+      ]
+    },
+    {
+      "slug": "video_editor_auto_sync",
+      "name": "CutSync iOS",
+      "stage": "build_signed",
+      "stageLabel": "빌드·서명",
+      "percentTotal": 45,
+      "percentToLaunch": 100,
+      "stagesDone": 6,
+      "stagesTotal": 11,
+      "remainingStages": [
+        "스토어 제출",
+        "심사 통과·출시",
+        "1차 사용자 피드백",
+        "광고·마케팅 집행",
+        "첫 수익"
+      ],
+      "commercialClear": null,
+      "blocked": null,
+      "waypoint": null,
+      "note": "com.rogan.cutsync · development 서명, 등록 기기 2대 전용",
+      "latestReport": null,
+      "updatedAt": "2026-08-25T08:23:00.088019",
+      "lastActiveAt": "2026-08-25T08:23:00.088019",
+      "etaText": null,
+      "version": "1.0.5",
+      "platforms": [
+        "ios"
+      ],
+      "distribution": [
+        {
+          "platform": "ios",
+          "status": "dev_signed_limited",
+          "readiness": "개발기기 전용 배포 — 등록된 기기 2대에서만 설치됩니다. 그 외 기기는 다운로드는 되지만 설치가 실패합니다.",
+          "policyNote": "iOS: Apple 개발자 서명이 기기 UDID 단위로 제한되어 있어, 받아도 등록되지 않은 기기에서는 설치가 실패합니다. 공개 배포가 아니라 등록된 기기 전용입니다.",
+          "downloadUrl": "https://delight0517.github.io/releasepilot-reports/downloads/ios/video_editor_auto_sync/index.html"
+        }
+      ]
+    },
+    {
+      "slug": "growth_tree_viewer",
+      "name": "Growth Tree Viewer",
+      "stage": "build_signed",
+      "stageLabel": "빌드·서명",
+      "percentTotal": 45,
+      "percentToLaunch": 100,
+      "stagesDone": 6,
+      "stagesTotal": 11,
+      "remainingStages": [
+        "스토어 제출",
+        "심사 통과·출시",
+        "1차 사용자 피드백",
+        "광고·마케팅 집행",
+        "첫 수익"
+      ],
+      "commercialClear": null,
+      "blocked": null,
+      "waypoint": null,
+      "note": "com.rogan.growthTreeViewer · development 서명, 등록 기기 2대 전용",
+      "latestReport": null,
+      "updatedAt": "2026-08-25T08:23:00.702153",
+      "lastActiveAt": "2026-08-25T08:23:00.702153",
+      "etaText": null,
+      "version": "1.0.0",
+      "platforms": [
+        "ios"
+      ],
+      "distribution": [
+        {
+          "platform": "ios",
+          "status": "dev_signed_limited",
+          "readiness": "개발기기 전용 배포 — 등록된 기기 2대에서만 설치됩니다. 그 외 기기는 다운로드는 되지만 설치가 실패합니다.",
+          "policyNote": "iOS: Apple 개발자 서명이 기기 UDID 단위로 제한되어 있어, 받아도 등록되지 않은 기기에서는 설치가 실패합니다. 공개 배포가 아니라 등록된 기기 전용입니다.",
+          "downloadUrl": "https://delight0517.github.io/releasepilot-reports/downloads/ios/growth_tree_viewer/index.html"
+        }
+      ]
+    },
+    {
+      "slug": "ReportHubApp",
+      "name": "리포트 허브",
+      "stage": "build_signed",
+      "stageLabel": "빌드·서명",
+      "percentTotal": 45,
+      "percentToLaunch": 100,
+      "stagesDone": 6,
+      "stagesTotal": 11,
+      "remainingStages": [
+        "스토어 제출",
+        "심사 통과·출시",
+        "1차 사용자 피드백",
+        "광고·마케팅 집행",
+        "첫 수익"
+      ],
+      "commercialClear": null,
+      "blocked": null,
+      "waypoint": null,
+      "note": "com.delight0517.reporthub · development 서명, 등록 기기 2대 전용",
+      "latestReport": null,
+      "updatedAt": "2026-08-25T08:23:01.310543",
+      "lastActiveAt": "2026-08-25T08:23:01.310543",
+      "etaText": null,
+      "version": "1.0",
+      "platforms": [
+        "ios"
+      ],
+      "distribution": [
+        {
+          "platform": "ios",
+          "status": "dev_signed_limited",
+          "readiness": "개발기기 전용 배포 — 등록된 기기 2대에서만 설치됩니다. 그 외 기기는 다운로드는 되지만 설치가 실패합니다.",
+          "policyNote": "iOS: Apple 개발자 서명이 기기 UDID 단위로 제한되어 있어, 받아도 등록되지 않은 기기에서는 설치가 실패합니다. 공개 배포가 아니라 등록된 기기 전용입니다.",
+          "downloadUrl": "https://delight0517.github.io/releasepilot-reports/downloads/ios/ReportHubApp/index.html"
         }
       ]
     },

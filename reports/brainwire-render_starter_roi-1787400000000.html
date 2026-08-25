@@ -1,0 +1,227 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Render 유료 전환, 실제로 뭐가 달라지나</title><style>
+  :root {
+    --ink: #1c2333; --ink-soft: #2a3348; --parchment: #f6f1e6; --parchment-card: #fffdf7;
+    --line: #ded2b8; --accent: #4f7cac; --accent-strong: #34597a;
+    --text: #241f14; --text-soft: #5c5644; --text-faint: #8b8368;
+    --tag-bg: #eef2f7; --tag-text: #34597a;
+    --muted: #898781; --baseline: #c3c2b7;
+    --series-free: #eb6834; --series-paid: #2a78d6; --good: #1baf7a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink: #0f1420; --parchment: #171c26; --parchment-card: #1f2532; --line: #333c4d;
+      --accent: #7fa8d6; --accent-strong: #a9c6e8;
+      --text: #ece6d8; --text-soft: #b8b19c; --text-faint: #7b7663;
+      --tag-bg: #22293a; --tag-text: #a9c6e8;
+      --muted: #898781; --baseline: #383835;
+      --series-free: #d95926; --series-paid: #3987e5; --good: #199e70;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ink: #0f1420; --parchment: #171c26; --parchment-card: #1f2532; --line: #333c4d;
+    --accent: #7fa8d6; --accent-strong: #a9c6e8;
+    --text: #ece6d8; --text-soft: #b8b19c; --text-faint: #7b7663;
+    --tag-bg: #22293a; --tag-text: #a9c6e8;
+    --muted: #898781; --baseline: #383835;
+    --series-free: #d95926; --series-paid: #3987e5; --good: #199e70;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--parchment); color: var(--text); font-family: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", "Segoe UI", sans-serif; line-height: 1.6; }
+  .page { max-width: 700px; margin: 0 auto; padding: 0 0 64px; }
+  .masthead { background: linear-gradient(180deg, var(--ink) 0%, var(--ink-soft) 100%); color: #eef3f8; padding: 28px 20px 24px; }
+  .eyebrow { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #c3d3e6; margin: 0 0 6px; font-weight: 600; }
+  .masthead h1 { font-family: Georgia, serif; font-size: 26px; margin: 0 0 8px; text-wrap: balance; }
+  .masthead p.sub { margin: 0; font-size: 14px; color: #c9d6e4; max-width: 55ch; }
+  .wrap { padding: 0 20px; }
+  section { background: var(--parchment-card); border: 1px solid var(--line); border-radius: 12px; padding: 18px 16px; margin: 18px 0; }
+  h2 { font-family: Georgia, serif; font-size: 19px; margin: 0 0 4px; color: var(--text); }
+  h2 + .lede { margin: 0 0 14px; color: var(--text-soft); font-size: 13.5px; }
+  p { margin: 0 0 12px; font-size: 14.5px; }
+  code { background: var(--tag-bg); color: var(--tag-text); padding: 1px 5px; border-radius: 4px; font-size: 13px; }
+  .hero { text-align: center; padding: 22px 16px 18px; }
+  .hero .big { font-family: Georgia, serif; font-size: 40px; line-height: 1.1; color: var(--series-paid); font-weight: 700; }
+  .hero .big .from { color: var(--series-free); }
+  .hero .arrow { color: var(--text-faint); font-size: 24px; }
+  .hero .cap { font-size: 13px; color: var(--text-soft); margin-top: 8px; }
+  figure { margin: 0; }
+  figcaption { font-size: 12.5px; color: var(--text-soft); margin-top: 10px; }
+  .legend { display: flex; gap: 16px; flex-wrap: wrap; margin: 0 0 12px; font-size: 12.5px; color: var(--text-soft); }
+  .legend i { display: inline-block; width: 11px; height: 11px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+  .scroll { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; min-width: 440px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--text-soft); font-weight: 600; font-size: 12.5px; }
+  td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  ul { margin: 0 0 12px; padding-left: 20px; font-size: 14.5px; }
+  li { margin-bottom: 6px; }
+  .callout { border-left: 3px solid var(--accent); background: var(--tag-bg); padding: 12px 14px; border-radius: 0 8px 8px 0; margin: 14px 0; font-size: 14px; }
+  .callout.warn { border-left-color: var(--series-free); }
+  .callout strong { color: var(--accent-strong); }
+  .step { display: flex; gap: 12px; margin-bottom: 14px; }
+  .step .n { flex: 0 0 26px; height: 26px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .step .n.done { background: var(--good); }
+  .step .b { flex: 1; }
+  .step .b b { display: block; font-size: 14.5px; margin-bottom: 2px; }
+  .step .b span { font-size: 13.5px; color: var(--text-soft); }
+  .foot { text-align: center; font-size: 12px; color: var(--text-faint); padding: 8px 20px 0; }
+</style>
+
+<div class="page">
+  <div class="masthead">
+    <p class="eyebrow">brainwire · 의사결정 리포트</p>
+    <h1>Render 유료 전환, 돈 낼 만한가?</h1>
+    <p class="sub">추정이 아니라 실측입니다. 오늘 직접 잰 숫자와 Render 공식 문서만 씁니다.</p>
+  </div>
+
+  <div class="wrap">
+
+    <section class="hero">
+      <div class="big"><span class="from">약 61초</span> <span class="arrow">→</span> 5.6초</div>
+      <div class="cap">폰에서 봇에게 메시지를 보냈을 때, <b>실사용 대부분의 경우</b> 답이 오기까지</div>
+    </section>
+
+    <section>
+      <h2>한 줄 결론</h2>
+      <p class="lede">세일즈 빼고 먼저.</p>
+      <p><b>평상시 속도는 이미 무료로 고쳤습니다.</b> 오늘 요청마다 돌던 <code>git pull</code>을 걷어냈고, 그건 돈과 무관했습니다.</p>
+      <p><b>유료가 사는 건 딱 하나 — "가끔 아예 답이 안 오는" 문제입니다.</b> 그런데 형의 사용 패턴에서는 그 "가끔"이 사실상 <b>거의 매번</b>입니다. 이유는 3번에 있습니다.</p>
+    </section>
+
+    <section>
+      <h2>1. 오늘 실제로 잰 숫자</h2>
+      <p class="lede">전부 오늘 측정했거나 Render 공식 문서에서 인용한 값입니다.</p>
+      <div class="scroll">
+        <table>
+          <thead><tr><th>항목</th><th>값</th><th>출처</th></tr></thead>
+          <tbody>
+            <tr><td>GitHub <code>git pull</code> 1회</td><td class="num">1.86초</td><td>실측 3회 (1.88 / 1.87 / 1.83)</td></tr>
+            <tr><td>저장소 전체 clone</td><td class="num">4.35초</td><td>실측</td></tr>
+            <tr><td>저장소 크기</td><td class="num">11 MB</td><td>실측</td></tr>
+            <tr><td>서버 응답 (깨어있을 때)</td><td class="num">0.23~0.40초</td><td>실측 5회</td></tr>
+            <tr><td>무료 플랜 중단 시점</td><td class="num">무활동 15분</td><td>Render 공식 문서</td></tr>
+            <tr><td>중단 후 재기동</td><td class="num">약 1분</td><td>Render 공식 문서</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>2. 메시지 한 건에 무슨 일이 벌어지나</h2>
+      <p class="lede">코드를 따라가서 센 것이지 어림짐작이 아닙니다.</p>
+      <p>봇에 답장 하나를 보내면 서버는 저장소를 <b>5번</b> 건드립니다 — 계정 조회, 상태 읽기, 상태 쓰기, 잡큐 읽기, 잡큐 쓰기. 고치기 전에는 <b>그 5번이 전부 GitHub 왕복</b>이었습니다.</p>
+      <p style="font-size:16px"><b>5회 × 1.86초 = 9.3초</b></p>
+      <div class="callout">
+        <strong>이 계산이 맞다는 독립적 증거:</strong> 2026-08-22에 실제로 잰 웹훅 왕복이 <b>7.9초</b>였습니다. 코드에서 센 예측치와 자릿수가 맞습니다 — 즉 그때의 느림은 콜드스타트가 아니라 <b>이 git pull 더미</b>였습니다.
+      </div>
+      <p>오늘 읽기 경로에 60초 캐시를 넣어 <b>5회 → 3회</b>로 줄였습니다. 쓰기는 일부러 그대로 뒀습니다 — 오래된 사본으로 쓰면 다른 기기가 올린 데이터를 덮어쓸 수 있고 실제로 그럴 뻔한 적이 있습니다. <b>읽기만 빨라지고 안전장치는 그대로</b>입니다.</p>
+    </section>
+
+    <section>
+      <h2>3. 형의 사용 패턴이 최악의 궁합인 이유</h2>
+      <p class="lede">이 리포트에서 제일 중요한 부분입니다.</p>
+      <p>무료 플랜은 <b>15분간 아무도 안 부르면 서버를 끕니다.</b> 그런데 개인 학습 봇을 15분마다 부르는 사람은 없습니다. 생각날 때 한 번, 자기 전에 한 번 던지죠.</p>
+      <p><b>즉 형이 보내는 거의 모든 메시지가 "꺼져 있는 서버"를 깨우는 첫 메시지입니다.</b> 콜드스타트는 예외 상황이 아니라 형에겐 기본값입니다.</p>
+      <div class="callout warn">
+        <strong>실제로 겪으신 일입니다.</strong> 오늘 저녁 19:58에 보낸 메시지에 답이 없었고, 로그를 보니 서버가 그 직후 재기동했습니다. 메시지가 서버가 깨어나는 사이에 끼어 있었던 겁니다.
+      </div>
+    </section>
+
+    <section>
+      <h2>4. 시나리오별 응답 시간</h2>
+      <p class="lede">짧을수록 좋습니다.</p>
+      <div class="legend">
+        <span><i style="background:var(--series-free)"></i>지금 (무료)</span>
+        <span><i style="background:var(--series-paid)"></i>Starter 전환 후</span>
+      </div>
+      <figure>
+        <svg viewBox="0 0 660 430" width="100%" role="img" aria-label="시나리오별 응답 시간 비교 막대그래프">
+          <title>시나리오별 응답 시간 비교</title>
+          <!-- 눈금 10px = 1초 -->
+          <g stroke="var(--baseline)" stroke-width="1" opacity="0.4">
+            <line x1="150" y1="14" x2="150" y2="350"/>
+            <line x1="300" y1="14" x2="300" y2="350"/>
+            <line x1="450" y1="14" x2="450" y2="350"/>
+            <line x1="600" y1="14" x2="600" y2="350"/>
+          </g>
+
+          <text x="0" y="26" font-size="26" fill="var(--text)" font-weight="600">방치 후 첫 메시지</text>
+          <rect x="0" y="38" width="610" height="26" rx="4" fill="var(--series-free)"/>
+          <text x="12" y="57" font-size="22" fill="#fff">약 61초 — 자주 아예 유실</text>
+          <rect x="0" y="72" width="56" height="26" rx="4" fill="var(--series-paid)"/>
+          <text x="68" y="91" font-size="22" fill="var(--text-soft)">5.6초</text>
+
+          <text x="0" y="148" font-size="26" fill="var(--text)" font-weight="600">연속 대화 중</text>
+          <rect x="0" y="160" width="56" height="26" rx="4" fill="var(--series-free)"/>
+          <text x="68" y="179" font-size="22" fill="var(--text-soft)">5.6초</text>
+          <rect x="0" y="194" width="56" height="26" rx="4" fill="var(--series-paid)"/>
+          <text x="68" y="213" font-size="22" fill="var(--text-soft)">5.6초 — 차이 없음</text>
+
+          <text x="0" y="270" font-size="26" fill="var(--text)" font-weight="600">"리포트" 조회</text>
+          <rect x="0" y="282" width="19" height="26" rx="4" fill="var(--series-free)"/>
+          <text x="31" y="301" font-size="22" fill="var(--text-soft)">1.9초</text>
+          <rect x="0" y="316" width="19" height="26" rx="4" fill="var(--series-paid)"/>
+          <text x="31" y="335" font-size="22" fill="var(--text-soft)">1.9초 — 캐시 적중 시 즉시</text>
+
+          <line x1="0" y1="352" x2="660" y2="352" stroke="var(--baseline)" stroke-width="2"/>
+          <g font-size="22" fill="var(--muted)" text-anchor="middle">
+            <text x="0" y="380">0</text><text x="150" y="380">15</text>
+            <text x="300" y="380">30</text><text x="450" y="380">45</text><text x="600" y="380">60</text>
+            <text x="330" y="414" font-size="23">응답까지 걸리는 시간 (초)</text>
+          </g>
+        </svg>
+        <figcaption>
+          아래 두 줄은 두 막대가 같습니다 — <b>이미 오늘 무료로 고쳤기 때문</b>입니다.
+          유료가 바꾸는 건 맨 윗줄 하나뿐이고, 3번에서 봤듯 그 윗줄이 형에겐 거의 매번입니다.
+        </figcaption>
+      </figure>
+      <div class="scroll" style="margin-top:16px">
+        <table>
+          <thead><tr><th>시나리오</th><th>지금 (무료)</th><th>Starter</th><th>차이</th></tr></thead>
+          <tbody>
+            <tr><td>방치 후 첫 메시지</td><td class="num">약 61초 / 유실</td><td class="num">5.6초</td><td class="num" style="color:var(--good)"><b>약 11배</b></td></tr>
+            <tr><td>연속 대화 중</td><td class="num">5.6초</td><td class="num">5.6초</td><td class="num">—</td></tr>
+            <tr><td>"리포트" 조회</td><td class="num">1.9초</td><td class="num">1.9초</td><td class="num">—</td></tr>
+            <tr><td>재배포 후 첫 요청</td><td class="num">+4.35초 재clone</td><td class="num">디스크 시 0초</td><td class="num">부가</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>5. 그래서 어떤 셋업을 하면 되나</h2>
+      <p class="lede">데이터 이전 작업은 <b>없습니다</b>. 운이 아니라 설계 덕분입니다 — 파일을 쓸 때마다 그 자리에서 GitHub에 커밋+푸시하므로, 컨테이너에는 "아직 안 올라간 데이터"가 존재할 수 없습니다. 컨테이너 안의 사본은 정본이 아니라 캐시고, 지금도 배포마다 날아갔다 다시 받고 있습니다.</p>
+      <div class="step"><div class="n done">✓</div><div class="b"><b>0단계 — 요청마다 하던 git pull 제거</b><span>이미 완료(오늘). 비용 0원. 평상시 속도는 이걸로 끝났습니다.</span></div></div>
+      <div class="step"><div class="n">1</div><div class="b"><b>1단계 — 플랜을 Starter로</b><span><code>render.yaml</code>의 <code>plan: free</code> 한 줄만 바꾸면 됩니다. 환경변수도 데이터도 그대로 유지되고, 되돌리기도 같은 한 줄입니다.</span></div></div>
+      <div class="step"><div class="n">2</div><div class="b"><b>2단계 — 영구 디스크 (선택)</b><span>붙이면 재배포마다 하던 11MB 재clone(4.35초)이 사라집니다. 없어도 동작에는 지장 없습니다.</span></div></div>
+      <div class="callout warn">
+        <strong>딱 하나 제가 확인 못 한 것 — 가격입니다.</strong> Render 요금 페이지가 스크립트로 그려져 값을 못 읽었습니다. 추측해서 적지 않겠습니다. 대시보드에서 월 요금을 확인하시고 위 "약 11배 / 유실 0건"과 견주어 판단해주세요.
+      </div>
+    </section>
+
+    <section>
+      <h2>6. 그다음 펼쳐지는 서비스</h2>
+      <p class="lede">형이 상담에서 답한 "적응형 퀴즈 교육자"가 도착점입니다. 서버가 항상 깨어 있어야 성립하는 것부터 순서대로.</p>
+      <div class="step"><div class="n">1</div><div class="b"><b>채팅 퀴즈</b><span>앱을 열지 않아도 텔레그램에서 한 문제씩 받고, 그냥 답장하면 채점. 4단계 질문(인출·연결·적용·창조)은 <b>이미 만들어지고 있고</b> 앱을 열어야만 보이는 상태입니다. 부품이 다 있어 제일 빠릅니다.</span></div></div>
+      <div class="step"><div class="n">2</div><div class="b"><b>영상 던지면 학습</b><span>유튜브 링크를 채팅에 붙이면 자막을 받아 요약하고 바로 퀴즈로. 자막 수집기는 이미 서버에 있습니다.</span></div></div>
+      <div class="step"><div class="n">3</div><div class="b"><b>주제 지정 학습</b><span>주제만 말하면 커리큘럼을 짜서 매일 한 조각씩. 새로 설계해야 해서 가장 오래 걸립니다.</span></div></div>
+      <div class="callout">
+        <strong>왜 서버가 항상 깨어 있어야 하나:</strong> 1·2단계는 형이 <b>먼저 말을 거는</b> 방식입니다("퀴즈 시작해줘", 링크 붙여넣기). 그 첫 마디가 매번 60초를 기다리거나 유실되면, 기능이 아무리 완성돼도 결국 안 쓰게 됩니다. 3단계는 서버가 <b>먼저 보내는</b> 방식이라 깨어 있지 않으면 성립조차 안 합니다.
+      </div>
+    </section>
+
+    <section>
+      <h2>7. 정직하게, 사지 말아야 할 이유</h2>
+      <p>세일즈맨처럼 해달라고 하셨지만 반대편도 적습니다.</p>
+      <ul>
+        <li><b>연속 대화 중 속도는 1초도 안 빨라집니다.</b> 그건 오늘 무료로 끝냈습니다.</li>
+        <li><b>5.6초는 여전히 남습니다.</b> 쓰기 경로의 GitHub 왕복은 안전 때문에 일부러 남긴 것이라 유료여도 그대로입니다.</li>
+        <li><b>지금 급하지 않다면</b> 3단계(서버가 먼저 보내는 학습)를 실제로 만들 때 전환해도 늦지 않습니다. 그때는 선택이 아니라 필수가 됩니다.</li>
+      </ul>
+      <p style="margin-bottom:0">그럼에도 제 추천은 <b>전환</b>입니다 — 이유는 속도가 아니라 <b>유실</b>입니다. 답이 늦는 건 참을 수 있지만, 보낸 게 사라지면 그 도구는 신뢰를 잃고 안 쓰게 됩니다.</p>
+    </section>
+
+    <p class="foot">측정: 2026-08-24 · 실측값과 Render 공식 문서만 사용 · 가격은 미확인</p>
+  </div>
+</div>
