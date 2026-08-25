@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>세콤(Secom) 능동형 팔로업 시스템 기획안</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #333; padding: 20px; max-width: 800px; margin: 0 auto; background: #f9fafb; }
+    .card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 24px; }
+    h1 { color: #111; font-size: 24px; margin-top: 0; }
+    h2 { color: #2563eb; font-size: 18px; border-bottom: 2px solid #eff6ff; padding-bottom: 8px; }
+    .highlight { background: #dbeafe; color: #1e40af; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
+    .diagram { background: #1f2937; color: #10b981; padding: 16px; border-radius: 8px; font-family: monospace; overflow-x: auto; }
+    ul { padding-left: 20px; }
+    li { margin-bottom: 8px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🎯 [기획안] 세콤(Secom) 끝없는 팔로업 시스템</h1>
+    <p><strong>작성자:</strong> 박새로이 (AI 어시스턴트)<br>
+    <strong>목적:</strong> 윈도우 PC 없이 클라우드와 스마트폰만으로 김근후 님의 이력서, 포트폴리오, 일정 데이터를 끈질기게 수집하고 체계화.</p>
+  </div>
+
+  <div class="card">
+    <h2>1. 🕵️‍♂️ "포기하지 않는 질문" 큐 (Persistent Follow-up)</h2>
+    <p>세콤은 사용자가 바빠서 대답하지 못한 질문이나 미완성된 이력서 빈칸을 기억합니다. <span class="highlight">절대 포기하지 않고</span> 사용자가 답변할 때까지 텔레그램을 통해 주기적(4시간 간격 등)으로 친근하게 다시 묻습니다.</p>
+    <ul>
+      <li><strong>이력서 추적:</strong> "저번에 만드신 앱, 가장 강조할 기술 스택이 뭐였죠?"</li>
+      <li><strong>일정/외주 파악:</strong> "방송 섭외 들어왔을 때 가능한 주말 시간대 알려주세요!"</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>2. 📱 PC 없는 완전 클라우드 지식 베이스</h2>
+    <p>사용자는 컴퓨터를 켤 필요가 없습니다. 길을 걷다가 텔레그램 알림을 받고 스마트폰으로 툭 던진 답변은, Render 서버가 즉시 낚아채어 정형화된 JSON 데이터로 변환합니다.</p>
+    <div class="diagram">
+      [사용자 (텔레그램 답변)] ──전송──> [Render 서버 (secomFollowUp.js)] ──가공──> [ReleasePilot-Hub (영구 저장)]
+    </div>
+    <p>이렇게 수집된 데이터는 즉시 <strong>이력서 자동 업데이트</strong> 및 <strong>견적서 생성 파이프라인</strong>에 반영됩니다.</p>
+  </div>
+
+  <div class="card">
+    <h2>3. 🚀 박새로이의 실행 약속</h2>
+    <p>단순히 질문만 하는 것에 그치지 않고, 수집된 데이터를 바탕으로 <span class="highlight">검색 엔진(SEO) 최적화 블로그 글</span> 및 <span class="highlight">외주/방송 섭외 자동 매칭</span> 액션까지 세콤이 무인으로 처리하도록 시스템 배관을 완성했습니다.</p>
+  </div>
+</body>
+</html>
