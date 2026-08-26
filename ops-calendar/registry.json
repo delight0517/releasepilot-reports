@@ -8,6 +8,18 @@
   },
   "entries": [
     {
+      "id": "artstation-monthly-sync",
+      "category": "infra",
+      "project": "releasepilot-reports (game-artist)",
+      "source": "Hermes cronjob (Mac, no-agent script: artstation-monthly-sync.sh → game-artist/sync_artstation.py)",
+      "scheduleText": "매주 수요일 21:30 KST 기동, 마지막 동기화가 28일 미만이면 스킵 → 실질 주기 월 1회",
+      "recurrence": { "type": "interval", "days": 28, "anchorDate": "2026-08-26", "weekday": 3, "hour": 21, "minute": 30 },
+      "purpose": "game-artist 포트폴리오 '제작물' 그리드를 ArtStation 프로필(kaito_ren)과 동기화. 신규 작업 감지 → 커버 이미지 자체 호스팅 → works.json 갱신 → push. 신규 작업이 있을 때만 알림, 없으면 조용히(noop).",
+      "registeredAt": "2026-08-26",
+      "registeredBy": "Hermes session (ox-alpha, 사용자 요청)",
+      "status": "active"
+    },
+    {
       "id": "ops-monitor-weekly",
       "category": "infra",
       "project": "releasepilot-reports (ops-calendar)",
