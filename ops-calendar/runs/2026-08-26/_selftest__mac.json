@@ -1,0 +1,25 @@
+{
+  "date": "2026-08-26",
+  "taskId": "_selftest",
+  "host": "mac",
+  "counters": {
+    "total": 1,
+    "ok": 1,
+    "noop": 0,
+    "skip": 0,
+    "fail": 0
+  },
+  "firstAt": "2026-08-26T10:23:12Z",
+  "lastAt": "2026-08-26T10:23:12Z",
+  "runs": [
+    {
+      "at": "2026-08-26T10:23:12Z",
+      "outcome": "ok",
+      "durationMs": 16,
+      "exitCode": 0,
+      "produced": [],
+      "note": "hello world",
+      "error": null
+    }
+  ]
+}
