@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>단밤(Hermes) 숏츠 스튜디오 - 23 앱릴리저 통합 운영 보고서</title>
+  
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: 'dark' });
+  </script>
+
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card: #161b22;
+      --card-border: #30363d;
+      --accent: #f59e0b;
+      --accent-glow: rgba(245, 158, 11, 0.15);
+      --text: #f3f4f6;
+      --text-muted: #8b949e;
+      --success: #10b981;
+      --sat: env(safe-area-inset-top);
+      --sab: env(safe-area-inset-bottom);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      padding: calc(20px + var(--sat)) 16px calc(40px + var(--sab));
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 12px;
+      background: var(--accent-glow);
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      margin-bottom: 12px;
+    }
+    .badge.live {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+      border-color: var(--success);
+    }
+    h1 {
+      font-size: 26px;
+      color: #fff;
+      margin-bottom: 8px;
+      font-weight: 800;
+    }
+    .subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .card h2 {
+      font-size: 18px;
+      color: var(--accent);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    p, li {
+      font-size: 14px;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    ul, ol { padding-left: 20px; margin-bottom: 12px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 13px;
+    }
+    th, td {
+      border: 1px solid var(--card-border);
+      padding: 10px 12px;
+      text-align: left;
+    }
+    th {
+      background: rgba(255,255,255,0.03);
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .mermaid {
+      background: #111;
+      padding: 16px;
+      border-radius: 8px;
+      margin: 16px 0;
+      overflow-x: auto;
+      border: 1px solid var(--card-border);
+    }
+    .callout {
+      background: rgba(245, 158, 11, 0.08);
+      border-left: 4px solid var(--accent);
+      padding: 12px 16px;
+      border-radius: 6px;
+      margin: 16px 0;
+      font-size: 13px;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .footer a { color: var(--accent); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <span class="badge live">● 23 앱릴리저 LIVE 운영 중</span>
+    <span class="badge">비용: 0원 (무자본 파이프라인)</span>
+    
+    <h1>🚀 단밤(Hermes) 숏츠 스튜디오 — 통합 운영 보고서</h1>
+    <p class="subtitle">작성자: 박새로이 | 배포 허브: 23 App Releaser / ReleasePilot</p>
+
+    <div class="callout">
+      💡 <strong>박새로이 프로토콜:</strong> 앞으로 추가되는 모든 AI 모델 및 파이프라인 개조 사항은 이 23 앱릴리저 공식 URL 보고서에 실시간으로 기록됩니다.
+    </div>
+
+    <!-- 1. 아키텍처 -->
+    <div class="card">
+      <h2>1. ⚙️ 전체 시스템 아키텍처 (Flowchart)</h2>
+      <p>외부 유료 API에 종속되지 않고, 윈도우 로컬 자원과 무료 오픈소스를 융합하여 구축한 완전 자동화 시스템입니다.</p>
+      
+      <div class="mermaid">
+flowchart TD
+    subgraph Client["📱 쇼핑몰 프론트엔드 (PWA / iPhone)"]
+        UI["숏츠 뷰어 (Snap Scroll)"]
+        Btn["[⚡ 재생성] 버튼"]
+    end
+
+    subgraph Backend["⚙️ Windows Hermes 사령탑"]
+        Daemon["hermes-daemon.py\n(큐 감시 & 자동 복구)"]
+        Hub["openrouter_hub.py\n(무료 대본 AI)"]
+        Video["video_maker.py\n(음성+영상+자막 합성)"]
+    end
+
+    subgraph FreeAI["🧠 100% 무료 AI 엔진"]
+        LLM["Llama 3.1 8B (무료 모델)"]
+        TTS["MS Edge-TTS (선히 한국어)"]
+        Render["MoviePy + Pillow 자막"]
+    end
+
+    UI --> Btn
+    Btn -->|1. 숏츠 생성 요청| Daemon
+    Daemon -->|2. 대본 기획 지휘| Hub
+    Hub -->|API 호출 (0원)| LLM
+    LLM -->|대본 작성 완료| Hub
+    Hub -->|3. 영상 렌더링 지시| Video
+    Video --> TTS
+    Video --> Render
+    Render -->|4. 완성된 MP4 숏츠| Daemon
+      </div>
+    </div>
+
+    <!-- 2. AI 라인업 -->
+    <div class="card">
+      <h2>2. 🤖 AI 모델 및 엔진 라인업 (Model Roster)</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>구분</th>
+            <th>적용 엔진 / 모델명</th>
+            <th>비용</th>
+            <th>역할 및 특징</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>대본 기획</strong></td>
+            <td><code>meta-llama/llama-3.1-8b-instruct:free</code></td>
+            <td><strong>0원 (무료)</strong></td>
+            <td>오픈라우터 무료 모델. 상품명 기반 15초 숏츠 맞춤 대본 작성.</td>
+          </tr>
+          <tr>
+            <td><strong>장애 우회 (Fallback)</strong></td>
+            <td><code>huggingfaceh4/zephyr-7b-beta:free</code></td>
+            <td><strong>0원 (무료)</strong></td>
+            <td>404/401 에러 발생 시 시스템 멈춤 방지용 자동 대체 투입 모델.</td>
+          </tr>
+          <tr>
+            <td><strong>AI 성우 (TTS)</strong></td>
+            <td><code>Microsoft Edge-TTS (ko-KR-SunHi)</code></td>
+            <td><strong>0원 (무료)</strong></td>
+            <td>자연스러운 고품질 한국어 여성 음성. API 키/결제 불필요.</td>
+          </tr>
+          <tr>
+            <td><strong>영상 합성</strong></td>
+            <td><code>MoviePy 1.0.3 + Pillow</code></td>
+            <td><strong>0원 (로컬)</strong></td>
+            <td>9:16 세로형 크롭 및 노란색 굵은 테두리 숏츠 자막 합성.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 3. 로컬 파일 구조 -->
+    <div class="card">
+      <h2>3. 📂 로컬 파일 및 에셋 배치도</h2>
+      <ul>
+        <li><code>frontend/</code> : 쇼핑몰 화면 (아이폰 사파리에서 홈 화면에 추가 시 진짜 네이티브 앱으로 구동)</li>
+        <li><code>backend_windows/hermes-daemon.py</code> : 백그라운드에서 큐를 감시하며 작업을 자동 복구/실행하는 사령관</li>
+        <li><code>backend_windows/openrouter_hub.py</code> : 무료 대본 AI 호출 허브</li>
+        <li><code>backend_windows/video_maker.py</code> : 음성 생성 + 자막 렌더링 엔진</li>
+        <li><code>start_windows.bat</code> : 플러그인 찌꺼기를 자동 청소하고 전체 시스템을 동시 실행하는 런처</li>
+      </ul>
+    </div>
+
+    <!-- 4. 진척도 -->
+    <div class="card">
+      <h2>4. 📈 마일스톤 및 로드맵</h2>
+      <ul>
+        <li>✅ 쇼핑몰 PWA 및 숏츠 세로 스냅 뷰어 UI 완성</li>
+        <li>✅ 오픈라우터 평생 무료 모델 연동</li>
+        <li>✅ MS Edge-TTS 및 Pillow 숏츠 자막 합성 엔진 구축 완료</li>
+        <li>✅ 23 앱릴리저(ReleasePilot) 공식 웹 URL 보고서 배포 완료</li>
+        <li>⏳ 실제 촬영한 상품 영상(<code>bg_sample.mp4</code>) 교체 테스트</li>
+      </ul>
+    </div>
+
+    <div class="footer">
+      <p>단밤(Hermes) 숏츠 스튜디오 · <a href="https://delight0517.github.io/releasepilot-reports/">23 App Releaser Hub</a></p>
+    </div>
+  </div>
+
+</body>
+</html>
