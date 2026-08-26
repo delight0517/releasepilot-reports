@@ -511,5 +511,18 @@
     "reportKind": "design_review",
     "reportRevision": 1,
     "publishedAt": "2026-08-13T00:00:00.000"
+  },
+  {
+    "id": "1787400000000000",
+    "file": "danbam-shorts-studio-master-report.html",
+    "appName": "단밤 숏츠 스튜디오",
+    "displayName": "단밤 숏츠 스튜디오",
+    "intent": "박새로이 프로토콜 — 쇼핑몰 숏츠 PWA 및 100% 무자본 AI 렌더링 파이프라인 통합 운영 보고서",
+    "version": "1.0.0",
+    "reportKind": "architecture_blueprint",
+    "reportRevision": 1,
+    "publishedAt": "2026-08-27T00:00:00.000000Z",
+    "platform": "windows",
+    "iconUrl": null
   }
 ]
