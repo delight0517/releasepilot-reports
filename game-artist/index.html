@@ -3,533 +3,498 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>김근후 — 3D Game Artist × AI-assisted Creative Designer</title>
-<meta name="description" content="김근후 3D Game Artist 포트폴리오 — 3ds Max, Substance 3D Painter 기반 스타일라이즈드·핸드페인팅 게임 에셋 제작.">
+<title>김근후 — 3D 게임 아티스트 · 홍익대 게임그래픽</title>
+<meta name="description" content="홍익대학교 게임그래픽학과 김근후 — 3ds Max 모델링과 Substance 3D Painter 핸드페인팅으로 게임 속 스타일라이즈드 오브제·환경 에셋을 만드는 3D 게임 아티스트 포트폴리오.">
 <link rel="canonical" href="https://delight0517.github.io/releasepilot-reports/game-artist/">
 <meta property="og:type" content="profile">
-<meta property="og:title" content="김근후 — 3D Game Artist × AI-assisted Creative Designer">
-<meta property="og:description" content="3ds Max·Substance 3D Painter 기반 스타일라이즈드 게임 에셋 포트폴리오.">
+<meta property="og:title" content="김근후 — 3D 게임 아티스트">
+<meta property="og:description" content="3ds Max 모델링 × Substance 3D Painter 핸드페인팅. 스타일라이즈드 게임 오브제·환경 에셋 포트폴리오.">
 <meta property="og:url" content="https://delight0517.github.io/releasepilot-reports/game-artist/">
 <meta property="og:image" content="https://delight0517.github.io/releasepilot-reports/game-artist/assets/artstation/auto/2Lqbgg.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="김근후 — 3D Game Artist">
-<meta name="twitter:description" content="3ds Max·Substance 3D Painter 기반 스타일라이즈드 게임 에셋 포트폴리오.">
+<meta name="twitter:title" content="김근후 — 3D 게임 아티스트">
+<meta name="twitter:description" content="3ds Max 모델링 × Substance 3D Painter 핸드페인팅 포트폴리오.">
 <meta name="twitter:image" content="https://delight0517.github.io/releasepilot-reports/game-artist/assets/artstation/auto/2Lqbgg.jpg">
 <link rel="icon" href="../icons/icon-192.png">
-<meta name="theme-color" content="#0b0e13">
+<meta name="theme-color" content="#f6f3ec">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700;900&display=swap">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
   :root {
-    --bg: #0b0e13;
-    --bg-2: #0e1219;
-    --panel: #12161f;
-    --panel-2: #161b26;
-    --line: rgba(235,240,255,0.09);
-    --line-strong: rgba(235,240,255,0.16);
-    --ink: #f2f4f8;
-    --ink-dim: #a7afc0;
-    --ink-faint: #666f82;
-    --gold: #e8b04b;
-    --gold-dim: rgba(232,176,75,0.14);
-    --gold-line: rgba(232,176,75,0.38);
-    --sans: "Pretendard Variable", Pretendard, -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
-    --display: "Anton", "Pretendard Variable", sans-serif;
+    --paper: #f6f3ec;
+    --paper-2: #efeadf;
+    --card: #fdfbf6;
+    --ink: #1c1915;
+    --ink-dim: #57503f;
+    --ink-faint: #8b8272;
+    --line: #ddd5c6;
+    --line-strong: #c9bfab;
+    --accent: #c94f21;      /* 다홍 — '서울의 밤' 간판 불빛에서 가져온 색 */
+    --accent-dim: rgba(201,79,33,0.08);
+    --serif: "Noto Serif KR", "Apple SD Gothic Neo", serif;
+    --sans: "Pretendard Variable", Pretendard, -apple-system, "Apple SD Gothic Neo", sans-serif;
     --mono: ui-monospace, "SF Mono", Menlo, monospace;
-    --maxw: 1160px;
-    --prose-w: 760px;
+    --maxw: 1040px;
   }
   * { box-sizing: border-box; overflow-wrap: break-word; }
   html { scroll-behavior: smooth; }
   body {
-    margin: 0; background: var(--bg); color: var(--ink);
-    font-family: var(--sans); line-height: 1.65; font-size: 15px;
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: var(--sans); font-size: 15.5px; line-height: 1.72;
     -webkit-font-smoothing: antialiased;
   }
-  ::selection { background: var(--gold); color: #14100a; }
-  a { color: inherit; }
+  ::selection { background: var(--ink); color: var(--paper); }
   img { display: block; }
+  a { color: inherit; }
   .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
 
-  /* ---------- top nav ---------- */
-  .topnav {
-    position: fixed; inset: 0 0 auto 0; z-index: 60;
-    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-    background: rgba(11,14,19,0.72); border-bottom: 1px solid var(--line);
-  }
-  .topnav .wrap { display: flex; align-items: center; gap: 22px; height: 56px; }
-  .brand { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none; white-space: nowrap; }
-  .brand b { color: var(--gold); font-weight: 600; }
-  .topnav .links { display: flex; gap: 18px; margin-left: auto; }
-  .topnav .links a { font-size: 13px; color: var(--ink-dim); text-decoration: none; }
-  .topnav .links a:hover { color: var(--ink); }
-  .btn-artstation {
-    display: inline-flex; align-items: center; gap: 7px;
-    font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em;
-    color: #14100a !important; background: var(--gold); border-radius: 999px;
-    padding: 7px 14px; text-decoration: none; font-weight: 700; white-space: nowrap;
-  }
-  .btn-artstation:hover { filter: brightness(1.08); }
-  @media (max-width: 720px) { .topnav .links { display: none; } .topnav .wrap { justify-content: space-between; } }
+  /* ───────── nav : 조용한 상단바 ───────── */
+  .topnav { position: sticky; top: 0; z-index: 50; background: rgba(246,243,236,0.92);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+  .topnav .wrap { display: flex; align-items: baseline; gap: 20px; height: 58px; align-items: center; }
+  .topnav .who { font-family: var(--serif); font-weight: 700; font-size: 15px; text-decoration: none; letter-spacing: -0.01em; }
+  .topnav .role { font-size: 11px; color: var(--ink-faint); letter-spacing: 0.04em; }
+  .topnav .links { margin-left: auto; display: flex; gap: 20px; align-items: center; }
+  .topnav .links a { font-size: 13.5px; color: var(--ink-dim); text-decoration: none; }
+  .topnav .links a:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 4px; }
+  .topnav .mail { color: var(--accent) !important; font-weight: 600; }
+  @media (max-width: 680px) { .topnav .role, .topnav .links a:not(.mail) { display: none; } }
 
-  /* ---------- hero ---------- */
-  .hero { position: relative; min-height: 92vh; display: flex; align-items: flex-end; isolation: isolate; overflow: hidden; }
-  .hero-bg { position: absolute; inset: 0; z-index: -2; }
-  .hero-bg img { width: 100%; height: 100%; object-fit: cover; object-position: center 30%; animation: heroDrift 26s ease-in-out infinite alternate; transform-origin: center; }
-  @keyframes heroDrift { from { transform: scale(1); } to { transform: scale(1.07); } }
-  .hero-shade { position: absolute; inset: 0; z-index: -1;
-    background:
-      linear-gradient(180deg, rgba(11,14,19,0.42) 0%, rgba(11,14,19,0.12) 34%, rgba(11,14,19,0.86) 74%, var(--bg) 98%),
-      linear-gradient(90deg, rgba(11,14,19,0.78) 0%, rgba(11,14,19,0.25) 52%, rgba(11,14,19,0.05) 100%);
-  }
-  .hero-inner { padding: 140px 0 64px; width: 100%; }
-  .eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); margin: 0 0 16px; display: flex; align-items: center; gap: 10px; }
-  .eyebrow::before { content: ""; width: 26px; height: 1px; background: var(--gold); display: inline-block; }
-  h1 { margin: 0; line-height: 0.98; }
-  h1 .kr { display: block; font-size: clamp(46px, 8.4vw, 96px); font-weight: 800; letter-spacing: -0.02em; }
-  h1 .en { display: block; margin-top: 14px; font-family: var(--display); font-weight: 400; font-size: clamp(21px, 3.6vw, 44px); letter-spacing: 0.045em; text-transform: uppercase; color: transparent; -webkit-text-stroke: 1.2px rgba(242,244,248,0.85); }
-  .lede { max-width: 54ch; font-size: 15.5px; color: var(--ink-dim); margin: 20px 0 0; }
-  .lede b { color: var(--ink); font-weight: 600; }
-  .hero-cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
-  .btn-primary, .btn-ghost {
-    display: inline-flex; align-items: center; gap: 8px; text-decoration: none;
-    font-size: 14px; font-weight: 600; border-radius: 10px; padding: 12px 22px; min-height: 44px;
-  }
-  .btn-primary { background: var(--gold); color: #14100a; }
-  .btn-primary:hover { filter: brightness(1.08); }
-  .btn-ghost { border: 1px solid var(--line-strong); color: var(--ink); background: rgba(11,14,19,0.35); }
-  .btn-ghost:hover { border-color: var(--gold-line); color: var(--gold); }
-  .hero-meta { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 36px; padding-top: 18px; border-top: 1px solid var(--line); }
-  .hero-meta span { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-faint); }
-  .hero-meta span em { color: var(--ink-dim); font-style: normal; }
-  @media (max-width: 640px) { .hero-inner { padding: 120px 0 48px; } }
+  /* ───────── hero : 이름 → 한 줄 정의 → 대표작 ───────── */
+  .hero { padding: 84px 0 40px; }
+  .hero .kicker { font-family: var(--mono); font-size: 11px; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--ink-faint); margin: 0 0 26px; }
+  .hero h1 { font-family: var(--serif); font-weight: 900; font-size: clamp(52px, 9vw, 108px);
+    line-height: 1.02; letter-spacing: -0.015em; margin: 0 0 22px; }
+  .hero .define { font-size: clamp(17px, 2.4vw, 21px); line-height: 1.55; margin: 0 0 14px;
+    max-width: 34em; text-wrap: pretty; }
+  .hero .define b { font-weight: 700; }
+  .hero .sub { font-size: 14.5px; color: var(--ink-dim); max-width: 44em; margin: 0 0 30px; }
+  .tool-line { font-family: var(--mono); font-size: 12px; color: var(--ink-faint);
+    letter-spacing: 0.02em; padding-top: 16px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 6px 0; }
+  .tool-line i { font-style: normal; color: var(--line-strong); margin: 0 10px; }
 
-  /* ---------- role strip ---------- */
-  .role-strip { border-block: 1px solid var(--line); background: var(--bg-2); }
-  .role-strip .wrap { display: grid; grid-template-columns: repeat(3, 1fr); }
-  .role-cell { padding: 18px 22px; border-left: 1px solid var(--line); }
-  .role-cell:first-child { border-left: none; padding-left: 0; }
-  .role-cell .k { font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); margin: 0 0 5px; }
-  .role-cell .v { font-size: 13.5px; color: var(--ink-dim); margin: 0; }
-  .role-cell .v b { color: var(--ink); font-weight: 600; }
-  @media (max-width: 860px) { .role-strip .wrap { grid-template-columns: 1fr; } .role-cell { border-left: none; border-top: 1px solid var(--line); padding: 14px 0; } .role-cell:first-child { border-top: none; } }
+  /* 대표작 히어로 이미지 — 텍스트 겹침 없이, 캡션만 */
+  .showcase { position: relative; margin: 46px 0 0; border-radius: 4px; overflow: hidden; background: var(--paper-2); }
+  .showcase img { width: 100%; height: auto; }
+  .showcase figcaption {
+    position: absolute; left: 0; right: 0; bottom: 0; display: flex; justify-content: space-between; align-items: baseline; gap: 16px;
+    padding: 40px 20px 14px; font-size: 12.5px; color: #fff;
+    background: linear-gradient(180deg, transparent, rgba(15,12,8,0.62)); }
+  .showcase figcaption .t { font-weight: 600; }
+  .showcase figcaption .m { font-family: var(--mono); font-size: 11px; opacity: 0.85; white-space: nowrap; }
 
-  /* ---------- sections ---------- */
-  section { padding: 88px 0 0; scroll-margin-top: 40px; }
-  .section-head { display: flex; align-items: baseline; gap: 18px; margin-bottom: 28px; flex-wrap: wrap; }
-  .section-head .idx { font-family: var(--display); font-size: 15px; letter-spacing: 0.1em; color: var(--gold); }
-  .section-head h2 { font-size: clamp(22px, 3vw, 30px); font-weight: 800; letter-spacing: -0.01em; margin: 0; }
-  .section-head p { margin: 0; font-size: 13px; color: var(--ink-faint); flex-basis: 100%; max-width: 68ch; }
+  /* ───────── section 공통 ───────── */
+  section { padding: 96px 0 0; scroll-margin-top: 30px; }
+  .sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
+    border-bottom: 2px solid var(--ink); padding-bottom: 12px; margin-bottom: 8px; flex-wrap: wrap; }
+  .sec-head h2 { font-family: var(--serif); font-weight: 900; font-size: clamp(24px, 3.4vw, 32px);
+    letter-spacing: -0.01em; margin: 0; }
+  .sec-head .aside { font-size: 12.5px; color: var(--ink-faint); }
+  .sec-head .aside b { color: var(--accent); font-weight: 600; }
 
-  .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.7s ease, transform 0.7s ease; }
-  .reveal.on { opacity: 1; transform: none; }
-  @media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto; }
-    .reveal { opacity: 1; transform: none; transition: none; }
-    .hero-bg img { animation: none; }
-    .marquee-track { animation: none !important; flex-wrap: wrap; }
-  }
+  /* ───────── 대표 작업 : 지그재그 대형 행 ───────── */
+  .feat { display: grid; grid-template-columns: 7fr 5fr; gap: 36px; align-items: end; padding: 42px 0 0; }
+  .feat:nth-of-type(even) { direction: rtl; }
+  .feat:nth-of-type(even) > * { direction: ltr; }
+  .feat .img { border-radius: 4px; overflow: hidden; background: var(--paper-2); }
+  .feat .img img { width: 100%; height: auto; transition: transform 0.7s cubic-bezier(.2,.7,.2,1); }
+  .feat:hover .img img { transform: scale(1.02); }
+  .feat .info { padding-bottom: 6px; }
+  .feat .num { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--accent); }
+  .feat h3 { font-family: var(--serif); font-weight: 900; font-size: clamp(20px, 2.6vw, 25px);
+    line-height: 1.3; margin: 6px 0 8px; }
+  .feat .meta { font-family: var(--mono); font-size: 11px; letter-spacing: 0.05em; color: var(--ink-faint); margin: 0 0 12px; }
+  .feat .desc { font-size: 14px; color: var(--ink-dim); margin: 0 0 14px; }
+  .feat .go { font-size: 13.5px; font-weight: 600; color: var(--accent); text-decoration: none; border-bottom: 1.5px solid transparent; }
+  .feat .go:hover { border-color: var(--accent); }
+  @media (max-width: 800px) { .feat { grid-template-columns: 1fr; gap: 14px; } }
 
-  /* ---------- works gallery ---------- */
-  .works-cols { columns: 2; column-gap: 16px; }
-  @media (min-width: 1024px) { .works-cols { columns: 3; } }
-  @media (max-width: 680px) { .works-cols { columns: 1; } }
-  .work-card {
-    break-inside: avoid; position: relative; display: block; margin-bottom: 16px;
-    border-radius: 12px; overflow: hidden; text-decoration: none; color: var(--ink);
-    background: var(--panel); border: 1px solid var(--line);
-  }
-  .work-card img { width: 100%; height: auto; transition: transform 0.6s cubic-bezier(.2,.7,.2,1); }
-  .work-card:hover img, .work-card:focus-visible img { transform: scale(1.045); }
-  .work-card .veil { position: absolute; inset: 0; background: linear-gradient(180deg, transparent 46%, rgba(7,9,13,0.88)); opacity: 0.92; }
-  .work-card .t { position: absolute; left: 16px; right: 16px; bottom: 14px; }
-  .work-card .t .name { font-weight: 700; font-size: 15.5px; display: block; }
-  .work-card .t .sub { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.08em; color: var(--ink-dim); text-transform: uppercase; display: flex; gap: 10px; align-items: center; margin-top: 3px; }
-  .chip-new { background: var(--gold); color: #14100a; font-weight: 700; border-radius: 4px; padding: 1px 7px; letter-spacing: 0.1em; }
-  .badge-video { border: 1px solid var(--line-strong); border-radius: 4px; padding: 1px 7px; color: var(--ink-dim); }
-  .work-card .desc { position: absolute; left: 16px; right: 16px; bottom: 58px; font-size: 12.5px; color: var(--ink-dim); max-height: 0; opacity: 0; overflow: hidden; transition: all 0.45s ease; }
-  .work-card:hover .desc, .work-card:focus-visible .desc { max-height: 130px; opacity: 1; }
-  .works-foot { margin-top: 18px; font-size: 13px; color: var(--ink-faint); }
-  .works-foot a { color: var(--gold); text-decoration: none; border-bottom: 1px solid var(--gold-line); }
-  .sync-note { font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint); letter-spacing: 0.06em; }
+  /* ───────── 나머지 작업 : 2열 목록 ───────── */
+  .rest-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px 28px; margin-top: 48px; }
+  @media (max-width: 720px) { .rest-grid { grid-template-columns: 1fr; } }
+  .work-item { text-decoration: none; }
+  .work-item .thumb { border-radius: 4px; overflow: hidden; background: var(--paper-2); aspect-ratio: 16/10; }
+  .work-item .thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s cubic-bezier(.2,.7,.2,1); }
+  .work-item:hover .thumb img { transform: scale(1.03); }
+  .work-item .cap { display: flex; justify-content: space-between; gap: 12px; padding-top: 10px; }
+  .work-item .cap .n { font-weight: 600; font-size: 14.5px; }
+  .work-item .cap .d { font-family: var(--mono); font-size: 11px; color: var(--ink-faint); white-space: nowrap; }
+  .works-foot { margin-top: 40px; padding-top: 18px; border-top: 1px solid var(--line);
+    display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 13px; color: var(--ink-faint); }
+  .works-foot a { color: var(--accent); font-weight: 600; text-decoration: none; }
+  .works-foot a:hover { text-decoration: underline; text-underline-offset: 4px; }
 
-  /* ---------- pipeline ---------- */
-  .pipeline { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--panel); }
-  .step { padding: 22px 18px; border-left: 1px solid var(--line); position: relative; }
-  .step:first-child { border-left: none; }
-  .step .n { font-family: var(--display); font-size: 26px; color: var(--gold); opacity: 0.55; }
-  .step h3 { font-size: 15px; margin: 6px 0 4px; }
-  .step p { font-size: 12.5px; color: var(--ink-faint); margin: 0; line-height: 1.55; }
-  .step::after { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--gold), transparent); opacity: 0; }
-  .step:hover::after { opacity: 1; }
-  @media (max-width: 960px) { .pipeline { grid-template-columns: 1fr; } .step { border-left: none; border-top: 1px solid var(--line); } .step:first-child { border-top: none; } }
+  /* ───────── 프로세스 : 아이콘 없는 숫자 4단 ───────── */
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin-top: 34px; }
+  .step { border-left: 1px solid var(--line); padding: 4px 22px 6px; }
+  .step:first-child { border-left: none; padding-left: 0; }
+  .step .sn { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 0.1em; }
+  .step h3 { font-size: 15.5px; font-weight: 700; margin: 8px 0 5px; }
+  .step p { font-size: 13px; color: var(--ink-dim); margin: 0; }
+  @media (max-width: 860px) { .steps { grid-template-columns: 1fr 1fr; row-gap: 22px; } .step { padding: 4px 16px 10px; } .step:nth-child(odd) { border-left: none; padding-left: 0; } }
+  @media (max-width: 520px) { .steps { grid-template-columns: 1fr; } .step { border-left: none; padding: 0 0 16px; border-top: 1px solid var(--line); } .step:first-child { border-top: none; } }
 
-  /* ---------- archive ---------- */
-  .archive-cols { columns: 3; column-gap: 12px; }
-  @media (max-width: 960px) { .archive-cols { columns: 2; } }
-  @media (max-width: 560px) { .archive-cols { columns: 1; } }
-  .shot { break-inside: avoid; margin-bottom: 12px; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); cursor: zoom-in; padding: 0; background: var(--panel); width: 100%; display: block; }
-  .shot img { width: 100%; height: auto; transition: transform 0.5s ease, filter 0.5s ease; }
-  .shot:hover img { transform: scale(1.03); filter: brightness(1.08); }
+  /* ───────── 소개 & 팩트시트 ───────── */
+  .about { display: grid; grid-template-columns: 300px 1fr; gap: 48px; margin-top: 38px; }
+  @media (max-width: 800px) { .about { grid-template-columns: 1fr; gap: 18px; } }
+  .about .sticky { position: sticky; top: 90px; align-self: start; }
+  @media (max-width: 800px) { .about .sticky { position: static; } }
+  .about .lead { font-family: var(--serif); font-weight: 700; font-size: 21px; line-height: 1.5; margin: 0 0 14px; text-wrap: pretty; }
+  .about .side-note { font-size: 13.5px; color: var(--ink-dim); margin: 0; }
+  .facts { border-top: 2px solid var(--ink); }
+  .fact { display: grid; grid-template-columns: 130px 1fr; gap: 18px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .fact dt { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-faint); padding-top: 3px; }
+  .fact dd { margin: 0; font-size: 14.5px; }
+  .fact dd .dim { color: var(--ink-faint); font-size: 13px; }
+  .fact dd a { color: var(--accent); text-decoration: none; font-weight: 600; }
+  .fact dd a:hover { text-decoration: underline; text-underline-offset: 4px; }
+  @media (max-width: 520px) { .fact { grid-template-columns: 1fr; gap: 2px; } }
 
-  /* lightbox */
-  .lb { position: fixed; inset: 0; z-index: 100; display: none; background: rgba(5,7,10,0.94); }
+  /* ───────── 접힌 아카이브 / 이모티콘 ───────── */
+  details.extra { border: 1px solid var(--line); border-radius: 6px; background: var(--card); margin-top: 16px; }
+  details.extra summary { cursor: pointer; list-style: none; padding: 16px 22px;
+    display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 15px; }
+  details.extra summary::-webkit-details-marker { display: none; }
+  details.extra summary .hint { font-size: 12px; color: var(--ink-faint); font-weight: 400; }
+  details.extra[open] summary { border-bottom: 1px solid var(--line); }
+  .extra-body { padding: 20px 22px 24px; }
+  .mini-grid { columns: 3; column-gap: 10px; }
+  @media (max-width: 720px) { .mini-grid { columns: 2; } }
+  .shot { break-inside: avoid; width: 100%; display: block; padding: 0; margin: 0 0 10px;
+    border: none; border-radius: 3px; overflow: hidden; cursor: zoom-in; background: var(--paper-2); }
+  .shot img { width: 100%; height: auto; }
+  .emoji-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 10px; }
+  .emoji-row img { width: 100%; aspect-ratio: 1; object-fit: contain; padding: 8px;
+    background: var(--paper-2); border-radius: 6px; }
+
+  /* ───────── 글 ───────── */
+  .article-card { border-bottom: 1px solid var(--line); }
+  .article-card summary { cursor: pointer; list-style: none; padding: 18px 4px;
+    display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
+  .article-card summary::-webkit-details-marker { display: none; }
+  .article-card .a-title { font-family: var(--serif); font-weight: 700; font-size: 16.5px; }
+  .article-card .a-meta { font-family: var(--mono); font-size: 11px; color: var(--ink-faint); white-space: nowrap; }
+  .article-card summary:hover .a-title { color: var(--accent); }
+  .article-body { padding: 2px 4px 26px; font-size: 14.5px; color: var(--ink-dim); max-height: 60vh; overflow-y: auto; }
+  .article-body :is(h1,h2,h3) { font-family: var(--serif); color: var(--ink); }
+  .article-body img { max-width: 100%; border-radius: 4px; }
+  .quiet { font-size: 13px; color: var(--ink-faint); }
+
+  /* ───────── contact ───────── */
+  .contact-band { margin-top: 110px; background: var(--ink); color: var(--paper); padding: 76px 0 70px; }
+  .contact-band .kick { font-family: var(--mono); font-size: 11px; letter-spacing: 0.18em;
+    text-transform: uppercase; color: rgba(246,243,236,0.55); margin: 0 0 18px; }
+  .contact-band h2 { font-family: var(--serif); font-weight: 900; font-size: clamp(30px, 5vw, 52px);
+    line-height: 1.18; margin: 0 0 14px; text-wrap: balance; }
+  .contact-band .say { font-size: 15px; color: rgba(246,243,236,0.78); max-width: 40em; margin: 0 0 36px; }
+  .contact-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1px; background: rgba(246,243,236,0.18); border: 1px solid rgba(246,243,236,0.18); }
+  .contact-list a { background: var(--ink); padding: 20px 22px; text-decoration: none; transition: background 0.2s ease; min-height: 44px; }
+  .contact-list a:hover { background: #29241c; }
+  .contact-list .lbl { display: block; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: rgba(246,243,236,0.5); margin-bottom: 5px; }
+  .contact-list .val { font-size: 15px; font-weight: 600; }
+  .contact-list a.primary .val { color: #f0a06b; }
+
+  footer { padding: 26px 0 44px; font-size: 12px; color: var(--ink-faint); }
+  footer .wrap { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+  footer a { color: var(--ink-dim); }
+
+  /* ───────── lightbox ───────── */
+  .lb { position: fixed; inset: 0; z-index: 100; display: none; background: rgba(20,16,10,0.93); }
   .lb.open { display: flex; align-items: center; justify-content: center; }
-  .lb img { max-width: 92vw; max-height: 86vh; width: auto; height: auto; border-radius: 8px; box-shadow: 0 24px 80px rgba(0,0,0,0.6); }
-  .lb .lb-btn { position: fixed; background: rgba(18,22,31,0.85); border: 1px solid var(--line-strong); color: var(--ink); width: 46px; height: 46px; border-radius: 50%; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; user-select: none; }
-  .lb .lb-btn:hover { border-color: var(--gold-line); color: var(--gold); }
+  .lb img { max-width: 92vw; max-height: 86vh; border-radius: 3px; box-shadow: 0 24px 80px rgba(0,0,0,0.55); }
+  .lb button { position: fixed; background: rgba(246,243,236,0.12); border: 1px solid rgba(246,243,236,0.35);
+    color: #f6f3ec; width: 46px; height: 46px; border-radius: 50%; font-size: 17px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; }
+  .lb button:hover { background: rgba(246,243,236,0.25); }
   .lb-prev { left: 18px; top: 50%; transform: translateY(-50%); }
   .lb-next { right: 18px; top: 50%; transform: translateY(-50%); }
   .lb-close { right: 18px; top: 16px; }
-  .lb-count { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); font-family: var(--mono); font-size: 11px; color: var(--ink-dim); letter-spacing: 0.12em; }
+  .lb-count { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+    font-family: var(--mono); font-size: 11px; color: rgba(246,243,236,0.7); letter-spacing: 0.12em; }
 
-  /* ---------- marquee (emoticons) ---------- */
-  .marquee { overflow: hidden; border-block: 1px solid var(--line); background: var(--bg-2); padding: 18px 0; }
-  .marquee-track { display: flex; gap: 14px; width: max-content; animation: mq 42s linear infinite; }
-  .marquee:hover .marquee-track { animation-play-state: paused; }
-  @keyframes mq { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-  .emoji-tile { width: 108px; height: 108px; object-fit: contain; border-radius: 14px; border: 1px solid var(--line); background: var(--panel); padding: 8px; flex: none; }
-
-  /* ---------- about / prose blocks ---------- */
-  .about-grid { display: grid; grid-template-columns: 280px 1fr; gap: 40px; }
-  @media (max-width: 860px) { .about-grid { grid-template-columns: 1fr; gap: 12px; } }
-  .about-side { position: sticky; top: 84px; align-self: start; }
-  @media (max-width: 860px) { .about-side { position: static; } }
-  .about-side h2 { font-size: clamp(22px, 3vw, 30px); font-weight: 800; margin: 0 0 10px; letter-spacing: -0.01em; }
-  .about-side p { font-size: 13px; color: var(--ink-faint); margin: 0; }
-  .block { border: 1px solid var(--line); border-radius: 14px; background: var(--panel); padding: 22px 24px; margin-bottom: 14px; }
-  .block .tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); }
-  .block h3 { font-size: 17px; margin: 6px 0 8px; font-weight: 700; }
-  .block p { font-size: 13.5px; color: var(--ink-dim); margin: 0 0 8px; }
-  .block p:last-child { margin-bottom: 0; }
-  .block ul { margin: 8px 0; padding-left: 18px; font-size: 13px; color: var(--ink-dim); }
-  .block li { margin-bottom: 5px; }
-  .skills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
-  .skills span { font-family: var(--mono); font-size: 10.5px; background: transparent; border: 1px solid var(--line-strong); color: var(--ink-dim); border-radius: 999px; padding: 3px 11px; }
-  .block a { color: var(--gold); }
-
-  /* ---------- articles ---------- */
-  .article-card { border: 1px solid var(--line); border-radius: 14px; background: var(--panel); margin-bottom: 12px; overflow: hidden; }
-  .article-card summary { list-style: none; cursor: pointer; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; gap: 14px; }
-  .article-card summary::-webkit-details-marker { display: none; }
-  .article-card .a-thumb { width: 72px; height: 72px; object-fit: cover; border-radius: 10px; flex: none; }
-  .article-card .a-meta { font-family: var(--mono); font-size: 10px; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.08em; }
-  .article-card .a-title { font-size: 15.5px; font-weight: 700; margin: 4px 0 0; }
-  .article-card .a-snippet { font-size: 12.5px; color: var(--ink-dim); margin: 4px 0 0; }
-  .article-card .a-toggle { font-family: var(--mono); font-size: 10.5px; color: var(--gold); flex: none; white-space: nowrap; }
-  .article-card[open] .a-toggle::after { content: " 접기"; }
-  .article-card:not([open]) .a-toggle::after { content: " 펼치기"; }
-  .article-body { padding: 0 20px 22px; border-top: 1px solid var(--line); font-size: 14px; color: var(--ink-dim); max-height: 60vh; overflow-y: auto; }
-  .article-body :is(h1,h2,h3) { font-weight: 700; color: var(--ink); }
-  .article-body img { max-width: 100%; border-radius: 8px; }
-  .article-loading { padding: 20px; font-family: var(--mono); font-size: 11px; color: var(--ink-faint); }
-  .quiet { font-size: 13px; color: var(--ink-faint); }
-
-  /* ---------- contact ---------- */
-  .contact { padding-bottom: 40px; }
-  .contact-panel { border: 1px solid var(--gold-line); border-radius: 18px; background:
-    radial-gradient(600px 300px at 85% -20%, rgba(232,176,75,0.12), transparent 60%), var(--panel);
-    padding: 46px 40px; }
-  @media (max-width: 640px) { .contact-panel { padding: 32px 22px; } }
-  .contact-panel h2 { font-family: var(--display); font-weight: 400; text-transform: uppercase; letter-spacing: 0.03em; font-size: clamp(26px, 4.4vw, 46px); margin: 0 0 10px; line-height: 1.1; }
-  .contact-panel .say { color: var(--ink-dim); font-size: 14.5px; max-width: 52ch; margin: 0 0 24px; }
-  .contact-rows { display: flex; flex-wrap: wrap; gap: 10px; }
-  .contact-rows a { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line-strong); border-radius: 10px; padding: 11px 18px; text-decoration: none; font-size: 13.5px; color: var(--ink); min-height: 44px; }
-  .contact-rows a:hover { border-color: var(--gold-line); color: var(--gold); }
-  .contact-rows .lbl { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink-faint); }
-
-  footer { border-top: 1px solid var(--line); padding: 26px 0 40px; font-size: 12px; color: var(--ink-faint); }
-  footer .wrap { display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
-  footer a { color: var(--ink-dim); }
+  .fade { opacity: 0; transform: translateY(14px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .fade.on { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .fade { opacity: 1; transform: none; transition: none; }
+    .feat:hover .img img, .work-item:hover .thumb img { transform: none; }
+  }
 </style>
 </head>
 <body>
 
 <nav class="topnav">
   <div class="wrap">
-    <a class="brand" href="#top"><b>GEUNHOO KIM</b>&nbsp;· 3D GAME ART</a>
+    <a class="who" href="#top">김근후</a>
+    <span class="role">3D 게임 아티스트 · 홍익대 게임그래픽</span>
     <div class="links">
-      <a href="#works">제작물</a>
+      <a href="#works">작업</a>
       <a href="#process">프로세스</a>
-      <a href="#archive">아카이브</a>
-      <a href="#about">방향성</a>
-      <a href="#contact">Contact</a>
+      <a href="#about">소개</a>
+      <a class="mail" href="mailto:delight0517@hongik.ac.kr">문의하기</a>
     </div>
-    <a class="btn-artstation" href="https://www.artstation.com/kaito_ren" target="_blank" rel="noopener">ArtStation ↗</a>
   </div>
 </nav>
 
-<header class="hero" id="top">
-  <div class="hero-bg"><img src="assets/artstation/auto/2Lqbgg.jpg" alt="잭과 위키 모작 — 핸드페인팅 오브제" fetchpriority="high"></div>
-  <div class="hero-shade"></div>
-  <div class="wrap hero-inner">
-    <p class="eyebrow">Portfolio · 3D Game Art</p>
-    <h1>
-      <span class="kr">김근후</span>
-      <span class="en">3D Game Artist — Stylized &amp; Hand-painted</span>
-    </h1>
-    <p class="lede">
-      3ds Max와 Substance 3D Painter로 게임용 3D 에셋을 만듭니다. 형태·텍스처·색채·조명·세계관을 함께 고민하는
-      <b>스타일라이즈드·핸드페인팅 트랙</b>. AI는 리서치·기획·검증 파트너로 반복 투입해 더 빠르게 해결책을 탐색합니다.
-    </p>
-    <div class="hero-cta">
-      <a class="btn-primary" href="#works">제작물 보기 ↓</a>
-      <a class="btn-ghost" href="https://www.artstation.com/kaito_ren" target="_blank" rel="noopener">ArtStation 프로필 ↗</a>
-    </div>
-    <div class="hero-meta">
-      <span>Modeling <em>3ds Max</em></span>
-      <span>Texturing <em>Substance 3D Painter</em></span>
-      <span>Engine <em>Unreal · Unity</em></span>
-      <span>Workflow <em>Hand-painting · HDRI Lighting</em></span>
-    </div>
-  </div>
+<header class="hero wrap" id="top">
+  <p class="kicker">Portfolio · 3D Game Art · 2026</p>
+  <h1>김근후</h1>
+  <p class="define">홍익대학교 게임그래픽학과에서 3D를 배우고 있는<br><b>게임 아티스트</b>입니다.</p>
+  <p class="sub">
+    3ds Max로 형태를 잡고, Substance 3D Painter로 직접 색을 칠합니다. 사실적인 재현보다는
+    색감·실루엣·분위기가 어울리는 <strong>스타일라이즈드·핸드페인팅</strong> 오브제와 환경 에셋에 방향을 두고 있습니다.
+  </p>
+  <p class="tool-line">3ds Max<i>/</i>Substance 3D Painter<i>/</i>Photoshop<i>/</i>Unreal Engine<i>/</i>Unity<i>/</i>Hand-painting</p>
+
+  <figure class="showcase">
+    <img src="assets/artstation/auto/2Lqbgg.jpg" alt="잭과 위키 모작 — 핸드페인팅 오브제 연출" fetchpriority="high">
+    <figcaption>
+      <span class="t">잭과 위키 모작 — 최근 작업</span>
+      <span class="m">2026 · Hand-painted</span>
+    </figcaption>
+  </figure>
 </header>
 
-<div class="role-strip">
-  <div class="wrap">
-    <div class="role-cell">
-      <p class="k">핵심 직무</p>
-      <p class="v"><b>3D Game Artist</b> — Prop / Environment / Stylized Art</p>
+<main>
+  <!-- ══════════ 작업 ══════════ -->
+  <section id="works" class="wrap">
+    <div class="sec-head fade">
+      <h2>작업</h2>
+      <span class="aside">클릭하면 ArtStation 원본으로 이동합니다 · 공개 작업 <b id="count-inline">—</b>건</span>
     </div>
-    <div class="role-cell">
-      <p class="k">확장 역량</p>
-      <p class="v"><b>Visual Development</b> · Game / Interactive Content Design</p>
+
+    <!-- 대표 4작업 : 수동 선별 (채용 관점에서 '보여줄 작업'은 큐레이션) -->
+    <article class="feat fade">
+      <a class="img" href="https://www.artstation.com/artwork/2Lqbgg" target="_blank" rel="noopener">
+        <img src="assets/artstation/auto/2Lqbgg.jpg" alt="잭과 위키 모작" loading="lazy">
+      </a>
+      <div class="info">
+        <span class="num">i.</span>
+        <h3>잭과 위키 모작</h3>
+        <p class="meta">2026 · 3ds Max · Substance 3D Painter · Hand-painted</p>
+        <p class="desc">닌텐도 『잭과 위키』의 오브제를 재해석한 모작. 핸드페인팅 스타일을 유지하면서
+          하이트맵으로 입체감을 더했습니다. 게임에 들어갈 오브제가 어떻게 보여야 하는지 고민한 첫 번째 본격 제작입니다.</p>
+        <a class="go" href="https://www.artstation.com/artwork/2Lqbgg" target="_blank" rel="noopener">ArtStation에서 보기 →</a>
+      </div>
+    </article>
+
+    <article class="feat fade">
+      <a class="img" href="https://www.artstation.com/artwork/Qxnk6Z" target="_blank" rel="noopener">
+        <img src="assets/artstation/auto/Qxnk6Z.jpg" alt="중세 해적풍 오브젝트 제작" loading="lazy">
+      </a>
+      <div class="info">
+        <span class="num">ii.</span>
+        <h3>중세 해적풍 오브젝트</h3>
+        <p class="meta">2026 · Low-poly · Height-map Workflow</p>
+        <p class="desc">해적 게임에 나올 법한 오브제 세트. ZBrush 없이 로우폴리 모델링과
+          Substance Painter의 하이트맵·러프니스만으로 핸드페인팅 질감을 완성하는 워크플로우를 시험했습니다.
+          게임 최적화를 함께 고민한 작업입니다.</p>
+        <a class="go" href="https://www.artstation.com/artwork/Qxnk6Z" target="_blank" rel="noopener">ArtStation에서 보기 →</a>
+      </div>
+    </article>
+
+    <article class="feat fade">
+      <a class="img" href="https://www.artstation.com/artwork/LaevBr" target="_blank" rel="noopener">
+        <img src="assets/artstation/auto/LaevBr.jpg" alt="서울의 밤 일러스트" loading="lazy">
+      </a>
+      <div class="info">
+        <span class="num">iii.</span>
+        <h3>서울의 밤</h3>
+        <p class="meta">2026 · Photoshop · World-building</p>
+        <p class="desc">편의점 알바와 동네 주민, 그리고 상류층과 하류층이 분리된 다크한 근미래 서울.
+          색채 연출로 계층을 보여주는 세계관 그림입니다. 3D 에셋 너머의 비주얼 디벨롭먼트 방향성을 보여줍니다.</p>
+        <a class="go" href="https://www.artstation.com/artwork/LaevBr" target="_blank" rel="noopener">ArtStation에서 보기 →</a>
+      </div>
+    </article>
+
+    <article class="feat fade">
+      <a class="img" href="https://www.artstation.com/artwork/Xa192D" target="_blank" rel="noopener">
+        <img src="assets/artstation/auto/Xa192D.jpg" alt="중세 병사 _ 사이버 펑크" loading="lazy">
+      </a>
+      <div class="info">
+        <span class="num">iv.</span>
+        <h3>중세 병사 _ 사이버 펑크</h3>
+        <p class="meta">2026 · Character Concept</p>
+        <p class="desc">저주받은 영혼의 에너지로 운용되는 성벽 수비대·돌격대 병사.
+          중세와 사이버펑크를 섞은 캐릭터 시도 작업입니다.</p>
+        <a class="go" href="https://www.artstation.com/artwork/Xa192D" target="_blank" rel="noopener">ArtStation에서 보기 →</a>
+      </div>
+    </article>
+
+    <!-- 나머지 : works.json에서 자동 렌더 (월간 동기화) -->
+    <div id="rest-grid" class="rest-grid"></div>
+    <noscript><p class="quiet">JavaScript가 꺼져 있어 나머지 작업 목록을 표시할 수 없습니다 — <a href="https://www.artstation.com/kaito_ren" style="color:var(--accent)">ArtStation 프로필</a>에서 직접 보세요.</p></noscript>
+
+    <div class="works-foot fade">
+      <span>전체 공개 작업은 <a href="https://www.artstation.com/kaito_ren" target="_blank" rel="noopener">ArtStation 프로필</a>에서 확인할 수 있습니다.</span>
+      <span id="sync-note"></span>
     </div>
-    <div class="role-cell">
-      <p class="k">차별화 역량</p>
-      <p class="v"><b>AI-assisted Creative Workflow</b> · Problem Solving &amp; Rapid Research</p>
+  </section>
+
+  <!-- ══════════ 프로세스 ══════════ -->
+  <section id="process" class="wrap">
+    <div class="sec-head fade">
+      <h2>이렇게 만듭니다</h2>
+      <span class="aside">Modeling → Texturing → Presentation → Revision</span>
+    </div>
+    <div class="steps fade">
+      <div class="step">
+        <span class="sn">STEP 1</span>
+        <h3>형태 잡기</h3>
+        <p>3ds Max로 실루엣을 먼저 다듬습니다. 실루엣 수정 → 형태 개선 → 색감 개선 순으로 단계를 밟아 발전시킵니다.</p>
+      </div>
+      <div class="step">
+        <span class="sn">STEP 2</span>
+        <h3>직접 칠하기</h3>
+        <p>Substance 3D Painter에서 Paint Layer 기반으로 핸드페인팅합니다. Polygon Fill 영역 작업과 하이트맵으로 입체를 만듭니다.</p>
+      </div>
+      <div class="step">
+        <span class="sn">STEP 3</span>
+        <h3>게임 속 연출</h3>
+        <p>환경광·HDRI 방향을 조절하고 배경 이미지와의 색 조화까지 확인합니다 — "게임 안에서 어떻게 보이는가"까지 판단합니다.</p>
+      </div>
+      <div class="step">
+        <span class="sn">STEP 4</span>
+        <h3>고치고 반복</h3>
+        <p>뒷면 페인트 번짐 같은 실제 문제를 설정 탐색으로 해결하고, 레이어 수정과 피드백 반영을 반복합니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ 소개 ══════════ -->
+  <section id="about" class="wrap">
+    <div class="sec-head fade">
+      <h2>소개</h2>
+      <span class="aside">누가, 무엇을, 어디까지</span>
+    </div>
+    <div class="about">
+      <div class="sticky fade">
+        <p class="lead">지금은 게임에 들어갈<br>오브제 하나를 끝까지<br>완성하는 연습을 하는 시기입니다.</p>
+        <p class="side-note">사실적 재현보다 색감·실루엣·분위기·세계관의 조화를 우선합니다. 형태와 색과 분위기를 함께 설계하는 스타일라이즈드 게임 아트가 제 방향입니다.</p>
+      </div>
+      <div>
+        <dl class="facts fade">
+          <div class="fact"><dt>전공</dt><dd>홍익대학교 게임그래픽학과 <span class="dim">(delight0517@hongik.ac.kr)</span></dd></div>
+          <div class="fact"><dt>주 도구</dt><dd>3ds Max · Substance 3D Painter · Photoshop <span class="dim">— Unreal Engine, Unity 입문</span></dd></div>
+          <div class="fact"><dt>방향</dt><dd>Stylized / Hand-painted Prop &amp; Environment <span class="dim">→ Visual Development 확장 중</span></dd></div>
+          <div class="fact"><dt>확장 경험</dt><dd>3D 캐릭터 루프 애니메이션 이모티콘 제작 · 아트워크 기반 의류/굿즈 실제 판매 중 <a href="https://marpple.shop/kr/Vivid_Wave_shop" target="_blank" rel="noopener">Vivid_Wave_shop</a> <span class="dim">(마플샵)</span></dd></div>
+          <div class="fact"><dt>세계관 관심</dt><dd>서울 도시 누아르, 웹툰식 공간, 현대 도시의 생활감 — 장면 전체를 설계하는 그림에 관심이 많습니다. <span class="dim">『서울의 밤』 참고.</span></dd></div>
+          <div class="fact"><dt>작업 방식</dt><dd>AI를 답을 받는 도구가 아니라 리서치·기획·검증 파트너로 사용합니다. 문제 정의 → 조사 → 반론 → 개선을 반복해 작업 속도와 근거를 함께 키웁니다.</dd></div>
+        </dl>
+
+        <!-- 접힌 아카이브: 메인 흐름을 희석하지 않게 뒤로 -->
+        <details class="extra fade">
+          <summary>과정 아카이브 열기 <span class="hint">스케치·모델링·렌더 과정 20컷</span></summary>
+          <div class="extra-body">
+            <div id="archive-grid" class="mini-grid"></div>
+            <p class="quiet" style="margin-top:14px;">원본: 본인 제공 Notion 3D 작업물 문서(자체 호스팅).</p>
+          </div>
+        </details>
+
+        <details class="extra fade">
+          <summary>사이드 — 3D 이모티콘 <span class="hint">캐릭터 루프 애니메이션 14종</span></summary>
+          <div class="extra-body"><div id="emoji-row" class="emoji-row"></div></div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ 글 ══════════ -->
+  <section id="writing" class="wrap">
+    <div class="sec-head fade">
+      <h2>글</h2>
+      <span class="aside">작업 밖에서 생각을 남기는 기록</span>
+    </div>
+    <div id="related-articles-list" class="fade" style="margin-top:8px;"></div>
+  </section>
+
+  <!-- ══════════ contact ══════════ -->
+  <div class="contact-band" id="contact">
+    <div class="wrap">
+      <p class="kick">Contact · 채용 · 협업 문의</p>
+      <h2>함께 만들 스튜디오를<br>찾고 있습니다.</h2>
+      <p class="say">주니어 3D 게임 아티스트 — prop·environment·스타일라이즈드 트랙. 이메일로 연락 주시면
+        가장 빠르게 답장 드립니다. 포트폴리오 PDF나 추가 파일이 필요하시면 말씀해 주세요.</p>
+      <div class="contact-list">
+        <a class="primary" href="mailto:delight0517@hongik.ac.kr"><span class="lbl">Email — 권장</span><span class="val">delight0517@hongik.ac.kr</span></a>
+        <a href="https://open.kakao.com/me/rogan_kim" target="_blank" rel="noopener"><span class="lbl">KakaoTalk</span><span class="val">open.kakao.com/me/rogan_kim</span></a>
+        <a href="tel:010-7570-0569"><span class="lbl">Phone</span><span class="val">010-7570-0569</span></a>
+        <a href="https://www.artstation.com/kaito_ren" target="_blank" rel="noopener"><span class="lbl">ArtStation</span><span class="val">@kaito_ren</span></a>
+      </div>
     </div>
   </div>
-</div>
-
-<main>
-  <!-- ══════════ WORKS (data-driven, monthly sync) ══════════ -->
-  <section id="works" class="wrap">
-    <div class="section-head reveal">
-      <span class="idx">01</span>
-      <h2>제작물 — ArtStation 최신순</h2>
-      <p>ArtStation에 올라온 작업입니다. 이 그리드는 <span style="font-family:var(--mono)">assets/artstation/works.json</span>을 읽어 렌더링되며, 매월 ArtStation과 동기화됩니다.</p>
-    </div>
-    <div id="works-list" class="works-cols"></div>
-    <noscript><p class="quiet">JavaScript가 꺼져 있어 작품 그리드를 표시할 수 없습니다 — <a href="https://www.artstation.com/kaito_ren" style="color:var(--gold)">ArtStation 프로필</a>에서 직접 보세요.</p></noscript>
-    <p class="works-foot">
-      전체 작업은 <a href="https://www.artstation.com/kaito_ren" target="_blank" rel="noopener">ArtStation 프로필</a>에서 확인할 수 있습니다.
-      <span class="sync-note" id="sync-note"></span>
-    </p>
-  </section>
-
-  <!-- ══════════ PROCESS ══════════ -->
-  <section id="process" class="wrap">
-    <div class="section-head reveal">
-      <span class="idx">02</span>
-      <h2>제작 프로세스</h2>
-      <p>Modeling → Texturing → Lighting/Presentation → Revision — 실제 문제를 풀면서 익힌 게임 아트 제작 흐름.</p>
-    </div>
-    <div class="pipeline reveal">
-      <div class="step">
-        <div class="n">S1</div>
-        <h3>형태 개발 · 3ds Max</h3>
-        <p>게임 오브젝트를 모델링 대상으로 선정, 실루엣 수정 → 형태 개선 → 색감 단계 개선으로 단계적 발전.</p>
-      </div>
-      <div class="step">
-        <div class="n">S2</div>
-        <h3>핸드페인팅 · Substance</h3>
-        <p>Paint Layer 기반 핸드페인팅, Polygon Fill 영역 작업. 하이트맵·러프니스로 입체감.</p>
-      </div>
-      <div class="step">
-        <div class="n">S3</div>
-        <h3>문제 해결</h3>
-        <p>뒷면 페인트 번짐 — Camera Occlusion / Backface 설정 탐색. 브러시 투명도·레이어 수정 워크플로우.</p>
-      </div>
-      <div class="step">
-        <div class="n">S4</div>
-        <h3>라이팅 · 연출</h3>
-        <p>스포이드 색상 추출, 환경광·HDRI 방향 조절. 배경 이미지와 오브젝트 색 조화 확인.</p>
-      </div>
-      <div class="step">
-        <div class="n">S5</div>
-        <h3>출력 · 재활용</h3>
-        <p>텍스처 출력과 재활용 방법 탐색 — 게임 안에서 이 오브젝트가 어떻게 보이는가까지 판단.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ══════════ ARCHIVE ══════════ -->
-  <section id="archive" class="wrap">
-    <div class="section-head reveal">
-      <span class="idx">03</span>
-      <h2>3D 작업물 아카이브</h2>
-      <p>스케치·모델링·렌더 과정이 섞인 원본 아카이브입니다. 이미지를 클릭하면 크게 볼 수 있습니다.</p>
-    </div>
-    <div id="archive-grid" class="archive-cols reveal"></div>
-    <p class="quiet" style="margin-top:14px;">원본: 본인 제공 Notion 3D 작업물 문서(자체 호스팅).</p>
-  </section>
-
-  <!-- ══════════ EMOTICON MARQUEE ══════════ -->
-  <section id="emoticons" style="padding-top:88px;">
-    <div class="wrap">
-      <div class="section-head reveal" style="margin-bottom:18px;">
-        <span class="idx">04</span>
-        <h2>3D 이모티콘</h2>
-        <p>3D 캐릭터를 짧은 루프 애니메이션으로 제작한 이모티콘 세트.</p>
-      </div>
-    </div>
-    <div class="marquee" aria-label="3D 이모티콘 갤러리">
-      <div class="marquee-track" id="emoji-track-a"></div>
-    </div>
-  </section>
-
-  <!-- ══════════ ABOUT / DIRECTION ══════════ -->
-  <section id="about" class="wrap">
-    <div class="about-grid">
-      <aside class="about-side reveal">
-        <p class="eyebrow" style="margin-bottom:10px;">Direction</p>
-        <h2>방향성 &amp;<br>확장 계획</h2>
-        <p>사실적 재현보다 색감·실루엣·분위기·세계관의 조화를 우선합니다.</p>
-      </aside>
-      <div>
-        <div class="block reveal">
-          <span class="tag">Direction</span>
-          <h3>Stylized 3D Artist / Hand-painted Game Artist</h3>
-          <p>Substance Painter를 포토샵처럼 활용해 직접 색을 그리고 수정하는 Hand Painting 방식에 관심을 두며,
-            배경 이미지와 조명까지 설정해 "게임 안에서 이 오브젝트가 어떻게 보이는가"를 판단하려 합니다.
-            형태 + 색 + 분위기 + 세계관을 함께 디자인하는 Stylized Game Art와 방향이 맞습니다.</p>
-          <div class="skills"><span>Hand Painting</span><span>Stylized</span><span>Color Script</span><span>Silhouette</span></div>
-        </div>
-        <div class="block reveal">
-          <span class="tag">Next Step — 기반을 쌓는 단계</span>
-          <h3>Visual Development / World-building</h3>
-          <p>캐릭터·소품·공간·색채·조명·이야기를 하나의 경험으로 연결하려는 경향.
-            서울 도시 누아르, 웹툰식 공간, 현대 도시의 생활감처럼 하나의 장면 전체를 설계하는 방식에 관심이 있습니다.
-            현재는 <strong style="color:var(--ink)">3D 제작 능력을 기반으로 Visual Development 역량을 확장하고 있는 단계</strong>입니다.</p>
-        </div>
-        <div class="block reveal">
-          <span class="tag">Growing</span>
-          <h3>Game / Interactive Content Planner</h3>
-          <p>기능을 나열하지 않고 단계로 분해하는 사고 — 사용자 문제 → 발생 조건 → 사용자 행동 → 개입 → 피드백 → 다음 행동.
-            행동 시스템 설계 때도 작동 조건·단계별 행동·완료 확인·예외 상황·환경 변화·출력 형식까지 나눠 설계한 사례가 있습니다.
-            interaction flow와 rule system을 만드는 사고방식에 가깝습니다.</p>
-        </div>
-        <div class="block reveal">
-          <span class="tag">Edge</span>
-          <h3>AI-assisted Creative Designer</h3>
-          <p>AI를 답을 받는 도구가 아니라 리서치·기획·검증 파트너로 반복 투입합니다.
-            문제 정의 → 자료 조사 → 아이디어 생성 → 반론 → 개선 → 구조화 → 다시 제작, 이 과정을 AI와 반복합니다.
-            복잡한 기능 요청의 우선순위화, 사용자 행동별 반응 설계 프롬프트 시스템 제작이 여기 해당합니다.</p>
-        </div>
-        <div class="block reveal">
-          <span class="tag">Extension</span>
-          <h3>아트워크 → 의류/굿즈 제작</h3>
-          <p>컨셉아트에서 쌓은 형태·색채·실루엣 감각은 캔버스 밖으로 확장됩니다. 프린트용 그래픽 분리, 컬러 매칭,
-            목업 프레젠테이션까지 같은 워크플로우로 처리합니다. 실제 판매 중:
-            <a href="https://marpple.shop/kr/Vivid_Wave_shop" target="_blank" rel="noopener">Vivid_Wave_shop</a> (마플샵).</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ══════════ RELATED ARTICLES ══════════ -->
-  <section id="related-articles" class="wrap">
-    <div class="section-head reveal">
-      <span class="idx">05</span>
-      <h2>관련 글</h2>
-      <p>페이지를 벗어나지 않고 바로 펼쳐 읽을 수 있습니다 — 태그로 자동 매칭 (AI 판단 없이 정적 필터링).</p>
-    </div>
-    <div id="related-articles-list"></div>
-  </section>
-
-  <!-- ══════════ CONTACT ══════════ -->
-  <section id="contact" class="wrap contact">
-    <div class="contact-panel reveal">
-      <h2>Let's build<br>game worlds.</h2>
-      <p class="say">3D Game Art 취업/의뢰 전용 페이지입니다. prop·environment·스타일라이즈드 에셋 제작 — 아래로 연락 주세요.</p>
-      <div class="contact-rows">
-        <a href="mailto:delight0517@hongik.ac.kr"><span class="lbl">Email</span> delight0517@hongik.ac.kr</a>
-        <a href="tel:010-7570-0569"><span class="lbl">Phone</span> 010-7570-0569</a>
-        <a href="https://open.kakao.com/me/rogan_kim" target="_blank" rel="noopener"><span class="lbl">KakaoTalk</span> open.kakao.com/me/rogan_kim</a>
-        <a href="https://www.artstation.com/kaito_ren" target="_blank" rel="noopener"><span class="lbl">ArtStation</span> kaito_ren ↗</a>
-      </div>
-    </div>
-  </section>
 </main>
 
 <footer>
   <div class="wrap">
-    <span>생성: releasepilot-reports · game-artist/ — 검증 불가능한 점수는 의도적으로 배제</span>
-    <span>다른 트랙(영상 편집·개발·연기)은 <a href="../links/">전체 링크</a>에서 · 최종 업데이트 2026-08-26</span>
+    <span>© 2026 김근후 — 이 페이지는 3D 게임 아트 취업·의뢰 전용입니다. 다른 트랙은 <a href="../links/">전체 링크</a>에서.</span>
+    <span id="footer-sync"></span>
   </div>
 </footer>
 
 <!-- lightbox -->
 <div class="lb" id="lightbox" aria-hidden="true">
   <img id="lb-img" src="" alt="">
-  <button class="lb-btn lb-prev" id="lb-prev" aria-label="이전">←</button>
-  <button class="lb-btn lb-next" id="lb-next" aria-label="다음">→</button>
-  <button class="lb-btn lb-close" id="lb-close" aria-label="닫기">×</button>
+  <button class="lb-prev" id="lb-prev" aria-label="이전">←</button>
+  <button class="lb-next" id="lb-next" aria-label="다음">→</button>
+  <button class="lb-close" id="lb-close" aria-label="닫기">×</button>
   <div class="lb-count" id="lb-count"></div>
 </div>
 
 <script>
-/* ═══════════ 1. WORKS — data-driven gallery ═══════════
-   소스: assets/artstation/works.json (월간 ArtStation 동기화 스크립트가 갱신).
-   fetch 실패 시 아래 FALLBACK으로 렌더 — 페이지가 빈 그리드가 되지 않게 한다. */
-var FALLBACK_WORKS = [
-  { title: "잭과 위키 모작", url: "https://www.artstation.com/artwork/2Lqbgg", publishedAt: "2026-08-24", cover: "assets/artstation/auto/2Lqbgg.jpg", video: false,
-    description: "닌텐도 위 『잭과 위키』 오브제를 재해석한 모작. 핸드페인팅 스타일과 하이트맵으로 입체감." },
-  { title: "중세 해적풍 오브젝트 제작", url: "https://www.artstation.com/artwork/Qxnk6Z", publishedAt: "2026-08-24", cover: "assets/artstation/auto/Qxnk6Z.jpg", video: false,
-    description: "해적풍 게임 오브제를 로우폴리로 제작하고, 지브러시 없이 섭페 하이트맵·러프니스만으로 핸드페인팅." },
-  { title: "중세 병사 _ 사이버 펑크", url: "https://www.artstation.com/artwork/Xa192D", publishedAt: "2026-08-24", cover: "assets/artstation/auto/Xa192D.jpg", video: false,
-    description: "사이버펑크 군사 — 저주받은 영혼의 에너지로 운용되는 성벽 수비대·돌격대 병사." },
-  { title: "서울의 밤 일러스트", url: "https://www.artstation.com/artwork/LaevBr", publishedAt: "2026-08-24", cover: "assets/artstation/auto/LaevBr.jpg", video: false,
-    description: "포토샵 작업. 편의점 알바와 동네 주민, 다크한 근미래 서울 — 상류층과 하류층의 분리를 색채 연출로." },
-  { title: "Medieval Bucket 3D", url: "https://www.artstation.com/artwork/xdzYE1", publishedAt: "2026-07-07", cover: "assets/artstation/auto/xdzYE1.jpg", video: false, description: "" },
-  { title: "Grass, Unreal Engine", url: "https://www.artstation.com/artwork/x31J5E", publishedAt: "2026-03-20", cover: "assets/artstation/auto/x31J5E.jpg", video: false, description: "" },
-  { title: "Shark Island 101", url: "https://www.artstation.com/artwork/DL64Y9", publishedAt: "2025-08-23", cover: "assets/artstation/auto/DL64Y9.jpg", video: true, description: "Unity 웹 플레이 가능 — 플레이 링크는 ArtStation 참고." }
+/* ═══ 1. 나머지 작업 그리드 — assets/artstation/works.json (월간 자동 동기화) ═══
+   대표 4작업(hashId)은 위에서 수동 큐레이션했으므로 목록에서 제외하고 나머지만 렌더. */
+var FEATURED_HASHES = ["2Lqbgg", "Qxnk6Z", "LaevBr", "Xa192D"];
+var FALLBACK_REST = [
+  { hashId: "xdzYE1", title: "Medieval Bucket 3D", url: "https://www.artstation.com/artwork/xdzYE1", publishedAt: "2026-07-07", cover: "assets/artstation/auto/xdzYE1.jpg", video: false },
+  { hashId: "x31J5E", title: "Grass, Unreal Engine", url: "https://www.artstation.com/artwork/x31J5E", publishedAt: "2026-03-20", cover: "assets/artstation/auto/x31J5E.jpg", video: false },
+  { hashId: "DL64Y9", title: "Shark Island 101", url: "https://www.artstation.com/artwork/DL64Y9", publishedAt: "2025-08-23", cover: "assets/artstation/auto/DL64Y9.jpg", video: true }
 ];
+var FALLBACK_TOTAL = 7;
 
-function isNew(publishedAt) {
-  if (!publishedAt) return false;
-  return (Date.now() - new Date(publishedAt + "T00:00:00").getTime()) < 40 * 864e5;
-}
 function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
   return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
 
-function renderWorks(works, syncedAt) {
-  var list = document.getElementById("works-list");
-  list.innerHTML = works.map(function (w) {
-    var badges = [];
-    if (isNew(w.publishedAt)) badges.push('<span class="chip-new">NEW</span>');
-    if (w.video) badges.push('<span class="badge-video">▶ VIDEO</span>');
-    return '<a class="work-card" href="' + esc(w.url) + '" target="_blank" rel="noopener">' +
-      '<img src="' + esc(w.cover) + '" alt="' + esc(w.title) + '" loading="lazy">' +
-      '<span class="veil"></span>' +
-      '<span class="desc">' + esc(w.description || "") + '</span>' +
-      '<span class="t"><span class="name">' + esc(w.title) + '</span>' +
-      '<span class="sub">' + esc(w.publishedAt || "") + (badges.length ? " " + badges.join(" ") : "") + '</span></span>' +
-      '</a>';
+function renderRest(all) {
+  var rest = all.filter(function (w) { return FEATURED_HASHES.indexOf(w.hashId) === -1; });
+  var el = document.getElementById("rest-grid");
+  el.innerHTML = rest.map(function (w) {
+    return '<a class="work-item" href="' + esc(w.url) + '" target="_blank" rel="noopener">' +
+      '<span class="thumb"><img src="' + esc(w.cover) + '" alt="' + esc(w.title) + '" loading="lazy"></span>' +
+      '<span class="cap"><span class="n">' + esc(w.title) + (w.video ? ' <span style="font-family:var(--mono);font-size:10px;color:var(--ink-faint)">▶</span>' : '') + '</span>' +
+      '<span class="d">' + esc((w.publishedAt || "").slice(0, 4)) + '</span></span></a>';
   }).join("");
-  var note = document.getElementById("sync-note");
-  if (note && syncedAt) note.textContent = "· last sync " + syncedAt.slice(0, 10);
+  document.getElementById("count-inline").textContent = all.length;
 }
 
 (function () {
-  renderWorks(FALLBACK_WORKS, null);
+  // 폴백 렌더: 대표작 4개는 위에서 수동 큐레이션됐으므로 카운트 계산용으로만 포함
+  renderRest(FALLBACK_REST.concat([
+    { hashId: "2Lqbgg", hidden: true }, { hashId: "Qxnk6Z", hidden: true },
+    { hashId: "Xa192D", hidden: true }, { hashId: "LaevBr", hidden: true }
+  ]));
   fetch("assets/artstation/works.json")
     .then(function (r) { return r.ok ? r.json() : null; })
     .then(function (doc) {
       if (!doc || !Array.isArray(doc.works) || !doc.works.length) return;
-      renderWorks(doc.works, doc.syncedAt);
+      renderRest(doc.works);
+      var d = doc.syncedAt ? doc.syncedAt.slice(0, 10) : "";
+      if (d) {
+        document.getElementById("sync-note").textContent = "ArtStation 동기화 " + d;
+        document.getElementById("footer-sync").textContent = "마지막 ArtStation 동기화 " + d;
+      }
     })
     .catch(function () {});
 })();
 
-/* ═══════════ 2. ARCHIVE + LIGHTBOX ═══════════ */
+/* ═══ 2. 과정 아카이브 + 라이트박스 ═══ */
 (function () {
   var shots = [];
   for (var i = 1; i <= 20; i++) {
     var nn = (i < 10 ? "0" : "") + i;
-    var ext = (i === 8) ? "gif" : "jpg"; // 08번은 애니메이션 GIF
-    shots.push({ src: "assets/vivid-wave-3d/vivid3d_" + nn + "." + ext, alt: "3D 작업물 " + nn });
+    shots.push({ src: "assets/vivid-wave-3d/vivid3d_" + nn + ((i === 8) ? ".gif" : ".jpg"), alt: "3D 과정 아카이브 " + nn });
   }
   var grid = document.getElementById("archive-grid");
   grid.innerHTML = shots.map(function (s, idx) {
@@ -539,16 +504,10 @@ function renderWorks(works, syncedAt) {
 
   var lb = document.getElementById("lightbox"), img = document.getElementById("lb-img"),
       cnt = document.getElementById("lb-count"), cur = 0;
-  function show(i) {
-    cur = (i + shots.length) % shots.length;
-    img.src = shots[cur].src; img.alt = shots[cur].alt;
-    cnt.textContent = (cur + 1) + " / " + shots.length;
-  }
+  function show(i) { cur = (i + shots.length) % shots.length; img.src = shots[cur].src; img.alt = shots[cur].alt; cnt.textContent = (cur + 1) + " / " + shots.length; }
   function open(i) { show(i); lb.classList.add("open"); lb.setAttribute("aria-hidden", "false"); document.body.style.overflow = "hidden"; }
   function close() { lb.classList.remove("open"); lb.setAttribute("aria-hidden", "true"); document.body.style.overflow = ""; }
-  grid.addEventListener("click", function (e) {
-    var b = e.target.closest(".shot"); if (!b) return; open(+b.dataset.i);
-  });
+  grid.addEventListener("click", function (e) { var b = e.target.closest(".shot"); if (b) open(+b.dataset.i); });
   document.getElementById("lb-prev").addEventListener("click", function () { show(cur - 1); });
   document.getElementById("lb-next").addEventListener("click", function () { show(cur + 1); });
   document.getElementById("lb-close").addEventListener("click", close);
@@ -561,66 +520,49 @@ function renderWorks(works, syncedAt) {
   });
 })();
 
-/* ═══════════ 3. EMOTICON MARQUEE (doubled track for seamless loop) ═══════════ */
+/* ═══ 3. 이모티콘 (정적, 마키 없음) ═══ */
 (function () {
   var files = ["emoticon_1.gif","emoticon_2.gif","emoticon_3.gif","emoticon_4.gif","emoticon_5.gif",
                "emoticon_6.gif","emoticon_7.gif","emoticon_8.gif","emoticon_9.gif","emoticon_10.gif",
                "emoticon_11.png","emoticon_12.png","emoticon_13.png","emoticon_14.png"];
   var alts = ["sleep","knock","love","tv watching","driving","tv off","good","bye bye","tear sad","dance","what","캐릭터","캐릭터","캐릭터"];
-  var track = document.getElementById("emoji-track-a");
-  var tiles = files.map(function (f, i) {
-    return '<img class="emoji-tile" src="assets/emoticons/' + f + '" alt="이모티콘 - ' + alts[i] + '" loading="lazy">';
+  document.getElementById("emoji-row").innerHTML = files.map(function (f, i) {
+    return '<img src="assets/emoticons/' + f + '" alt="이모티콘 - ' + alts[i] + '" loading="lazy">';
   }).join("");
-  track.innerHTML = tiles + tiles; // x2 so translateX(-50%) loops seamlessly
 })();
 
-/* ═══════════ 4. SCROLL REVEAL ═══════════ */
+/* ═══ 4. 아주 절제된 페이드인 ═══ */
 (function () {
-  var els = document.querySelectorAll(".reveal");
-  if (!("IntersectionObserver" in window)) {
-    els.forEach(function (el) { el.classList.add("on"); }); return;
-  }
+  var els = document.querySelectorAll(".fade");
+  if (!("IntersectionObserver" in window)) { els.forEach(function (el) { el.classList.add("on"); }); return; }
   var io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (en) {
-      if (en.isIntersecting) { en.target.classList.add("on"); io.unobserve(en.target); }
-    });
-  }, { threshold: 0.12 });
+    entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add("on"); io.unobserve(en.target); } });
+  }, { threshold: 0.1 });
   els.forEach(function (el) { io.observe(el); });
 })();
 
-/* ═══════════ 5. RELATED ARTICLES (기존 사이트 인프라 유지) ═══════════ */
+/* ═══ 5. 관련 글 (정적 태그 필터, 기존 사이트 인프라) ═══ */
 (function () {
   var RELEVANT_TAGS = ["game-art", "3d"];
   var list = document.getElementById("related-articles-list");
   if (!list) return;
-
   fetch("../articles/manifest.json")
     .then(function (r) { return r.json(); })
     .then(function (articles) {
       var matched = articles.filter(function (a) {
         return Array.isArray(a.tags) && a.tags.some(function (t) { return RELEVANT_TAGS.indexOf(t) !== -1; });
       });
-      if (!matched.length) {
-        list.innerHTML = '<p class="quiet">아직 태그가 매칭되는 글이 없습니다.</p>';
-        return;
-      }
+      if (!matched.length) { list.innerHTML = '<p class="quiet">아직 매칭되는 글이 없습니다.</p>'; return; }
       matched.forEach(function (a) {
         var details = document.createElement("details");
         details.className = "article-card";
         var date = (a.publishedAt || "").slice(0, 10);
-        var thumb = a.thumbnail ? '<img class="a-thumb" src="' + a.thumbnail + '" alt="" loading="lazy">' : "";
         details.innerHTML =
           '<summary>' +
-            thumb +
-            '<span>' +
-              '<span class="a-meta">' + (a.channel || "") + ' · ' + date + ' · ' + (a.readMinutes || "?") + '분</span>' +
-              '<p class="a-title">' + a.title + '</p>' +
-              '<p class="a-snippet">' + a.snippet + '</p>' +
-            '</span>' +
-            '<span class="a-toggle"></span>' +
+            '<span class="a-title">' + a.title + '</span>' +
+            '<span class="a-meta">' + date + ' · ' + (a.readMinutes || "?") + '분 읽기 ▾</span>' +
           '</summary>' +
-          '<div class="article-body"><p class="article-loading">불러오는 중…</p></div>';
-
+          '<div class="article-body"><p class="quiet">불러오는 중…</p></div>';
         var loaded = false;
         details.addEventListener("toggle", function () {
           if (!details.open || loaded) return;
@@ -631,19 +573,17 @@ function renderWorks(works, syncedAt) {
             .then(function (html) {
               var doc = new DOMParser().parseFromString(html, "text/html");
               var content = doc.querySelector("article, main, .page, .prose");
-              body.innerHTML = content ? content.innerHTML : '<p>내용을 불러오지 못했습니다. — <a href="../articles/' + a.file + '" target="_blank" rel="noopener" style="color:var(--gold)">새 탭에서 열기</a></p>';
+              body.innerHTML = content ? content.innerHTML :
+                '<p>내용을 불러오지 못했습니다 — <a href="../articles/' + a.file + '" target="_blank" rel="noopener" style="color:var(--accent)">새 탭에서 열기</a></p>';
             })
             .catch(function () {
-              body.innerHTML = '<p>불러오기 실패 — <a href="../articles/' + a.file + '" target="_blank" rel="noopener" style="color:var(--gold)">새 탭에서 열기</a></p>';
+              body.innerHTML = '<p>불러오기 실패 — <a href="../articles/' + a.file + '" target="_blank" rel="noopener" style="color:var(--accent)">새 탭에서 열기</a></p>';
             });
         });
-
         list.appendChild(details);
       });
     })
-    .catch(function () {
-      list.innerHTML = '<p class="quiet">관련 글을 불러오지 못했습니다.</p>';
-    });
+    .catch(function () { list.innerHTML = '<p class="quiet">글을 불러오지 못했습니다.</p>'; });
 })();
 </script>
 </body>
