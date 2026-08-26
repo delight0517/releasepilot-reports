@@ -1,5 +1,16 @@
 [
   {
+    "id": "1787734800000",
+    "file": "2026-08-26-agent-system-activation-and-server-cost.html",
+    "appName": "박새로이 AI",
+    "displayName": "에이전트 시스템 활성화 점검 + 24시간 서버 최소 비용",
+    "intent": "기획된 텔레그램/세콤/브레인와이어 에이전트가 실제로 활성화됐는지 코드 근거로 판정, 맥→윈도우 요청 전달 실패 원인 분석, 중앙 API 대장 도입, 24시간 무인 구동 최소 비용($7~) 검증",
+    "version": "1.0.0",
+    "reportKind": "strategy_report",
+    "reportRevision": 1,
+    "publishedAt": "2026-08-26T10:30:00.000"
+  },
+  {
     "id": "1787738797548",
     "file": "rogan-brand_ops_biweekly-1787738797548.html",
     "appName": "근성장(김근후)",

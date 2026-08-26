@@ -1,0 +1,462 @@
+<!doctype html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>에이전트 시스템 활성화 점검 + 24시간 서버 최소 비용</title>
+<meta name="description" content="기획된 에이전트 시스템이 실제로 활성화됐는지 코드 근거로 점검하고, 24시간 무인 구동에 필요한 최소 월 비용을 검증된 가격으로 정리한 리포트.">
+<link rel="canonical" href="https://delight0517.github.io/releasepilot-reports/reports/2026-08-26-agent-system-activation-and-server-cost.html">
+<style>
+  :root {
+    --bg: #faf7f2; --bg-raised: #ffffff; --fg: #211f2e; --muted: #6b6a7c;
+    --border: #e7e1d6; --accent: #c9711f; --accent-soft: #f6e6d3;
+    --risk: #a13a3a; --risk-soft: #f6e2df; --good: #2f7a63; --good-soft: #dcefe8;
+    --info: #2a5f8f; --info-soft: #dbe8f2;
+    --serif: Iowan Old Style, Georgia, "Noto Serif KR", ui-serif, serif;
+    --sans: -apple-system, "Pretendard", "Apple SD Gothic Neo", "Segoe UI", sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg: #16151d; --bg-raised: #201f29; --fg: #ede9e0; --muted: #9a97ab; --border: #322f3d; --accent: #e2a262; --accent-soft: #3a2f22; --risk: #e08787; --risk-soft: #3a2325; --good: #7fc6ac; --good-soft: #1f332c; --info: #7fb0e0; --info-soft: #1f2c3a; }
+  }
+  :root[data-theme="dark"] { --bg: #16151d; --bg-raised: #201f29; --fg: #ede9e0; --muted: #9a97ab; --border: #322f3d; --accent: #e2a262; --accent-soft: #3a2f22; --risk: #e08787; --risk-soft: #3a2325; --good: #7fc6ac; --good-soft: #1f332c; --info: #7fb0e0; --info-soft: #1f2c3a; }
+  * { box-sizing: border-box; overflow-wrap: break-word; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--sans); line-height: 1.66; -webkit-font-smoothing: antialiased; }
+  .page { max-width: 820px; margin: 0 auto; padding: 56px 24px 96px; }
+  .eyebrow { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; }
+  h1 { font-family: var(--serif); font-size: clamp(24px, 5vw, 34px); font-weight: 600; line-height: 1.24; margin: 0 0 6px; text-wrap: balance; }
+  .subtitle { color: var(--muted); font-size: 14px; margin: 0 0 32px; }
+  section { margin-bottom: 42px; }
+  h2 { font-family: var(--serif); font-size: 20px; font-weight: 600; margin: 0 0 6px; }
+  h3 { font-size: 15px; margin: 22px 0 6px; }
+  .section-lede { color: var(--muted); font-size: 13.5px; margin: 0 0 16px; }
+  p, li { font-size: 14px; }
+  .callout { border-radius: 12px; padding: 18px 20px; margin-bottom: 20px; border: 1px solid transparent; }
+  .callout.info { background: var(--info-soft); border-color: color-mix(in srgb, var(--info) 35%, transparent); }
+  .callout.risk { background: var(--risk-soft); border-color: color-mix(in srgb, var(--risk) 35%, transparent); }
+  .callout.good { background: var(--good-soft); border-color: color-mix(in srgb, var(--good) 35%, transparent); }
+  .callout p { margin: 0; }
+  .callout .tag { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.04em; border-radius: 999px; padding: 2px 10px; margin-bottom: 8px; }
+  .callout.info .tag { color: var(--info); border: 1px solid var(--info); }
+  .callout.risk .tag { color: var(--risk); border: 1px solid var(--risk); }
+  .callout.good .tag { color: var(--good); border: 1px solid var(--good); }
+  .scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 12px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 520px; }
+  th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; }
+  code { font-family: var(--mono); font-size: 12.5px; background: var(--bg-raised); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px; }
+  .pill { display: inline-block; font-size: 11px; font-weight: 700; border-radius: 999px; padding: 2px 9px; white-space: nowrap; }
+  .pill.no { color: var(--risk); background: var(--risk-soft); border: 1px solid color-mix(in srgb, var(--risk) 40%, transparent); }
+  .pill.part { color: var(--accent); background: var(--accent-soft); border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent); }
+  .pill.yes { color: var(--good); background: var(--good-soft); border: 1px solid color-mix(in srgb, var(--good) 40%, transparent); }
+  .pill.unk { color: var(--muted); background: var(--bg-raised); border: 1px solid var(--border); }
+  ol.plain, ul.plain { padding-left: 20px; }
+  ol.plain li, ul.plain li { margin-bottom: 9px; }
+  .price-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin-top: 14px; }
+  .price-card { background: var(--bg-raised); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; }
+  .price-card.pick { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .price-card .name { font-size: 12px; color: var(--muted); margin: 0 0 4px; }
+  .price-card .amt { font-family: var(--serif); font-size: 26px; font-weight: 600; margin: 0 0 6px; }
+  .price-card .note { font-size: 12.5px; color: var(--muted); margin: 0; line-height: 1.55; }
+  .who { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px; }
+  .who-col { background: var(--bg-raised); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; }
+  .who-col h3 { margin-top: 0; }
+  .who-col ul { padding-left: 18px; margin: 0; }
+  .who-col li { font-size: 13px; margin-bottom: 7px; }
+  footer { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted); }
+  .linkbar { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+  .linkbar a { font-size: 13px; border: 1px solid var(--border); border-radius: 999px; padding: 7px 14px; text-decoration: none; color: var(--fg); background: var(--bg-raised); }
+  .linkbar a:hover { border-color: var(--accent); color: var(--accent); }
+  @media (max-width: 640px) { .page { padding: 32px 16px 80px; } }
+</style>
+
+<div class="page">
+  <p class="eyebrow">박새로이 리포트 · 에이전트 인프라</p>
+  <h1>에이전트 시스템, 지금 진짜로 켜져 있나 — 그리고 24시간 돌리려면 최소 얼마인가</h1>
+  <p class="subtitle">2026-08-26 작성 · 요청: "활성화됐는지 체크하고, 활성화시키고, 채팅으로 일이 되게 해달라 + 24시간 서버 최소 금액"</p>
+
+  <div class="callout risk">
+    <span class="tag">한 줄 결론</span>
+    <p>
+      <strong>기획서와 코드는 있지만, "24시간 무인 활성화"는 아직 아닙니다.</strong>
+      2026-08-25 리포트에 3대 봇이 <code>🟢 24h 작동 중</code>이라 적혀 있는데, 같은 저장소의
+      2026-08-24 <strong>실측</strong> 리포트는 그 서버가 <strong>Render 무료 플랜</strong>이라고
+      기록하고 있습니다. 무료 플랜은 15분 무활동이면 잠들기 때문에 두 문장은 동시에 참일 수 없습니다.
+      지금 상태는 "켜짐"이 아니라 <strong>"부를 때만 1분 걸려 깨어나는 반쯤 켜짐"</strong>입니다.
+      이걸 진짜 24시간으로 바꾸는 값이 <strong>월 $7</strong>부터입니다(아래 7번).
+    </p>
+  </div>
+
+  <section>
+    <h2>1. 무엇을 근거로 판정했나</h2>
+    <p class="section-lede">추측 금지 원칙에 따라, 저장소에서 직접 확인한 것과 확인 못 한 것을 나눠 적습니다.</p>
+    <div class="scroll">
+      <table>
+        <tr><th>구성요소</th><th>기획서 주장</th><th>실제 확인 결과</th><th>판정</th></tr>
+        <tr>
+          <td>텔레그램 3대 봇<br>(<code>@rusio11_bot</code> 외 2)</td>
+          <td>"웹훅 24h 작동 중"</td>
+          <td>봇 자체는 실재(2026-08-24 Windows 세션이 실제 발송 성공, <code>ok: true</code> 확인). 다만 상시 가동 근거는 없음</td>
+          <td><span class="pill part">부분</span></td>
+        </tr>
+        <tr>
+          <td>브레인와이어 서버<br><code>brainwire-f2gf.onrender.com</code></td>
+          <td>상시 연동</td>
+          <td>배포는 실재(사이트 코드가 이 주소를 호출). 2026-08-24 실측 리포트가 <strong>무료 플랜</strong>으로 기록 → 15분 슬립</td>
+          <td><span class="pill part">부분</span></td>
+        </tr>
+        <tr>
+          <td>공유 인박스 <code>apps/_shared/inbox/</code></td>
+          <td>"모든 봇 인박스 단일화 완료"</td>
+          <td>이 저장소에 <strong>해당 폴더 자체가 없음</strong></td>
+          <td><span class="pill no">미구현</span></td>
+        </tr>
+        <tr>
+          <td>공유 봇 설정 <code>apps/_shared/telegram_bot.json</code></td>
+          <td>"token/chatId 이미 있음"</td>
+          <td>이 저장소에 <strong>없음</strong>. 실제 발송은 Windows 로컬 <code>telegram.json</code>으로 이뤄짐</td>
+          <td><span class="pill no">위치 상이</span></td>
+        </tr>
+        <tr>
+          <td>세콤 팔로업 <code>secomFollowUp.js</code></td>
+          <td>"서버 배관 완성"</td>
+          <td>이 저장소에 없음(다른 저장소 추정). 세콤 사용가이드 기준 <strong>TODO 5단계 미완</strong> — 노션 DB·토큰·TTS 키·유튜브 인증 전부 대기</td>
+          <td><span class="pill no">미가동</span></td>
+        </tr>
+        <tr>
+          <td>서버 지금 살아있는지</td>
+          <td>—</td>
+          <td>이 세션에서 <strong>확인 불가</strong> — 제 샌드박스 네트워크 정책이 해당 도메인 CONNECT를 403으로 차단(서버가 죽었다는 뜻 아님)</td>
+          <td><span class="pill unk">확인 불가</span></td>
+        </tr>
+      </table>
+    </div>
+    <div class="callout info">
+      <span class="tag">왜 이 차이가 생겼나</span>
+      <p>
+        기획서는 "설계가 완성됐다"를 적은 것이고, 실측 리포트는 "돈을 내지 않아 잠드는 상태"를 적은 것입니다.
+        둘 다 거짓말은 아니지만, <strong>기획서의 초록불(🟢)이 운영 상태를 보증하지는 않습니다.</strong>
+        앞으로 리포트에 "작동 중"을 적을 때는 플랜 등급이나 실측 응답시간을 같이 적는 게 안전합니다.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2>2. "반쯤 켜짐"이 왜 치명적인가</h2>
+    <p class="section-lede">이건 이미 2026-08-24 실측 리포트가 숫자로 증명해 둔 내용입니다 — 여기서는 요약만 합니다.</p>
+    <div class="scroll">
+      <table>
+        <tr><th>상황</th><th>지금 (무료)</th><th>유료 전환 후</th></tr>
+        <tr><td>한동안 안 쓰다 보낸 첫 메시지</td><td>약 61초 — <strong>자주 아예 유실</strong></td><td>5.6초</td></tr>
+        <tr><td>연속 대화 중</td><td>5.6초</td><td>5.6초 (차이 없음)</td></tr>
+        <tr><td>서버가 <em>먼저</em> 말 거는 기능</td><td><strong>성립 불가</strong></td><td>가능</td></tr>
+      </table>
+    </div>
+    <p>
+      핵심은 속도가 아니라 <strong>유실</strong>입니다. 개인 비서 봇을 15분마다 부르는 사람은 없으므로,
+      사장님이 보내는 거의 모든 메시지가 "잠든 서버를 깨우는 첫 메시지"가 됩니다.
+      즉 콜드스타트가 예외가 아니라 <strong>기본값</strong>입니다.
+    </p>
+  </section>
+
+  <section>
+    <h2>3. 사장님이 원하는 기능들은 전부 "서버가 먼저 말 거는" 쪽에 있다</h2>
+    <p class="section-lede">이번에 추가로 주신 요청 — 브레인와이어부터 세콤이 알바를 찾아주는 것까지 — 을 구조로 분류했습니다.</p>
+    <div class="scroll">
+      <table>
+        <tr><th>하고 싶은 것</th><th>누가 먼저 말을 거나</th><th>잠드는 서버로 가능한가</th></tr>
+        <tr><td>브레인와이어 — 채팅으로 퀴즈 풀기</td><td>사람이 먼저</td><td>가능하지만 매번 60초 대기·유실 위험</td></tr>
+        <tr><td>브레인와이어 — 유튜브 링크 던지면 요약·퀴즈화</td><td>사람이 먼저</td><td>위와 동일</td></tr>
+        <tr><td>브레인와이어 — <strong>매일 커리큘럼 한 조각씩 배달</strong></td><td><strong>서버가 먼저</strong></td><td><strong>불가능</strong></td></tr>
+        <tr><td>세콤 — <strong>4시간마다 포기 않고 다시 질문</strong></td><td><strong>서버가 먼저</strong></td><td><strong>불가능</strong></td></tr>
+        <tr><td>세콤 — <strong>알바·외주·섭외 자동 탐색/매칭</strong></td><td><strong>서버가 먼저</strong>(주기 크롤링)</td><td><strong>불가능</strong></td></tr>
+        <tr><td>세콤 — 쇼츠 파이프라인 자동 렌더·업로드</td><td>서버가 먼저(스케줄)</td><td>불가능</td></tr>
+      </table>
+    </div>
+    <div class="callout risk">
+      <span class="tag">이게 답입니다</span>
+      <p>
+        사장님이 "이것들이 활성화되려면 결국 서버나 n8n이 있어야 하는 것 아니냐"고 물으신 건
+        <strong>정확한 진단입니다.</strong> 위 표에서 굵게 표시된 항목 — 매일 배달, 4시간마다 재질문,
+        알바 자동 탐색 — 은 <em>전부</em> 서버가 먼저 말을 거는 구조라, 잠드는 서버에서는
+        기능을 아무리 잘 만들어도 <strong>원리적으로 실행될 수 없습니다.</strong>
+        지금 세콤 팔로업이 안 도는 이유도 코드 문제가 아니라 여기에 있습니다.
+      </p>
+    </div>
+    <h3>단, "알바 자동 탐색"은 아직 기획서에 없는 새 요청입니다</h3>
+    <p>
+      세콤 기획안에 적힌 것은 <em>"방송 섭외 들어왔을 때 가능한 시간대를 되묻는다"</em>까지입니다.
+      <strong>먼저 나가서 알바/외주 공고를 찾아오는 기능은 기획서에 없습니다.</strong>
+      제가 없는 걸 있다고 적지 않기 위해 별도 신규 항목으로 표시해 둡니다 — 어느 채널(알바몬·크몽·인스타 DM·이메일)을
+      대상으로 할지만 정해주시면 그때 설계에 넣겠습니다.
+    </p>
+  </section>
+
+  <section>
+    <h2>4. "텔레그램으로 시켜도 아무리 기다려도 진행이 안 된다" — 원인 분석</h2>
+    <p class="section-lede">
+      사장님 가설: <em>"맥에서 작업했는데 그게 윈도우에 전달이 안 돼서 그런가 싶다."</em>
+      결론부터 — <strong>맞습니다. 그리고 그 증거가 저장소에 그대로 남아 있습니다.</strong>
+    </p>
+
+    <h3>원인 ① 맥은 텔레그램에 아예 접속을 못 합니다 (구조적)</h3>
+    <p>
+      맥에서는 <code>telegram.org</code> 전체가 사장님 본인의 <strong>4VPN Blocker</strong>(자기통제 앱)에 의해
+      <code>/etc/hosts</code>에서 <code>0.0.0.0</code>으로 차단돼 있습니다. 그래서 맥 세션은 텔레그램으로
+      아무것도 못 보냅니다 — 대신 <code>requests/</code> 큐에 "윈도우가 대신 보내달라"는 요청 파일을 남깁니다.
+      (이건 본인 자기통제 장치라 우회하지 않는 것이 원칙입니다.)
+    </p>
+    <p>
+      즉 사장님이 텔레그램으로 명령을 던졌을 때, 그 일이 맥 쪽 일이면
+      <strong>맥은 답을 보낼 수단 자체가 없습니다.</strong> 기다려도 안 오는 게 당연합니다.
+    </p>
+
+    <h3>원인 ② 그 큐에는 폴링이 없습니다 — 상대 PC가 켜져야만 알아차립니다</h3>
+    <p>
+      <code>requests/README.md</code>가 명시합니다: <em>"No polling/cron needed to notice new requests —
+      check when a session starts."</em> 즉 요청이 전달되려면 <strong>상대 기기에서 세션이 실제로
+      시작돼야</strong> 합니다. 윈도우 PC가 꺼져 있는 동안은 아무 일도 일어나지 않습니다.
+    </p>
+    <p>
+      실제 사례: 2026-08-22 세콤 텔레그램 발송 요청은 <strong>2일간 방치</strong>됐다가 2026-08-24에야
+      윈도우가 처리했습니다. 그때 윈도우 세션이 직접 이런 메모를 남겼습니다 —
+      <em>"다음부터는 이런 차단-경로 요청이 open 상태로 오래 방치되지 않도록 세션 시작 스캔에서
+      더 눈에 띄게 표시하는 게 좋겠음."</em>
+    </p>
+
+    <h3>원인 ③ 답은 이미 와 있는데 사장님께 도달하지 않습니다 (가장 뜻밖의 발견)</h3>
+    <p>
+      오늘 제가 만든 점검 도구(<code>scripts/check_request_queue.py</code>)를 실제로 돌린 결과입니다.
+    </p>
+    <div class="scroll">
+      <table>
+        <tr><th>방치</th><th>경로</th><th>상태</th><th>응답 달림?</th><th>내용</th></tr>
+        <tr><td><strong>26일</strong></td><td>mac → windows</td><td>acknowledged</td><td><span class="pill yes">있음</span></td><td>맥↔윈도우 잠금 스케줄이 서로 조용히 유실되는 버그</td></tr>
+        <tr><td><strong>15일</strong></td><td>mac → windows</td><td>acknowledged</td><td><span class="pill yes">있음</span></td><td>윈도우 앱 다운로드가 하나도 안 뜸</td></tr>
+        <tr><td><strong>7일</strong></td><td>windows → mac</td><td>acknowledged</td><td><span class="pill yes">있음</span></td><td>페르소나 과부하 프로토콜</td></tr>
+      </table>
+    </div>
+    <div class="callout risk">
+      <span class="tag">이게 진짜 원인입니다</span>
+      <p>
+        세 건 <strong>전부 답변이 이미 달려 있습니다.</strong> 즉 "상대가 일을 안 한 것"이 아니라,
+        <strong>일은 끝났는데 그 결과가 사장님께 전달되지 않은 것</strong>입니다.
+        답변은 git 저장소 안의 마크다운 파일에 적혀 있고, 그걸 열어보는 사람이 없으면
+        영원히 거기 있습니다. 사장님 입장에서는 "시켰는데 감감무소식"으로 느껴질 수밖에 없습니다.
+        <br><br>
+        게다가 26일째 열려 있는 그 요청의 내용이 하필 <strong>"맥과 윈도우가 서로의 데이터를
+        조용히 무시하거나 유실한다"</strong>는 버그 보고입니다 — 사장님 가설과 정확히 같은 문제가
+        이미 한 달 전에 발견됐고, 아직 안 닫혀 있습니다.
+      </p>
+    </div>
+
+    <h3>같은 실수가 이미 한 번 더 있었습니다</h3>
+    <p>
+      <code>CLAUDE.md</code>에 기록된 2026-08-23 사건입니다. 예나 상담 자동 스케줄이
+      "로컬 PC 상태와 무관하게 돈다"고 설명돼 있었는데, 실제로는 <strong>로컬 PC 파일에만 등록돼 있어서
+      Claude Code가 켜져 있어야만 발화</strong>하는 방식이었습니다. 사장님이 직접 지적해서
+      claude.ai 서버 Routine으로 옮겼습니다.
+    </p>
+    <div class="callout info">
+      <span class="tag">공통 원인 — 한 문장</span>
+      <p>
+        지금까지 겪은 문제 셋(예나 스케줄, 텔레그램 2일 지연, 26일째 안 닫힌 요청)은 전부
+        같은 뿌리입니다 — <strong>"사람 PC가 켜져 있어야만 돌아가는 구조."</strong>
+        서버를 상시 가동으로 바꾸는 것(7번의 $7)이 중요한 진짜 이유가 속도가 아니라
+        <strong>바로 이것</strong>입니다. 항상 깨어 있는 한 곳이 생기면, 맥이 꺼져 있든
+        윈도우가 꺼져 있든 큐를 대신 지켜보고 사장님께 텔레그램으로 알려줄 수 있습니다.
+      </p>
+    </div>
+
+    <h3>오늘 만든 것 — 방치 감지기</h3>
+    <p>
+      <code>scripts/check_request_queue.py</code>를 새로 만들어 실제로 테스트했습니다.
+      <code>requests/open/</code>을 훑어 방치 일수를 계산하고, <strong>답변이 달렸는데도 안 닫힌 건</strong>을
+      따로 표시합니다(위 표가 그 실제 출력입니다). 방치 건이 있으면 종료코드 1로 끝나므로,
+      서버가 켜지면 이걸 주기 실행해서 텔레그램 알림으로 바로 연결할 수 있습니다.
+    </p>
+  </section>
+
+  <section>
+    <h2>5. API 중앙 관리 — 요청하신 것과, 그대로 하면 안 되는 부분</h2>
+    <p class="section-lede">
+      요청: <em>"API도 중앙식으로 전체를 박새로이가 관리해서, 더 이상 내가 관리하거나 타이핑하지 않아도 되는 시스템."</em>
+    </p>
+    <div class="callout risk">
+      <span class="tag">먼저 안전 문제 하나</span>
+      <p>
+        이 저장소는 <strong>GitHub Pages로 전 세계에 공개</strong>됩니다. 여기에 실제 토큰을 넣으면
+        비공개 폴더에 두든, 나중에 지우든 <strong>커밋하는 순간 이미 유출</strong>입니다(git 히스토리에 남습니다).
+        그래서 "전부 한곳에 모아두기"를 그대로 구현하지 않고, <strong>값과 대장을 분리</strong>했습니다.
+      </p>
+    </div>
+    <div class="scroll">
+      <table>
+        <tr><th></th><th>어디에</th><th>무엇이</th></tr>
+        <tr><td><strong>대장</strong> (공개 OK)</td><td><code>apps/_shared/api_registry.json</code></td><td>키가 있는지 · 어디 있는지 · 발급됐는지 · 언제 확인했는지</td></tr>
+        <tr><td><strong>값</strong> (비공개)</td><td>Render 환경변수 · 기기 로컬 · 브라우저</td><td>실제 토큰 문자열</td></tr>
+      </table>
+    </div>
+    <p>
+      이렇게 해도 <strong>목적은 그대로 달성됩니다.</strong> 사장님이 안 하고 싶으신 건 "무슨 키가 어떤
+      상태인지 기억하고 챙기는 일"인데, 그 일이 사람 머리에서 대장으로 넘어가기 때문입니다.
+      직접 하셔야 하는 건 <strong>최초 발급 한 번뿐</strong>이고, 그 뒤로는 대장이 기억합니다.
+    </p>
+
+    <h3>오늘 만들어서 돌려본 결과</h3>
+    <div class="scroll">
+      <table>
+        <tr><th>키</th><th>보관</th><th>상태</th></tr>
+        <tr><td>텔레그램 · 세콤 봇 (@rusio11_bot)</td><td>윈도우 로컬</td><td><span class="pill yes">발급·확인됨</span> 2026-08-24 실제 발송 성공</td></tr>
+        <tr><td>텔레그램 · 브레인와이어 봇</td><td>Render 환경변수</td><td><span class="pill part">발급추정</span> 근거 없음</td></tr>
+        <tr><td>텔레그램 · 전략가 봇</td><td><strong>미상</strong></td><td><span class="pill part">발급추정</span> 위치조차 불명</td></tr>
+        <tr><td>노션 Integration</td><td>—</td><td><span class="pill no">미발급</span></td></tr>
+        <tr><td>TTS(더빙) 키</td><td>—</td><td><span class="pill no">미발급</span></td></tr>
+        <tr><td>YouTube OAuth</td><td>—</td><td><span class="pill no">미발급</span></td></tr>
+        <tr><td>GitHub PAT (cloudStore)</td><td>브라우저</td><td><span class="pill yes">발급됨</span> 1인 전용</td></tr>
+        <tr><td>Render 계정</td><td>Render</td><td><span class="pill yes">발급됨</span> 무료 플랜</td></tr>
+      </table>
+    </div>
+    <div class="callout good">
+      <span class="tag">보안 점검 결과 — 좋은 소식</span>
+      <p>
+        점검 도구(<code>scripts/check_api_registry.py</code>)를 만들어 실제로 돌렸습니다.
+        가짜 토큰 6종을 심어 <strong>6/6 탐지</strong>, 정상 메타데이터 오탐 0건으로 탐지기 자체를 먼저 검증한 뒤,
+        <strong>저장소가 추적 중인 텍스트 파일 220개 전체를 스캔했고 유출된 키는 0건</strong>이었습니다.
+        지금까지 공개 저장소에 새어나간 키는 없습니다.
+      </p>
+    </div>
+    <p>
+      한편 이 표가 <strong>세콤이 안 도는 직접적인 이유</strong>도 보여줍니다 — 노션·TTS·유튜브 3개가
+      전부 미발급입니다. 서버를 유료로 바꿔도 이 3개가 없으면 세콤 쇼츠 파이프라인은 그대로 멈춰 있습니다.
+      <strong>이 3개는 서버 비용과 별개의 문제</strong>입니다.
+    </p>
+  </section>
+
+  <section>
+    <h2>6. 제가 할 수 있는 것 / 사장님만 할 수 있는 것</h2>
+    <p class="section-lede">"활성화시켜줘"라고 하셨는데, 솔직하게 경계를 그어 말씀드립니다.</p>
+    <div class="who">
+      <div class="who-col">
+        <h3>❌ 이 세션에서 제가 못 하는 것</h3>
+        <ul>
+          <li>Render 플랜을 무료 → 유료로 바꾸기 (<strong>결제 수단이 걸린 계정 작업</strong>)</li>
+          <li>서버에 접속해 상태 확인하기 (샌드박스가 해당 도메인을 403으로 차단)</li>
+          <li>봇 서버 코드 수정·배포 (그 코드가 <strong>이 저장소에 없음</strong> — 이 세션은 releasepilot-reports로만 스코프가 제한돼 있습니다)</li>
+          <li>노션·OpenAI·유튜브 API 키 발급 (본인 로그인 승인 필요)</li>
+        </ul>
+      </div>
+      <div class="who-col">
+        <h3>✅ 제가 지금 한 것 / 할 수 있는 것</h3>
+        <ul>
+          <li>활성화 상태를 코드 근거로 판정 (이 리포트)</li>
+          <li>가격을 실제로 검증 — 이전 리포트가 <em>"가격은 미확인"</em>으로 남긴 공백을 메움</li>
+          <li>서버가 켜진 뒤 무엇부터 열리는지 순서 정리</li>
+          <li>플랜 전환 후, 이 저장소 쪽 문서·리포트·성장 트리 갱신</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>7. 최소 비용 — 검증된 가격</h2>
+    <p class="section-lede">
+      2026-08-26 기준으로 확인한 값입니다. 2026-08-24 리포트가 "요금 페이지가 스크립트라 못 읽었다"며
+      비워둔 칸을 여기서 채웁니다.
+    </p>
+
+    <h3>선택지 A — 지금 쓰는 Render를 그대로 유료화 (가장 빠름)</h3>
+    <div class="price-grid">
+      <div class="price-card pick">
+        <p class="name">Render Starter</p>
+        <p class="amt">$7 <span style="font-size:14px;color:var(--muted)">/월</span></p>
+        <p class="note">0.5 vCPU · 512 MB RAM · <strong>상시 가동(슬립 없음)</strong>.
+          이미 배포된 브레인와이어 서버의 <code>render.yaml</code>에서 <code>plan: free</code> 한 줄만 바꾸면 끝 — 데이터 이전 작업 없음.</p>
+      </div>
+      <div class="price-card">
+        <p class="name">참고 · 상위 플랜</p>
+        <p class="amt">$25 <span style="font-size:14px;color:var(--muted)">/월</span></p>
+        <p class="note">Standard(1 vCPU · 2 GB). 지금 용도(개인 봇)에는 과합니다 — 필요해지면 그때 올리면 됩니다.</p>
+      </div>
+    </div>
+    <div class="callout info">
+      <span class="tag">주의 — 총액은 $7보다 클 수 있음</span>
+      <p>
+        Render는 <strong>서비스별 컴퓨트 요금 + 워크스페이스(계정) 요금</strong>이 별도로 붙는 구조라는 설명이 있습니다.
+        즉 $7은 <em>서비스 1개의 컴퓨트 값</em>이고, 계정 등급에 따라 총 청구액이 달라질 수 있습니다.
+        제가 사장님 대시보드를 볼 수 없으니 <strong>결제 직전 실제 청구 예상액을 대시보드에서 한 번 확인</strong>해 주세요 —
+        추측해서 적지 않겠습니다.
+      </p>
+    </div>
+
+    <h3>선택지 B — n8n으로 자동화 전체를 묶고 싶을 때</h3>
+    <div class="price-grid">
+      <div class="price-card">
+        <p class="name">n8n Cloud Starter</p>
+        <p class="amt">€24 <span style="font-size:14px;color:var(--muted)">/월</span></p>
+        <p class="note">월 2,500회 실행 · 워크플로/사용자 무제한. 설치·관리가 필요 없는 대신 가장 비쌉니다.</p>
+      </div>
+      <div class="price-card pick">
+        <p class="name">n8n 셀프호스팅 (Community)</p>
+        <p class="amt">$5~7 <span style="font-size:14px;color:var(--muted)">/월</span></p>
+        <p class="note">n8n 소프트웨어 자체는 <strong>무료·실행 무제한</strong>. 돈은 이걸 올릴 VPS 값뿐입니다(Docker로 설치, 보통 30~60분). </p>
+      </div>
+    </div>
+
+    <h3>정리 — 사장님 상황에서의 권고</h3>
+    <div class="callout good">
+      <span class="tag">추천</span>
+      <p>
+        <strong>먼저 Render Starter $7 하나만.</strong> 이유는 셋입니다 —
+        ① 이미 배포된 서버라 <code>plan:</code> 한 줄 수정이면 되고 데이터 이전이 없습니다,
+        ② 되돌리기도 같은 한 줄이라 실패 비용이 거의 0입니다,
+        ③ 위 3번 표에서 막혀 있던 기능들(매일 배달·4시간 재질문·자동 탐색)이 <em>이 한 줄로 전부 원리적으로 가능해집니다</em>.
+        n8n은 그다음입니다 — 지금 필요한 건 "워크플로를 예쁘게 엮는 도구"가 아니라
+        <strong>"안 잠자는 서버"</strong>이고, 그건 $7이 해결합니다. 자동화 갈래가 늘어 관리가 버거워질 때
+        셀프호스팅 n8n($5~7)을 같은 서버에 얹는 순서를 권합니다.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2>8. 채팅으로 일이 되게 하는 순서</h2>
+    <p class="section-lede">"채팅을 통해서 일이 될 수 있도록"에 대한 실행 경로입니다. 위에서부터 순서대로.</p>
+    <ol class="plain">
+      <li><strong>Render 대시보드에서 Starter로 전환</strong> (사장님 · 5분) — 예상 청구액 확인 후 결제.
+        이 순간부터 "보냈는데 답이 없다"가 사라집니다.</li>
+      <li><strong>전환 완료를 알려주기</strong> (사장님 · 1분) — 그 뒤 작업은 제가 이어받습니다.</li>
+      <li><strong>브레인와이어 채팅 퀴즈부터 열기</strong> — 4단계 질문 부품이 이미 만들어져 있고 앱을 열어야만 보이는 상태입니다.
+        서버가 안 자면 텔레그램에서 바로 받게 할 수 있습니다(가장 빠른 성과).</li>
+      <li><strong>세콤 팔로업(4시간 재질문) 켜기</strong> — 이력서 빈칸을 봇이 먼저 물어보고, 답장만 하면 데이터가 쌓입니다.</li>
+      <li><strong>세콤 쇼츠 파이프라인 TODO 5단계 처리</strong> (사장님) — 노션 DB화 · 노션 토큰 · TTS 키 · 유튜브 OAuth.
+        이건 서버 비용과 별개로 <strong>키가 없으면 아무것도 안 돕니다.</strong></li>
+      <li><strong>알바/외주 자동 탐색은 대상 채널 확정 후 설계</strong> — 위 3번에서 적은 대로 아직 기획서에 없는 신규 기능입니다.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>9. 이번에 확인하지 못한 것 (정직 고지)</h2>
+    <ul class="plain">
+      <li>서버가 <em>지금 이 순간</em> 살아있는지 — 제 샌드박스가 해당 도메인 접속을 403으로 차단했습니다. <strong>서버가 죽었다는 뜻이 아닙니다.</strong></li>
+      <li>3대 봇 웹훅의 현재 등록 상태 — 봇 서버 코드가 이 저장소 밖에 있어 확인 경로가 없습니다.</li>
+      <li>Render 계정의 실제 총 청구 예상액 — 워크스페이스 요금 구조 때문에 대시보드 확인이 필요합니다.</li>
+      <li>세콤 파이프라인의 실제 API 호출 검증 — 사용가이드 기준 키 미발급 상태라 애초에 검증 불가.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>바로가기</h2>
+    <div class="linkbar">
+      <a href="./brainwire-render_starter_roi-1787400000000.html">Render 전환 실측 리포트 (2026-08-24) →</a>
+      <a href="./2026-08-25-secom-followup-system.html">세콤 팔로업 기획안 →</a>
+      <a href="./2026-08-25-telegram-automation-and-branding.html">텔레그램 3대 봇 기획안 →</a>
+      <a href="../growth/hosting_guide/">서버 운영 방식 결정 가이드 (성장 트리) →</a>
+    </div>
+  </section>
+
+  <footer>
+    <p>
+      생성: releasepilot-reports · reports/ 채널 · 박새로이<br>
+      가격 정보는 2026-08-26 웹 검색으로 확인한 값이며, 확인하지 못한 항목은 7번에 그대로 남겨 두었습니다 —
+      확인 불가한 숫자는 지어내지 않습니다.
+    </p>
+  </footer>
+</div>
