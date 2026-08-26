@@ -7,4 +7,4 @@ compatibility_date = "2026-08-01"
 # paste the returned "id" below.
 [[kv_namespaces]]
 binding = "CLOUD_ACCOUNT_KV"
-id = "REPLACE_WITH_KV_NAMESPACE_ID"
+id = "85aa29cafb614c318e11a48b8bbf3017"
