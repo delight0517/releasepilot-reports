@@ -64,6 +64,35 @@ PC 파일)에만 등록돼 있었는데, 이건 로컬 Claude Code가 켜져 있
 중복 발화를 막기 위해 비활성화/삭제해야 함** — 이 저장소 세션에서는 그 로컬 파일에 접근할
 수 없으므로 사용자가 직접 처리해야 한다.
 
+## 반복 작업 모니터링 (ops-heartbeat, 2026-08-26 신설)
+
+반복 실행(cron/routine/예약작업)에 대해 이 저장소는 **두 개의 레이어**를 가진다.
+헷갈리지 말 것:
+
+- `ops-calendar/registry.json` — **돌기로 되어 있는 것**(기대). 캘린더
+  `ops-calendar/index.html`이 이걸 그린다. 원본은 로컬
+  `23_app_Releaser/.claude/schedule_registry.json`, 이건 미러.
+- `ops-calendar/runs/<날짜>/<taskId>__<host>.json` — **실제로 돈 것**(증거).
+  `scripts/oplog.py`가 쓴다. 사람이 편집하지 않는다.
+- `ops-calendar/health.json` + `health.html` — 위 둘을 대조한 판정과 대시보드.
+  `scripts/ops_health.py`가 유일한 writer.
+
+**왜 만들었나**: registry만 있고 실행 증거가 없어서, yena-career-checkin이 죽은
+trigger에 물려 한 달간 한 번도 안 돌았는데 아무도 몰랐다(2026-08-24 발견).
+설계 전문: `docs/ops_heartbeat_monitoring.md`.
+
+**새 반복 작업을 만들 때 반드시**: registry entry 추가 + 그 작업이 끝날 때
+`scripts/oplog.py --task <id> --host <mac|windows|cloud> --outcome <ok|noop|skip|fail>`를
+호출하게 할 것. 로깅을 안 붙이면 대시보드에서 영원히 `silent`(죽은 것으로 의심)로
+뜬다. `outcome`에서 **`ok`(실제로 일함)와 `noop`(할 일 없어서 아무것도 안 함)을
+반드시 구분**할 것 — noop만 쌓이는 작업이 곧 "쓸데없는 반복 작업"이고, 이 구분이
+없으면 그게 드러나지 않는다.
+
+**아직 안 붙은 것(사용자/로컬 세션이 해야 함)**: 기존 클라우드 루틴 6개 프롬프트에
+oplog 호출 추가, Windows 예약 작업 7개를 `scripts/oplog.ps1` 래핑으로 교체,
+`ops-monitor-weekly` 루틴 등록. 이 저장소 세션에서는 claude.ai 루틴 편집과 로컬 PC
+작업에 접근할 수 없다.
+
 ## 진행 중 / 아직 못 만든 것 (2026-08-19 기준)
 
 사용자가 요청했지만 아직 스캐폴딩만 하거나 설계 논의가 필요한 것들 — 다음 세션이 이어갈 때:

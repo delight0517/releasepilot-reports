@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>반복 작업 상태판</title>
+<style>
+  :root {
+    --ink: #1c2333; --ink-soft: #2a3348; --parchment: #f6f1e6; --parchment-card: #fffdf7;
+    --line: #ded2b8; --accent: #4f7cac; --accent-strong: #34597a;
+    --text: #241f14; --text-soft: #5c5644; --text-faint: #8b8368;
+    --high: #a8431f; --medium: #b3822e; --ok: #4f7a52;
+    --dot-ok: #4f7a52; --dot-noop: #a8a08a; --dot-skip: #c9c2ac; --dot-fail: #a8431f; --dot-none: #eae3d2;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink: #0f1420; --parchment: #171c26; --parchment-card: #1f2532; --line: #333c4d;
+      --accent: #7fa8d6; --accent-strong: #a9c6e8;
+      --text: #ece6d8; --text-soft: #b8b19c; --text-faint: #7b7663;
+      --high: #e08a5f; --medium: #d6b45f; --ok: #7fb083;
+      --dot-ok: #7fb083; --dot-noop: #6c6858; --dot-skip: #4a4738; --dot-fail: #e08a5f; --dot-none: #2a3140;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ink: #0f1420; --parchment: #171c26; --parchment-card: #1f2532; --line: #333c4d;
+    --accent: #7fa8d6; --accent-strong: #a9c6e8;
+    --text: #ece6d8; --text-soft: #b8b19c; --text-faint: #7b7663;
+    --high: #e08a5f; --medium: #d6b45f; --ok: #7fb083;
+    --dot-ok: #7fb083; --dot-noop: #6c6858; --dot-skip: #4a4738; --dot-fail: #e08a5f; --dot-none: #2a3140;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--parchment); color: var(--text);
+    font-family: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", "Segoe UI", sans-serif;
+    line-height: 1.6; }
+  .page { max-width: 820px; margin: 0 auto; padding: 0 0 72px; }
+  .masthead { background: linear-gradient(180deg, var(--ink) 0%, var(--ink-soft) 100%); color: #eef3f8;
+    padding: 30px 20px 26px; }
+  .eyebrow { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #c3d3e6;
+    margin: 0 0 6px; font-weight: 600; }
+  .masthead h1 { font-family: Georgia, serif; font-size: 26px; margin: 0 0 8px; }
+  .masthead p { margin: 0; color: #c3d3e6; font-size: 13.5px; max-width: 62ch; }
+  .masthead a { color: #dce8f5; }
+
+  .section { padding: 26px 20px 0; }
+  .section h2 { font-family: Georgia, serif; font-size: 18px; margin: 0 0 4px; }
+  .section .sub { color: var(--text-soft); font-size: 12.5px; margin: 0 0 16px; }
+
+  .stat-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+  .stat { background: var(--parchment-card); border: 1px solid var(--line); border-radius: 10px;
+    padding: 10px 14px; min-width: 96px; }
+  .stat .n { font-size: 21px; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.2; }
+  .stat .l { font-size: 11px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.05em; }
+  .stat.high .n { color: var(--high); }
+  .stat.medium .n { color: var(--medium); }
+
+  .finding { background: var(--parchment-card); border: 1px solid var(--line); border-left-width: 4px;
+    border-radius: 10px; padding: 12px 14px; margin-bottom: 8px; }
+  .finding.high { border-left-color: var(--high); }
+  .finding.medium { border-left-color: var(--medium); }
+  .finding.info { border-left-color: var(--line); }
+  .finding .head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; }
+  .finding .task { font-weight: 700; font-size: 13.5px; }
+  .kind { font-size: 10.5px; font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    padding: 2px 7px; border-radius: 999px; border: 1px solid var(--line); color: var(--text-soft); }
+  .finding.high .kind { color: var(--high); border-color: var(--high); }
+  .finding.medium .kind { color: var(--medium); border-color: var(--medium); }
+  .finding .detail { font-size: 12.5px; color: var(--text-soft); margin: 4px 0 0; }
+
+  .task-row { background: var(--parchment-card); border: 1px solid var(--line); border-radius: 10px;
+    padding: 12px 14px; margin-bottom: 8px; }
+  .task-row .top { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; justify-content: space-between; }
+  .task-row .name { font-weight: 700; font-size: 13.5px; }
+  .task-row .meta { font-size: 11.5px; color: var(--text-faint); }
+  .strip { display: flex; gap: 3px; margin-top: 8px; flex-wrap: wrap; }
+  .cell { width: 13px; height: 13px; border-radius: 3px; background: var(--dot-none); flex: 0 0 auto; }
+  .cell.ok { background: var(--dot-ok); }
+  .cell.noop { background: var(--dot-noop); }
+  .cell.skip { background: var(--dot-skip); }
+  .cell.fail { background: var(--dot-fail); }
+  .counts { font-size: 11.5px; color: var(--text-soft); margin-top: 6px;
+    font-variant-numeric: tabular-nums; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: 11.5px; color: var(--text-soft);
+    margin-bottom: 14px; }
+  .legend span { display: flex; align-items: center; gap: 5px; }
+  .legend .cell { width: 11px; height: 11px; }
+
+  .empty { background: var(--parchment-card); border: 1px dashed var(--line); border-radius: 10px;
+    padding: 18px; font-size: 13px; color: var(--text-soft); }
+  footer { padding: 28px 20px 0; font-size: 11.5px; color: var(--text-faint); text-align: center; }
+  footer a { color: var(--accent-strong); }
+  code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.92em; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="masthead">
+    <p class="eyebrow">ops-heartbeat · 실행 상태판</p>
+    <h1>반복 작업, 실제로 돌고 있나</h1>
+    <p>맥 · 윈도우 · 클라우드 루틴의 <b>실제 실행 기록</b>을 한곳에서 본다.
+       <a href="index.html">반복 작업 캘린더</a>가 "돌 예정"을 그린다면, 이 페이지는
+       "정말 돌았는지"를 본다 — 조용히 죽은 트리거와 아무것도 안 하면서 계속 도는 작업을 잡아내는 곳.</p>
+  </div>
+
+  <div class="section">
+    <div id="stats" class="stat-row"></div>
+  </div>
+
+  <div class="section">
+    <h2>문제</h2>
+    <p class="sub">registry(기대)와 runs(실제)를 대조해서 나온 판정. 심각한 것부터.</p>
+    <div id="findings"></div>
+  </div>
+
+  <div class="section">
+    <h2>작업별 실행 스트립</h2>
+    <p class="sub">칸 하나 = 하루. 왼쪽이 오래된 날.</p>
+    <div class="legend">
+      <span><i class="cell ok"></i> ok — 실제로 일함</span>
+      <span><i class="cell noop"></i> noop — 할 일 없음</span>
+      <span><i class="cell skip"></i> skip — 게이트로 건너뜀</span>
+      <span><i class="cell fail"></i> fail — 실패</span>
+      <span><i class="cell"></i> 기록 없음</span>
+    </div>
+    <div id="tasks"></div>
+  </div>
+
+  <footer id="foot">
+    생성 시각 불러오는 중 · <a href="../docs/ops_heartbeat_monitoring.md">설계 문서</a> ·
+    <a href="index.html">반복 작업 캘린더</a>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var KIND_LABEL = {
+    silent: '실행 기록 없음', failing: '실패 중', overfrequent: '횟수 과다',
+    pointless: '쓸데없이 반복', 'duplicate-host': '중복 실행',
+    unregistered: '미등록', 'stale-registry': 'registry 낡음'
+  };
+
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+
+  function dayList(windowDays, generatedAt) {
+    var end = generatedAt ? new Date(generatedAt) : new Date();
+    var out = [];
+    for (var i = windowDays - 1; i >= 0; i--) {
+      var d = new Date(end.getTime() - i * 86400000);
+      out.push(d.toISOString().slice(0, 10));
+    }
+    return out;
+  }
+
+  function dominantOutcome(counters) {
+    if (!counters) return null;
+    if (counters.fail) return 'fail';
+    if (counters.ok) return 'ok';
+    if (counters.noop) return 'noop';
+    if (counters.skip) return 'skip';
+    return null;
+  }
+
+  fetch('health.json', { cache: 'no-store' })
+    .then(function (r) {
+      if (!r.ok) throw new Error('health.json ' + r.status);
+      return r.json();
+    })
+    .then(function (data) {
+      var t = data.totals || {};
+
+      var stats = document.getElementById('stats');
+      [
+        { n: t.tasks || 0, l: '등록 작업', c: '' },
+        { n: t.runsLogged || 0, l: '기록된 실행', c: '' },
+        { n: t.high || 0, l: '심각', c: 'high' },
+        { n: t.medium || 0, l: '주의', c: 'medium' }
+      ].forEach(function (s) {
+        var box = el('div', 'stat ' + s.c);
+        box.appendChild(el('div', 'n', String(s.n)));
+        box.appendChild(el('div', 'l', s.l));
+        stats.appendChild(box);
+      });
+
+      var fWrap = document.getElementById('findings');
+      var findings = (data.findings || []).filter(function (f) { return f.severity !== 'info'; });
+      if (!findings.length) {
+        fWrap.appendChild(el('div', 'empty',
+          '심각/주의 판정 없음. (info 등급 — 아직 유예기간 안이라 판단 보류인 작업 — 은 아래 목록에서 볼 수 있어요.)'));
+      } else {
+        findings.forEach(function (f) {
+          var box = el('div', 'finding ' + f.severity);
+          var head = el('div', 'head');
+          head.appendChild(el('span', 'task', f.taskId));
+          head.appendChild(el('span', 'kind', KIND_LABEL[f.kind] || f.kind));
+          box.appendChild(head);
+          box.appendChild(el('p', 'detail', f.detail));
+          fWrap.appendChild(box);
+        });
+      }
+
+      var days = dayList(data.windowDays || 14, data.generatedAt);
+      var tWrap = document.getElementById('tasks');
+      (data.tasks || []).forEach(function (task) {
+        var row = el('div', 'task-row');
+        var top = el('div', 'top');
+        top.appendChild(el('span', 'name', task.taskId));
+        var hosts = (task.hosts && task.hosts.length) ? task.hosts.join(', ') : '기록 없음';
+        top.appendChild(el('span', 'meta', (task.scheduleText || task.status || '') + ' · ' + hosts));
+        row.appendChild(top);
+
+        var strip = el('div', 'strip');
+        days.forEach(function (d) {
+          var outcome = dominantOutcome((task.days || {})[d]);
+          var cell = el('i', 'cell' + (outcome ? ' ' + outcome : ''));
+          cell.title = d + (outcome ? ' — ' + outcome : ' — 기록 없음');
+          strip.appendChild(cell);
+        });
+        row.appendChild(strip);
+
+        var c = task.counters || {};
+        row.appendChild(el('div', 'counts',
+          'ok ' + (c.ok || 0) + ' · noop ' + (c.noop || 0) + ' · skip ' + (c.skip || 0) +
+          ' · fail ' + (c.fail || 0) + ' · 산출물 ' + (task.produced || 0) +
+          (task.lastAt ? ' · 마지막 ' + task.lastAt.replace('T', ' ').replace('Z', ' UTC') : '')));
+        tWrap.appendChild(row);
+      });
+
+      document.getElementById('foot').innerHTML =
+        '집계 ' + (data.generatedAt || '?') + ' · 최근 ' + (data.windowDays || '?') + '일 기준 · ' +
+        '<a href="../docs/ops_heartbeat_monitoring.md">설계 문서</a> · ' +
+        '<a href="index.html">반복 작업 캘린더</a>';
+    })
+    .catch(function (err) {
+      document.getElementById('findings').appendChild(el('div', 'empty',
+        'health.json을 불러오지 못했어요 (' + err.message + '). ' +
+        'GitHub Pages로 접속했는지 확인해주세요 — file://로 열면 fetch가 막힙니다. ' +
+        '아직 scripts/ops_health.py를 한 번도 안 돌렸다면 먼저 실행해야 합니다.'));
+    });
+})();
+</script>
+</body>
+</html>

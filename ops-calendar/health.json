@@ -1,0 +1,502 @@
+{
+  "generatedAt": "2026-08-26T10:26:10Z",
+  "windowDays": 14,
+  "registryUpdatedAt": "2026-08-26",
+  "totals": {
+    "tasks": 16,
+    "withFindings": 13,
+    "high": 4,
+    "medium": 0,
+    "runsLogged": 1
+  },
+  "findings": [
+    {
+      "kind": "silent",
+      "severity": "high",
+      "detail": "registry는 active인데 최근 14일간 실행 기록이 0건. 기대 주기를 넘겨 침묵 중 — 트리거가 죽었거나 로깅이 아직 안 붙었다.",
+      "taskId": "launchpad-hub-auto-sync"
+    },
+    {
+      "kind": "silent",
+      "severity": "high",
+      "detail": "registry는 active인데 최근 14일간 실행 기록이 0건. 기대 주기를 넘겨 침묵 중 — 트리거가 죽었거나 로깅이 아직 안 붙었다.",
+      "taskId": "launchpad-progress-update-reminder"
+    },
+    {
+      "kind": "silent",
+      "severity": "high",
+      "detail": "registry는 active인데 최근 14일간 실행 기록이 0건. 기대 주기를 넘겨 침묵 중 — 트리거가 죽었거나 로깅이 아직 안 붙었다.",
+      "taskId": "secom-auto-process"
+    },
+    {
+      "kind": "silent",
+      "severity": "high",
+      "detail": "registry는 active인데 최근 14일간 실행 기록이 0건. 기대 주기를 넘겨 침묵 중 — 트리거가 죽었거나 로깅이 아직 안 붙었다.",
+      "taskId": "yena-career-checkin"
+    },
+    {
+      "kind": "silent",
+      "severity": "info",
+      "detail": "registry는 active인데 최근 14일간 실행 기록이 0건. 아직 유예기간 안이라 정상일 수 있음.",
+      "taskId": "35closer-weekly-hub-check"
+    },
+    {
+      "kind": "silent",
+      "severity": "info",
+      "detail": "registry는 active인데 최근 14일간 실행 기록이 0건. 아직 유예기간 안이라 정상일 수 있음.",
+      "taskId": "4vpn-critical-bug-autofix"
+    },
+    {
+      "kind": "silent",
+      "severity": "info",
+      "detail": "registry는 active인데 최근 14일간 실행 기록이 0건. 아직 유예기간 안이라 정상일 수 있음.",
+      "taskId": "app-dev-weekly-error-todo-sweep"
+    },
+    {
+      "kind": "silent",
+      "severity": "info",
+      "detail": "registry는 active인데 최근 14일간 실행 기록이 0건. 아직 유예기간 안이라 정상일 수 있음.",
+      "taskId": "brainwire-instagram-card-news"
+    },
+    {
+      "kind": "silent",
+      "severity": "info",
+      "detail": "registry는 active인데 최근 14일간 실행 기록이 0건. 아직 유예기간 안이라 정상일 수 있음.",
+      "taskId": "brainwire-weekly-quality-audit"
+    },
+    {
+      "kind": "silent",
+      "severity": "info",
+      "detail": "registry는 active인데 최근 14일간 실행 기록이 0건. 아직 유예기간 안이라 정상일 수 있음.",
+      "taskId": "chachacha-weekly-marketing-check"
+    },
+    {
+      "kind": "silent",
+      "severity": "info",
+      "detail": "registry는 active인데 최근 14일간 실행 기록이 0건. 아직 유예기간 안이라 정상일 수 있음.",
+      "taskId": "chloe-park-weekly-ux-review"
+    },
+    {
+      "kind": "silent",
+      "severity": "info",
+      "detail": "registry는 active인데 최근 14일간 실행 기록이 0건. 아직 유예기간 안이라 정상일 수 있음.",
+      "taskId": "launchpad-persona-rule-audit"
+    },
+    {
+      "kind": "silent",
+      "severity": "info",
+      "detail": "registry는 active인데 최근 14일간 실행 기록이 0건. 아직 유예기간 안이라 정상일 수 있음.",
+      "taskId": "launchpad-weekly-mac-request-check"
+    }
+  ],
+  "tasks": [
+    {
+      "taskId": "launchpad-hub-auto-sync",
+      "category": "infra",
+      "project": "23_app_Releaser",
+      "scheduleText": "매일 09:00 KST",
+      "status": "active",
+      "hosts": [],
+      "counters": {
+        "total": 0,
+        "ok": 0,
+        "noop": 0,
+        "skip": 0,
+        "fail": 0
+      },
+      "produced": 0,
+      "lastAt": null,
+      "lastOutcome": null,
+      "days": {},
+      "findings": [
+        {
+          "kind": "silent",
+          "severity": "high",
+          "detail": "registry는 active인데 최근 14일간 실행 기록이 0건. 기대 주기를 넘겨 침묵 중 — 트리거가 죽었거나 로깅이 아직 안 붙었다."
+        }
+      ]
+    },
+    {
+      "taskId": "launchpad-progress-update-reminder",
+      "category": "infra",
+      "project": "23_app_Releaser",
+      "scheduleText": "매일 09:30 KST",
+      "status": "active",
+      "hosts": [],
+      "counters": {
+        "total": 0,
+        "ok": 0,
+        "noop": 0,
+        "skip": 0,
+        "fail": 0
+      },
+      "produced": 0,
+      "lastAt": null,
+      "lastOutcome": null,
+      "days": {},
+      "findings": [
+        {
+          "kind": "silent",
+          "severity": "high",
+          "detail": "registry는 active인데 최근 14일간 실행 기록이 0건. 기대 주기를 넘겨 침묵 중 — 트리거가 죽었거나 로깅이 아직 안 붙었다."
+        }
+      ]
+    },
+    {
+      "taskId": "secom-auto-process",
+      "category": "infra",
+      "project": "23_app_Releaser (세콤 페르소나)",
+      "scheduleText": "고빈도 반복 (정확한 간격 확인 필요, 하루 여러 번)",
+      "status": "active",
+      "hosts": [],
+      "counters": {
+        "total": 0,
+        "ok": 0,
+        "noop": 0,
+        "skip": 0,
+        "fail": 0
+      },
+      "produced": 0,
+      "lastAt": null,
+      "lastOutcome": null,
+      "days": {},
+      "findings": [
+        {
+          "kind": "silent",
+          "severity": "high",
+          "detail": "registry는 active인데 최근 14일간 실행 기록이 0건. 기대 주기를 넘겨 침묵 중 — 트리거가 죽었거나 로깅이 아직 안 붙었다."
+        }
+      ]
+    },
+    {
+      "taskId": "yena-career-checkin",
+      "category": "report",
+      "project": "releasepilot-reports (growth/yena_career)",
+      "scheduleText": "매일 09:00 KST — 대부분 조용히 no-op, 정체 노드 있을 때만 실제로 말을 건다",
+      "status": "active",
+      "hosts": [],
+      "counters": {
+        "total": 0,
+        "ok": 0,
+        "noop": 0,
+        "skip": 0,
+        "fail": 0
+      },
+      "produced": 0,
+      "lastAt": null,
+      "lastOutcome": null,
+      "days": {},
+      "findings": [
+        {
+          "kind": "silent",
+          "severity": "high",
+          "detail": "registry는 active인데 최근 14일간 실행 기록이 0건. 기대 주기를 넘겨 침묵 중 — 트리거가 죽었거나 로깅이 아직 안 붙었다."
+        }
+      ]
+    },
+    {
+      "taskId": "35closer-weekly-hub-check",
+      "category": "infra",
+      "project": "35Closer_App",
+      "scheduleText": "매주 월요일 09:00 KST",
+      "status": "active",
+      "hosts": [],
+      "counters": {
+        "total": 0,
+        "ok": 0,
+        "noop": 0,
+        "skip": 0,
+        "fail": 0
+      },
+      "produced": 0,
+      "lastAt": null,
+      "lastOutcome": null,
+      "days": {},
+      "findings": [
+        {
+          "kind": "silent",
+          "severity": "info",
+          "detail": "registry는 active인데 최근 14일간 실행 기록이 0건. 아직 유예기간 안이라 정상일 수 있음."
+        }
+      ]
+    },
+    {
+      "taskId": "4vpn-critical-bug-autofix",
+      "category": "report",
+      "project": "4vpnBlocker (VeliMac, Mac 앱)",
+      "scheduleText": "매주 월요일 12:00 KST 기동, 20일 미경과면 스킵 → 실질 주기 ~3주",
+      "status": "active",
+      "hosts": [],
+      "counters": {
+        "total": 0,
+        "ok": 0,
+        "noop": 0,
+        "skip": 0,
+        "fail": 0
+      },
+      "produced": 0,
+      "lastAt": null,
+      "lastOutcome": null,
+      "days": {},
+      "findings": [
+        {
+          "kind": "silent",
+          "severity": "info",
+          "detail": "registry는 active인데 최근 14일간 실행 기록이 0건. 아직 유예기간 안이라 정상일 수 있음."
+        }
+      ]
+    },
+    {
+      "taskId": "app-dev-weekly-error-todo-sweep",
+      "category": "infra",
+      "project": "app dev (전체 폴더 훑기)",
+      "scheduleText": "매주 월요일 09:00 KST",
+      "status": "active",
+      "hosts": [],
+      "counters": {
+        "total": 0,
+        "ok": 0,
+        "noop": 0,
+        "skip": 0,
+        "fail": 0
+      },
+      "produced": 0,
+      "lastAt": null,
+      "lastOutcome": null,
+      "days": {},
+      "findings": [
+        {
+          "kind": "silent",
+          "severity": "info",
+          "detail": "registry는 active인데 최근 14일간 실행 기록이 0건. 아직 유예기간 안이라 정상일 수 있음."
+        }
+      ]
+    },
+    {
+      "taskId": "brainwire-instagram-card-news",
+      "category": "report",
+      "project": "brainwire",
+      "scheduleText": "매주 목요일 10:00 KST 기동, 지난 발행이 21일 미만이면 스킵 → 실질 주기 3주",
+      "status": "active",
+      "hosts": [],
+      "counters": {
+        "total": 0,
+        "ok": 0,
+        "noop": 0,
+        "skip": 0,
+        "fail": 0
+      },
+      "produced": 0,
+      "lastAt": null,
+      "lastOutcome": null,
+      "days": {},
+      "findings": [
+        {
+          "kind": "silent",
+          "severity": "info",
+          "detail": "registry는 active인데 최근 14일간 실행 기록이 0건. 아직 유예기간 안이라 정상일 수 있음."
+        }
+      ]
+    },
+    {
+      "taskId": "brainwire-weekly-quality-audit",
+      "category": "report",
+      "project": "brainwire",
+      "scheduleText": "매주 월요일 09:00 KST",
+      "status": "active",
+      "hosts": [],
+      "counters": {
+        "total": 0,
+        "ok": 0,
+        "noop": 0,
+        "skip": 0,
+        "fail": 0
+      },
+      "produced": 0,
+      "lastAt": null,
+      "lastOutcome": null,
+      "days": {},
+      "findings": [
+        {
+          "kind": "silent",
+          "severity": "info",
+          "detail": "registry는 active인데 최근 14일간 실행 기록이 0건. 아직 유예기간 안이라 정상일 수 있음."
+        }
+      ]
+    },
+    {
+      "taskId": "chachacha-weekly-marketing-check",
+      "category": "report",
+      "project": "releasepilot-reports (portfolio/about/dev-portfolio)",
+      "scheduleText": "매주 월요일 09:07 KST",
+      "status": "active",
+      "hosts": [],
+      "counters": {
+        "total": 0,
+        "ok": 0,
+        "noop": 0,
+        "skip": 0,
+        "fail": 0
+      },
+      "produced": 0,
+      "lastAt": null,
+      "lastOutcome": null,
+      "days": {},
+      "findings": [
+        {
+          "kind": "silent",
+          "severity": "info",
+          "detail": "registry는 active인데 최근 14일간 실행 기록이 0건. 아직 유예기간 안이라 정상일 수 있음."
+        }
+      ]
+    },
+    {
+      "taskId": "chloe-park-weekly-ux-review",
+      "category": "report",
+      "project": "releasepilot-reports (portfolio/about/dev-portfolio)",
+      "scheduleText": "매주 월요일 09:17 KST",
+      "status": "active",
+      "hosts": [],
+      "counters": {
+        "total": 0,
+        "ok": 0,
+        "noop": 0,
+        "skip": 0,
+        "fail": 0
+      },
+      "produced": 0,
+      "lastAt": null,
+      "lastOutcome": null,
+      "days": {},
+      "findings": [
+        {
+          "kind": "silent",
+          "severity": "info",
+          "detail": "registry는 active인데 최근 14일간 실행 기록이 0건. 아직 유예기간 안이라 정상일 수 있음."
+        }
+      ]
+    },
+    {
+      "taskId": "launchpad-persona-rule-audit",
+      "category": "report",
+      "project": "23_app_Releaser",
+      "scheduleText": "매주 월요일 09:00 KST",
+      "status": "active",
+      "hosts": [],
+      "counters": {
+        "total": 0,
+        "ok": 0,
+        "noop": 0,
+        "skip": 0,
+        "fail": 0
+      },
+      "produced": 0,
+      "lastAt": null,
+      "lastOutcome": null,
+      "days": {},
+      "findings": [
+        {
+          "kind": "silent",
+          "severity": "info",
+          "detail": "registry는 active인데 최근 14일간 실행 기록이 0건. 아직 유예기간 안이라 정상일 수 있음."
+        }
+      ]
+    },
+    {
+      "taskId": "launchpad-weekly-mac-request-check",
+      "category": "infra",
+      "project": "23_app_Releaser",
+      "scheduleText": "매주 월요일 09:00 KST",
+      "status": "active",
+      "hosts": [],
+      "counters": {
+        "total": 0,
+        "ok": 0,
+        "noop": 0,
+        "skip": 0,
+        "fail": 0
+      },
+      "produced": 0,
+      "lastAt": null,
+      "lastOutcome": null,
+      "days": {},
+      "findings": [
+        {
+          "kind": "silent",
+          "severity": "info",
+          "detail": "registry는 active인데 최근 14일간 실행 기록이 0건. 아직 유예기간 안이라 정상일 수 있음."
+        }
+      ]
+    },
+    {
+      "taskId": "launchpad-telegram-inbox-poll",
+      "category": "infra",
+      "project": "23_app_Releaser",
+      "scheduleText": "15분마다 (등록 기준 — 현재 Windows에서 Disabled 상태로 확인됨, 2026-08-20)",
+      "status": "disabled — 확인 필요",
+      "hosts": [],
+      "counters": {
+        "total": 0,
+        "ok": 0,
+        "noop": 0,
+        "skip": 0,
+        "fail": 0
+      },
+      "produced": 0,
+      "lastAt": null,
+      "lastOutcome": null,
+      "days": {},
+      "findings": []
+    },
+    {
+      "taskId": "ops-monitor-weekly",
+      "category": "infra",
+      "project": "releasepilot-reports (ops-calendar)",
+      "scheduleText": "매주 월요일 11:00 KST (다른 월요일 작업들이 다 끝난 뒤 집계)",
+      "status": "pending — 루틴 미등록, 시스템만 구축됨",
+      "hosts": [],
+      "counters": {
+        "total": 0,
+        "ok": 0,
+        "noop": 0,
+        "skip": 0,
+        "fail": 0
+      },
+      "produced": 0,
+      "lastAt": null,
+      "lastOutcome": null,
+      "days": {},
+      "findings": []
+    },
+    {
+      "taskId": "yena-brand-ops-biweekly",
+      "category": "report",
+      "project": "releasepilot-reports (brand-ops)",
+      "scheduleText": "매주 수요일 10:00 KST 기동, 13일 미경과면 스킵 → 실질 주기 2주",
+      "status": "active",
+      "hosts": [
+        "cloud"
+      ],
+      "counters": {
+        "total": 1,
+        "ok": 1,
+        "noop": 0,
+        "skip": 0,
+        "fail": 0
+      },
+      "produced": 1,
+      "lastAt": "2026-08-26T10:22:38Z",
+      "lastOutcome": "ok",
+      "days": {
+        "2026-08-26": {
+          "total": 1,
+          "ok": 1,
+          "noop": 0,
+          "skip": 0,
+          "fail": 0
+        }
+      },
+      "findings": []
+    }
+  ]
+}
