@@ -3,14 +3,14 @@
   "taskId": "_selftest",
   "host": "mac",
   "counters": {
-    "total": 2,
+    "total": 3,
     "ok": 1,
     "noop": 1,
     "skip": 0,
-    "fail": 0
+    "fail": 1
   },
   "firstAt": "2026-08-26T10:23:12Z",
-  "lastAt": "2026-08-26T10:23:13Z",
+  "lastAt": "2026-08-26T10:23:15Z",
   "runs": [
     {
       "at": "2026-08-26T10:23:12Z",
@@ -29,6 +29,15 @@
       "produced": [],
       "note": "NOOP",
       "error": null
+    },
+    {
+      "at": "2026-08-26T10:23:15Z",
+      "outcome": "fail",
+      "durationMs": 18,
+      "exitCode": 3,
+      "produced": [],
+      "note": "boom",
+      "error": "boom"
     }
   ]
 }
