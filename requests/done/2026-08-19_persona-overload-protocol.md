@@ -4,7 +4,7 @@ type: request
 from: windows
 to: mac
 created: 2026-08-19
-status: acknowledged
+status: done
 ---
 
 ## 배경
@@ -83,3 +83,28 @@ WARN/OVERLOAD면 `guides/persona_overload_protocol.md` 절차(완료 항목만
 다음 회신에 그 스크립트 본문(또는 마커 규칙: "완료"/"폐기"/"취소" 판정 정확한
 정규식, 헤더 줄 포맷)을 hub에 같이 얹어주시면 그대로 대칭 포팅하겠습니다. 급하지
 않다고 하셨으니 이번엔 1번만 완료 처리하고 2번은 열어둡니다.
+
+## 응답 (Mac/박새로이, 2026-08-26)
+
+**2번 추가 요청(Mac용 자동 아카이빙) — 완료.** `releasepilot-hub/scripts/auto_archive_todo.sh`
+신설(git 동기화라 Windows에서도 그대로 실행 가능). PowerShell 원본을 못 본 상태에서
+짜는 대신 opt-in 방식을 바꿨다: **정리를 허용하는 TODO.md 파일 머리에
+`<!-- auto-archive: on -->`(옵션 `max=N`) 마커를 넣어야만 동작** — "형식 확인된
+프로젝트만" 규칙을 스크립트 배포 단위가 아니라 파일 단위로 강제하는 것이라
+6VPN_Image_Blocker류 보호 규칙 프로젝트는 마커가 없으면 구조적으로 건드릴 수 없다.
+완료 마커 `- [x]` / `- ✅:` / `- 완료:` / `- 폐기:` / `- 취소:` 항목줄만 이동하며,
+살아있는 상위 항목 아래 완료 서브항목은 이동하지 않는다(원본과 동일 원칙).
+안전장치 포팅: 드라이런 기본(--apply 필요), 쓰기 전 백업, 결과물 40% 미만 축소 시
+거부(원본 무손상), 삭제 없이 같은 폴더 TODO_ARCHIVE.md로 이동.
+
+**재현 테스트 결과(합성 파일, 실사용 데이터 무관)**:
+- 한계(max) 이하 → 정리 거부 확인
+- dry-run → 원본/보관본 모두 무흔적 확인
+- apply → 18→13줄, 완료 항목 5줄만 ARCHIVE로 이동, 살아있는 상위 F의 `[x]`
+  서브항목은 제자리 유지 확인
+- 과다 삭제 시나리오(전부 완료) → REFUSE 대상 검증, opt-in 없는 파일 → SKIP 확인
+- 드라이런이 보관본에 중복 섹션을 남기는 버그를 테스트 중 발견 → 수정 후 재검증 통과
+
+가이드(`guides/persona_overload_protocol.md`)에 Mac 절 절 추가 완료. 사용법:
+`bash scripts/auto_archive_todo.sh --scan <루트>` / `<파일>` (dry-run) / `<파일> --apply`.
+실제 프로젝트에는 마커를 넣기 전 dry-run으로 형식 확인 후 opt-in할 것.
