@@ -527,6 +527,7 @@ const KIND_ORDER = [
   'usage_guide_worklog',
   'future_viability',
   'growth_tree',
+  'seo_audit',
 ];
 const KIND_LABELS = {
   'app_blueprint': '앱 블루프린트',
@@ -543,6 +544,7 @@ const KIND_LABELS = {
   'future_viability': '미래 가능성 분석',
   'feature_concept_blueprint': '신규 기능 블루프린트',
   'growth_tree': '성장 트리',
+  'seo_audit': 'SEO 점검',
 };
 // Intuitive, "이게 뭐 하는 리포트인지" 한눈에 알 수 있는 설명 — 메뉴판의
 // 요리 설명처럼, 전문용어 대신 실제로 뭘 얻는지로 씀.
@@ -566,6 +568,7 @@ const KIND_DESC = {
   'future_viability': '지금 방향으로 갔을 때 1~3년 뒤 살아남을지에 대한 장기 전망.',
   'feature_concept_blueprint': '아직 코드 없는 신규 기능의 개념 정의 — 이후 리포트가 근거로 삼는 문서.',
   'growth_tree': 'AI가 만들어준 보고서를 게임 스킬트리처럼 하나씩 깨나가는 성장 체크리스트로 바꿔주는 리포트. 잠금/진행도/성공-실패 카드로 동기부여를 준다.',
+  'seo_audit': '웹사이트·앱이 검색엔진에 실제로 어떻게 보이는지 크롤러 시점에서 점검한 리포트. robots.txt/사이트맵/메타태그/구조화 데이터를 확인하고 우선순위별로 고칠 것을 정리한다.',
 };
 // "나도 만들어보기" — 각 리포트 종류를 어떤 앱으로든 직접 시도해볼 수 있게,
 // Claude(또는 다른 AI 챗)에 그대로 붙여넣을 수 있는 프롬프트. ReleasePilot
@@ -713,6 +716,7 @@ const KIND_GLYPH = {
   'future_viability': '🔭',
   'feature_concept_blueprint': '🧪',
   'growth_tree': '🌳',
+  'seo_audit': '🔍',
 };
 // 관계도에 쓰는, 자연스러운 기획 흐름 — 실제로는 앱마다 순서가 다를 수 있지만
 // "보통 이렇게 이어진다"는 기본 경로를 보여줌.

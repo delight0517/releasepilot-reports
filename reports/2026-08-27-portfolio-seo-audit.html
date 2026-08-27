@@ -1,0 +1,180 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>포트폴리오 SEO 점검</title><style>  :root {
+    --ink: #1c2333; --ink-soft: #2a3348; --parchment: #f6f1e6; --parchment-card: #fffdf7;
+    --line: #ded2b8; --accent: #4f7cac; --accent-strong: #34597a;
+    --text: #241f14; --text-soft: #5c5644; --text-faint: #8b8368;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink: #0f1420; --parchment: #171c26; --parchment-card: #1f2532; --line: #333c4d;
+      --accent: #7fa8d6; --accent-strong: #a9c6e8;
+      --text: #ece6d8; --text-soft: #b8b19c; --text-faint: #7b7663;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ink: #0f1420; --parchment: #171c26; --parchment-card: #1f2532; --line: #333c4d;
+    --accent: #7fa8d6; --accent-strong: #a9c6e8;
+    --text: #ece6d8; --text-soft: #b8b19c; --text-faint: #7b7663;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--parchment); color: var(--text); font-family: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", "Segoe UI", sans-serif; line-height: 1.6; }
+  .page { max-width: 680px; margin: 0 auto; padding: 0 0 64px; }
+  .masthead { background: linear-gradient(180deg, var(--ink) 0%, var(--ink-soft) 100%); color: #eef3f8; padding: 28px 20px 24px; }
+  .eyebrow { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #c3d3e6; margin: 0 0 6px; font-weight: 600; }
+  .masthead h1 { font-family: Georgia, serif; font-size: 27px; margin: 0 0 8px; }
+  .masthead p.sub { margin: 0; font-size: 14px; color: #c9d6e4; max-width: 50ch; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .meta-chip { font-size: 12px; padding: 5px 10px; border-radius: 999px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.16); color: #e3ecf5; }
+  section { padding: 22px 20px 4px; }
+  .section-label { display: flex; align-items: baseline; gap: 8px; margin-bottom: 12px; }
+  .section-label .num { font-size: 12px; color: var(--accent-strong); font-weight: 700; letter-spacing: 0.06em; }
+  .section-label h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-soft); margin: 0; font-weight: 700; }
+  .card { background: var(--parchment-card); border: 1px solid var(--line); border-radius: 14px; padding: 18px; }
+  .ug-desc { font-size: 13px; color: var(--text-soft); margin: 0 0 10px; }
+  .ug-mini { font-size: 12px; font-weight: 700; color: var(--accent-strong); margin: 14px 0 4px; }
+  .ug-mini:first-of-type { margin-top: 0; }
+  .site-card { border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin-top: 10px; }
+  .site-card:first-child { margin-top: 0; }
+  .site-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 6px; }
+  .site-title { font-size: 14px; font-weight: 700; }
+  .site-status { font-size: 11px; padding: 3px 9px; border-radius: 999px; font-weight: 700; white-space: nowrap; }
+  .status-ok { background: #e4f4e6; color: #1f7a34; }
+  .status-warn { background: #fdf0d6; color: #97650c; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .status-ok { background: #163420; color: #7fdb98; } :root:not([data-theme="light"]) .status-warn { background: #3a2a10; color: #f0b84e; } }
+  :root[data-theme="dark"] .status-ok { background: #163420; color: #7fdb98; }
+  :root[data-theme="dark"] .status-warn { background: #3a2a10; color: #f0b84e; }
+  .site-url { font-size: 11.5px; color: var(--text-faint); margin: 0 0 8px; word-break: break-all; }
+  .finding { border-radius: 12px; padding: 12px 14px; margin-top: 10px; border: 1px solid var(--line); }
+  .finding:first-child { margin-top: 0; }
+  .finding-head { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .badge { font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 999px; letter-spacing: 0.02em; flex-shrink: 0; }
+  .badge-critical { background: #fbe0df; color: #a3241c; }
+  .badge-high { background: #fdf0d6; color: #97650c; }
+  .badge-medium { background: #e9edf7; color: #34597a; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .badge-critical { background: #3a1414; color: #f0968f; }
+    :root:not([data-theme="light"]) .badge-high { background: #3a2a10; color: #f0b84e; }
+    :root:not([data-theme="light"]) .badge-medium { background: #1e2c40; color: #a9c6e8; }
+  }
+  :root[data-theme="dark"] .badge-critical { background: #3a1414; color: #f0968f; }
+  :root[data-theme="dark"] .badge-high { background: #3a2a10; color: #f0b84e; }
+  :root[data-theme="dark"] .badge-medium { background: #1e2c40; color: #a9c6e8; }
+  .finding-title { font-size: 13px; font-weight: 700; }
+  .finding-body { font-size: 12.5px; color: var(--text-soft); margin: 0; }
+  .ug-plain-list { margin: 0; padding-left: 18px; display: grid; gap: 5px; }
+  .ug-plain-list li { font-size: 12.5px; color: var(--text-soft); }
+  code { background: rgba(127,127,127,0.14); padding: 1px 5px; border-radius: 5px; font-size: 0.92em; }
+  .done-tag { color: #1f7a34; font-weight: 700; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .done-tag { color: #7fdb98; } }
+  :root[data-theme="dark"] .done-tag { color: #7fdb98; }
+  footer { padding: 24px 20px 0; font-size: 11.5px; color: var(--text-faint); text-align: center; }
+
+  * { overflow-wrap: break-word; }
+  img, svg { max-width: 100%; height: auto; }
+  table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: nowrap; }
+  @media (max-width: 640px) {
+    body { font-size: 15px; }
+    .page { padding: 32px 16px 80px; }
+  }
+</style><div class="page"><div class="masthead">
+  <p class="eyebrow">Claude SEO 점검 · 2026-08-27</p>
+  <h1>내 웹사이트·앱, 검색엔진엔 어떻게 보이고 있나</h1>
+  <p class="sub">릴리저 웹사이트·개발 포트폴리오·브레인와이어 앱·6VPN 개인정보처리방침 4곳을 실제로 크롤러 시점에서 열어보고 점검했다. 사이트맵 누락은 점검 직후 바로 고쳐서 이미 반영됐다.</p>
+  <div class="meta-row">
+    <span class="meta-chip">4개 자산 점검</span>
+    <span class="meta-chip">Critical 3 · High 3 · Medium 3</span>
+    <span class="meta-chip">사이트맵 39개로 복구 완료</span>
+  </div>
+</div>
+
+<section>
+  <div class="section-label"><span class="num">01</span><h2>왜 이 점검을 했나</h2></div>
+  <div class="card"><p class="ug-desc">Claude Code에 SEO 점검 도구(Claude SEO, 오픈소스)를 설치하고, 이 사용자가 운영 중인 공개 자산 4곳 — 릴리저 리포트 허브, 개발 포트폴리오, 브레인와이어 앱, 6VPN 개인정보처리방침 — 을 실제 크롤러가 보는 그대로(HTML 파싱, robots.txt/sitemap.xml 응답, 메타 태그) 확인했다. "예쁘게 보이는가"가 아니라 "검색엔진이 실제로 찾아서 색인할 수 있는가"만 봤다.</p></div>
+</section>
+
+<section>
+  <div class="section-label"><span class="num">02</span><h2>🔴 Critical — 지금 손해 보고 있는 것</h2></div>
+  <div class="card">
+  <div class="finding">
+    <div class="finding-head"><span class="badge badge-critical">CRITICAL</span><span class="finding-title">robots.txt를 아무도 못 읽고 있었다 <span class="done-tag">→ 확인함</span></span></div>
+    <p class="finding-body">GitHub Pages는 크롤러가 도메인 루트(<code>delight0517.github.io/robots.txt</code>)만 읽는데, 거기는 404였다. 서브경로에 만들어둔 <code>releasepilot-reports/robots.txt</code>는 구글도 네이버도 못 본다 — 사이트맵 선언까지 같이 무시되고 있었다. 커스텀 도메인을 붙이거나, 사이트맵을 서치콘솔/네이버서치어드바이저에 직접 제출해야 우회된다.</p>
+  </div>
+  <div class="finding">
+    <div class="finding-head"><span class="badge badge-critical">CRITICAL</span><span class="finding-title">사이트맵이 실제 페이지의 43%만 담고 있었다 <span class="done-tag">→ 고침, 39개로 복구</span></span></div>
+    <p class="finding-body">로컬에 실제 페이지 42개(공개 대상 39개, 나머지 3개는 사이트 운영자가 이미 noindex로 의도적 비공개) 중 사이트맵엔 18개뿐이었다. 개발 포트폴리오, 앱 소개 페이지 대부분, 다운로드 페이지가 빠져 있었다. <code>scripts/generate_sitemap.py</code>를 새로 만들어 저장소를 직접 스캔하도록 바꿨고, 지금 sitemap.xml은 39개로 자동 복구됐다.</p>
+  </div>
+  <div class="finding">
+    <div class="finding-head"><span class="badge badge-critical">CRITICAL</span><span class="finding-title">브레인와이어는 검색엔진엔 사실상 빈 페이지</span></div>
+    <p class="finding-body">서버가 주는 HTML 32KB 중 실제 텍스트가 91자뿐, <code>&lt;h1&gt;</code> 없음, <code>&lt;noscript&gt;</code> 없음, canonical 없음, robots.txt/sitemap.xml 둘 다 404. 완전한 클라이언트 렌더링(SPA)이라 크롤러는 메뉴 라벨만 본다. prerender나 서버사이드 렌더링, 최소한 <code>&lt;noscript&gt;</code> 대체 텍스트가 필요하다.</p>
+  </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-label"><span class="num">03</span><h2>🟠 High</h2></div>
+  <div class="card">
+  <div class="finding">
+    <div class="finding-head"><span class="badge badge-high">HIGH</span><span class="finding-title">구조화 데이터(schema)가 전 사이트 0건</span></div>
+    <p class="finding-body">42개 페이지 어디에도 JSON-LD가 없다. 취업용 포트폴리오라면 <code>Person</code>(본인) + <code>SoftwareApplication</code>(만든 앱들) + <code>BreadcrumbList</code>가 가장 효과 큰 자리 — dev-portfolio는 <code>og:type=profile</code>을 쓰면서 정작 <code>Person</code> 스키마가 없다.</p>
+  </div>
+  <div class="finding">
+    <div class="finding-head"><span class="badge badge-high">HIGH</span><span class="finding-title">포트폴리오 대표 이미지가 남의 CDN에 걸려있음</span></div>
+    <p class="finding-body">dev-portfolio의 <code>og:image</code>가 브런치 카카오 CDN(<code>img1.kakaocdn.net/...?fname=http://t1.kakaocdn.net/...</code>)을 가리킨다. 지금은 200으로 뜨지만 남의 서비스라 언제든 끊길 수 있고, URL 안에 <code>http://</code>가 섞여 있다. 자기 저장소 이미지로 옮기는 게 안전하다.</p>
+  </div>
+  <div class="finding">
+    <div class="finding-head"><span class="badge badge-high">HIGH</span><span class="finding-title">6VPN 개인정보처리방침 — 메타 정보 전무</span></div>
+    <p class="finding-body">meta description 없음, canonical 없음, OG 전혀 없음, <code>&lt;h1&gt;</code>이 2개(한글/영문)다. 법적 필수 문서라 순위 욕심낼 페이지는 아니지만, 스토어 심사·링크 공유 시 미리보기가 깨진다.</p>
+  </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-label"><span class="num">04</span><h2>🟡 Medium</h2></div>
+  <div class="card">
+  <div class="finding">
+    <div class="finding-head"><span class="badge badge-medium">MEDIUM</span><span class="finding-title">콘텐츠가 얇다</span></div>
+    <p class="finding-body">메인 258단어, dev-portfolio 216단어. 포트폴리오는 검색·필터가 JS 기반이라 크롤러엔 더 적게 보인다.</p>
+  </div>
+  <div class="finding">
+    <div class="finding-head"><span class="badge badge-medium">MEDIUM</span><span class="finding-title">llms.txt 없음 — AI 검색(GEO) 대응 0</span></div>
+    <p class="finding-body">3개 사이트 전부 404. ChatGPT·Perplexity·AI Overviews가 이 사이트를 인용할 근거 파일이 아예 없다. 지금 만들어두면 선점 효과가 큰 항목.</p>
+  </div>
+  <div class="finding">
+    <div class="finding-head"><span class="badge badge-medium">MEDIUM</span><span class="finding-title">브레인와이어 og:image가 상대경로</span></div>
+    <p class="finding-body"><code>/icon.svg</code>로 돼 있어 카톡·슬랙 공유 시 썸네일이 안 뜬다. 절대 URL(<code>https://brainwire-f2gf.onrender.com/icon.svg</code>)로 바꿔야 한다.</p>
+  </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-label"><span class="num">05</span><h2>잘 돼 있는 것</h2></div>
+  <div class="card"><p class="ug-desc">메인·포트폴리오의 title·description 길이가 적정하고 canonical·OG·트위터 카드가 제대로 붙어있다. design/3d-work/english-tutor 페이지도 canonical + OG 5개까지 깔끔하다 (이 3개는 사이트 운영자가 이미 noindex로 비공개 처리해둔 페이지라 이번 사이트맵 복구 대상에서도 그대로 제외했다). 기본기는 잡혀 있고, 막힌 건 "색인 경로"와 "구조화 데이터" 두 축이었다.</p></div>
+</section>
+
+<section>
+  <div class="section-label"><span class="num">06</span><h2>이번에 바로 처리한 것</h2></div>
+  <div class="card">
+  <ul class="ug-plain-list" style="padding-left:0;list-style:none;">
+  <li>☑ <b>사이트맵 자동 생성 스크립트 신설</b> — <code>scripts/generate_sitemap.py</code>. 저장소를 직접 스캔해 모든 <code>index.html</code>을 찾고, 운영자가 이미 <code>noindex</code> 처리해둔 페이지는 존중해서 제외한다. 앞으로 페이지를 추가해도 다시 빠지지 않는다.</li>
+  <li>☑ <b>sitemap.xml 39개로 복구</b> — 개발 포트폴리오, 앱 소개 페이지 11개, 다운로드 페이지 5개, 아티클 3편 등 누락됐던 항목을 모두 채웠다. 기존에 손으로 골라 넣은 reports/ 큐레이션은 그대로 보존.</li>
+  <li>☑ <b>이 리포트 발행</b> — 지금 보고 있는 이 페이지.</li>
+  </ul>
+  </div>
+</section>
+
+<section>
+  <div class="section-label"><span class="num">07</span><h2>TODO — 다음에 할 것 (우선순위 순)</h2></div>
+  <div class="card">
+  <div class="warn-card"><p>사용자 확인/승인이 필요하거나 코드 작업이 더 필요한 항목들.</p></div>
+  <ul class="ug-plain-list" style="padding-left:0;list-style:none;margin-top:10px;">
+  <li>☐ <b>1. 사이트맵을 검색엔진에 직접 제출</b> — Google Search Console, 네이버 서치어드바이저에 <code>https://delight0517.github.io/releasepilot-reports/sitemap.xml</code> 등록. robots.txt가 안 읽히는 GitHub Pages 구조상 이게 색인의 실질적인 유일한 통로다.</li>
+  <li>☐ <b>2. dev-portfolio에 Person + SoftwareApplication 스키마 추가</b> — 취업용 포트폴리오에서 가장 효과 큰 항목.</li>
+  <li>☐ <b>3. dev-portfolio 대표 이미지를 저장소 내 파일로 교체</b> — 카카오 CDN 의존 제거.</li>
+  <li>☐ <b>4. 브레인와이어에 prerender/SSR 또는 최소 &lt;noscript&gt; 대체 텍스트 추가</b> — 코드 작업 필요, 별도 세션에서 진행 제안.</li>
+  <li>☐ <b>5. llms.txt 3곳에 신설</b> — AI 검색 인용 대응.</li>
+  <li>☐ <b>6. 6VPN 개인정보처리방침에 meta description/canonical 추가, &lt;h1&gt; 1개로 정리</b>.</li>
+  </ul>
+  </div>
+</section>
+<footer>Claude SEO 점검 · <a href="https://delight0517.github.io/releasepilot-reports/dev-portfolio/">개발 포트폴리오</a> · <a href="https://github.com/delight0517/releasepilot-reports/issues/new" target="_blank" rel="noopener">피드백 남기기 ↗</a></footer></div>
