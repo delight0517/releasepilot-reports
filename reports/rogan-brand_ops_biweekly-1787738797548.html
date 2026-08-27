@@ -1,0 +1,84 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>예나 브랜드옵스 리포트</title><style>  :root {
+    --ink: #1c2333; --ink-soft: #2a3348; --parchment: #f6f1e6; --parchment-card: #fffdf7;
+    --line: #ded2b8; --accent: #4f7cac; --accent-strong: #34597a;
+    --text: #241f14; --text-soft: #5c5644; --text-faint: #8b8368;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink: #0f1420; --parchment: #171c26; --parchment-card: #1f2532; --line: #333c4d;
+      --accent: #7fa8d6; --accent-strong: #a9c6e8;
+      --text: #ece6d8; --text-soft: #b8b19c; --text-faint: #7b7663;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ink: #0f1420; --parchment: #171c26; --parchment-card: #1f2532; --line: #333c4d;
+    --accent: #7fa8d6; --accent-strong: #a9c6e8;
+    --text: #ece6d8; --text-soft: #b8b19c; --text-faint: #7b7663;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--parchment); color: var(--text); font-family: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", "Segoe UI", sans-serif; line-height: 1.6; }
+  .page { max-width: 680px; margin: 0 auto; padding: 0 0 64px; }
+  .masthead { background: linear-gradient(180deg, var(--ink) 0%, var(--ink-soft) 100%); color: #eef3f8; padding: 28px 20px 24px; }
+  .eyebrow { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #c3d3e6; margin: 0 0 6px; font-weight: 600; }
+  .masthead h1 { font-family: Georgia, serif; font-size: 27px; margin: 0 0 8px; }
+  .masthead p.sub { margin: 0; font-size: 14px; color: #c9d6e4; max-width: 50ch; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .meta-chip { font-size: 12px; padding: 5px 10px; border-radius: 999px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.16); color: #e3ecf5; }
+  section { padding: 22px 20px 4px; }
+  .section-label { display: flex; align-items: baseline; gap: 8px; margin-bottom: 12px; }
+  .section-label .num { font-size: 12px; color: var(--accent-strong); font-weight: 700; letter-spacing: 0.06em; }
+  .section-label h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-soft); margin: 0; font-weight: 700; }
+  .card { background: var(--parchment-card); border: 1px solid var(--line); border-radius: 14px; padding: 18px; }
+  .ug-desc { font-size: 13px; color: var(--text-soft); margin: 0 0 10px; }
+  .bo-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .bo-table th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-faint); padding: 6px 8px; border-bottom: 1px solid var(--line); }
+  .bo-table td { padding: 8px; border-bottom: 1px solid var(--line); color: var(--text); vertical-align: top; }
+  .bo-table tr:last-child td { border-bottom: none; }
+  .bo-days { font-family: ui-monospace, "SF Mono", Menlo, monospace; white-space: nowrap; }
+  .bo-days.stale { color: #a8431f; font-weight: 700; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .bo-days.stale { color: #e08a5f; } }
+  :root[data-theme="dark"] .bo-days.stale { color: #e08a5f; }
+  .warn-card { background: #fff2e6; border: 1px solid #e8b98a; border-radius: 12px; padding: 14px 16px; margin-top: 10px; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .warn-card { background: #3a2a1a; border-color: #7a5a30; } }
+  :root[data-theme="dark"] .warn-card { background: #3a2a1a; border-color: #7a5a30; }
+  .warn-card p { margin: 0; font-size: 12.5px; color: var(--text-soft); }
+  .warn-card p + p { margin-top: 6px; }
+  footer { padding: 24px 20px 0; font-size: 11.5px; color: var(--text-faint); text-align: center; }
+
+  * { overflow-wrap: break-word; }
+  img, svg { max-width: 100%; height: auto; }
+  table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: nowrap; }
+  @media (max-width: 640px) {
+    body { font-size: 15px; }
+    .page { padding: 32px 16px 80px; }
+  }
+</style><div class="page"><div class="masthead">
+  <p class="eyebrow">예나 · 브랜드옵스 정기 점검</p>
+  <h1>예나 브랜드옵스 리포트 — 2026-08-26</h1>
+  <p class="sub">근성장(김근후) 퍼스널 브랜딩 TODO 2주 간격 현황. 격려 없음, 숫자만.</p>
+  <div class="meta-row"><span class="meta-chip">brand_ops_biweekly</span><span class="meta-chip">1회차</span></div>
+</div><section>
+  <div class="section-label"><span class="num">01</span><h2>요약</h2></div>
+  <div class="card"><p class="ug-desc">brand-ops/todo.json 9개 항목 중 <b>9개가 아직 열려 있다. 완료된 건 0개.</b> 2026-08-12에 한 번에 등록된 이후 하나도 닫히지 않았고, 지금 기준 전부 D+14 — 촬영(릴스 4건), 포트폴리오 이미지 업로드, 영상 등급 재검토, linktr.ee 링크 반영, Notion 공유 재확인까지 전부 본인 손이 가야 끝나는 항목뿐이라 자동화로 대신 처리할 수 없는 것들이다. 병목은 작업량이 아니라 착수 자체가 안 되고 있다는 것.</p></div>
+</section><section>
+  <div class="section-label"><span class="num">02</span><h2>미완료 항목 (9)</h2></div>
+  <div class="card"><table class="bo-table">
+  <thead><tr><th>항목</th><th>영역</th><th>경과</th></tr></thead>
+  <tbody>
+  <tr><td>game-artist/ 실제 포트폴리오 이미지 업로드 (실루엣→완성, Substance Painter 뷰포트, 최종 프레젠테이션)</td><td>3D 게임 아티스트</td><td class="bo-days">D+14</td></tr>
+  <tr><td>video-editor/ A/B등급 영상 본인 재검토·확정</td><td>영상 편집자</td><td class="bo-days">D+14</td></tr>
+  <tr><td>릴스 촬영 — 실루엣→완성 3단계 점프컷</td><td>3D 게임 아티스트</td><td class="bo-days">D+14</td></tr>
+  <tr><td>릴스 촬영 — Substance Painter 핸드페인팅 타임랩스</td><td>3D 게임 아티스트</td><td class="bo-days">D+14</td></tr>
+  <tr><td>릴스 촬영 — AI 리서치 과정 화면 녹화</td><td>3D 게임 아티스트 · AI</td><td class="bo-days">D+14</td></tr>
+  <tr><td>릴스 촬영 — 편집 타임라인 스크린 녹화 + 보이스오버</td><td>영상 편집자</td><td class="bo-days">D+14</td></tr>
+  <tr><td>linktr.ee 실제 계정에 video-editor/game-artist/links 링크 반영 (본인 로그인 필요)</td><td>인프라</td><td class="bo-days">D+14</td></tr>
+  <tr><td>Notion 'ai 배경 포트폴리오' 하위 페이지 공유 설정 재확인</td><td>인프라</td><td class="bo-days">D+14</td></tr>
+  <tr><td>design/, 3d-work/ 아카이브에 실제 결과물 채우기</td><td>포트폴리오</td><td class="bo-days">D+14</td></tr>
+  </tbody>
+  </table></div>
+</section><section>
+  <div class="section-label"><span class="num">03</span><h2>리스크 / 정체 항목</h2></div>
+  <div class="card"><div class="warn-card"><p>28일 이상 방치된 "stale" 항목은 아직 없다 (전부 D+14, 다음 회차 기준일은 D+28).</p><p>다만 9개 전부가 같은 날 등록돼 같은 속도로 정체 중이라는 게 그 자체로 신호다 — 다음 회차(2주 뒤)에도 그대로면 9개 전체가 한꺼번에 stale로 넘어간다.</p></div></div>
+</section><footer>예나 자동 생성 · 브랜드옵스 격주 시리즈 1회차 · <a href="../growth/geunhoo/">근성장(김근후) 성장 트리</a></footer></div>

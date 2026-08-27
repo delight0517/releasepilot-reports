@@ -1,0 +1,84 @@
+{
+ "syncedAt": "2026-08-26T21:04:37+09:00",
+ "source": "https://www.artstation.com/kaito_ren",
+ "count": 7,
+ "works": [
+  {
+   "title": "잭과 위키 모작",
+   "url": "https://www.artstation.com/artwork/2Lqbgg",
+   "hashId": "2Lqbgg",
+   "publishedAt": "2026-08-24",
+   "cover": "assets/artstation/auto/2Lqbgg.jpg",
+   "w": 1976,
+   "h": 986,
+   "video": false,
+   "description": "닌텐도 위 '잭과 위키'에서 나오는 오브제를 재해석 모작했습니다. 핸드페인팅 스타일과 하이트 맵을 통한 입체감을 주려고하였습니다. 해적 스타일의 게임에서 나올법한 오브제를 저만의 방식으로 해석해서 제작하게 되었습니다. 게임 최적화를 위한 로우폴 모델들을 제작하였고, 지브러쉬를 사용하지 "
+  },
+  {
+   "title": "중세 해적풍 오브젝트 제작",
+   "url": "https://www.artstation.com/artwork/Qxnk6Z",
+   "hashId": "Qxnk6Z",
+   "publishedAt": "2026-08-24",
+   "cover": "assets/artstation/auto/Qxnk6Z.jpg",
+   "w": 1976,
+   "h": 986,
+   "video": false,
+   "description": "해적 스타일의 게임에서 나올법한 오브제를 저만의 방식으로 해석해서 제작하게 되었습니다. 게임 최적화를 위한 로우폴 모델들을 제작하였고, 지브러쉬를 사용하지 않고 섭페 자체의 하이트맵과 러프니스등을 통해서 핸드페인팅 스타일을 완성하게 되었습니다."
+  },
+  {
+   "title": "중세 병사 _ 사이버 펑크",
+   "url": "https://www.artstation.com/artwork/Xa192D",
+   "hashId": "Xa192D",
+   "publishedAt": "2026-08-24",
+   "cover": "assets/artstation/auto/Xa192D.jpg",
+   "w": 747,
+   "h": 573,
+   "video": false,
+   "description": "사이버 펑크 군사 , 저주받은 영혼의 에너지로 인해서 운용이 되는 병사입니다 . 성벽 수비대 , 돌격대의 역할을 합니다."
+  },
+  {
+   "title": "서울의 밤 일러스트",
+   "url": "https://www.artstation.com/artwork/LaevBr",
+   "hashId": "LaevBr",
+   "publishedAt": "2026-08-24",
+   "cover": "assets/artstation/auto/LaevBr.jpg",
+   "w": 3693,
+   "h": 2312,
+   "video": false,
+   "description": "포토샵으로 작업하게 되었습니다. 서울의 밤이라는 컨셉으로 편의점 알바를 하면서 동네의 주민을 알아가며 살아가는 다크한 근미래 서울 세계관을 가지고 있습니다. 상류층과 하류층의 분리등을 보여주는 연출과 색채를 이용했습니다."
+  },
+  {
+   "title": "Medieval Bucket 3D",
+   "url": "https://www.artstation.com/artwork/xdzYE1",
+   "hashId": "xdzYE1",
+   "publishedAt": "2026-07-07",
+   "cover": "assets/artstation/auto/xdzYE1.jpg",
+   "w": 1649,
+   "h": 990,
+   "video": false,
+   "description": "made by SP"
+  },
+  {
+   "title": "Grass, Unreal Engine",
+   "url": "https://www.artstation.com/artwork/x31J5E",
+   "hashId": "x31J5E",
+   "publishedAt": "2026-03-20",
+   "cover": "assets/artstation/auto/x31J5E.jpg",
+   "w": 2036,
+   "h": 695,
+   "video": false,
+   "description": ""
+  },
+  {
+   "title": "Shark Island 101",
+   "url": "https://www.artstation.com/artwork/DL64Y9",
+   "hashId": "DL64Y9",
+   "publishedAt": "2025-08-23",
+   "cover": "assets/artstation/auto/DL64Y9.jpg",
+   "w": 480,
+   "h": 360,
+   "video": true,
+   "description": "https://play.unity.com/ko/user/e03bc026-9e2e-4510-94dd-39a792271460 You can play the game in this website, without downloading! this project was made for a proj"
+  }
+ ]
+}

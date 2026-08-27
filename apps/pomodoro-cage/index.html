@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auto Pomodoro (포모도로 타이머) — 재택근무 집중·강제 휴식 타이머 앱 | Geungho Lee</title>
+  <meta name="description" content="Auto Pomodoro는 재택근무자와 개발자가 스스로 쉬는 것을 잊지 않게 돕는 포모도로 타이머 앱입니다. 25분 집중·5분 휴식 사이클을 기기 간 동기화하고, 맥 서버와 연결해 강제로 휴식을 알립니다. iOS App Store에서 다운로드.">
+  <meta name="keywords" content="포모도로 타이머, pomodoro timer, 집중 앱, 재택근무, 강제 휴식, focus timer, productivity app, 맥 동기화 타이머, 개발자 타이머, Auto Pomodoro">
+  <meta name="author" content="Geungho Lee">
+  <link rel="canonical" href="https://delight0517.github.io/releasepilot-reports/apps/pomodoro-cage/">
+  <link rel="icon" type="image/png" href="icon.png">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Auto Pomodoro — 잊지 않게 쉬는 포모도로 타이머">
+  <meta property="og:description" content="재택근무자와 개발자를 위한 집중·강제 휴식 타이머. 맥과 아이폰이 같이 쉰다.">
+  <meta property="og:image" content="https://delight0517.github.io/releasepilot-reports/apps/pomodoro-cage/icon-180.png">
+  <meta property="og:url" content="https://delight0517.github.io/releasepilot-reports/apps/pomodoro-cage/">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Auto Pomodoro — 잊지 않게 쉬는 포모도로 타이머">
+  <meta name="twitter:description" content="재택근무자와 개발자를 위한 집중·강제 휴식 타이머.">
+
+  <!-- JSON-LD: SoftwareApplication (AI 서치/검색엔진 훅) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Auto Pomodoro",
+    "operatingSystem": "iOS",
+    "applicationCategory": "ProductivityApplication",
+    "applicationSubCategory": "Pomodoro Timer",
+    "url": "https://delight0517.github.io/releasepilot-reports/apps/pomodoro-cage/",
+    "downloadUrl": "https://apps.apple.com/app/auto-pomodoro/id000000000",
+    "softwareVersion": "1.0",
+    "author": {"@type": "Person", "name": "Geungho Lee", "url": "https://delight0517.github.io/releasepilot-reports/"},
+    "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+    "aggregateRating": {"@type": "AggregateRating", "ratingValue": "5.0", "ratingCount": "1"},
+    "description": "재택근무자와 개발자가 스스로 쉬는 것을 잊지 않게 돕는 포모도로 타이머. 25분 집중·5분 휴식 사이클을 맥 서버와 기기 간 동기화하고 강제 휴식 알림을 보낸다.",
+    "featureList": ["25분 포모도로 사이클", "맥 서버 연동 강제 휴식", "아이폰·맥 기기 간 타이머 동기화", "오프라인 우선 개인정보 보호"]
+  }
+  </script>
+
+  <!-- JSON-LD: FAQ (AI 답변에 잡히도록) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {"@type": "Question", "name": "Auto Pomodoro는 어떤 앱인가요?",
+       "acceptedAnswer": {"@type": "Answer", "text": "Auto Pomodoro는 재택근무자와 개발자가 스스로 쉬는 것을 잊지 않게 돕는 포모도로 타이머 앱입니다. 25분 집중과 5분 휴식 사이클을 맥 서버와 동기화해 강제로 휴식을 알립니다."}},
+      {"@type": "Question", "name": "포모도로 타이머란 무엇인가요?",
+       "acceptedAnswer": {"@type": "Answer", "text": "포모도로 기법은 25분 집중 작업과 5분 휴식을 반복하는 시간 관리 방법입니다. Auto Pomodoro는 이를 자동화하고 기기 간 동기화합니다."}},
+      {"@type": "Question", "name": "맥과 아이폰이 함께 동기화되나요?",
+       "acceptedAnswer": {"@type": "Answer", "text": "네. 같은 Wi-Fi의 개인 맥 서버와만 통신하며, 아이폰과 맥의 타이머 상태를 실시간으로 동기화합니다."}}
+    ]
+  }
+  </script>
+
+  <style>
+    :root{--bg:#0f1115;--card:#1a1d24;--ink:#e8eaed;--faint:#9aa0a6;--accent:#ff6b4a;--line:#2a2e37}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
+    .wrap{max-width:720px;margin:0 auto;padding:48px 20px}
+    .hero{text-align:center;padding:40px 0}
+    .icon{width:120px;height:120px;border-radius:26px;box-shadow:0 12px 40px rgba(255,107,74,.35)}
+    h1{font-size:34px;margin:20px 0 8px}
+    .tag{color:var(--accent);font-weight:700;letter-spacing:.5px}
+    .desc{color:var(--faint);font-size:17px;max-width:520px;margin:0 auto}
+    .badge{display:inline-block;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:13px;color:var(--faint);margin:6px 4px}
+    .cta{display:block;margin:32px auto;padding:16px 28px;background:var(--accent);color:#fff;text-decoration:none;font-weight:700;border-radius:14px;max-width:280px;text-align:center}
+    .feats{display:grid;gap:16px;margin-top:40px}
+    .feat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}
+    .feat h3{margin:0 0 6px;font-size:18px}
+    .feat p{margin:0;color:var(--faint);font-size:15px}
+    footer{text-align:center;color:var(--faint);font-size:13px;margin-top:60px}
+    a.link{color:var(--accent)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero">
+      <img class="icon" src="icon.png" alt="Auto Pomodoro 앱 아이콘 — 토마토와 시계가 결합된 포모도로 타이머 심볼">
+      <div class="tag">POMODORO TIMER · FOCUS APP</div>
+      <h1>Auto Pomodoro</h1>
+      <p class="desc">재택근무자와 개발자가 <strong>스스로 쉬는 것을 잊지 않게</strong> 돕는 포모도로 타이머. 맥과 아이폰이 함께 쉽니다.</p>
+      <div>
+        <span class="badge">🍅 25분 집중 / 5분 휴식</span>
+        <span class="badge">🔄 맥·아이폰 동기화</span>
+        <span class="badge">🛡️ 오프라인 우선</span>
+      </div>
+      <a class="cta" href="https://apps.apple.com/app/auto-pomodoro/id000000000">App Store에서 받기</a>
+    </div>
+
+    <div class="feats">
+      <div class="feat">
+        <h3>🍅 진짜 포모도로 사이클</h3>
+        <p>25분 집중과 5분 휴식을 자동 반복. 알림이 오면 반드시 쉽니다 — 앉아있는 시간을 강제로 끊어줍니다.</p>
+      </div>
+      <div class="feat">
+        <h3>🔄 맥 서버 연동 강제 휴식</h3>
+        <p>같은 Wi-Fi의 개인 맥 서버와만 통신해, 아이폰과 맥의 타이머 상태를 실시간 동기화합니다. 한쪽에서 쉬면 다른 쪽도 쉽니다.</p>
+      </div>
+      <div class="feat">
+        <h3>🛡️ 개인정보는 기기에만</h3>
+        <p>모든 타이머 기록은 기기에만 저장되고 외부 서버로 전송되지 않습니다. 개인 맥 서버 통신도 인터넷을 거치지 않습니다.</p>
+      </div>
+    </div>
+
+    <p style="text-align:center;margin-top:40px">
+      <a class="link" href="https://delight0517.github.io/releasepilot-reports/">← 릴리저 웹사이트로</a>
+    </p>
+
+    <footer>
+      Auto Pomodoro by Geungho Lee · <a class="link" href="https://delight0517.github.io/releasepilot-reports/privacy-policy/">개인정보 처리방침</a><br>
+      © 2026 Geungho Lee. All rights reserved.
+    </footer>
+  </div>
+</body>
+</html>
