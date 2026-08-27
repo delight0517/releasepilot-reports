@@ -434,13 +434,7 @@
   </div>
 </footer>
 
-<!-- lightbox -->
-<div class="lb" id="lightbox" aria-hidden="true">
-  <img id="lb-img" src="" alt="">
-  <button class="lb-prev" id="lb-prev" aria-label="이전">←</button>
-  <button class="lb-next" id="lb-next" aria-label="다음">→</button>
-  <button class="lb-close" id="lb-close" aria-label="닫기">×</button>
-  <div class="lb-count" id="lb-count"></div>
+<!-- 이미지 확대는 assets/lightbox.js(공용 몰입 뷰어)가 처리 -->
 </div>
 
 <script>
@@ -502,22 +496,7 @@ function renderRest(all) {
            '<img src="' + s.src + '" alt="' + esc(s.alt) + '" loading="lazy"></button>';
   }).join("");
 
-  var lb = document.getElementById("lightbox"), img = document.getElementById("lb-img"),
-      cnt = document.getElementById("lb-count"), cur = 0;
-  function show(i) { cur = (i + shots.length) % shots.length; img.src = shots[cur].src; img.alt = shots[cur].alt; cnt.textContent = (cur + 1) + " / " + shots.length; }
-  function open(i) { show(i); lb.classList.add("open"); lb.setAttribute("aria-hidden", "false"); document.body.style.overflow = "hidden"; }
-  function close() { lb.classList.remove("open"); lb.setAttribute("aria-hidden", "true"); document.body.style.overflow = ""; }
-  grid.addEventListener("click", function (e) { var b = e.target.closest(".shot"); if (b) open(+b.dataset.i); });
-  document.getElementById("lb-prev").addEventListener("click", function () { show(cur - 1); });
-  document.getElementById("lb-next").addEventListener("click", function () { show(cur + 1); });
-  document.getElementById("lb-close").addEventListener("click", close);
-  lb.addEventListener("click", function (e) { if (e.target === lb) close(); });
-  document.addEventListener("keydown", function (e) {
-    if (!lb.classList.contains("open")) return;
-    if (e.key === "Escape") close();
-    else if (e.key === "ArrowLeft") show(cur - 1);
-    else if (e.key === "ArrowRight") show(cur + 1);
-  });
+  // 라이트박스 로직은 공용 assets/lightbox.js로 이관
 })();
 
 /* ═══ 3. 이모티콘 (정적, 마키 없음) ═══ */
@@ -586,5 +565,6 @@ function renderRest(all) {
     .catch(function () { list.innerHTML = '<p class="quiet">글을 불러오지 못했습니다.</p>'; });
 })();
 </script>
+<script src="../assets/lightbox.js" defer></script>
 </body>
 </html>

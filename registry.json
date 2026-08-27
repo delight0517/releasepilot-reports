@@ -96,6 +96,54 @@
       "purpose": "구버전 배포 위치 — releasepilot-reports/apps/ox-quiz/로 이전 완료됨. 저장소 자체는 archive 처리 + 안내 페이지만 남겨둠, 새 링크를 아는 사람은 이 항목을 참고할 필요 없음.",
       "status": "deprecated",
       "lastVerified": "2026-08-06"
+    },
+    {
+      "id": "pomodoro-cage",
+      "name": "Auto Pomodoro (포모도로 타이머)",
+      "kind": "mobile-app",
+      "platform": "ios",
+      "owner": "mac-session",
+      "location": {
+        "type": "url",
+        "path": null,
+        "repo": "releasepilot-reports/apps/pomodoro-cage",
+        "url": "https://delight0517.github.io/releasepilot-reports/apps/pomodoro-cage/"
+      },
+      "purpose": "재택근무자·개발자를 위한 포모도로 타이머. 25분 집중/5분 휴식 사이클을 맥 서버와 기기 간 동기화해 강제 휴식 알림. iOS App Store 출시(빌드 업로드+메타데이터+스크린샷 완료).",
+      "status": "live",
+      "lastVerified": "2026-08-27"
+    },
+    {
+      "id": "risesync",
+      "name": "RiseSync (기상 알람·루틴 동기화)",
+      "kind": "mobile-app",
+      "platform": "ios",
+      "owner": "mac-session",
+      "location": {
+        "type": "url",
+        "path": null,
+        "repo": "releasepilot-reports/apps/risesync",
+        "url": "https://delight0517.github.io/releasepilot-reports/apps/risesync/"
+      },
+      "purpose": "여러 기기 간 기상 알람과 아침 루틴을 동기화하는 앱. iOS App Store 출시 준비(스크린샷 대기).",
+      "status": "pending-store",
+      "lastVerified": "2026-08-27"
+    },
+    {
+      "id": "harugirok-ios",
+      "name": "사계기록 (harugirok)",
+      "kind": "mobile-app",
+      "platform": "ios",
+      "owner": "mac-session",
+      "location": {
+        "type": "url",
+        "path": null,
+        "repo": "releasepilot-reports/apps/harugirok",
+        "url": "https://delight0517.github.io/releasepilot-reports/apps/harugirok/"
+      },
+      "purpose": "하루의 순간을 가볍게 기록하고 시간의 흐름을 시각화하는 iOS 앱. App Store Connect 업로드+메타데이터 완료(스크린샷 대기).",
+      "status": "pending-store",
+      "lastVerified": "2026-08-27"
     }
   ],
   "_unregistered_mentions": [
