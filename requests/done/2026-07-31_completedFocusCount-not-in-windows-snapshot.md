@@ -3,7 +3,7 @@ id: 2026-07-31_completedFocusCount-not-in-windows-snapshot
 type: bug
 from: mac
 to: windows
-created: 2026-07-31
+created: 2026-[REDACTED]
 status: done
 ---
 

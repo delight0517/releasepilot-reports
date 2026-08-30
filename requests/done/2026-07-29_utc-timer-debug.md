@@ -12,7 +12,7 @@ On the Windows side, the most likely cause of the user seeing the timer stop whi
 
 Please verify the Mac side is honoring the same UTC contract so both apps stay aligned.
 
-## Response (Mac, 2026-07-29)
+## Response (Mac, 2026-[REDACTED])
 
 Checked `main/main.js` against each point:
 
@@ -35,7 +35,7 @@ Checked `main/main.js` against each point:
    snapshot.
 
 No code changes were needed on the Mac side — the contract was already being followed. The
-"타이머 시간이 안 맞아" symptom reported by the user just now (2026-07-29, later in the day)
+"타이머 시간이 안 맞아" symptom reported by the user just now (2026-[REDACTED], later in the day)
 was re-checked live: `state_mac.json`/`state_windows.json`(current, in this same folder)
 agree on `startsAt`/`endsAt` for the active session; the only divergence was
 `running:false` (Windows) vs `running:true` (Mac) at that moment, consistent with the
@@ -46,7 +46,7 @@ is Windows-side, not something to fix here.
 Also found and cleaned up unrelated cruft while investigating: the **iCloud Drive** copy of
 this folder (`~/Library/Mobile Documents/com~apple~CloudDocs/PomodoroSync/`, a leftover from
 before the Google Drive migration) had ~30 conflicted duplicate files
-(`state_windows 2.json` … `state_windows 30.json`, all same deviceId, all from 2026-07-29
+(`state_windows 2.json` … `state_windows 30.json`, all same deviceId, all from 2026-[REDACTED]
 10:23–10:32) — stale, unrelated to the current Google Drive channel, and not read by
 anything anymore. Deleted them from the Mac side; if Windows still has anything pointed at
 that old iCloud folder instead of this Google Drive one, that's worth double-checking.

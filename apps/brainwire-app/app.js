@@ -221,7 +221,7 @@ function findLessonContext(id){ return allLessons().find(x=>x.lesson.id===id) ||
 
 // 대량 붙여넣기(200~300개) 시 oEmbed를 한 번에 다 쏘지 않고 일정 개수씩 나눠 돈다 —
 // 무한 동시 fetch로 브라우저/유튜브를 압박하지 않으면서도 순차보다는 훨씬 빠르게.
-async function mapWithConcurrency(items, limit, fn){
+async function ma[REDACTED], limit, fn){
   const results = new Array(items.length);
   let next = 0;
   async function worker(){
@@ -315,7 +315,7 @@ async function ingestRaw(raw){
     const fresh = videoIds.filter(vid => !known.has(vid));
     dedupSkipped = videoIds.length - fresh.length;
 
-    const titles = await mapWithConcurrency(fresh, 8, vid => fetchTitle(vid));
+    const titles = await ma[REDACTED], 8, vid => fetchTitle(vid));
     fresh.forEach((vid, i) => {
       newItems.push({
         id: uid('i'), kind:'youtube', videoId: vid,

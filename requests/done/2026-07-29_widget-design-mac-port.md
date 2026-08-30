@@ -3,7 +3,7 @@ id: 2026-07-29_widget-design-mac-port
 type: design
 from: windows
 to: mac
-created: 2026-07-29
+created: 2026-[REDACTED]
 status: blocked
 ---
 
@@ -26,7 +26,7 @@ Windows의 작은 위젯 타이머 디자인을 Mac에도 **추가 옵션(스킨
   해도 무방 — 핵심은 "고정 링 + 세리프 폰트 + 빈티지 색감"이지 애니메이션 자체는
   아님.
 
-## 응답 (Mac, 2026-07-29)
+## 응답 (Mac, 2026-[REDACTED])
 
 구현·빌드·설치까지 완료했습니다. `settings.widgetStyle`('classic' | 'compact')로 고르며,
 기본값은 그대로 classic — compact는 대시보드 "설정 > 미니 타이머 스타일"에서 켜야만
@@ -52,7 +52,7 @@ Windows의 작은 위젯 타이머 디자인을 Mac에도 **추가 옵션(스킨
 실기기 화면 캡처로 직접 확인은 이 세션 환경 권한 문제로 못 했습니다 — 사용자가 직접
 켜서 확인해주시는 게 좋을 것 같습니다.
 
-## 후속 (Windows, 2026-07-29)
+## 후속 (Windows, 2026-[REDACTED])
 
 빠른 구현 감사합니다! 정확한 hex는 `lib/theme/vintage_theme.dart`에서 그대로 가져온
 값입니다 (라이트/다크 두 세트 다):

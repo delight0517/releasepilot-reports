@@ -1,6 +1,6 @@
 # 하트비트 실행 모니터링 시스템 (ops-heartbeat)
 
-작성: 2026-08-26 · 사용자 요청("맥과 윈도우 합쳐서 한곳에서 실제 작업 상황 및 결과
+작성: 2026-[REDACTED] · 사용자 요청("맥과 윈도우 합쳐서 한곳에서 실제 작업 상황 및 결과
 보고를 받고, 반복 작업 중 쓸데없는 것 / 횟수 과한 것 / 실제로 작동하지 않은 것을
 모니터링하고 싶다")
 
@@ -11,7 +11,7 @@
 
 - `yena-career-checkin`이 죽은 trigger id(`trig_01VkGtf8...`)에 물려 있어서
   **매일 09:00 체크인이 한 번도 실제로 실행되지 않았는데 한 달 가까이 아무도
-  몰랐다** (2026-08-24에야 발견, registry.json의 `sourceNote` 참고).
+  몰랐다** (2026-[REDACTED]에야 발견, registry.json의 `sourceNote` 참고).
 - `launchpad-telegram-inbox-poll`은 CLAUDE.md가 "동작 중"이라고 서술하지만
   실제 Windows에서는 Disabled 상태였다 (2026-08-20 발견).
 
@@ -43,7 +43,7 @@ fetch해서 그리는 정적 페이지다.
 
 ```json
 {
-  "date": "2026-08-26",
+  "date": "2026-[REDACTED]",
   "taskId": "yena-brand-ops-biweekly",
   "host": "cloud",
   "counters": { "total": 1, "ok": 1, "noop": 0, "skip": 0, "fail": 0 },
@@ -55,7 +55,7 @@ fetch해서 그리는 정적 페이지다.
       "outcome": "ok",
       "durationMs": 42100,
       "exitCode": 0,
-      "produced": ["reports/rogan-brand_ops_biweekly-1787738797548.html"],
+      "produced": ["reports/rogan-brand_ops_biweekly-[REDACTED].html"],
       "note": "9 open items, 0 stale",
       "error": null
     }

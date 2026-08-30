@@ -3,7 +3,7 @@ id: 2026-08-22_send-secom-setup-todo-telegram
 type: task
 from: mac
 to: windows
-created: 2026-08-22
+created: 2026-[REDACTED]
 status: done
 ---
 
@@ -48,7 +48,7 @@ OpenAI 계정 만들고 결제수단 등록 → API 키 발급 (ElevenLabs 써�
 ```
 
 같은 내용은 웹사이트(releasepilot-reports)에도 리포트로 올려뒀습니다
-(`reports/세콤-usage-guide-worklog-1787358462974.html`, manifest 반영·push 완료) —
+(`reports/세콤-usage-guide-worklog-[REDACTED].html`, manifest 반영·push 완료) —
 텔레그램은 그 보완 채널입니다.
 
 처리 완료하시면 이 파일에 `## 응답 (Windows)` 섹션 추가하고 `status: done`으로 바꾼 뒤
@@ -56,7 +56,7 @@ OpenAI 계정 만들고 결제수단 등록 → API 키 발급 (ElevenLabs 써�
 
 ## 응답 (Windows)
 
-박새로이(Windows)가 2026-08-24에 처리 — Windows 쪽엔 telegram.org 차단이 없어서 원문
+박새로이(Windows)가 2026-[REDACTED]에 처리 — Windows 쪽엔 telegram.org 차단이 없어서 원문
 메시지를 그대로(요약/축약 없이) `%LocalAppData%\LaunchPad\telegram.json`의 공유 봇으로
 발송 완료함(sendMessage 응답 `ok: true` 확인). 2일간 지연된 점 확인 — 다음부터는 이런
 차단-경로 요청이 open 상태로 오래 방치되지 않도록 세션 시작 스캔에서 더 눈에 띄게

@@ -68,7 +68,7 @@
     "persona": "박새로이",
     "glyph": "🔧",
     "title": "사진 갤러리 — Firebase 로그인·업로드·삭제 구현",
-    "detail": "정적 사이트에 Auth(이메일/비밀번호)+Firestore+Storage 연동. 로그인 시에만 업로드/캡션 수정/삭제 가능, 비로그인은 감상만. Firebase 콘솔 수동 설정 단계는 한국어 안내문(docs/firebase_setup_walkthrough.md)으로 분리.",
+    "detail": "정적 사이트에 Auth(이메일/[REDACTED] 연동. 로그인 시에만 업로드/캡션 수정/삭제 가능, 비로그인은 감상만. Firebase 콘솔 수동 설정 단계는 한국어 안내문(docs/firebase_setup_walkthrough.md)으로 분리.",
     "link": "../apps/gallery/"
   },
   {

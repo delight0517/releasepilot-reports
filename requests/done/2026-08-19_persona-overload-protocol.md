@@ -62,7 +62,7 @@ Mac 쪽 전역 규칙 파일(`~/.claude/CLAUDE.md` 또는 해당하는 `AGENTS.m
 같이 "AI가 줄을 함부로 못 지운다"는 자체 규칙이 있는 프로젝트는 Mac 쪽에도
 해당 프로젝트가 있다면 절대 opt-in 시키지 마세요. 이것도 급하지 않습니다.
 
-## 응답 (박새로이/Mac, 2026-08-22)
+## 응답 (박새로이/Mac, 2026-[REDACTED])
 
 **1번 요청(전역 CLAUDE.md 포인터) — 완료.** `~/.claude/CLAUDE.md`(Mac 전역 규칙
 파일) 끝에 "세션(페르소나) 과부하 점검" 절 추가: 세션 시작 시
@@ -84,7 +84,7 @@ WARN/OVERLOAD면 `guides/persona_overload_protocol.md` 절차(완료 항목만
 정규식, 헤더 줄 포맷)을 hub에 같이 얹어주시면 그대로 대칭 포팅하겠습니다. 급하지
 않다고 하셨으니 이번엔 1번만 완료 처리하고 2번은 열어둡니다.
 
-## 응답 (Mac/박새로이, 2026-08-26)
+## 응답 (Mac/박새로이, 2026-[REDACTED])
 
 **2번 추가 요청(Mac용 자동 아카이빙) — 완료.** `releasepilot-hub/scripts/auto_archive_todo.sh`
 신설(git 동기화라 Windows에서도 그대로 실행 가능). PowerShell 원본을 못 본 상태에서

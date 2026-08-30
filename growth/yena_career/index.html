@@ -218,7 +218,7 @@
   footer { text-align: center; margin-top: 64px; font-size: 11px; color: var(--ink-faint); }
   footer a.back { color: var(--ink-dim); }
 
-  /* password modal */
+  /* [REDACTED] */
   .modal-scrim {
     position: fixed; inset: 0; background: rgba(6,9,17,0.65); z-index: 50;
     display: none; align-items: center; justify-content: center; padding: 16px;
@@ -292,9 +292,9 @@
 
 <div class="modal-scrim" id="modalScrim">
   <div class="modal-box">
-    <h3 id="modalTitle">비밀번호 입력</h3>
+    <h3 id="modalTitle">[REDACTED]
     <p id="modalDesc">본인만 체크 상태를 저장할 수 있어요.</p>
-    <input type="password" id="pwInput" inputmode="numeric" maxlength="8" autocomplete="off" placeholder="••••">
+    <input type="password" id="[REDACTED]" inputmode="numeric" maxlength="8" autocomplete="off" placeholder="••••">
     <div class="modal-err" id="modalErr"></div>
     <div class="modal-actions">
       <button type="button" id="modalCancel">취소</button>
@@ -306,7 +306,7 @@
 <script>
 // growth/yena_career/index.html — 이 폴더의 growth_tree.json을 상대경로로 읽는다.
 const DATA_URL = './growth_tree.json';
-const PW = '2534';
+const [REDACTED]';
 const STORAGE_KEY = 'yena_career_done_v1';
 const UNLOCK_KEY = 'yena_career_unlocked';
 
@@ -545,9 +545,9 @@ function closeDrawer() {
 document.getElementById('scrim').addEventListener('click', closeDrawer);
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
 
-// password modal wiring
+// [REDACTED] wiring
 const modalScrim = document.getElementById('modalScrim');
-const pwInput = document.getElementById('pwInput');
+const [REDACTED] = document.getElementById('[REDACTED]');
 const modalErr = document.getElementById('modalErr');
 document.getElementById('lockToggle').addEventListener('click', () => {
   if (isUnlocked()) {
@@ -555,23 +555,23 @@ document.getElementById('lockToggle').addEventListener('click', () => {
     return;
   }
   modalErr.textContent = '';
-  pwInput.value = '';
+  [REDACTED] = '';
   modalScrim.classList.add('open');
-  setTimeout(() => pwInput.focus(), 30);
+  setTimeout(() => [REDACTED], 30);
 });
 document.getElementById('modalCancel').addEventListener('click', () => modalScrim.classList.remove('open'));
 modalScrim.addEventListener('click', e => { if (e.target === modalScrim) modalScrim.classList.remove('open'); });
 document.getElementById('modalConfirm').addEventListener('click', () => {
-  if (pwInput.value === PW) {
+  if ([REDACTED] === PW) {
     setUnlocked(true);
     modalScrim.classList.remove('open');
   } else {
     modalErr.textContent = '비밀번호가 올바르지 않습니다.';
-    pwInput.value = '';
-    pwInput.focus();
+    [REDACTED] = '';
+    [REDACTED]
   }
 });
-pwInput.addEventListener('keydown', e => {
+[REDACTED]'keydown', e => {
   if (e.key === 'Enter') document.getElementById('modalConfirm').click();
   if (e.key === 'Escape') modalScrim.classList.remove('open');
 });

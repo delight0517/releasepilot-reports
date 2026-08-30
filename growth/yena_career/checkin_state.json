@@ -3,11 +3,18 @@
   "nodes": {
     "reel_once_a_week_cap": {
       "unlockedFirstSeenAt": "2026-08-20",
+<<<<<<< Updated upstream
       "lastNudgeAt": "2026-08-29"
     },
     "build_3d_devlog_habit": {
       "unlockedFirstSeenAt": "2026-08-25",
       "lastNudgeAt": "2026-08-29"
+=======
+      "lastNudgeAt": "2026-[REDACTED]"
+    },
+    "build_3d_devlog_habit": {
+      "unlockedFirstSeenAt": "2026-[REDACTED]"
+>>>>>>> Stashed changes
     }
   }
 }

@@ -144,11 +144,11 @@
 </div><div class="ug-step">
   <div class="ug-step-head"><span class="ug-step-n">2</span><span class="ug-step-title">미니 위젯으로 진행 상황 확인</span></div>
   <p class="ug-step-oneliner">항상 최상단에 떠있는 작은 위젯에서 남은 시간을 보고 재생/일시정지/정지를 조작한다.</p>
-  <ol class="ug-plain-list"><li>작업 중에도 위젯이 다른 창 위에 항상 보인다.</li><li>"타이머 보기" 버튼은 진행 중인 세션을 리셋하지 않고 그대로 열기만 한다(2026-07-28 버그 수정됨).</li></ol>
+  <ol class="ug-plain-list"><li>작업 중에도 위젯이 다른 창 위에 항상 보인다.</li><li>"타이머 보기" 버튼은 진행 중인 세션을 리셋하지 않고 그대로 열기만 한다(2026-[REDACTED] 버그 수정됨).</li></ol>
 </div><div class="ug-step">
   <div class="ug-step-head"><span class="ug-step-n">3</span><span class="ug-step-title">휴식 전환 및 전체화면 오버레이</span></div>
   <p class="ug-step-oneliner">집중 시간이 끝나면 휴식 오버레이(renderer/break)가 전체화면으로 뜬다.</p>
-  <ol class="ug-plain-list"><li>진짜 사용자 각성과 macOS의 배경 유지보수용 순간 각성(DarkWake)을 구분해, 뚜껑이 닫힌 채로 잘못 휴식 전환되지 않도록 처리한다(2026-07-29 수정).</li></ol>
+  <ol class="ug-plain-list"><li>진짜 사용자 각성과 macOS의 배경 유지보수용 순간 각성(DarkWake)을 구분해, 뚜껑이 닫힌 채로 잘못 휴식 전환되지 않도록 처리한다(2026-[REDACTED] 수정).</li></ol>
 </div><div class="ug-step">
   <div class="ug-step-head"><span class="ug-step-n">4</span><span class="ug-step-title">시간대별 기본 타이머 설정</span></div>
   <p class="ug-step-oneliner">설정 탭에서 특정 시간대(예: 새벽)에만 다른 집중/휴식 길이를 지정할 수 있다.</p>
@@ -163,7 +163,7 @@
   <div class="card"><h5 class="ug-mini">대시보드 (renderer/dashboard)</h5><p class="ug-desc">집중/휴식 시간 설정, 시간대별 타이머 관리, 오늘 통계 확인.</p><h5 class="ug-mini">미니 위젯 (renderer/widget)</h5><p class="ug-desc">항상 최상단 120×120 작은 창 — 남은 시간, 재생/일시정지/정지 버튼.</p><h5 class="ug-mini">컴팩트 위젯 (renderer/widget-compact)</h5><p class="ug-desc">더 작은 대안 위젯 레이아웃.</p><h5 class="ug-mini">휴식 오버레이 (renderer/break)</h5><p class="ug-desc">휴식 시간 동안 전체화면으로 표시되는 화면.</p></div>
 </section><section>
   <div class="section-label"><span class="num">04</span><h2>작업 일지</h2></div>
-  <div class="card"><h5 class="ug-mini">2026-07-29</h5><p class="ug-desc">"뚜껑 열자마자 휴식 중" 원인 진단·수정 — macOS 배경 유지보수용 순간 각성(DarkWake)과 진짜 사용자 각성을 구분하지 못해 생긴 버그. Mac↔Windows 동기화 진단 체계도 보강.</p><h5 class="ug-mini">2026-07-28</h5><p class="ug-desc">잠금 화면이 대낮에 비정상적으로 긴 시간(1070분 등) 풀리지 않는 사고 대응 — 집중/휴식 길이 상한 추가, lock 시간대 검증(0분 거부·최대 7시간 clamp), 손상된 startsAt(0/1) 값이 영원히 정상 세션을 밀어내는 동기화 버그 수정. 서버(server/pomodoro-api.js) 쪽에도 동일한 상한을 추가해 다른 클라이언트도 보호.</p></div>
+  <div class="card"><h5 class="ug-mini">2026-[REDACTED]</h5><p class="ug-desc">"뚜껑 열자마자 휴식 중" 원인 진단·수정 — macOS 배경 유지보수용 순간 각성(DarkWake)과 진짜 사용자 각성을 구분하지 못해 생긴 버그. Mac↔Windows 동기화 진단 체계도 보강.</p><h5 class="ug-mini">2026-[REDACTED]</h5><p class="ug-desc">잠금 화면이 대낮에 비정상적으로 긴 시간(1070분 등) 풀리지 않는 사고 대응 — 집중/휴식 길이 상한 추가, lock 시간대 검증(0분 거부·최대 7시간 clamp), 손상된 startsAt(0/1) 값이 영원히 정상 세션을 밀어내는 동기화 버그 수정. 서버(server/pomodoro-api.js) 쪽에도 동일한 상한을 추가해 다른 클라이언트도 보호.</p></div>
 </section><section>
   <div class="section-label"><span class="num">05</span><h2>TODO</h2></div>
   <div class="card"><ul class="ug-plain-list" style="padding-left:0;list-style:none;"><li>☐ 35Closer의 유휴 감지를 포모도로 세션 상태로 대체/보완할지 검토 — 보류 (포모도로 세션 진행 중이라는 사실이 "사용자가 실제로 자리에 있다"는 보장은 아님: 세션을 시작해두고 자리를 비울 수 있음. 대체가 아니라 참고 신호로만, 새 폴링 없이 기존 파일을 읽는 선에서만 쓰는 방향으로 결론 — [[feedback_no_silent_content_reduction]])</li></ul></div>

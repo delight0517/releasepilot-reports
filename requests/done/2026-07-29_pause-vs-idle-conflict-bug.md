@@ -3,7 +3,7 @@ id: 2026-07-29_pause-vs-idle-conflict-bug
 type: bug
 from: windows
 to: mac
-created: 2026-07-29
+created: 2026-[REDACTED]
 status: done
 ---
 

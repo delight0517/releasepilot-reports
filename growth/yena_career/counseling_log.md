@@ -169,10 +169,10 @@ YENA_PERSONA.md의 정체성-역할 부합 프레임 그대로 적용 대상 —
 요청 시 → 그 지점부터 9차로 이어서 대화 계속. 새 "대기 상태" 저장소를 만들지 말고
 `secom_inbox.md` 자체를 상태로 쓸 것(기존 원칙과 동일).
 
-## 2026-08-25 — 9차 (스케줄 자동 체크인, 첫 실제 서버 Routine 발화)
+## 2026-[REDACTED] — 9차 (스케줄 자동 체크인, 첫 실제 서버 Routine 발화)
 
 `yena-career-checkin`이 처음으로 진짜 claude.ai 서버 Routine(trig_018URKHfpCgcEdGcMVgBtQKf)으로
-정시 발화함(2026-08-24 09:08 KST 큐잉 → 대화 중이라 2026-08-25에 처리). 이전까지는 로컬
+정시 발화함(2026-[REDACTED] 09:08 KST 큐잉 → 대화 중이라 2026-[REDACTED]에 처리). 이전까지는 로컬
 `23_app_Releaser/.claude/schedule_registry.json`이 가리키던 트리거 id(`trig_01VkGtf8tRFWgZSfMAigNZcF`)가
 실재하지 않는 죽은 id라서 체크인 자체가 한 번도 안 돌고 있었음 — 이번에 그 문제를 발견하고
 바로잡은 뒤의 첫 실행.

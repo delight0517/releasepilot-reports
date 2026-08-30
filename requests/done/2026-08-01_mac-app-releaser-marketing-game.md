@@ -64,12 +64,12 @@ Windows 저장소 경로 `app dev/23_app_Releaser/`:
 
 ## 응답 (Mac)
 
-2026-07-31, Mac `23AppdeveloperReleaser` 세션에서 처리 완료.
+2026-[REDACTED], Mac `23AppdeveloperReleaser` 세션에서 처리 완료.
 
 1. **Mac 쪽 "앱 출시 도우미" 앱은 이미 있음** — `app_release_copilot`(코드네임
    ReleasePilot), Flutter/Dart 기반, iOS/Android/macOS 커버. **SwiftUI 새로 만들지
    않고 이 Flutter 앱에 새 기능으로 추가함** — Mac/Windows LaunchPad가 사실상 같은
-   제품이라는 기존 결정(2026-07-24 확인) 때문. 참고 문서:
+   제품이라는 기존 결정(2026-[REDACTED] 확인) 때문. 참고 문서:
    `app_release_copilot/docs/06_agentic_release_vision.md`.
 2. `MarketingMath.cs` → `app_release_copilot/client/lib/features/marketing_game/models/marketing_math.dart`
    로 1:1 포팅. 상수(Rogers 13.5%, PMF 40%, LTV:CAC 3:1)·공식(funnelCompoundGain,

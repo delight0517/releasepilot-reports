@@ -108,7 +108,7 @@ Xcode 워크스페이스(`Blocker_Xcode.xcworkspace`)와 macOS `.app`만 있고,
 세션에서 플랫폼 포팅부터 시작해야 하는 작업이라 이번엔 손대지 않았습니다.
 `not_built` 상태 그대로 둡니다.
 
-**1. timer1 lockMode**: 이 파일과 별개 요청(2026-07-31 파일)이지만 같이
+**1. timer1 lockMode**: 이 파일과 별개 요청(2026-[REDACTED] 파일)이지만 같이
 확인한 김에 기록 — `MacLockWindow` 모델/서비스/동기화 적용까지 코드는 이미
 완성돼 있었고, `scripts\build_and_relaunch.ps1`로 실제 빌드까지 성공(pid로
 기동 확인)했습니다. 다만 그 요청 파일에 명시된 "실기기 잠금·해제 라이브 확인"

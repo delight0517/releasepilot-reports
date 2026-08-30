@@ -55,16 +55,16 @@
 
 `yena-career-checkin` — claude.ai 계정에 등록된 **진짜 서버 측 Routine**(trigger id
 `trig_018URKHfpCgcEdGcMVgBtQKf`, cron `0 0 * * *` = 매일 09:00 KST), `growth_tree_counseling_protocol.md`를
-그대로 실행. **2026-08-23 이전**에는 `23_app_Releaser/.claude/schedule_registry.json`(로컬
+그대로 실행. **2026-[REDACTED] 이전**에는 `23_app_Releaser/.claude/schedule_registry.json`(로컬
 PC 파일)에만 등록돼 있었는데, 이건 로컬 Claude Code가 켜져 있어야만 발화하는 방식이라
-"로컬 PC 상태와 무관"하다는 이전 설명이 사실이 아니었다 — 사용자가 2026-08-23에 이 문제를
+"로컬 PC 상태와 무관"하다는 이전 설명이 사실이 아니었다 — 사용자가 2026-[REDACTED]에 이 문제를
 지적해서, `mcp__Claude_Code_Remote__create_trigger`로 claude.ai 서버 Routine을 새로 만들고
 로컬 registry 항목을 대체했다. 이제 로컬 PC/Claude Desktop이 꺼져 있어도 정시에 돈다.
 **로컬 `23_app_Releaser/.claude/schedule_registry.json`의 `yena-career-checkin` 항목은
 중복 발화를 막기 위해 비활성화/삭제해야 함** — 이 저장소 세션에서는 그 로컬 파일에 접근할
 수 없으므로 사용자가 직접 처리해야 한다.
 
-## 반복 작업 모니터링 (ops-heartbeat, 2026-08-26 신설)
+## 반복 작업 모니터링 (ops-heartbeat, 2026-[REDACTED] 신설)
 
 반복 실행(cron/routine/예약작업)에 대해 이 저장소는 **두 개의 레이어**를 가진다.
 헷갈리지 말 것:
@@ -78,7 +78,7 @@ PC 파일)에만 등록돼 있었는데, 이건 로컬 Claude Code가 켜져 있
   `scripts/ops_health.py`가 유일한 writer.
 
 **왜 만들었나**: registry만 있고 실행 증거가 없어서, yena-career-checkin이 죽은
-trigger에 물려 한 달간 한 번도 안 돌았는데 아무도 몰랐다(2026-08-24 발견).
+trigger에 물려 한 달간 한 번도 안 돌았는데 아무도 몰랐다(2026-[REDACTED] 발견).
 설계 전문: `docs/ops_heartbeat_monitoring.md`.
 
 **새 반복 작업을 만들 때 반드시**: registry entry 추가 + 그 작업이 끝날 때

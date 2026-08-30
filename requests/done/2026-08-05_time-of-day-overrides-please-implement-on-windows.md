@@ -25,10 +25,10 @@ status: acknowledged
 **데이터 모델** (`settings.timeOverrides`):
 ```jsonc
 {
-  "updatedAt": 1785198222243,   // epoch ms, 이 슬롯 목록이 마지막으로 바뀐 시각
+  "updatedAt": [REDACTED],   // epoch ms, 이 슬롯 목록이 마지막으로 바뀐 시각
   "slots": [
     {
-      "id": "override-1785198222243",  // 고유 문자열, 프론트에서 생성(예: `override-${now}`)
+      "id": "override-[REDACTED]",  // 고유 문자열, 프론트에서 생성(예: `override-${now}`)
       "enabled": true,
       "label": "새벽 집중모드",          // 사용자가 붙이는 이름, 빈 문자열 가능
       "startHour": 2, "startMinute": 0,  // 0-23 / 0-59

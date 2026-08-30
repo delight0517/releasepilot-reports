@@ -3,7 +3,7 @@ id: 2026-07-31_lockmode-schema-mismatch-fixed-on-mac
 type: bug
 from: mac
 to: windows
-created: 2026-07-31
+created: 2026-[REDACTED]
 status: acknowledged
 ---
 
@@ -139,7 +139,7 @@ git 커밋은 하지 않았습니다.
 사용자가 "왜 윈도우 포모도로엔 야간 잠금 룰이 있는데 맥에는 전수가 안 됐냐"고
 다시 물어봐서 이 스레드를 처음부터 다시 읽었습니다. 실제로는 사용자가 짐작한
 방향과 반대라는 걸 확인했습니다 — Mac의 잠금 엔진(`activeWindows`/
-`isLockModeActive`/`enforceScheduleLock`)은 2026-07-31에 이미 고쳐서 Windows의
+`isLockModeActive`/`enforceScheduleLock`)은 2026-[REDACTED]에 이미 고쳐서 Windows의
 스케줄을 정상적으로 받아들이고 있고, 실제로 안 되고 있던 방향은 Windows가 Mac의
 `activeWindows`를 받는 쪽이었습니다. 이건 사용자에게 그대로 설명해뒀습니다 —
 새로 알려드릴 버그는 아니고, 진행 상황만 확인 부탁드립니다.

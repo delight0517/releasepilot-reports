@@ -1,5 +1,5 @@
 {
-  "date": "2026-08-26",
+  "date": "2026-[REDACTED]",
   "taskId": "yena-brand-ops-biweekly",
   "host": "cloud",
   "counters": {
@@ -18,7 +18,7 @@
       "durationMs": null,
       "exitCode": null,
       "produced": [
-        "reports/rogan-brand_ops_biweekly-1787738797548.html"
+        "reports/rogan-brand_ops_biweekly-[REDACTED].html"
       ],
       "note": "9 open items, 0 stale (1회차 발행)",
       "error": null

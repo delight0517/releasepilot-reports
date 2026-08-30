@@ -41,13 +41,13 @@
   .app-name { font-size: 16.5px; font-weight: 700; font-family: var(--serif); }
   .app-ver { font-family: var(--mono); font-size: 11.5px; color: var(--ink-faint); }
   .app-pct { font-family: var(--mono); font-size: 12px; color: var(--accent-ink); margin-left: auto; }
-  /* tagline(2026-08-25, 예나 실측 반영): 카드에 "무슨 앱인지"가 없어서 note(개발자용
+  /* tagline(2026-[REDACTED], 예나 실측 반영): 카드에 "무슨 앱인지"가 없어서 note(개발자용
      상태 메모, 예: "development 서명, 등록 기기 2대 전용")만 보였다 — 처음 보는
      사람에게는 암호문. tagline은 앱 이름 바로 아래, note보다 눈에 띄게 배치한다. */
   .app-tagline { font-size: 13.5px; color: var(--ink); margin: 4px 0 0; width: 100%; }
   .app-note { font-size: 11px; color: var(--ink-faint); margin: 6px 0 0; }
 
-  /* 루트 index.html의 iconFor/glyphBadgeHtml과 같은 방식(2026-08-25) —
+  /* 루트 index.html의 iconFor/glyphBadgeHtml과 같은 방식(2026-[REDACTED]) —
      다운로드 카드에도 색깔 이니셜 배지를 재사용해 앱 그리드와 시각적
      일관성을 맞춘다. 새 디자인을 만들지 않고 로직만 복제. */
   .glyph-badge { width: 34px; height: 34px; border-radius: 10px; font-size: 15px; font-weight: 700;
@@ -143,7 +143,7 @@
 
 <script>
 const PLATFORM_LABEL = { mac: '🍎 macOS', windows: '🪟 Windows', ios: '📱 iOS', android: '🤖 Android' };
-// dev_signed_limited(2026-08-25 추가): iOS 4개 앱이 development 서명이라
+// dev_signed_limited(2026-[REDACTED] 추가): iOS 4개 앱이 development 서명이라
 // 프로파일에 등록된 기기 2대에서만 설치된다 — "받아지는 것처럼 보이는데
 // 실제로는 남이 못 깐다"가 최악이라, off/warn/ok와 톤을 다르게(보라) 구분해
 // 항상 문구를 같이 붙인다. tool/launch_progress_cli.dart의 상태값과 대칭.
@@ -153,7 +153,7 @@ const BTN_LABEL = { not_built: '준비 중', unsigned_warning: '경고 감수하
 
 // 루트 index.html(701~761행)의 iconFor/glyphBadgeHtml/iconFallback 재사용 —
 // 새 디자인을 만들지 않고 같은 순서-고정 팔레트·이니셜 배지 로직을 그대로
-// 복제해서 다운로드 카드에도 컬러 이니셜 배지를 붙인다(2026-08-25).
+// 복제해서 다운로드 카드에도 컬러 이니셜 배지를 붙인다(2026-[REDACTED]).
 const PALETTE = [
   { bg: '#f0c265', fg: '#3a2a10' },
   { bg: '#7fc7e0', fg: '#0e2933' },
@@ -169,7 +169,7 @@ function colorFor(name) {
   return PALETTE[i % PALETTE.length];
 }
 // apps/<slug>/ 소개 페이지가 실제로 존재하는 슬러그만 링크로 만든다 — 없는
-// 페이지로 링크했다가 404가 나는 걸 막기 위해(2026-08-25). 새 소개 페이지를
+// 페이지로 링크했다가 404가 나는 걸 막기 위해(2026-[REDACTED]). 새 소개 페이지를
 // 만들면 여기에도 슬러그를 추가할 것.
 const APP_PAGE_SLUGS = new Set([
   'ox-quiz', 'gallery', 'brainwire', 'brainwire-app', 'creator-quest',
@@ -231,7 +231,7 @@ fetch('../progress/data.json', {cache: 'no-store'}).then(r => r.ok ? r.json() : 
   const now = Date.now();
   const activeApps = [];
   const staleApps = [];
-  // ReportHubApp(2026-08-25, 예나 실측)은 다른 앱들과 성격이 다르다 —
+  // ReportHubApp(2026-[REDACTED], 예나 실측)은 다른 앱들과 성격이 다르다 —
   // 이 사이트 자체를 띄우는 웹뷰 껍데기 + 개발자 본인 맥을 조종하는 원격
   // 패널(GitHub 토큰 필요) + 개인용 포모도로라, 다른 사람이 받아도 사이트
   // 열람 외엔 쓸 게 없다. 일반 앱 목록에 같이 놓으면 독립 제품처럼 보여

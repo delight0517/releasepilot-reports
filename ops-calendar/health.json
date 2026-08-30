@@ -1,7 +1,7 @@
 {
   "generatedAt": "2026-08-26T10:26:10Z",
   "windowDays": 14,
-  "registryUpdatedAt": "2026-08-26",
+  "registryUpdatedAt": "2026-[REDACTED]",
   "totals": {
     "tasks": 16,
     "withFindings": 13,
@@ -488,7 +488,7 @@
       "lastAt": "2026-08-26T10:22:38Z",
       "lastOutcome": "ok",
       "days": {
-        "2026-08-26": {
+        "2026-[REDACTED]": {
           "total": 1,
           "ok": 1,
           "noop": 0,
