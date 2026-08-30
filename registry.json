@@ -111,7 +111,7 @@
       },
       "purpose": "재택근무자·개발자를 위한 포모도로 타이머. 25분 집중/5분 휴식 사이클을 맥 서버와 기기 간 동기화해 강제 휴식 알림. iOS App Store 출시(빌드 업로드+메타데이터+스크린샷 완료).",
       "status": "live",
-      "lastVerified": "2026-08-27"
+      "lastVerified": "2026-[REDACTED]"
     },
     {
       "id": "risesync",
@@ -127,7 +127,7 @@
       },
       "purpose": "여러 기기 간 기상 알람과 아침 루틴을 동기화하는 앱. iOS App Store 출시 준비(스크린샷 대기).",
       "status": "pending-store",
-      "lastVerified": "2026-08-27"
+      "lastVerified": "2026-[REDACTED]"
     },
     {
       "id": "harugirok-ios",
@@ -143,7 +143,17 @@
       },
       "purpose": "하루의 순간을 가볍게 기록하고 시간의 흐름을 시각화하는 iOS 앱. App Store Connect 업로드+메타데이터 완료(스크린샷 대기).",
       "status": "pending-store",
-      "lastVerified": "2026-08-27"
+      "lastVerified": "2026-[REDACTED]"
+    },
+    {
+      "id": "35closer",
+      "name": "35Closer Timer",
+      "status": "live"
+    },
+    {
+      "id": "everytime-reminder",
+      "name": "Everytime Reminder",
+      "status": "live"
     }
   ],
   "_unregistered_mentions": [

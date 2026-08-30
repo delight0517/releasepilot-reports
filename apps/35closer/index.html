@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>35Closer Timer — Claude 작업 중 화면 꺼짐 방지·멀티계정 타이머 앱 | GeunHu Kim</title>
+  <meta name="description" content="35Closer Timer는 Claude Code 작업 중 화면 꺼짐과 잠금을 막아주는 macOS/Windows 데스크톱 타이머입니다. 충전 중 자동 절전 제어, 멀티계정 전환, 사용량 추적을 제공합니다. GitHub에서 무료 다운로드.">
+  <meta name="keywords" content="35Closer, 클로저 타이머, 화면 꺼짐 방지, caffeinate, 절전 제어, Claude 멀티계정, Claude Code, 화면 잠금 방지, 데스크톱 타이머, 맥 타이머, keep awake">
+  <meta name="author" content="GeunHu Kim">
+  <link rel="canonical" href="https://delight0517.github.io/releasepilot-reports/apps/35closer/">
+  <link rel="icon" type="image/png" href="icon.png">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="35Closer Timer — 자리를 비워도 작업이 끊기지 않게">
+  <meta property="og:description" content="Claude 작업 중 화면 꺼짐·잠금 방지, 멀티계정 전환, 사용량 추적을 하나로.">
+  <meta property="og:image" content="https://delight0517.github.io/releasepilot-reports/apps/35closer/icon-180.png">
+  <meta property="og:url" content="https://delight0517.github.io/releasepilot-reports/apps/35closer/">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="35Closer Timer — 자리를 비워도 작업이 끊기지 않게">
+  <meta name="twitter:description" content="화면 꺼짐 방지 · 멀티계정 전환 · 사용량 추적 데스크톱 타이머.">
+
+  <!-- JSON-LD: SoftwareApplication (AI 검색에 잡히도록) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "35Closer Timer",
+    "operatingSystem": "macOS, Windows",
+    "applicationCategory": "UtilityApplication",
+    "applicationSubCategory": "Keep Awake / Automation Timer",
+    "url": "https://delight0517.github.io/releasepilot-reports/apps/35closer/",
+    "downloadUrl": "https://github.com/delight0517/35Closer-App/releases",
+    "softwareVersion": "1.1.0",
+    "author": {"@type": "Person", "name": "GeunHu Kim", "url": "https://delight0517.github.io/releasepilot-reports/"},
+    "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+    "description": "Claude Code 작업 중 화면 꺼짐과 잠금을 막는 macOS/Windows 데스크톱 타이머. 충전 중일 때만 자동으로 절전을 제어하고, Claude 멀티계정 전환과 사용량 추적을 제공한다.",
+    "featureList": ["충전 중 자동 화면 꺼짐 방지", "Claude 멀티계정 전환", "예약 메시지·사용량 추적", "배터리 보호 (충전 시에만 동작)"]
+  }
+  </script>
+
+  <!-- JSON-LD: FAQ (AI 답변에 잡히도록) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {"@type": "Question", "name": "35Closer Timer는 어떤 앱인가요?",
+       "acceptedAnswer": {"@type": "Answer", "text": "35Closer Timer는 Claude Code 등 자동화 작업 중 화면이 꺼지거나 잠기는 것을 막아주는 macOS/Windows 데스크톱 타이머입니다. 충전 중일 때만 동작해 배터리를 보호합니다."}},
+      {"@type": "Question", "name": "화면 꺼짐 방지가 어떻게 동작하나요?",
+       "acceptedAnswer": {"@type": "Answer", "text": "충전 중(AC 전원)일 때만 caffeinate 기반 절전 제어를 활성화해 디스플레이·시스템 절전과 스크린세이버·화면 잠금을 모두 막습니다. 배터리 상태에서는 평소처럼 동작해 배터리를 보호합니다."}},
+      {"@type": "Question", "name": "멀티계정 기능은 무엇인가요?",
+       "acceptedAnswer": {"@type": "Answer", "text": "Claude Code의 여러 계정을 원격에서 전환하고, 다른 세션에 지정한 시각에 메시지를 예약 전송하는 기능을 제공합니다. 자리를 비워도 작업 흐름이 끊기지 않습니다."}}
+    ]
+  }
+  </script>
+
+  <style>
+    :root{--bg:#0f1115;--card:#1a1d24;--ink:#e8eaed;--faint:#9aa0a6;--accent:#5eead4;--line:#2a2e37}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
+    .wrap{max-width:720px;margin:0 auto;padding:48px 20px}
+    .hero{text-align:center;padding:40px 0}
+    .icon{width:120px;height:120px;border-radius:26px;box-shadow:0 12px 40px rgba(94,234,212,.35)}
+    h1{font-size:34px;margin:20px 0 8px}
+    .tag{color:var(--accent);font-weight:700;letter-spacing:.5px}
+    .desc{color:var(--faint);font-size:17px;max-width:520px;margin:0 auto}
+    .badge{display:inline-block;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:13px;color:var(--faint);margin:6px 4px}
+    .cta{display:block;margin:32px auto;padding:16px 28px;background:var(--accent);color:#0f1115;text-decoration:none;font-weight:700;border-radius:14px;max-width:280px;text-align:center}
+    .feats{display:grid;gap:16px;margin-top:40px}
+    .feat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}
+    .feat h3{margin:0 0 6px;font-size:18px}
+    .feat p{margin:0;color:var(--faint);font-size:15px}
+    footer{text-align:center;color:var(--faint);font-size:13px;margin-top:60px}
+    a.link{color:var(--accent)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero">
+      <img class="icon" src="icon.png" alt="35Closer Timer 앱 아이콘">
+      <div class="tag">KEEP AWAKE · AUTOMATION TIMER</div>
+      <h1>35Closer Timer</h1>
+      <p class="desc">Claude Code 작업 중 <strong>화면이 꺼지고 잠기는 것</strong>을 막아주는 데스크톱 타이머. 자리를 비워도 작업이 끊기지 않습니다.</p>
+      <div>
+        <span class="badge">🔋 충전 중 자동 동작</span>
+        <span class="badge">👥 멀티계정 전환</span>
+        <span class="badge">⏰ 예약 메시지</span>
+      </div>
+      <a class="cta" href="https://github.com/delight0517/35Closer-App/releases">GitHub에서 무료 다운로드</a>
+    </div>
+
+    <div class="feats">
+      <div class="feat">
+        <h3>🔋 화면 꺼짐 방지 (충전 중만)</h3>
+        <p>충전 중(AC 전원)일 때만 절전 제어를 활성화해 디스플레이 절전·스크린세이버·화면 잠금·시스템 잠자기를 모두 막습니다. 배터리 상태에서는 평소처럼 동작해 배터리를 보호합니다.</p>
+      </div>
+      <div class="feat">
+        <h3>👥 Claude 멀티계정 전환</h3>
+        <p>여러 Claude 계정을 원격에서 손쉽게 전환합니다. 로그인 인증은 브라우저 OAuth로 한 번만 거치면 되고, 이후 전환은 자동입니다.</p>
+      </div>
+      <div class="feat">
+        <h3>⏰ 예약 메시지 & 사용량 추적</h3>
+        <p>다른 세션에 지정한 시각에 메시지를 자동 전송하는 예약 기능과, 세션별 사용량 추적을 제공합니다. 자리를 비워도 작업 흐름이 끊기지 않게 돕습니다.</p>
+      </div>
+    </div>
+
+    <p style="text-align:center;margin-top:40px">
+      <a class="link" href="https://delight0517.github.io/releasepilot-reports/">← 릴리저 웹사이트로</a>
+    </p>
+
+    <footer>
+      35Closer Timer by GeunHu Kim · <a class="link" href="https://delight0517.github.io/releasepilot-reports/privacy-policy/">개인정보 처리방침</a><br>
+      © 2026 GeunHu Kim. All rights reserved.
+    </footer>
+  </div>
+</body>
+</html>

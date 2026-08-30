@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Everytime Reminder — 에브리타임 시간표 수업 알림 앱 | GeunHu Kim</title>
+  <meta name="description" content="Everytime Reminder는 에브리타임 시간표를 가져와 매일 아침 오늘 일정을 알리고, 수업 30분·15분 전에 강의실 번호와 함께 알람을 주는 크로스플랫폼 앱입니다. iOS·Android·macOS 지원.">
+  <meta name="keywords" content="에브리타임, everytime, 시간표 앱, 수업 알림, 강의실 알림, 대학생 앱, 시간표 위젯, 수업 리마인더, 오늘 일정, 강의 알람">
+  <meta name="author" content="GeunHu Kim">
+  <link rel="canonical" href="https://delight0517.github.io/releasepilot-reports/apps/everytime-reminder/">
+  <link rel="icon" type="image/png" href="icon.png">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Everytime Reminder — 수업 30분 전, 강의실 번호와 함께">
+  <meta property="og:description" content="에브리타임 시간표를 오늘 일정 알림·위젯으로. 수업 30분·15분 전 알람을 강의실 번호와 함께 받아보세요.">
+  <meta property="og:image" content="https://delight0517.github.io/releasepilot-reports/apps/everytime-reminder/icon-180.png">
+  <meta property="og:url" content="https://delight0517.github.io/releasepilot-reports/apps/everytime-reminder/">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Everytime Reminder — 수업 30분 전, 강의실 번호와 함께">
+  <meta name="twitter:description" content="에브리타임 시간표 알림·위젯. 수업 30분·15분 전 강의실 번호 알람.">
+
+  <!-- JSON-LD: SoftwareApplication (AI 검색에 잡히도록) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Everytime Reminder",
+    "operatingSystem": "iOS, Android, macOS",
+    "applicationCategory": "EducationApplication",
+    "applicationSubCategory": "Timetable / Reminder",
+    "url": "https://delight0517.github.io/releasepilot-reports/apps/everytime-reminder/",
+    "downloadUrl": "https://github.com/delight0517/everytime-reminder/releases",
+    "softwareVersion": "1.0.18",
+    "author": {"@type": "Person", "name": "GeunHu Kim", "url": "https://delight0517.github.io/releasepilot-reports/"},
+    "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+    "description": "에브리타임 시간표를 가져와 매일 아침 오늘 일정을 알림·위젯으로 보여주고, 수업 30분·15분 전에 강의실 번호와 함께 알람을 주는 크로스플랫폼 Flutter 앱.",
+    "featureList": ["에브리타임 시간표 임포트", "수업 30분·15분 전 알람", "오늘 일정 위젯·아침 요약", "오프라인 우선·백업 병합"]
+  }
+  </script>
+
+  <!-- JSON-LD: FAQ (AI 답변에 잡히도록) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {"@type": "Question", "name": "Everytime Reminder는 어떤 앱인가요?",
+       "acceptedAnswer": {"@type": "Answer", "text": "에브리타임 시간표를 가져와 매일 아침 오늘 일정을 알림·위젯으로 보여주고, 수업 30분·15분 전에 강의실 번호와 함께 알람을 주는 크로스플랫폼(iOS·Android·macOS) 앱입니다."}},
+      {"@type": "Question", "name": "시간표를 어떻게 가져오나요?",
+       "acceptedAnswer": {"@type": "Answer", "text": "에브리타임의 공유 링크를 앱에 붙여넣으면 시간표를 자동으로 파싱해 가져옵니다. 별도로 수동 입력할 필요가 없습니다."}},
+      {"@type": "Question", "name": "알림은 언제 오나요?",
+       "acceptedAnswer": {"@type": "Answer", "text": "수업 시작 30분 전과 15분 전에 강의실 번호와 함께 알림이 옵니다. 매일 아침에는 오늘 일정을 요약해 보여줍니다."}}
+    ]
+  }
+  </script>
+
+  <style>
+    :root{--bg:#0f1115;--card:#1a1d24;--ink:#e8eaed;--faint:#9aa0a6;--accent:#ffd166;--line:#2a2e37}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
+    .wrap{max-width:720px;margin:0 auto;padding:48px 20px}
+    .hero{text-align:center;padding:40px 0}
+    .icon{width:120px;height:120px;border-radius:26px;box-shadow:0 12px 40px rgba(255,209,102,.35)}
+    h1{font-size:34px;margin:20px 0 8px}
+    .tag{color:var(--accent);font-weight:700;letter-spacing:.5px}
+    .desc{color:var(--faint);font-size:17px;max-width:520px;margin:0 auto}
+    .badge{display:inline-block;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:13px;color:var(--faint);margin:6px 4px}
+    .cta{display:block;margin:32px auto;padding:16px 28px;background:var(--accent);color:#0f1115;text-decoration:none;font-weight:700;border-radius:14px;max-width:280px;text-align:center}
+    .feats{display:grid;gap:16px;margin-top:40px}
+    .feat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}
+    .feat h3{margin:0 0 6px;font-size:18px}
+    .feat p{margin:0;color:var(--faint);font-size:15px}
+    footer{text-align:center;color:var(--faint);font-size:13px;margin-top:60px}
+    a.link{color:var(--accent)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero">
+      <img class="icon" src="icon.png" alt="Everytime Reminder 앱 아이콘">
+      <div class="tag">TIMETABLE · CLASS REMINDER</div>
+      <h1>Everytime Reminder</h1>
+      <p class="desc">에브리타임 시간표를 가져와 <strong>수업 30분·15분 전</strong> 강의실 번호와 함께 알려주는 리마인더. 이제 수업을 놓치지 마세요.</p>
+      <div>
+        <span class="badge">📅 에브리타임 시간표 임포트</span>
+        <span class="badge">⏰ 30분·15분 전 알람</span>
+        <span class="badge">🔔 오늘 일정 위젯</span>
+      </div>
+      <a class="cta" href="https://github.com/delight0517/everytime-reminder/releases">무료 다운로드 (iOS · Android · macOS)</a>
+    </div>
+
+    <div class="feats">
+      <div class="feat">
+        <h3>📅 에브리타임 시간표 그대로</h3>
+        <p>에브리타임 공유 링크만 붙여넣으면 시간표를 자동으로 파싱합니다. 과목별 강의실 번호까지 그대로 가져와 별도 입력이 필요 없습니다.</p>
+      </div>
+      <div class="feat">
+        <h3>⏰ 수업 30분·15분 전 알람</h3>
+        <p>수업 시작 30분 전과 15분 전에 강의실 번호와 함께 알림을 보냅니다. 매일 아침에는 오늘 일정을 요약해 보여줘 하루를 한눈에 파악할 수 있습니다.</p>
+      </div>
+      <div class="feat">
+        <h3>🛡️ 오프라인 우선·백업 병합</h3>
+        <p>모든 시간표 데이터는 기기에 저장되고, 25초 체크포인트 백업과 30일 휴지통을 지원합니다. 인터넷 없이도 안정적으로 동작합니다.</p>
+      </div>
+    </div>
+
+    <p style="text-align:center;margin-top:40px">
+      <a class="link" href="https://delight0517.github.io/releasepilot-reports/">← 릴리저 웹사이트로</a>
+    </p>
+
+    <footer>
+      Everytime Reminder by GeunHu Kim · <a class="link" href="https://delight0517.github.io/releasepilot-reports/privacy-policy/">개인정보 처리방침</a><br>
+      © 2026 GeunHu Kim. All rights reserved.
+    </footer>
+  </div>
+</body>
+</html>
