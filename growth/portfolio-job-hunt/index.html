@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>포트폴리오 · 홍보/채용 유입 성장 트리</title>
+<meta name="description" content="차차차의 포트폴리오 마케팅/채용 유입 진단 보고서를 게임 스킬트리처럼 하나씩 깨나가는 성장 체크리스트.">
+<link rel="canonical" href="https://delight0517.github.io/releasepilot-reports/growth/portfolio-job-hunt/">
+<meta name="robots" content="noindex">
+<style>
+  /*
+    growth/<slug>/index.html 팔레트 — growth/geunhoo/index.html을 템플릿으로
+    복사한 인스턴스(docs/growth_tree_schema.md 참고). 대상 데이터는 dev-portfolio/
+    about/portfolio/ 등 채용 유입 관련 페이지의 마케팅 진단이며, geunhoo 트리와는
+    데이터 파일이 완전히 분리돼 있다. 2026-08-25 차차차(홍보·수익 팀장) 작성,
+    팔레트는 원본과 동일한 남색/골드 유지.
+  */
+  :root {
+    --bg: #0d1220; --bg-2: #121a2c; --card: #182339; --card-2: #1e2c48;
+    --line: #2a3a5c; --line-soft: #202e4a;
+    --ink: #eef1f9; --ink-dim: #a7b3cc; --ink-faint: #838fac;
+    --gold: #e7b84a; --gold-soft: rgba(231,184,74,0.14); --gold-ink: #f2cf7c;
+    --good: #4fae86; --good-soft: rgba(79,174,134,0.14);
+    --warn: #d98a42; --warn-soft: rgba(217,138,66,0.14);
+    --locked: #4a5670;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Noto Serif KR", serif;
+    --sans: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  * { box-sizing: border-box; overflow-wrap: break-word; }
+  body {
+    margin: 0; background: radial-gradient(1200px 600px at 50% -10%, #1a2440 0%, var(--bg) 55%);
+    color: var(--ink); font-family: var(--sans); line-height: 1.6; -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 0 18px 96px; }
+  .back-link {
+    position: fixed; top: 16px; left: 16px; z-index: 30; font-family: var(--mono); font-size: 10.5px;
+    color: var(--ink-faint); text-decoration: none; background: var(--card); border: 1px solid var(--line);
+    border-radius: 999px; padding: 6px 12px;
+  }
+  .back-link:hover { color: var(--gold-ink); border-color: var(--gold); }
+
+  header.hero { padding: 64px 4px 8px; text-align: center; }
+  .eyebrow {
+    display: inline-block; font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--gold-ink); background: var(--gold-soft);
+    border: 1px solid rgba(231,184,74,0.35); border-radius: 999px; padding: 5px 14px; margin: 0 0 18px;
+  }
+  h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(28px, 6vw, 42px); margin: 0 0 10px; text-wrap: balance; }
+  header.hero p.lede { margin: 0 auto; font-size: 14.5px; color: var(--ink-dim); max-width: 56ch; }
+  .guide-badge {
+    margin: 18px auto 0; max-width: 56ch; font-size: 12.5px; color: var(--ink-faint);
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .guide-badge .avatar {
+    width: 22px; height: 22px; border-radius: 50%; background: var(--gold-soft); color: var(--gold-ink);
+    display: flex; align-items: center; justify-content: center; font-size: 12px; flex: none;
+  }
+
+  /* progress */
+  .progress-block { margin: 34px auto 8px; max-width: 560px; text-align: center; }
+  .progress-num { font-family: var(--serif); font-size: clamp(40px, 9vw, 56px); color: var(--gold-ink); line-height: 1; }
+  .progress-sub { font-size: 12.5px; color: var(--ink-faint); margin-top: 6px; }
+  .progress-bar-track {
+    margin-top: 16px; height: 10px; border-radius: 999px; background: var(--card-2);
+    border: 1px solid var(--line); overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%; border-radius: 999px;
+    background: linear-gradient(90deg, #b98325, var(--gold) 60%, var(--gold-ink));
+    width: 0%; transition: width 900ms cubic-bezier(.22,.61,.36,1);
+    box-shadow: 0 0 14px rgba(231,184,74,0.45);
+  }
+
+  /* source link */
+  .source-note {
+    max-width: 640px; margin: 22px auto 0; background: var(--card); border: 1px dashed var(--line);
+    border-radius: 10px; padding: 14px 16px; font-size: 12.5px; color: var(--ink-dim); text-align: center;
+  }
+  .source-note code { color: var(--gold-ink); }
+  .source-note a { color: var(--gold-ink); text-decoration: underline; }
+
+  /* tiers */
+  .tiers { margin-top: 52px; display: flex; flex-direction: column; }
+  .tier-block { position: relative; }
+  .tier-head {
+    display: flex; align-items: baseline; gap: 10px; padding: 0 2px 14px;
+  }
+  .tier-pip {
+    width: 30px; height: 30px; border-radius: 50%; background: var(--gold-soft); color: var(--gold-ink);
+    border: 1px solid rgba(231,184,74,0.4); display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono); font-size: 13px; flex: none;
+  }
+  .tier-title { font-family: var(--serif); font-weight: 400; font-size: 19px; margin: 0; }
+  .tier-hint { font-family: var(--mono); font-size: 10px; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.06em; }
+
+  .node-row {
+    display: flex; gap: 14px; flex-wrap: wrap; padding: 0 2px 8px;
+  }
+  .connector {
+    width: 2px; height: 34px; margin: 0 0 0 30px;
+    background: linear-gradient(var(--line), var(--gold-soft));
+  }
+
+  .node-card {
+    flex: 1 1 260px; max-width: 320px; min-width: 240px; text-align: left; cursor: pointer;
+    background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 16px 14px;
+    opacity: 0; transform: translateY(14px); transition: opacity 560ms ease, transform 560ms ease,
+      border-color .15s ease, box-shadow .15s ease;
+    font: inherit; color: inherit; display: block; position: relative;
+  }
+  .node-card.in { opacity: 1; transform: translateY(0); }
+  .node-card:not(.locked):hover { border-color: var(--gold); box-shadow: 0 10px 26px -14px rgba(231,184,74,0.35); }
+  .node-card.done { border-color: rgba(79,174,134,0.55); background: linear-gradient(180deg, rgba(79,174,134,0.08), var(--card)); }
+  .node-card.locked { opacity: .55; cursor: not-allowed; filter: grayscale(0.35); }
+  .node-card.locked.in { opacity: .55; }
+
+  .node-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+  .node-cat {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--ink-faint); background: var(--bg-2); border: 1px solid var(--line-soft);
+    border-radius: 999px; padding: 3px 9px;
+  }
+  .node-weight {
+    font-family: var(--mono); font-size: 11px; color: var(--gold-ink); background: var(--gold-soft);
+    border-radius: 999px; padding: 3px 8px; flex: none;
+  }
+  .node-title { font-family: var(--sans); font-weight: 600; font-size: 14.5px; margin: 10px 0 0; line-height: 1.4; }
+  .node-status { margin-top: 10px; font-size: 12px; display: flex; align-items: center; gap: 6px; }
+  .node-status.todo { color: var(--ink-faint); }
+  .node-status.done { color: var(--good); }
+  .node-status.locked { color: var(--locked); }
+  .lock-icon { font-size: 13px; }
+
+  /* detail panel (drawer) */
+  .scrim {
+    position: fixed; inset: 0; background: rgba(6,9,17,0.6); backdrop-filter: blur(2px);
+    opacity: 0; pointer-events: none; transition: opacity .2s ease; z-index: 40;
+  }
+  .scrim.open { opacity: 1; pointer-events: auto; }
+  .drawer {
+    position: fixed; top: 0; right: 0; bottom: 0; width: min(440px, 100%);
+    background: var(--bg-2); border-left: 1px solid var(--line); z-index: 41;
+    transform: translateX(100%); transition: transform .28s cubic-bezier(.22,.61,.36,1);
+    overflow-y: auto; padding: 22px 22px 60px;
+  }
+  .drawer.open { transform: translateX(0); }
+  .drawer-close {
+    position: sticky; top: 0; float: right; background: var(--card); border: 1px solid var(--line);
+    color: var(--ink-dim); border-radius: 999px; width: 30px; height: 30px; cursor: pointer; font-size: 14px;
+  }
+  .drawer-close:hover { color: var(--gold-ink); border-color: var(--gold); }
+  .drawer .node-cat { display: inline-block; margin: 4px 0 10px; }
+  .drawer h2 { font-family: var(--serif); font-weight: 400; font-size: 22px; margin: 4px 0 4px; clear: both; }
+  .drawer .source-ref { font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint); margin-bottom: 18px; }
+  .drawer-section { margin-top: 18px; }
+  .drawer-section h3 {
+    font-family: var(--mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--ink-faint); margin: 0 0 8px;
+  }
+  .drawer-section p { font-size: 13.5px; color: var(--ink-dim); margin: 0; line-height: 1.7; }
+  .drawer-section p b { color: var(--ink); }
+  .effect-row { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+  .effect-card { border-radius: 12px; padding: 12px 14px; font-size: 13px; line-height: 1.6; }
+  .effect-card.good { background: var(--good-soft); border: 1px solid rgba(79,174,134,0.4); color: #cdeadd; }
+  .effect-card.warn { background: var(--warn-soft); border: 1px solid rgba(217,138,66,0.4); color: #f1d9bd; }
+  .effect-card .eff-label { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; opacity: .85; }
+  .journey-note { font-size: 13px; color: var(--ink-dim); line-height: 1.7; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+  .glossary-list { display: flex; flex-direction: column; gap: 8px; }
+  .glossary-item { font-size: 13px; line-height: 1.6; color: var(--ink-dim); }
+  .glossary-item b { color: var(--gold-ink); font-weight: 600; }
+  .resource-list { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 7px; }
+  .resource-list li { font-size: 13px; line-height: 1.5; }
+  .resource-list a { color: var(--gold-ink); text-decoration: underline; text-underline-offset: 2px; }
+  .resource-list a:hover { color: var(--gold); }
+  .idea-list { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 10px; }
+  .idea-list li { font-size: 13.5px; line-height: 1.65; color: var(--ink-dim); }
+  .why-toggle { background: none; border: none; color: var(--ink-faint); font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.04em; cursor: pointer; padding: 0; margin-top: 8px; text-decoration: underline; }
+  .why-toggle:hover { color: var(--gold-ink); }
+  .why-formal { display: none; margin-top: 8px; font-size: 12.5px; color: var(--ink-faint); line-height: 1.6; border-left: 2px solid var(--line); padding-left: 10px; }
+  .why-formal.open { display: block; }
+  .action-box {
+    margin-top: 8px; background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 12px 14px; font-size: 13px; color: var(--ink);
+  }
+  .locked-note {
+    margin-top: 18px; background: var(--card); border: 1px dashed var(--line-soft); border-radius: 10px;
+    padding: 12px 14px; font-size: 12.5px; color: var(--ink-faint);
+  }
+  .mark-btn {
+    margin-top: 22px; width: 100%; padding: 12px 16px; border-radius: 10px; border: 1px solid var(--gold);
+    background: var(--gold-soft); color: var(--gold-ink); font-family: var(--sans); font-weight: 600;
+    font-size: 13.5px; cursor: pointer; transition: background .15s ease;
+  }
+  .mark-btn:hover { background: rgba(231,184,74,0.24); }
+  .mark-btn.is-done { border-color: var(--good); background: var(--good-soft); color: #cdeadd; }
+  .mark-warn {
+    margin-top: 10px; font-size: 11.5px; color: var(--ink-faint); background: var(--bg); border: 1px dashed var(--line-soft);
+    border-radius: 8px; padding: 10px 12px;
+  }
+  .mark-warn code { color: var(--gold-ink); }
+
+  footer { text-align: center; margin-top: 64px; font-size: 11px; color: var(--ink-faint); }
+  footer a.back { color: var(--ink-dim); }
+
+  @media (max-width: 640px) {
+    .node-row { flex-wrap: nowrap; overflow-x: auto; scroll-snap-type: x proximity; padding-bottom: 6px; }
+    .node-card { scroll-snap-align: start; flex: 0 0 78vw; max-width: 78vw; }
+    .connector { margin-left: 15px; }
+    .drawer { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<a class="back-link" href="../../index.html">‹ 리포트 허브로</a>
+
+<div class="wrap">
+  <header class="hero">
+    <span class="eyebrow">GROWTH TREE · SKILL PATH</span>
+    <h1>포트폴리오 홍보/채용 유입 성장 트리</h1>
+    <p class="lede">
+      차차차가 매주 점검한 마케팅 진단 보고서를, 게임 스킬트리처럼 <b>하나씩 깨나가는
+      체크리스트</b>로 바꿨습니다. 먼저 할 일부터 순서대로 열립니다 — 순서를 건너뛰면
+      다음 칸이 잠겨 있어요.
+    </p>
+    <div class="guide-badge">
+      <span class="avatar">차</span>
+      <span>차차차(홍보·수익 팀장 페르소나)가 원문을 쉬운 말로 풀어드립니다 — 각 칸의 원문 근거 위치(§)는 상세 패널에, 보고서 전체는 아래 링크에서 확인할 수 있어요.</span>
+    </div>
+  </header>
+
+  <div class="progress-block">
+    <div class="progress-num" id="progressNum">0%</div>
+    <div class="progress-sub" id="progressSub">완료한 칸의 무게 합 ÷ 100 — 화면에서 유일한 숫자형 진행도입니다.</div>
+    <div class="progress-bar-track"><div class="progress-bar-fill" id="progressFill"></div></div>
+  </div>
+
+  <div class="source-note" id="sourceNote">불러오는 중…</div>
+
+  <div class="tiers" id="tiers"></div>
+
+  <footer>
+    <a class="back" href="../../index.html">← 리포트 허브로 돌아가기</a><br>
+    이 페이지는 <code style="font-family:var(--mono)">growth_tree.json</code> 재사용 시스템의 한 예시입니다.
+    누구나 자기 AI 보고서로 같은 형태를 만들 수 있어요 — 허브에서 "성장 트리" 리포트 종류를 확인하세요.
+  </footer>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true"></aside>
+
+<script>
+// growth/portfolio-job-hunt/index.html — 이 폴더의 growth_tree.json을 상대경로로 읽는다.
+// 새 slug를 만들 때는 이 파일을 growth/<slug>/index.html로 복사하면, fetch 경로가
+// 그대로 자기 폴더를 가리켜서 별도 설정 없이 재사용된다(docs/growth_tree_schema.md 참고).
+const DATA_URL = './growth_tree.json';
+
+let TREE = null;
+// 로컬 미리보기 전용 — 새로고침하면 원래대로 (실제 저장은 git 커밋으로만 반영됨,
+// apps/gallery/index.html의 configwarn 패턴과 동일한 원칙).
+let PREVIEW_DONE = new Set();
+
+function isDone(node) {
+  return node.status === 'done' || PREVIEW_DONE.has(node.id);
+}
+function isUnlocked(node) {
+  if (!node.requires || node.requires.length === 0) return true;
+  return node.requires.every(reqId => {
+    const req = TREE.nodes.find(n => n.id === reqId);
+    return req && isDone(req);
+  });
+}
+function requiredTitles(node) {
+  return node.requires.map(reqId => {
+    const req = TREE.nodes.find(n => n.id === reqId);
+    return req ? req.title : reqId;
+  });
+}
+
+function renderProgress() {
+  const total = TREE.nodes.reduce((s, n) => s + n.weight, 0); // 항상 100이어야 함(스키마 규칙)
+  const done = TREE.nodes.filter(isDone).reduce((s, n) => s + n.weight, 0);
+  const pct = Math.round((done / total) * 100);
+  document.getElementById('progressNum').textContent = pct + '%';
+  document.getElementById('progressFill').style.width = pct + '%';
+  const doneCount = TREE.nodes.filter(isDone).length;
+  document.getElementById('progressSub').textContent =
+    `완료 ${doneCount} / ${TREE.nodes.length}칸 · weight 합 ${done}/100 완료`;
+}
+
+function nodeCardHtml(node) {
+  const unlocked = isUnlocked(node);
+  const done = isDone(node);
+  const cls = ['node-card'];
+  if (!unlocked) cls.push('locked');
+  if (done) cls.push('done');
+  let statusHtml;
+  if (done) statusHtml = `<span class="node-status done">✓ 완료</span>`;
+  else if (!unlocked) statusHtml = `<span class="node-status locked"><span class="lock-icon">🔒</span> 잠김</span>`;
+  else statusHtml = `<span class="node-status todo">○ 시작 가능</span>`;
+  return `
+    <button type="button" class="${cls.join(' ')}" data-id="${node.id}">
+      <div class="node-top">
+        <span class="node-cat">${node.category}</span>
+        <span class="node-weight">+${node.weight}</span>
+      </div>
+      <p class="node-title">${node.title}</p>
+      ${statusHtml}
+    </button>`;
+}
+
+function renderTiers() {
+  const tiersEl = document.getElementById('tiers');
+  const tierNums = [...new Set(TREE.nodes.map(n => n.tier))].sort((a, b) => a - b);
+  const TIER_HINT = {
+    1: '지금 바로 시작 — 선행 조건 없음, 측정/채널 기반',
+    2: '1단계를 마치면 열림 — dev-portfolio 콘텐츠·전환 보강',
+    3: '2단계 이후 — 기존 채널로 확산',
+    4: '측정+확산이 끝난 뒤, 실데이터로 재확인',
+  };
+  tiersEl.innerHTML = '';
+  tierNums.forEach((tierNum, i) => {
+    const nodes = TREE.nodes.filter(n => n.tier === tierNum);
+    const block = document.createElement('div');
+    block.className = 'tier-block';
+    block.innerHTML = `
+      <div class="tier-head">
+        <span class="tier-pip">${tierNum}</span>
+        <h2 class="tier-title">${tierNum}단계</h2>
+        <span class="tier-hint">${TIER_HINT[tierNum] || ''}</span>
+      </div>
+      <div class="node-row">${nodes.map(nodeCardHtml).join('')}</div>
+    `;
+    tiersEl.appendChild(block);
+    if (i < tierNums.length - 1) {
+      const conn = document.createElement('div');
+      conn.className = 'connector';
+      tiersEl.appendChild(conn);
+    }
+  });
+
+  tiersEl.querySelectorAll('.node-card').forEach(el => {
+    el.addEventListener('click', () => openDrawer(el.dataset.id));
+  });
+
+  // opacity+transform 등장 애니메이션만 사용 — scroll 이벤트로 직접 width/height를
+  // 갱신하지 않는다(articles/rediscovering-rest-time.html의 2026-08-11
+  // 스크롤 잭 버그 수정 사례를 따름). IntersectionObserver로 클래스만 토글.
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: 0.15 });
+    tiersEl.querySelectorAll('.node-card').forEach(el => io.observe(el));
+  } else {
+    tiersEl.querySelectorAll('.node-card').forEach(el => el.classList.add('in'));
+  }
+}
+
+function openDrawer(nodeId) {
+  const node = TREE.nodes.find(n => n.id === nodeId);
+  if (!node) return;
+  const unlocked = isUnlocked(node);
+  const drawer = document.getElementById('drawer');
+  const scrim = document.getElementById('scrim');
+
+  if (!unlocked) {
+    const need = requiredTitles(node).join(', ');
+    drawer.innerHTML = `
+      <button class="drawer-close" id="drawerClose">✕</button>
+      <span class="node-cat">${node.category}</span>
+      <h2>${node.title}</h2>
+      <div class="locked-note">
+        🔒 아직 잠겨 있어요. 먼저 <b>${need}</b> 칸을 완료로 표시하면 열립니다.
+      </div>`;
+  } else {
+    const done = isDone(node);
+    const simple = node.whySimple || node.why;
+    const glossaryEntries = Object.entries(node.glossary || {});
+    const glossaryHtml = glossaryEntries.length
+      ? `<div class="drawer-section"><h3>용어 설명</h3><div class="glossary-list">${
+          glossaryEntries.map(([term, def]) => `<div class="glossary-item"><b>${term}</b> — ${def}</div>`).join('')
+        }</div></div>`
+      : '';
+    const resources = node.resources || [];
+    const resourcesHtml = resources.length
+      ? `<div class="drawer-section"><h3>어디서 찾나요?</h3><ul class="resource-list">${
+          resources.map(r => `<li><a href="${r.url}" target="_blank" rel="noopener">${r.label} ↗</a></li>`).join('')
+        }</ul></div>`
+      : '';
+    const personalIdeas = node.personalIdeas || [];
+    const personalIdeasHtml = personalIdeas.length
+      ? `<div class="drawer-section"><h3>${TREE.person}님 맞춤 아이디어</h3><ul class="idea-list">${
+          personalIdeas.map(i => `<li>${i}</li>`).join('')
+        }</ul></div>`
+      : '';
+    drawer.innerHTML = `
+      <button class="drawer-close" id="drawerClose">✕</button>
+      <span class="node-cat">${node.category}</span>
+      <h2>${node.title}</h2>
+      <div class="source-ref">원문 근거: ${node.sourceSection}</div>
+
+      <div class="drawer-section">
+        <h3>왜 필요한가요?</h3>
+        <p>${simple}</p>
+        <button class="why-toggle" id="whyToggle">원문 근거 문장 보기</button>
+        <div class="why-formal" id="whyFormal">${node.why}</div>
+      </div>
+
+      <div class="drawer-section">
+        <h3>이 트리에서 어디쯤인가요?</h3>
+        <div class="journey-note">${node.journeyContext || ''}</div>
+      </div>
+
+      <div class="drawer-section">
+        <h3>뭘 하면 되나요?</h3>
+        <div class="action-box">${node.action}</div>
+      </div>
+
+      <div class="drawer-section">
+        <h3>하면 / 안 하면</h3>
+        <div class="effect-row">
+          <div class="effect-card good">
+            <div class="eff-label">✓ 하면</div>
+            ${node.successEffect}
+          </div>
+          <div class="effect-card warn">
+            <div class="eff-label">△ 안 하면</div>
+            ${node.failureCost}
+          </div>
+        </div>
+      </div>
+
+      ${resourcesHtml}
+      ${personalIdeasHtml}
+      ${glossaryHtml}
+
+      <button class="mark-btn ${done ? 'is-done' : ''}" id="markBtn">
+        ${done ? '✓ 완료로 표시됨 (미리보기)' : '완료로 표시'}
+      </button>
+      <div class="mark-warn">
+        이 버튼은 <b>미리보기 전용</b>이라 새로고침하면 원래대로 돌아갑니다 — 정적 사이트라
+        JS가 파일에 직접 쓸 수 없기 때문입니다. 실제로 저장하려면 Claude Code 세션에
+        "growth/portfolio-job-hunt에서 <code>${node.id}</code> 완료 표시해줘"라고 말하거나,
+        <code>scripts/mark_growth_node.sh portfolio-job-hunt ${node.id} done</code>을 실행하세요.
+      </div>`;
+    document.getElementById('markBtn').addEventListener('click', () => {
+      if (PREVIEW_DONE.has(node.id)) PREVIEW_DONE.delete(node.id);
+      else PREVIEW_DONE.add(node.id);
+      renderProgress();
+      renderTiers();
+      openDrawer(node.id);
+    });
+    document.getElementById('whyToggle').addEventListener('click', () => {
+      document.getElementById('whyFormal').classList.toggle('open');
+    });
+  }
+
+  document.getElementById('drawerClose').addEventListener('click', closeDrawer);
+  drawer.classList.add('open');
+  scrim.classList.add('open');
+  drawer.setAttribute('aria-hidden', 'false');
+}
+function closeDrawer() {
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('scrim').classList.remove('open');
+  document.getElementById('drawer').setAttribute('aria-hidden', 'true');
+}
+document.getElementById('scrim').addEventListener('click', closeDrawer);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+
+fetch(DATA_URL).then(r => {
+  if (!r.ok) throw new Error('growth_tree.json fetch 실패: ' + r.status);
+  return r.json();
+}).then(data => {
+  TREE = data;
+  const total = TREE.nodes.reduce((s, n) => s + n.weight, 0);
+  document.getElementById('sourceNote').innerHTML =
+    `원본: <b>${TREE.sourceReport.title}</b> (${TREE.sourceReport.date}) ·
+     <a href="./${TREE.sourceReport.file}">보고서 원문 보기</a> ·
+     총 ${TREE.nodes.length}칸, weight 합 ${total}` +
+    (total !== 100 ? ` <span style="color:var(--warn)">(⚠ 100이 아닙니다 — 데이터 확인 필요)</span>` : '');
+  renderProgress();
+  renderTiers();
+}).catch(err => {
+  document.getElementById('sourceNote').textContent = '불러오기 실패: ' + err.message;
+  document.getElementById('tiers').innerHTML =
+    `<p style="text-align:center;color:var(--ink-faint)">growth_tree.json을 불러오지 못했습니다.</p>`;
+});
+</script>
+</body>
+</html>
