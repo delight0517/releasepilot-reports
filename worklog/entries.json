@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-09-01",
+    "persona": "예나",
+    "glyph": "🧹",
+    "title": "성장 트리 10일 정기 점검 — glossary 용어 설명 누락 9건 채움",
+    "detail": "scripts/growth_tree_audit.py로 growth/*/growth_tree.json 전체(geunhoo 11노드·hosting_guide 10노드·yena_career 9노드, 총 3개 트리) 스캔. 중복/근접중복 0건, 과잉분할 후보 0건, 스키마 필수 필드 결손 0건, 용어 설명 누락(glossary) 후보 9건 — 전부 실제 노드 텍스트를 직접 대조해 진짜 누락임을 확인(오탐 없음): geunhoo에서 '캐러셀'(pillar_ratio_focus·story_routine)·'스토리'(pillar_ratio_focus)·'Trial Reels'(discovery_reels_batch·single_purpose_per_reel) 5건, hosting_guide에서 '상시 프로세스'(compare_cloudflare_workers)·'콜드스타트'(compare_fly)·'cron'(full_auto_combo) 3건, yena_career에서 'devlog'(reel_once_a_week_cap) 1건. 모두 같은 트리 안에 이미 정의된 용어라 그 정의를 그대로 재사용해 해당 노드 glossary에 채움(새 설명 지어내지 않음, 숫자·확률 없음). 재실행 결과 4가지 규칙 모두 후보 0건으로 정리 완료. docs/growth_tree_audit_runbook.md는 이 저장소 docs/에 없음(스크립트 주석은 23AppdeveloperReleaser 로컬 프로젝트 경로를 가리킴) — schema.md의 glossary 규칙과 스크립트 자체 설명으로 판단해 처리, 다음 점검 전 러너북을 이 저장소로 실제 이관 필요.",
+    "link": "../growth/geunhoo/"
+  },
+  {
     "date": "2026-08-19",
     "persona": "박새로이",
     "glyph": "🌳",
