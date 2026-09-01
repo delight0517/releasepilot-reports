@@ -36,5 +36,15 @@
     "readMinutes": 4,
     "tags": ["game-art", "3d", "creative-notes"],
     "thumbnail": "../game-artist/assets/artstation/haetae_dragon.jpg"
+  },
+  {
+    "id": "free-ai-automation-field-report",
+    "file": "free-ai-automation-field-report.html",
+    "channel": "인프라 · 필드 리포트",
+    "title": "돈 없이 AI 에이전트를 굴려봤다",
+    "snippet": "유료 API 없이 무료 모델만으로 자동화를 3개월 운용한 현장 기록. 무료 티어의 실제 한도, 성공처럼 보이는 조용한 실패, 그리고 자원이 없는 사람에게 이게 왜 중요한가.",
+    "publishedAt": "2026-09-02T00:00:00.000Z",
+    "readMinutes": 6,
+    "tags": ["infra", "ai", "automation", "free-tier"]
   }
 ]
