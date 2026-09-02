@@ -1,5 +1,14 @@
 [
   {
+    "id": "secom-cardnews",
+    "file": "secom-cardnews.html",
+    "channel": "Creator & AI",
+    "title": "세콤 X 김근후: 인플루언서의 비밀과 최신 AI 뉴스",
+    "snippet": "클로이 박이 전하는 아주 쉬운 비유! 김근후 인터뷰와 이번 주 가장 핫한 AI 트렌드를 카드뉴스 형태로 만나보세요.",
+    "publishedAt": "2026-09-02T10:00:00.000Z",
+    "readMinutes": 3
+  },
+  {
     "id": "downturn-market-launch-playbook",
     "file": "downturn-market-launch-playbook.html",
     "channel": "출시 전략",
@@ -34,7 +43,11 @@
     "snippet": "게임은, 웹툰은 나를 무엇으로 물들여왔는가. 오래된 동네에서 마주친 그 색들을 내려놓기로 한 어느 하루의 기록.",
     "publishedAt": "2026-08-12T00:00:00.000Z",
     "readMinutes": 4,
-    "tags": ["game-art", "3d", "creative-notes"],
+    "tags": [
+      "game-art",
+      "3d",
+      "creative-notes"
+    ],
     "thumbnail": "../game-artist/assets/artstation/haetae_dragon.jpg"
   },
   {
@@ -45,6 +58,11 @@
     "snippet": "유료 API 없이 무료 모델만으로 자동화를 3개월 운용한 현장 기록. 무료 티어의 실제 한도, 성공처럼 보이는 조용한 실패, 그리고 자원이 없는 사람에게 이게 왜 중요한가.",
     "publishedAt": "2026-09-02T00:00:00.000Z",
     "readMinutes": 6,
-    "tags": ["infra", "ai", "automation", "free-tier"]
+    "tags": [
+      "infra",
+      "ai",
+      "automation",
+      "free-tier"
+    ]
   }
 ]
