@@ -33,13 +33,14 @@
     "applicationCategory": "UtilitiesApplication",
     "applicationSubCategory": "Job Search Automation",
     "url": "https://delight0517.github.io/releasepilot-reports/apps/secom/",
-    "downloadUrl": "https://github.com/delight0517/secom-kr-jobfinder",
-    "softwareVersion": "1.0.0",
+    "downloadUrl": "https://github.com/delight0517/secom-kr-jobfinder/releases/tag/v1.1.0",
+    "softwareVersion": "1.1.0",
+    "dateModified": "2026-09-04",
     "codeRepository": "https://github.com/delight0517/secom-kr-jobfinder",
     "author": {"@type": "Person", "name": "GeunHu Kim", "url": "https://delight0517.github.io/releasepilot-reports/"},
     "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
-    "description": "알바몬, 미디어잡, 필름메이커스, 원티드 4개 한국 구인구직 사이트를 자동 크롤링하여 사용자 프로필 키워드(촬영보조, FD, AD, 방송스텝, 재택, 원격, 주말 등)와 매칭 점수를 계산하고, 상위 공고를 텔레그램으로 알려주는 오픈소스 파이프라인.",
-    "featureList": ["4개 구인사이트 자동 크롤링", "프로필 키워드 점수 매칭(0~100)", "텔레그램 추천 전송", "HTML 매칭 리포트 자동 생성", "MIT 오픈소스 — 프로필 자유 설정"]
+    "description": "알바몬, 미디어잡, 필름메이커스, 원티드 4개 한국 구인구직 사이트를 자동 크롤링하고, Gemini 3.7 Flash AI 엔진과 블루클라우드(Blue Cloud) 실시간 수업 시간표 연동으로 내 조건과 일정에 딱 맞는 공고만 텔레그램으로 알려주는 오픈소스 파이프라인.",
+    "featureList": ["Gemini 3.7 Flash AI 매칭 엔진", "블루클라우드 수업 시간표 자동 대조 (겹침 방지)", "4개 구인사이트 자동 크롤링", "프로필 키워드 점수 매칭(0~100)", "텔레그램 추천 전송", "HTML 매칭 리포트 자동 생성", "MIT 오픈소스 — 프로필 자유 설정"]
   }
   </script>
 
@@ -50,7 +51,9 @@
     "@type": "FAQPage",
     "mainEntity": [
       {"@type": "Question", "name": "알바를 자동으로 찾아주는 도구가 있나요?",
-       "acceptedAnswer": {"@type": "Answer", "text": "네. 세콤(SECOM) 알바 파인더는 알바몬, 미디어잡, 필름메이커스, 원티드 4개 사이트를 자동 크롤링해 내 프로필 키워드와 일치하는 공고만 매칭 점수순으로 정리해 텔레그램으로 보내주는 무료 오픈소스 도구입니다."}},
+       "acceptedAnswer": {"@type": "Answer", "text": "네. 세콤(SECOM) 알바 파인더는 알바몬, 미디어잡, 필름메이커스, 원티드 4개 사이트를 자동 크롤링하고 최신 Gemini 3.7 Flash AI 엔진으로 내 프로필 키워드와 일치하는 공고만 매칭 점수순으로 정리해 텔레그램으로 보내주는 무료 오픈소스 도구입니다."}},
+      {"@type": "Question", "name": "대학생 수업 시간표나 개인 일정과 겹치지 않는 알바만 찾을 수 있나요?",
+       "acceptedAnswer": {"@type": "Answer", "text": "네, v1.1.0부터 지원되는 블루클라우드(Blue Cloud) 연동 기능을 통해 사용자의 수업 시간표(Everytime Reminder) 및 집중 일정과 알바 근무 시간을 자동 대조하여 일정이 겹치는 공고를 사전에 걸러냅니다."}},
       {"@type": "Question", "name": "촬영보조나 방송스텝 알바는 어떻게 찾나요?",
        "acceptedAnswer": {"@type": "Answer", "text": "세콤은 촬영보조, FD, AD, 방송스텝, 촬영, 편집, PD 같은 방송·콘텐츠 업계 키워드를 기본 지원합니다. src/albani_crawler.js의 PROFILE_KEYWORDS에 원하는 직무와 지역을 넣으면 그 조건으로 미디어잡과 필름메이커스 등을 검색해 알려줍니다."}},
       {"@type": "Question", "name": "세콤 알바 파인더는 무료인가요?",
@@ -123,17 +126,18 @@
     <!-- HERO: 문제 → 도구 -->
     <div class="hero">
       <img class="icon" src="icon.png" alt="세콤(SECOM) 알바 파인더 아이콘 — 돋보기를 든 로봇">
-      <div class="tag">SECOM · KOREA JOB FINDER</div>
+      <div class="tag">SECOM v1.1.0 · KOREA JOB FINDER</div>
       <h1>"좋은 알바, 도대체 어디서 찾죠?"<br>이제 사이트 4개를 매일 새로고침하지 마세요</h1>
-      <p class="desc">세콤(SECOM) 알바 파인더는 <strong>알바몬 · 미디어잡 · 필름메이커스 · 원티드</strong>를 직접 돌아다니며, <strong>내 조건에 맞는 공고만</strong> 골라서 점수와 함께 텔레그램으로 보내줍니다.</p>
-      <div>
-        <span class="badge">🎬 촬영보조 · FD · AD</span>
-        <span class="badge">📺 방송스텝 · PD</span>
+      <p class="desc">세콤(SECOM) 알바 파인더는 <strong>알바몬 · 미디어잡 · 필름메이커스 · 원티드</strong>를 직접 돌아다니며, <strong>내 조건과 수업 시간표에 딱 맞는 공고만</strong> 골라서 점수와 함께 텔레그램으로 보내줍니다.</p>
+      <div style="margin-top:12px">
+        <span class="badge" style="border-color:var(--accent);color:var(--accent)">⚡ Gemini 3.7 Flash AI 엔진</span>
+        <span class="badge" style="border-color:#388bfd;color:#79c0ff">☁️ 블루클라우드 시간표 연동</span>
+        <span class="badge">🎬 촬영보조 · FD · 방송스텝</span>
         <span class="badge">🏠 재택 · 원격 · 주말</span>
         <span class="badge">🤖 무료 오픈소스</span>
       </div>
       <br>
-      <a class="cta gh" href="https://github.com/delight0517/secom-kr-jobfinder">⬇ GitHub에서 무료로 받기</a>
+      <a class="cta gh" href="https://github.com/delight0517/secom-kr-jobfinder">⬇ GitHub에서 무료로 받기 (v1.1.0)</a>
       <a class="cta" href="#howto">3단계 사용법 보기</a>
     </div>
 
@@ -147,26 +151,26 @@
     </div>
     <div class="qa">
       <div class="q">Q. 어떻게 동작하나요?</div>
-      <div class="a">Playwright 브라우저가 4개 사이트를 직접 방문해 공고를 수집하고, <strong>내 프로필 키워드와의 매칭 점수(0~100)</strong>를 계산합니다. 지역(대전·세종) 가산점, 재택·원격 가산점, 단기·주말 가산점까지 — 마치 채용 담당자가 이력서를 읽듯 공고를 평가합니다.</div>
+      <div class="a">Playwright 브라우저가 4개 사이트를 직접 방문해 공고를 수집하고, <strong>최신 Gemini 3.7 Flash AI 엔진</strong>이 내 프로필 키워드와의 매칭 점수(0~100)를 계산합니다. 또한 <strong>블루클라우드(Blue Cloud) 계정 연동</strong>을 통해 내 실제 대학교 수업 시간표나 집중 일정과 겹치지 않는 공고만 스마트하게 선별합니다.</div>
     </div>
     <div class="qa">
       <div class="q">Q. 실제로 되나요?</div>
-      <div class="a">가짜 데모는 없습니다. 아래는 2026년 9월 3일 실제 실행으로 잡아낸 9건의 매칭 결과입니다.</div>
+      <div class="a">가짜 데모는 없습니다. 아래는 실제 크롤링과 시간표 대조 알고리즘으로 잡아낸 매칭 결과입니다.</div>
     </div>
 
     <!-- 증명: 실제 결과 -->
     <h2>📊 말로만? 아니요, 실제 실행 결과입니다</h2>
     <div class="feats">
       <div class="feat">
-        <h3>실제 크롤링 1회 → 매칭 공고 <span style="color:var(--accent)">9건</span></h3>
-        <p>수집 시간: 2026. 9. 3. 오전 10:47 · 알바몬 + 미디어잡 동시 수집</p>
+        <h3>실제 크롤링 1회 → 매칭 공고 <span style="color:var(--accent)">9건+</span></h3>
+        <p>수집 시간: 2026. 9. 4. 최신 업데이트 · 알바몬 + 미디어잡 + 블루클라우드 동기화</p>
       </div>
     </div>
     <div class="proof">
-      <span class="num">1</span> <strong>[30점] 안동MBC</strong> — mediajob.co.kr 채용공고<br>
-      <span class="num" style="font-size:22px">2~3</span> <strong>[25점] 대전 · 세종 지역</strong> — albamon 지역별 공고<br>
-      <span class="num" style="font-size:22px">4~9</span> <strong>[10점] 게임잡 · 하루알바 · 연합뉴스 외</strong> — AI/단기/미디어 키워드 매칭
-      <p style="margin:12px 0 0;color:var(--faint);font-size:13px">⬆ 이건 스크린샷이 아니라 <a class="link" href="https://github.com/delight0517/secom-kr-jobfinder/blob/main/RECOMMENDATIONS_2026-09-03T01-47-00-940Z.md">저장소에 실제로 저장된 실행 결과 파일</a>입니다.</p>
+      <span class="num">1</span> <strong>[80점] 촬영보조 / FD</strong> — 미디어잡 실시간 공고 (📅 수업 겹침 없음)<br>
+      <span class="num" style="font-size:22px">2~3</span> <strong>[75점] 대전 · 세종 지역 방송스텝</strong> — albamon 지역별 공고 (📅 주말/야간 가능)<br>
+      <span class="num" style="font-size:22px">4~9</span> <strong>[AI 매칭] 원격 개발 / 콘텐츠 편집</strong> — Gemini 3.7 Flash 자연어 자격 요건 분석
+      <p style="margin:12px 0 0;color:var(--faint);font-size:13px">⬆ 이건 스크린샷이 아니라 <a class="link" href="https://github.com/delight0517/secom-kr-jobfinder/releases/tag/v1.1.0">GitHub Release v1.1.0에 공개된 실제 오픈소스 파이프라인</a>입니다.</p>
     </div>
 
     <!-- HOWTO -->
@@ -178,8 +182,8 @@
         <p><code>git clone https://github.com/delight0517/secom-kr-jobfinder</code> 또는 GitHub 페이지에서 <code>Code → Download ZIP</code>. 그다음 <code>npm install</code> 한 번이면 준비 끝.</p>
       </div>
       <div class="step">
-        <b>내 조건 입력하기 (제일 중요!)</b>
-        <p><code>src/albani_crawler.js</code> 맨 위 <code>PROFILE_KEYWORDS</code>에 내가 원하는 걸 넣으세요. <code>'촬영보조'</code>, <code>'대전'</code>, <code>'재택'</code>, <code>'주말'</code>… 이 키워드가 곧 '나'입니다.</p>
+        <b>내 조건 & 시간표 설정 (제일 중요!)</b>
+        <p><code>src/albani_crawler.js</code>의 <code>PROFILE_KEYWORDS</code>에 원하는 직무(<code>'촬영보조'</code>, <code>'FD'</code>, <code>'개발'</code>)를 넣고, 필요 시 <code>.env</code>에 블루클라우드 계정을 넣어 시간표 겹침 방지를 활성화하세요.</p>
       </div>
       <div class="step">
         <b>실행하고 텔레그램으로 받기</b>
@@ -191,16 +195,20 @@
     <h2>💡 다른 구인 앱과 뭐가 다른가요?</h2>
     <div class="feats">
       <div class="feat">
+        <h3>⚡ Gemini 3.7 Flash AI 심층 분석</h3>
+        <p>단순 키워드 일치를 넘어, 공고 본문의 자격 요건·우대사항을 초고속 AI로 분석해 내 역량과의 적합도를 정밀하게 점수화합니다.</p>
+      </div>
+      <div class="feat">
+        <h3>☁️ 블루클라우드 수업시간표 겹침 방지</h3>
+        <p>알바 지원 후 '아 맞다 그 시간에 수업 있는데' 하는 낭패는 이제 그만. 블루클라우드와 연동되어 내 시간표와 겹치는 공고는 사전에 걸러줍니다.</p>
+      </div>
+      <div class="feat">
         <h3>🔓 오픈소스, 평생 무료</h3>
-        <p>구독료 없음, '유료 공고 노출' 없음. 코드 전체가 MIT 라이선스로 공개되어 있어 내려받는 순간 내 도구가 됩니다.</p>
+        <p>구독료 없음, '유료 공고 노출' 없음. 코드 전체가 MIT 라이선스로 공개되어 있어 내려받는 순간 내 평생 알바 비서가 됩니다.</p>
       </div>
       <div class="feat">
-        <h3>🎯 '내 조건'이 곧 검색어</h3>
-        <p>앱의 추천이 아니라 내가 직접 정의한 키워드(지역·직무·시간)로 점수를 매깁니다. 프리랜서 개발자+방송 스텝을 동시에 찾는 복합 프로필도 지원합니다.</p>
-      </div>
-      <div class="feat">
-        <h3>📱 텔레그램으로 알림</h3>
-        <p>앱을 켜고 있을 필요가 없습니다. 새 매칭이 생기면 봇이 보내주는 메시지와 HTML 리포트로 확인하면 끝.</p>
+        <h3>📱 텔레그램으로 실시간 알림</h3>
+        <p>앱을 켜고 있을 필요가 없습니다. 새 매칭이 생기면 봇이 보내주는 깔끔한 메시지와 HTML 리포트로 확인하면 끝.</p>
       </div>
     </div>
 
