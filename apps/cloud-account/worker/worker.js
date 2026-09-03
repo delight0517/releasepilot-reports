@@ -81,15 +81,134 @@ async function handleAuth(env, req) {
   return json({ apps: account.apps, isNew });
 }
 
-// POST /api/save {username, pin, appId, payload} -> overwrites this app's
+// ---------------------------------------------------------------------------
+// Field-wise timestamped merge (opt-in via `merge: "timer1-fieldwise"`).
+//
+// Why: two devices (Mac + Windows) both do read-modify-write against this
+// slot every 10 s.  KV is eventually consistent, and a plain last-write-wins
+// overwrite lets a device that read a stale copy re-assert an old state and
+// clobber the peer's newer change purely because its POST arrived later.
+//
+// The fix: treat the payload as a bundle of independently-owned pieces, each
+// carrying its own timestamp, and keep the newest version of EACH piece by
+// that piece's own timestamp — not by which POST landed last.  A stale
+// re-push then simply loses every field where the stored copy is newer.
+// See timer1/SYNC_V2_BLUECLOUD.md.
+// ---------------------------------------------------------------------------
+const num = (v) => (typeof v === "number" && isFinite(v) ? v : 0);
+
+// Keep whichever of a/b has the larger value at tsPath; ties and missing
+// data keep `b` (the incoming push). Returns the winner.
+function newerByPath(a, b, tsPath) {
+  const read = (o) => tsPath.reduce((x, k) => (x && typeof x === "object" ? x[k] : undefined), o);
+  if (!a) return b;
+  if (!b) return a;
+  return num(read(a)) > num(read(b)) ? a : b;
+}
+
+function mergeTimer1(stored, incoming) {
+  if (!stored || typeof stored !== "object") return incoming;
+  if (!incoming || typeof incoming !== "object") return stored;
+
+  // Start from the incoming push, then pull back any stored field that is newer.
+  const out = JSON.parse(JSON.stringify(incoming));
+
+  out.todayFocusSec = Math.max(num(stored.todayFocusSec), num(incoming.todayFocusSec));
+  out.allTimeFocusSec = Math.max(num(stored.allTimeFocusSec), num(incoming.allTimeFocusSec));
+
+  const sm = stored.macSnapshot, im = incoming.macSnapshot;
+  if (sm && typeof sm === "object" && im && typeof im === "object") {
+    const om = out.macSnapshot;
+
+    // --- timer block: newest timer.updatedAt wins; identical logical state
+    //     keeps the stored copy (and its older timestamp) so a re-push of the
+    //     same state never bumps the clock or flips authorship.
+    const st = sm.timer || {}, it = im.timer || {};
+    const sameLogicalTimer =
+      st.mode === it.mode && !!st.running === !!it.running &&
+      (st.startsAt ?? null) === (it.startsAt ?? null) &&
+      (st.endsAt ?? null) === (it.endsAt ?? null);
+    if (sameLogicalTimer) {
+      om.timer = { ...st };
+      om.deviceId = sm.deviceId ?? om.deviceId;
+    } else if (num(st.updatedAt) > num(it.updatedAt)) {
+      om.timer = { ...st };
+      om.deviceId = sm.deviceId ?? om.deviceId;
+    }
+    if (om.timer) {
+      om.timer.completedFocusCount = Math.max(
+        num(st.completedFocusCount), num(it.completedFocusCount));
+    }
+
+    // --- settings sub-blocks, each by its own updatedAt ---
+    const ss = sm.settings || {}, is_ = im.settings || {};
+    const os = (om.settings = om.settings || {});
+
+    const slm = ss.lockMode || {}, ilm = is_.lockMode || {};
+    const olm = (os.lockMode = os.lockMode || {});
+    // strict lock on/off
+    if (num(slm.strictLockUpdatedAt) > num(ilm.strictLockUpdatedAt)) {
+      olm.strictLockEnabled = slm.strictLockEnabled;
+      olm.strictLockUpdatedAt = slm.strictLockUpdatedAt;
+    }
+    // lock-only-during-this-window schedule
+    const sSch = slm.schedule || {}, iSch = ilm.schedule || {};
+    if (num(sSch.scheduleUpdatedAt) > num(iSch.scheduleUpdatedAt)) olm.schedule = { ...sSch };
+
+    // no-lock schedule / time overrides — whole block by .updatedAt
+    os.noLockSchedule = newerByPath(ss.noLockSchedule, is_.noLockSchedule, ["updatedAt"]);
+    os.timeOverrides = newerByPath(ss.timeOverrides, is_.timeOverrides, ["updatedAt"]);
+
+    // scalar duration settings + windows-owned tag data — by generatedAt
+    if (num(sm.generatedAt) > num(im.generatedAt)) {
+      for (const k of ["focusMin", "breakMin", "longBreakMin", "sessionsUntilLongBreak",
+                       "baseFocusMin", "baseBreakMin"]) {
+        if (ss[k] !== undefined) os[k] = ss[k];
+      }
+      if (sm.windowsTagData !== undefined) om.windowsTagData = sm.windowsTagData;
+    }
+
+    // rule sets — whole block by .updatedAt
+    om.scheduledBreakRules = newerByPath(sm.scheduledBreakRules, im.scheduledBreakRules, ["updatedAt"]);
+    om.durationOverrideRules = newerByPath(sm.durationOverrideRules, im.durationOverrideRules, ["updatedAt"]);
+  }
+
+  // legacy flat settings block (a peer too old to send macSnapshot) — by payload.updatedAt
+  const winner = newerByPath(
+    { p: stored.settings, t: stored.updatedAt },
+    { p: incoming.settings, t: incoming.updatedAt },
+    ["t"],
+  );
+  if (winner && winner.p !== undefined) out.settings = winner.p;
+
+  return out;
+}
+
+// POST /api/save {username, pin, appId, payload, merge?} -> writes this app's
 // slot only; every other app's data under the same account is untouched.
+// With merge:"timer1-fieldwise" the payload is merged field-by-field into the
+// stored copy (see mergeTimer1); otherwise it overwrites (original behavior).
 async function handleSave(env, req) {
-  const { username, pin, appId, payload } = await req.json().catch(() => ({}));
+  const { username, pin, appId, payload, merge } = await req.json().catch(() => ({}));
   if (!isValidAppId(appId)) return json({ error: "appId 형식이 올바르지 않습니다." }, 400);
   const { account, error } = await requireAuth(env, username, pin);
   if (error) return error;
 
-  account.apps[appId] = { payload: payload ?? null, updatedAt: new Date().toISOString() };
+  const prev = account.apps[appId];
+  let nextPayload = payload ?? null;
+  if (merge === "timer1-fieldwise" && prev && prev.payload) {
+    try {
+      nextPayload = mergeTimer1(prev.payload, payload ?? null);
+    } catch (e) {
+      // never lose a write to a merge bug — fall back to overwrite
+      nextPayload = payload ?? null;
+    }
+  }
+  // slot.updatedAt is monotonic: max(stored, now)
+  const nowIso = new Date().toISOString();
+  const slotUpdatedAt =
+    prev && prev.updatedAt && prev.updatedAt > nowIso ? prev.updatedAt : nowIso;
+  account.apps[appId] = { payload: nextPayload, updatedAt: slotUpdatedAt };
   await putAccount(env, username, account);
   return json({ ok: true });
 }
