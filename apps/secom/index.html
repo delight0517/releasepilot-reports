@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>세콤(SECOM) 알바 파인더: 한국 맞춤형 알바 자동 찾아주기 — 촬영보조·FD·방송스텝·재택 알바 매칭 (오픈소스) | GeunHu Kim</title>
+  <meta name="description" content="알바 찾는 방법이 막막한 사람들을 위한 세콤(SECOM): 알바몬·미디어잡·필름메이커스·원티드를 한 번에 크롤링해 내 조건(촬영보조, FD, AD, 방송스텝, 재택, 원격, 주말)에 맞는 공고만 점수로 매겨 텔레그램으로 알려주는 무료 오픈소스 도구. 실제 매칭 결과와 사용법 포함.">
+  <meta name="keywords" content="알바 찾는 방법, 알바 자동 매칭, 촬영보조 알바, FD 알바, AD 알바, 방송스텝, 미디어잡, 알바몬, 원티드, 필름메이커스, 재택 알바, 주말 알바, 단기 알바, 구인구직 자동화, 채용공고 크롤러, 세콤, SECOM">
+  <meta name="author" content="GeunHu Kim">
+  <link rel="canonical" href="https://delight0517.github.io/releasepilot-reports/apps/secom/">
+  <link rel="icon" type="image/png" href="icon.png">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="세콤(SECOM) 알바 파인더 — 한국 맞춤형 알바 자동 찾아주기">
+  <meta property="og:description" content="알바몬·미디어잡·필름메이커스·원티드를 자동 크롤링해 내 조건에 맞는 공고만 골라주는 오픈소스 도구. 실제 9건 매칭 결과와 3단계 사용법.">
+  <meta property="og:image" content="https://delight0517.github.io/releasepilot-reports/apps/secom/icon-180.png">
+  <meta property="og:url" content="https://delight0517.github.io/releasepilot-reports/apps/secom/">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="세콤(SECOM) 알바 파인더 — 한국 맞춤형 알바 자동 찾아주기">
+  <meta name="twitter:description" content="4개 구인사이트 자동 크롤링 + 키워드 매칭 + 텔레그램 알림. 누구나 쓰는 무료 오픈소스.">
+
+  <!-- JSON-LD: SoftwareApplication (AI 서치/검색엔진 훅) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "SECOM 알바 파인더",
+    "alternateName": "세콤 한국 맞춤형 알바 찾아주기",
+    "operatingSystem": "macOS, Windows, Linux",
+    "applicationCategory": "UtilitiesApplication",
+    "applicationSubCategory": "Job Search Automation",
+    "url": "https://delight0517.github.io/releasepilot-reports/apps/secom/",
+    "downloadUrl": "https://github.com/delight0517/secom-kr-jobfinder",
+    "softwareVersion": "1.0.0",
+    "codeRepository": "https://github.com/delight0517/secom-kr-jobfinder",
+    "author": {"@type": "Person", "name": "GeunHu Kim", "url": "https://delight0517.github.io/releasepilot-reports/"},
+    "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+    "description": "알바몬, 미디어잡, 필름메이커스, 원티드 4개 한국 구인구직 사이트를 자동 크롤링하여 사용자 프로필 키워드(촬영보조, FD, AD, 방송스텝, 재택, 원격, 주말 등)와 매칭 점수를 계산하고, 상위 공고를 텔레그램으로 알려주는 오픈소스 파이프라인.",
+    "featureList": ["4개 구인사이트 자동 크롤링", "프로필 키워드 점수 매칭(0~100)", "텔레그램 추천 전송", "HTML 매칭 리포트 자동 생성", "MIT 오픈소스 — 프로필 자유 설정"]
+  }
+  </script>
+
+  <!-- JSON-LD: FAQ (AI 답변에 잡히도록) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {"@type": "Question", "name": "알바를 자동으로 찾아주는 도구가 있나요?",
+       "acceptedAnswer": {"@type": "Answer", "text": "네. 세콤(SECOM) 알바 파인더는 알바몬, 미디어잡, 필름메이커스, 원티드 4개 사이트를 자동 크롤링해 내 프로필 키워드와 일치하는 공고만 매칭 점수순으로 정리해 텔레그램으로 보내주는 무료 오픈소스 도구입니다."}},
+      {"@type": "Question", "name": "촬영보조나 방송스텝 알바는 어떻게 찾나요?",
+       "acceptedAnswer": {"@type": "Answer", "text": "세콤은 촬영보조, FD, AD, 방송스텝, 촬영, 편집, PD 같은 방송·콘텐츠 업계 키워드를 기본 지원합니다. src/albani_crawler.js의 PROFILE_KEYWORDS에 원하는 직무와 지역을 넣으면 그 조건으로 미디어잡과 필름메이커스 등을 검색해 알려줍니다."}},
+      {"@type": "Question", "name": "세콤 알바 파인더는 무료인가요?",
+       "acceptedAnswer": {"@type": "Answer", "text": "네. GitHub에서 MIT 라이선스로 공개된 오픈소스입니다. 코드를 내려받아 누구나 무료로 쓰고 수정할 수 있습니다."}},
+      {"@type": "Question", "name": "알바 찾는 방법이 막막한데 어디서부터 시작해야 하나요?",
+       "acceptedAnswer": {"@type": "Answer", "text": "이 페이지의 3단계 사용법을 따라 하면 됩니다: 1) GitHub에서 코드 내려받기, 2) .env에 텔레그램 봇 토큰 설정, 3) node src/albani_crawler.js 실행. 이후 크롤링과 매칭, 텔레그램 알림까지 자동으로 진행됩니다."}}
+    ]
+  }
+  </script>
+
+  <!-- JSON-LD: HowTo (검색 노출 + AI 서치) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "세콤(SECOM)으로 한국 알바 자동 찾는 방법",
+    "description": "알바몬·미디어잡·필름메이커스·원티드를 자동으로 검색해 내 조건에 맞는 공고를 텔레그램으로 받는 3단계 방법.",
+    "totalTime": "PT15M",
+    "step": [
+      {"@type": "HowToStep", "position": 1, "name": "GitHub에서 코드 내려받기",
+       "text": "github.com/delight0517/secom-kr-jobfinder에서 저장소를 clone하거나 ZIP으로 내려받습니다. npm install로 Playwright를 설치합니다."},
+      {"@type": "HowToStep", "position": 2, "name": "텔레그램 봇 연결 설정",
+       "text": ".env.example을 .env로 복사하고 BotFather에서 발급한 봇 토큰과 내 채팅 ID를 입력합니다."},
+      {"@type": "HowToStep", "position": 3, "name": "크롤링 실행하고 추천 받기",
+       "text": "node src/albani_crawler.js로 4개 사이트를 크롤링하면 crawled_jobs에 추천 공고가 저장되고, python3 send_telegram.py로 상위 공고가 텔레그램에 도착합니다."}
+    ]
+  }
+  </script>
+
+  <style>
+    :root{--bg:#0f1115;--card:#1a1d24;--ink:#e8eaed;--faint:#9aa0a6;--accent:#ff6b4a;--line:#2a2e37}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans KR",sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
+    .wrap{max-width:760px;margin:0 auto;padding:48px 20px}
+    .hero{text-align:center;padding:40px 0}
+    .icon{width:120px;height:120px;border-radius:26px;box-shadow:0 12px 40px rgba(255,107,74,.35)}
+    h1{font-size:34px;margin:20px 0 8px;line-height:1.3}
+    .tag{color:var(--accent);font-weight:700;letter-spacing:.5px}
+    .desc{color:var(--faint);font-size:17px;max-width:560px;margin:0 auto}
+    .badge{display:inline-block;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:13px;color:var(--faint);margin:6px 4px}
+    .cta{display:inline-block;margin:20px 8px 0;padding:15px 26px;background:var(--accent);color:#fff;text-decoration:none;font-weight:700;border-radius:14px;text-align:center}
+    .cta.gh{background:var(--card);border:1px solid var(--line)}
+    .feats{display:grid;gap:16px;margin-top:36px}
+    .feat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;opacity:0;transform:translateY(26px);transition:opacity .6s cubic-bezier(.22,1.2,.36,1),transform .7s cubic-bezier(.22,1.2,.36,1)}
+    .feat.in{opacity:1;transform:none}
+    .feat h3{margin:0 0 6px;font-size:19px}
+    .feat p{margin:0;color:var(--faint);font-size:15px}
+    .feat code{background:#0f1115;border:1px solid var(--line);border-radius:6px;padding:2px 7px;font-size:13px;color:var(--accent)}
+    h2{font-size:24px;margin:52px 0 6px;letter-spacing:-.3px}
+    .sub{color:var(--faint);font-size:15px;margin:0 0 20px}
+    .proof{background:linear-gradient(135deg,#1a1d24,#15171d);border:1px solid var(--line);border-radius:16px;padding:22px;margin-top:14px}
+    .proof .num{font-size:40px;font-weight:800;color:var(--accent)}
+    .qa{border-left:3px solid var(--accent);padding:2px 0 2px 18px;margin:26px 0}
+    .qa .q{font-weight:700;font-size:18px;margin-bottom:6px}
+    .qa .a{color:var(--faint);font-size:15px}
+    .steps{counter-reset:st;display:grid;gap:14px;margin-top:10px}
+    .step{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 22px 20px 66px;position:relative;opacity:0;transform:translateY(20px);transition:opacity .5s cubic-bezier(.22,1.2,.36,1),transform .6s cubic-bezier(.22,1.2,.36,1)}
+    .step.in{opacity:1;transform:none}
+    .step::before{counter-increment:st;content:counter(st);position:absolute;left:20px;top:18px;width:32px;height:32px;border-radius:50%;background:var(--accent);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center}
+    .step b{display:block;margin-bottom:4px}
+    .step p{margin:0;color:var(--faint);font-size:14px}
+    footer{text-align:center;color:var(--faint);font-size:13px;margin-top:60px}
+    a.link{color:var(--accent)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <!-- HERO: 문제 → 도구 -->
+    <div class="hero">
+      <img class="icon" src="icon.png" alt="세콤(SECOM) 알바 파인더 아이콘 — 돋보기를 든 로봇">
+      <div class="tag">SECOM · KOREA JOB FINDER</div>
+      <h1>"좋은 알바, 도대체 어디서 찾죠?"<br>이제 사이트 4개를 매일 새로고침하지 마세요</h1>
+      <p class="desc">세콤(SECOM) 알바 파인더는 <strong>알바몬 · 미디어잡 · 필름메이커스 · 원티드</strong>를 직접 돌아다니며, <strong>내 조건에 맞는 공고만</strong> 골라서 점수와 함께 텔레그램으로 보내줍니다.</p>
+      <div>
+        <span class="badge">🎬 촬영보조 · FD · AD</span>
+        <span class="badge">📺 방송스텝 · PD</span>
+        <span class="badge">🏠 재택 · 원격 · 주말</span>
+        <span class="badge">🤖 무료 오픈소스</span>
+      </div>
+      <br>
+      <a class="cta gh" href="https://github.com/delight0517/secom-kr-jobfinder">⬇ GitHub에서 무료로 받기</a>
+      <a class="cta" href="#howto">3단계 사용법 보기</a>
+    </div>
+
+    <!-- 인터뷰: 서사 -->
+    <h2>👤 "왜 만들었냐고요? 제가 그 알바생이었으니까요"</h2>
+    <p class="sub">개발자 김근후(GeunHu Kim)가 직접 만든 이유 — 세콤은 '취업이 안 돼서'가 아니라 '찾는 방법이 없어서' 헤매는 사람을 위한 도구입니다.</p>
+
+    <div class="qa">
+      <div class="q">Q. 어떤 문제를 해결하나요?</div>
+      <div class="a">알바 공고는 <strong>사이트마다 흩어져 있습니다.</strong> 알바몬에 있고, 미디어잡에 있고, 필름메이커스에 있습니다. 촬영보조 하나 찾으려고 4개 사이트를 매일 새로고침하며 '오늘 내 지역에 올라온 공고 있나' 눈으로 확인하는 게 현실입니다. 세콤은 이 반복을 없앱니다.</div>
+    </div>
+    <div class="qa">
+      <div class="q">Q. 어떻게 동작하나요?</div>
+      <div class="a">Playwright 브라우저가 4개 사이트를 직접 방문해 공고를 수집하고, <strong>내 프로필 키워드와의 매칭 점수(0~100)</strong>를 계산합니다. 지역(대전·세종) 가산점, 재택·원격 가산점, 단기·주말 가산점까지 — 마치 채용 담당자가 이력서를 읽듯 공고를 평가합니다.</div>
+    </div>
+    <div class="qa">
+      <div class="q">Q. 실제로 되나요?</div>
+      <div class="a">가짜 데모는 없습니다. 아래는 2026년 9월 3일 실제 실행으로 잡아낸 9건의 매칭 결과입니다.</div>
+    </div>
+
+    <!-- 증명: 실제 결과 -->
+    <h2>📊 말로만? 아니요, 실제 실행 결과입니다</h2>
+    <div class="feats">
+      <div class="feat">
+        <h3>실제 크롤링 1회 → 매칭 공고 <span style="color:var(--accent)">9건</span></h3>
+        <p>수집 시간: 2026. 9. 3. 오전 10:47 · 알바몬 + 미디어잡 동시 수집</p>
+      </div>
+    </div>
+    <div class="proof">
+      <span class="num">1</span> <strong>[30점] 안동MBC</strong> — mediajob.co.kr 채용공고<br>
+      <span class="num" style="font-size:22px">2~3</span> <strong>[25점] 대전 · 세종 지역</strong> — albamon 지역별 공고<br>
+      <span class="num" style="font-size:22px">4~9</span> <strong>[10점] 게임잡 · 하루알바 · 연합뉴스 외</strong> — AI/단기/미디어 키워드 매칭
+      <p style="margin:12px 0 0;color:var(--faint);font-size:13px">⬆ 이건 스크린샷이 아니라 <a class="link" href="https://github.com/delight0517/secom-kr-jobfinder/blob/main/RECOMMENDATIONS_2026-09-03T01-47-00-940Z.md">저장소에 실제로 저장된 실행 결과 파일</a>입니다.</p>
+    </div>
+
+    <!-- HOWTO -->
+    <h2 id="howto">🛠 3단계면 끝 — 누구나 쓸 수 있습니다</h2>
+    <p class="sub">개발자가 아니어도 따라 할 수 있습니다. 필요한 건 GitHub 계정과 텔레그램뿐이에요.</p>
+    <div class="steps">
+      <div class="step">
+        <b>코드 받기</b>
+        <p><code>git clone https://github.com/delight0517/secom-kr-jobfinder</code> 또는 GitHub 페이지에서 <code>Code → Download ZIP</code>. 그다음 <code>npm install</code> 한 번이면 준비 끝.</p>
+      </div>
+      <div class="step">
+        <b>내 조건 입력하기 (제일 중요!)</b>
+        <p><code>src/albani_crawler.js</code> 맨 위 <code>PROFILE_KEYWORDS</code>에 내가 원하는 걸 넣으세요. <code>'촬영보조'</code>, <code>'대전'</code>, <code>'재택'</code>, <code>'주말'</code>… 이 키워드가 곧 '나'입니다.</p>
+      </div>
+      <div class="step">
+        <b>실행하고 텔레그램으로 받기</b>
+        <p><code>node src/albani_crawler.js</code> 실행 → <code>python3 send_telegram.py</code> 실행. 매칭 공고가 점수순으로 내 텔레그램에 도착합니다. 매일 아침 자동 실행도 설정 가능해요.</p>
+      </div>
+    </div>
+
+    <!-- 차별점 -->
+    <h2>💡 다른 구인 앱과 뭐가 다른가요?</h2>
+    <div class="feats">
+      <div class="feat">
+        <h3>🔓 오픈소스, 평생 무료</h3>
+        <p>구독료 없음, '유료 공고 노출' 없음. 코드 전체가 MIT 라이선스로 공개되어 있어 내려받는 순간 내 도구가 됩니다.</p>
+      </div>
+      <div class="feat">
+        <h3>🎯 '내 조건'이 곧 검색어</h3>
+        <p>앱의 추천이 아니라 내가 직접 정의한 키워드(지역·직무·시간)로 점수를 매깁니다. 프리랜서 개발자+방송 스텝을 동시에 찾는 복합 프로필도 지원합니다.</p>
+      </div>
+      <div class="feat">
+        <h3>📱 텔레그램으로 알림</h3>
+        <p>앱을 켜고 있을 필요가 없습니다. 새 매칭이 생기면 봇이 보내주는 메시지와 HTML 리포트로 확인하면 끝.</p>
+      </div>
+    </div>
+
+    <!-- 개발자 소개 -->
+    <h2>👨‍💻 만든 사람: 김근후 (GeunHu Kim)</h2>
+    <p class="sub">대전·세종 기반 풀스택 개발자 — Next.js · React · Node · Express · AI API · Python AI 튜닝</p>
+    <div class="feat" style="opacity:1;transform:none">
+      <p>"이 도구는 제가 3개월간 직접 알바와 개발 외주를 병행하며 만든 <strong>실전형 파이프라인</strong>입니다. 방송 스텝 현장에 가야 할 날은 크롤러가 아침에 공고를 골라주고, 코드를 짜야 할 날은 원티드의 원격 공고를 필터링해줬어요. 지금은 이 경험을 오픈소스로 풀어, 같은 고민을 하는 분들과 제가 함께 성장하는 게 목표입니다."</p>
+      <p style="margin:10px 0 0"><a class="link" href="https://delight0517.github.io/releasepilot-reports/links/">포트폴리오 · 작업 이력 보기 →</a></p>
+    </div>
+
+    <p style="text-align:center;margin-top:44px">
+      <a class="cta gh" href="https://github.com/delight0517/secom-kr-jobfinder">⭐ GitHub 저장소 열기</a>
+      <a class="cta" href="https://delight0517.github.io/releasepilot-reports/">← 릴리저 웹사이트로</a>
+    </p>
+
+    <footer>
+      SECOM 알바 파인더 by GeunHu Kim · <a class="link" href="https://github.com/delight0517/secom-kr-jobfinder">오픈소스 GitHub</a><br>
+      © 2026 GeunHu Kim. MIT License.
+    </footer>
+  </div>
+
+  <script>
+    // Chloe Park 스타일 스크롤 등장: 카드가 0.15s 간격(stagger)으로 스프링 감성(cubic-bezier)에 맞춰 안착
+    const els = document.querySelectorAll('.feat, .step');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('in'), i * 150);
+          io.unobserve(e.target);
+        }
+      });
+    }, {threshold: 0.15});
+    els.forEach(el => io.observe(el));
+  </script>
+</body>
+</html>

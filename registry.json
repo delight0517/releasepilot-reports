@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-06T00:00:00Z",
+  "updatedAt": "2026-09-03T00:00:00Z",
   "apps": [
     {
       "id": "launchpad-windows",
@@ -154,6 +154,22 @@
       "id": "everytime-reminder",
       "name": "Everytime Reminder",
       "status": "live"
+    },
+    {
+      "id": "secom",
+      "name": "세콤(SECOM) 알바 파인더",
+      "kind": "open-source-tool",
+      "platform": "web",
+      "owner": "mac-session",
+      "location": {
+        "type": "url",
+        "path": null,
+        "repo": "delight0517/secom-kr-jobfinder",
+        "url": "https://delight0517.github.io/releasepilot-reports/apps/secom/"
+      },
+      "purpose": "한국 맞춤형 알바 자동 찾아주기: 알바몬·미디어잡·필름메이커스·원티드 크롤링 + 키워드 매칭 + 텔레그램 전송 (MIT 오픈소스). 촬영보조/FD/AD/방송스텝/재택/주말 알바 검색.",
+      "status": "live",
+      "lastVerified": "2026-09-03"
     }
   ],
   "_unregistered_mentions": [
