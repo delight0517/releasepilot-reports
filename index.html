@@ -1,19 +1,38 @@
 <!doctype html>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>리포트 허브 · ReleasePilot</title>
-<meta name="description" content="ReleasePilot이 게시한 사용법 기획서·전략 리포트를 앱별로 모아보는 허브">
-<!-- 네이버 서치어드바이저 사이트 등록 → HTML 태그 검증 발급값. 안내: docs/naver_search_setup_walkthrough.md -->
-<meta name="naver-site-verification" content="여기에_나중에_채울_값">
+<title>김근후(GeunHu Kim) 개발자 포트폴리오 — App Store 출시 앱 · 오픈소스 · 리포트</title>
+<meta name="description" content="대전·세종 기반 풀스택 개발자 김근후(GeunHu Kim)의 포트폴리오. 직접 만들고 App Store에 출시한 앱들(Auto Pomodoro, 35Closer, 사계기록, SECOM 알바 파인더)과 개발 리포트, 오픈소스 프로젝트를 한곳에 모았습니다. Next.js · React · Node · Python AI.">
+<meta name="author" content="GeunHu Kim">
 <script src="assets/owner-gate.js"></script>
 <link rel="canonical" href="https://delight0517.github.io/releasepilot-reports/">
 <meta property="og:type" content="website">
-<meta property="og:title" content="리포트 허브 · ReleasePilot">
-<meta property="og:description" content="ReleasePilot이 게시한 사용법 기획서·전략 리포트를 앱별로 모아보는 허브">
+<meta property="og:title" content="김근후(GeunHu Kim) 개발자 포트폴리오 — 만든 앱과 리포트">
+<meta property="og:description" content="직접 만들고 출시한 앱들(Auto Pomodoro, 35Closer, SECOM 알바 파인더 등)과 개발 리포트, 오픈소스를 한곳에. 기획부터 배포까지 직접 한 풀스택 개발자.">
 <meta property="og:url" content="https://delight0517.github.io/releasepilot-reports/">
+<meta property="og:image" content="https://delight0517.github.io/releasepilot-reports/icons/icon-180.png">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="리포트 허브 · ReleasePilot">
-<meta name="twitter:description" content="ReleasePilot이 게시한 사용법 기획서·전략 리포트를 앱별로 모아보는 허브">
+<meta name="twitter:title" content="김근후(GeunHu Kim) 개발자 포트폴리오">
+<meta name="twitter:description" content="직접 만들고 App Store에 출시한 앱들과 개발 리포트, 오픈소스 프로젝트.">
+<!-- 구조화 데이터: 사람 + 홈 + 앱 목록 (AI 검색/채용 검색이 읽는 정보다) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "GeunHu Kim",
+  "alternateName": "김근후",
+  "url": "https://delight0517.github.io/releasepilot-reports/",
+  "jobTitle": "Full-Stack Developer",
+  "knowsAbout": ["Next.js", "React", "Node.js", "Express", "AI API", "Python", "iOS/macOS App Development", "App Store Release"],
+  "address": {"@type": "PostalAddress", "addressRegion": "대전·세종, 대한민국"},
+  "sameAs": ["https://github.com/delight0517"],
+  "workExample": [
+    {"@type": "SoftwareApplication", "name": "Auto Pomodoro", "applicationCategory": "UtilitiesApplication", "operatingSystem": "macOS, iOS", "url": "https://delight0517.github.io/releasepilot-reports/apps/pomodoro-cage/"},
+    {"@type": "SoftwareApplication", "name": "35Closer Timer", "applicationCategory": "UtilitiesApplication", "operatingSystem": "macOS", "url": "https://delight0517.github.io/releasepilot-reports/apps/35closer/"},
+    {"@type": "SoftwareApplication", "name": "SECOM 알바 파인더", "applicationCategory": "UtilitiesApplication", "operatingSystem": "macOS, Windows, Linux", "url": "https://delight0517.github.io/releasepilot-reports/apps/secom/", "codeRepository": "https://github.com/delight0517/secom-kr-jobfinder"}
+  ]
+}
+</script>
 <link rel="apple-touch-icon" href="icons/icon-180.png">
 <link rel="icon" href="icons/icon-192.png">
 <link rel="manifest" href="manifest.webmanifest">
@@ -328,6 +347,25 @@
     }
     .about-link { font-size: 10px; padding: 5px 10px; }
   }
+
+  /* ── 2026-09-03 홈 개편: 세로 나열 카드를 2열 그리드로 ────────────── */
+  .link-cards {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 10px !important;
+  }
+  .hero { max-width: 640px; }
+  .hero .hero-cta-row { display: flex; gap: 10px; align-items: center; justify-content: center; flex-wrap: wrap; margin-top: 22px; }
+  .hero .cta-primary {
+    display: inline-block; background: var(--accent); color: #fff !important;
+    font-family: var(--sans); font-size: 14px; font-weight: 700;
+    padding: 12px 22px; border-radius: 999px; text-decoration: none;
+  }
+  .hero .cta-secondary {
+    display: inline-block; font-family: var(--sans); font-size: 14px; font-weight: 700;
+    color: var(--accent-ink) !important; text-decoration: none; padding: 12px 8px;
+  }
+  .hero .privacy-note { display: none; } /* 개인 전용 공지는 방문자에게 보이지 않음 */
 </style>
 
 <a class="brand-mark" href="about/">VIVID</a>
@@ -341,40 +379,38 @@
 </div>
 <div class="wrap">
   <div class="hero">
-    <p class="eyebrow">VIVID · 김근후 · 앱 리포트</p>
-    <h1>왜 이렇게 만들었는지,<br>적어둔다.</h1>
-    <p>시장 조사, MVP 결정, 출시 전략 — 앱마다 판단 근거를 남긴다.
-       최신 버전만 보이고, 이전 버전은 펼쳐서 본다.</p>
-    <p class="privacy-note">현재는 개발자 개인 전용 도구 — 외부 공개 시 자신의 Claude로
-       직접 실행하는 방식(개발자 서버 미경유)을 먼저 제공할 예정.</p>
-    <a class="feedback-link" href="https://github.com/delight0517/releasepilot-reports/issues/new" target="_blank" rel="noopener">💬 피드백·버그 제보하기 ↗</a>
+    <p class="eyebrow">GeunHu Kim · 김근후 · Full-Stack Developer</p>
+    <h1>기획부터 출시까지,<br>직접 만든 앱들</h1>
+    <p>App Store에 출시한 macOS·iOS 앱, 채용공고 자동 매칭 오픈소스, 그리고
+       앱마다 남긴 판단 근거(리포트)를 한곳에 모았습니다.</p>
+    <div class="hero-cta-row">
+      <a class="cta-primary" href="#live-apps">만든 앱 둘러보기 ↓</a>
+      <a class="cta-secondary" href="#reports">개발 리포트 보기 →</a>
+    </div>
   </div>
 
-  <!-- 리포트 종류 메뉴 + 관계도 -->
-  <div id="menuView">
-    <div class="section-head"><h2>어떻게 이어지나</h2><span class="hint">Scroll →</span></div>
-    <div class="flow" id="flow"></div>
-
-    <div class="section-head"><h2>리포트 종류</h2><span class="hint">눌러서 보기</span></div>
-    <div class="menu-grid" id="menuGrid"></div>
-  </div>
-
-  <!-- 메뉴 카드를 누르면 여기로 전환되는 매거진 스타일 상세 화면 -->
-  <div class="detail-view" id="detailView">
-    <button class="back-btn" id="backBtn">‹ 메뉴로</button>
-    <div class="detail-hero" id="detailHero"></div>
-    <div class="prompt-card" id="promptCard" style="display:none"></div>
-    <div class="cover-grid" id="detailGrid"></div>
-  </div>
-
-  <div id="appsView">
-    <div class="section-head"><h2>앱별로 보기</h2><span class="hint">앱별</span></div>
-    <div class="apps" id="apps"></div>
-    <div id="groups"></div>
-  </div>
-
-  <div class="section-head"><h2>직접 써볼 수 있는 앱</h2><span class="hint">Live</span></div>
-  <div style="display:flex;flex-direction:column;gap:10px;">
+  <div class="section-head" id="live-apps"><h2>직접 써볼 수 있는 앱</h2><span class="hint">Live · 눌러서 체험</span></div>
+  <div class="link-cards">
+    <a href="apps/secom/"
+       style="display:flex;align-items:center;gap:12px;padding:14px 16px;
+              border:1px solid var(--accent);border-radius:14px;background:var(--card);
+              text-decoration:none;color:inherit;">
+      <span style="font-size:28px;line-height:1;">🤖</span>
+      <span>
+        <span style="display:block;font-weight:700;color:var(--accent-ink);">SECOM 알바 파인더 — 오픈소스</span>
+        <span style="display:block;font-size:13px;color:var(--ink-faint);">한국 맞춤형 알바 자동 매칭: 알바몬·미디어잡·필름메이커스·원티드를 크롤링해 조건에 맞는 공고만 텔레그램으로. GitHub에서 직접 받아 쓰는 오픈소스 도구.</span>
+      </span>
+    </a>
+    <a href="apps/pomodoro-cage/"
+       style="display:flex;align-items:center;gap:12px;padding:14px 16px;
+              border:1px solid var(--line);border-radius:14px;background:var(--card);
+              text-decoration:none;color:inherit;">
+      <span style="font-size:28px;line-height:1;">🍅</span>
+      <span>
+        <span style="display:block;font-weight:700;color:var(--accent-ink);">Auto Pomodoro — App Store 출시</span>
+        <span style="display:block;font-size:13px;color:var(--ink-faint);">재택근무·개발자용 포모도로 타이머. 맥·아이폰이 함께 쉰다.</span>
+      </span>
+    </a>
     <a href="apps/creator-quest/"
        style="display:flex;align-items:center;gap:12px;padding:14px 16px;
               border:1px solid var(--line);border-radius:14px;background:var(--card);
@@ -468,7 +504,7 @@
   </div>
 
   <div class="section-head"><h2>다른 포트폴리오</h2><span class="hint">More</span></div>
-  <div style="display:flex;flex-direction:column;gap:10px;">
+  <div class="link-cards">
     <a href="dev-portfolio/" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:var(--card);text-decoration:none;color:inherit;">
       <span style="font-size:28px;line-height:1;">💻</span>
       <span><span style="display:block;font-weight:700;color:var(--accent-ink);">앱 개발</span>
@@ -511,6 +547,35 @@
       if (ownerMore) ownerMore.style.display = 'flex';
     }
   </script>
+
+  <!-- 개발 리포트 (앱 개발 과정의 판단 근거 기록) -->
+  <div id="reports">
+    <div class="section-head"><h2>개발 리포트</h2><span class="hint">기획·분석·사용법</span></div>
+    <p style="font-size:13px;color:var(--ink-dim);margin:-8px 2px 0;">앱마다 남긴 시장 조사 · MVP 결정 · 출시 전략. 아래 탐색기는 이 기록을 리포트 종류별·앱별로 펼쳐 보는 도구입니다.</p>
+  <!-- 리포트 종류 메뉴 + 관계도 -->
+  <div id="menuView">
+    <div class="section-head"><h2>어떻게 이어지나</h2><span class="hint">Scroll →</span></div>
+    <div class="flow" id="flow"></div>
+
+    <div class="section-head"><h2>리포트 종류</h2><span class="hint">눌러서 보기</span></div>
+    <div class="menu-grid" id="menuGrid"></div>
+  </div>
+
+  <!-- 메뉴 카드를 누르면 여기로 전환되는 매거진 스타일 상세 화면 -->
+  <div class="detail-view" id="detailView">
+    <button class="back-btn" id="backBtn">‹ 메뉴로</button>
+    <div class="detail-hero" id="detailHero"></div>
+    <div class="prompt-card" id="promptCard" style="display:none"></div>
+    <div class="cover-grid" id="detailGrid"></div>
+  </div>
+
+  <div id="appsView">
+    <div class="section-head"><h2>앱별로 보기</h2><span class="hint">앱별</span></div>
+    <div class="apps" id="apps"></div>
+    <div id="groups"></div>
+  </div>
+
+  </div>
 
   <p class="empty" id="empty" style="display:none;">아직 게시된 리포트 없음.</p>
   <footer>VIVID · ReleasePilot Report Hub · <a href="about/" style="color:inherit;">만든 사람</a> · <a href="connect-survey/" style="color:inherit;">사계기록 커넥트 설문(베타)</a></footer>
