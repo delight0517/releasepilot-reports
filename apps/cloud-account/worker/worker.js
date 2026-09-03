@@ -106,6 +106,34 @@ function newerByPath(a, b, tsPath) {
   return num(read(a)) > num(read(b)) ? a : b;
 }
 
+// Forward/backward-compat safety net. `mergeTimer1` below only knows the
+// fields that exist today; when a NEW feature is added to only ONE of the two
+// apps (Windows gets it before Mac, or vice versa), the app that lacks it
+// pushes a snapshot WITHOUT that field. Without this, `out` (built from the
+// incoming push) would silently drop it every other cycle and it would
+// flicker. Here: for every key the stored copy has that the merge did not
+// already resolve, either (a) copy it in if `out` is missing it, or (b) if
+// both sides carry it as an object with its own `updatedAt`, keep the newer —
+// so a brand-new field still syncs bidirectionally the moment BOTH apps have
+// it, with zero worker change. `known` lists the keys the explicit merge owns.
+function additiveMerge(out, stored, known) {
+  if (!out || typeof out !== "object" || Array.isArray(out)) return;
+  if (!stored || typeof stored !== "object" || Array.isArray(stored)) return;
+  for (const k of Object.keys(stored)) {
+    if (known && known.has(k)) continue;
+    const sv = stored[k];
+    const ov = out[k];
+    if (ov === undefined || ov === null) { out[k] = sv; continue; }
+    if (sv && typeof sv === "object" && !Array.isArray(sv) &&
+        ov && typeof ov === "object" && !Array.isArray(ov)) {
+      const sTs = num(sv.updatedAt), oTs = num(ov.updatedAt);
+      if (sTs || oTs) { if (sTs > oTs) out[k] = sv; }
+      else additiveMerge(ov, sv, null);
+    }
+    // both plain scalars with no timestamp: leave `out` (the incoming push).
+  }
+}
+
 function mergeTimer1(stored, incoming) {
   if (!stored || typeof stored !== "object") return incoming;
   if (!incoming || typeof incoming !== "object") return stored;
@@ -171,7 +199,21 @@ function mergeTimer1(stored, incoming) {
     // rule sets — whole block by .updatedAt
     om.scheduledBreakRules = newerByPath(sm.scheduledBreakRules, im.scheduledBreakRules, ["updatedAt"]);
     om.durationOverrideRules = newerByPath(sm.durationOverrideRules, im.durationOverrideRules, ["updatedAt"]);
+
+    // --- forward/backward-compat: any field a future one-sided feature adds ---
+    additiveMerge(om.settings, ss, new Set([
+      "focusMin", "breakMin", "longBreakMin", "sessionsUntilLongBreak",
+      "baseFocusMin", "baseBreakMin", "lockMode", "noLockSchedule", "timeOverrides",
+    ]));
+    additiveMerge(om, sm, new Set([
+      "version", "deviceId", "generatedAt", "tzOffsetMinutes", "localTimeLabel",
+      "timer", "settings", "sessions", "windowsTagData",
+      "scheduledBreakRules", "durationOverrideRules",
+    ]));
   }
+  additiveMerge(out, stored, new Set([
+    "todayFocusSec", "allTimeFocusSec", "settings", "macSnapshot", "updatedAt",
+  ]));
 
   // legacy flat settings block (a peer too old to send macSnapshot) — by payload.updatedAt
   const winner = newerByPath(
