@@ -14,3 +14,8 @@
 - iOS는 현재 공개 App Store/TestFlight URL이 없어 안내 페이지로 연결; 실제 배포 URL 발급 후 단일 치환 필요.
 - 다운로드 버튼 href 정적 검수 항목을 추가: iOS·Android·Web 링크는 빈 href/도메인 홈 링크 금지.
 - GitHub push는 사용자 요청 전 대기. 저장소에 다른 변경이 있어 해당 파일 외 변경은 포함하지 않음.
+
+- Google 그룹스 생성 완료: `class-reminder-testers@googlegroups.com`, 가입 링크 `https://groups.google.com/g/class-reminder-testers`.
+- 그룹 가입 권한을 “웹상의 모든 사용자가 가입 가능”으로 변경해 승인 없이 자동 권한 부여되도록 설정함.
+- Android 안내를 2단계 구조로 수정: 1단계 Google 그룹 가입, 2단계 Play 테스트 참여.
+- Android 다운로드 영역 버튼을 그룹 가입 링크와 Play 참여 링크 두 개로 분리함.
