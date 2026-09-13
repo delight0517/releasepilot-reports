@@ -24,3 +24,6 @@
 - 2026-09-10 iPhone Safari 피드백 수정: `.testbox a`가 `.btn`의 흰 글씨를 덮던 문제를 해결하고 visited/WebKit 글자색을 고정함. 모바일 상단 내비게이션·안내창 크기/스크롤을 정리함. Google Groups 비로그인 상태의 권한 없음 혼동을 막기 위해 로그인 및 동일 계정 사용 안내와 `/about` 가입 링크를 적용함.
 - 2026-09-10 가입 흐름 보완: Google 로그인 → 공개 그룹 Join group → 동일 계정 Play 참여 순서로 안내하며, 그룹은 웹상의 모든 사용자가 승인 없이 가입할 수 있도록 관리자 설정을 재검증한다.
 - 2026-09-10 배포 자산 수정: 홈페이지가 참조하는 `og-thumbnail.jpg`가 Git에 누락되어 404였던 문제를 발견하고 배포 대상에 포함함.
+- 2026-09-13 실제 공개/트래킹 요청 반영: `cloud-account-storage` Worker에 익명 analytics API를 추가하고, 사이트에서 페이지뷰·섹션뷰·주요 CTA 클릭을 기록하도록 연결함.
+- 트래킹 범위: 익명 브라우저 visitorId, 이벤트명, 섹션명, 경로, referrer, 모바일/데스크톱 구분. 이메일/이름/Google 계정/비밀번호는 저장하지 않음.
+- 통계 확인 엔드포인트: `https://cloud-account-storage.imdisablebutgodisable.workers.dev/analytics/summary?appId=everytime-reminder&days=30`

@@ -41,6 +41,16 @@ function isValidPin(p) {
 function isValidAppId(a) {
   return typeof a === "string" && /^[a-z0-9_-]{1,32}$/.test(a);
 }
+function isValidEventName(v) {
+  return typeof v === "string" && /^[a-z0-9:_-]{1,80}$/.test(v);
+}
+function dayKeyFromDate(d) {
+  return d.toISOString().slice(0, 10);
+}
+function safeAnalyticsText(v, max = 120) {
+  if (typeof v !== "string") return "";
+  return v.replace(/[^\p{L}\p{N}\s._:/#?=&-]/gu, "").slice(0, max);
+}
 
 async function getAccount(env, username) {
   const raw = await env.CLOUD_ACCOUNT_KV.get(`account:${username}`);
@@ -236,6 +246,7 @@ async function handleSave(env, req) {
   const { account, error } = await requireAuth(env, username, pin);
   if (error) return error;
 
+  account.apps = account.apps || {};
   const prev = account.apps[appId];
   let nextPayload = payload ?? null;
   if (merge === "timer1-fieldwise" && prev && prev.payload) {
@@ -265,7 +276,105 @@ async function handleGet(env, url) {
   const { account, error } = await requireAuth(env, username, pin);
   if (error) return error;
 
+  account.apps = account.apps || {};
   return json(account.apps[appId] || { payload: null, updatedAt: null });
+}
+
+async function handleAnalyticsEvent(env, req) {
+  const body = await req.json().catch(() => ({}));
+  const appId = body.appId || "everytime-reminder";
+  const event = body.event || "";
+  if (!isValidAppId(appId)) return json({ error: "appId 형식이 올바르지 않습니다." }, 400);
+  if (!isValidEventName(event)) return json({ error: "event 형식이 올바르지 않습니다." }, 400);
+
+  const visitorId = safeAnalyticsText(body.visitorId, 80) || "anonymous";
+  const section = safeAnalyticsText(body.section, 80);
+  const path = safeAnalyticsText(body.path, 160) || "/";
+  const referrer = safeAnalyticsText(body.referrer, 160);
+  const userAgent = req.headers.get("User-Agent") || "";
+  const device =
+    /Mobile|Android|iPhone|iPad|iPod/i.test(userAgent) ? "mobile" : "desktop";
+  const now = new Date();
+  const day = dayKeyFromDate(now);
+  const key = `analytics:${appId}:${day}`;
+  const raw = await env.CLOUD_ACCOUNT_KV.get(key);
+  const data = raw ? JSON.parse(raw) : {
+    appId,
+    day,
+    totalEvents: 0,
+    uniqueVisitors: {},
+    events: {},
+    sections: {},
+    devices: {},
+    paths: {},
+    referrers: {},
+    updatedAt: null,
+  };
+
+  data.totalEvents += 1;
+  data.uniqueVisitors[visitorId] = true;
+  data.events[event] = (data.events[event] || 0) + 1;
+  if (section) data.sections[section] = (data.sections[section] || 0) + 1;
+  data.devices[device] = (data.devices[device] || 0) + 1;
+  data.paths[path] = (data.paths[path] || 0) + 1;
+  if (referrer) data.referrers[referrer] = (data.referrers[referrer] || 0) + 1;
+  data.updatedAt = now.toISOString();
+
+  await env.CLOUD_ACCOUNT_KV.put(key, JSON.stringify(data));
+  return json({ ok: true });
+}
+
+async function handleAnalyticsSummary(env, url) {
+  const appId = url.searchParams.get("appId") || "everytime-reminder";
+  const days = Math.max(1, Math.min(90, Number(url.searchParams.get("days") || 30)));
+  if (!isValidAppId(appId)) return json({ error: "appId 형식이 올바르지 않습니다." }, 400);
+
+  const totals = {
+    appId,
+    days,
+    totalEvents: 0,
+    uniqueVisitors: 0,
+    events: {},
+    sections: {},
+    devices: {},
+    paths: {},
+    referrers: {},
+    daily: [],
+  };
+  const visitors = {};
+  const now = new Date();
+  for (let i = 0; i < days; i += 1) {
+    const d = new Date(now);
+    d.setUTCDate(now.getUTCDate() - i);
+    const day = dayKeyFromDate(d);
+    const raw = await env.CLOUD_ACCOUNT_KV.get(`analytics:${appId}:${day}`);
+    if (!raw) {
+      totals.daily.push({ day, totalEvents: 0, uniqueVisitors: 0 });
+      continue;
+    }
+    const data = JSON.parse(raw);
+    totals.totalEvents += data.totalEvents || 0;
+    Object.assign(visitors, data.uniqueVisitors || {});
+    for (const [bucket, values] of Object.entries({
+      events: data.events,
+      sections: data.sections,
+      devices: data.devices,
+      paths: data.paths,
+      referrers: data.referrers,
+    })) {
+      for (const [name, count] of Object.entries(values || {})) {
+        totals[bucket][name] = (totals[bucket][name] || 0) + count;
+      }
+    }
+    totals.daily.push({
+      day,
+      totalEvents: data.totalEvents || 0,
+      uniqueVisitors: Object.keys(data.uniqueVisitors || {}).length,
+    });
+  }
+  totals.uniqueVisitors = Object.keys(visitors).length;
+  totals.daily.reverse();
+  return json(totals);
 }
 
 export default {
@@ -278,6 +387,8 @@ export default {
       if (url.pathname === "/api/auth" && request.method === "POST") return await handleAuth(env, request);
       if (url.pathname === "/api/save" && request.method === "POST") return await handleSave(env, request);
       if (url.pathname === "/api/get" && request.method === "GET") return await handleGet(env, url);
+      if (url.pathname === "/analytics/event" && request.method === "POST") return await handleAnalyticsEvent(env, request);
+      if (url.pathname === "/analytics/summary" && request.method === "GET") return await handleAnalyticsSummary(env, url);
       return json({ error: "Not found" }, 404);
     } catch (e) {
       return json({ error: `서버 오류: ${e.message}` }, 500);

@@ -1,10 +1,11 @@
 name = "cloud-account-storage"
 main = "worker.js"
 compatibility_date = "2026-08-01"
+account_id = "0a44f8849fdfeeae920a7de05587a943"
 
 # After creating the namespace with:
 #   wrangler kv namespace create CLOUD_ACCOUNT_KV
 # paste the returned "id" below.
 [[kv_namespaces]]
 binding = "CLOUD_ACCOUNT_KV"
-id = "85aa29cafb614c318e11a48b8bbf3017"
+id = "49f9c53603374737b7730c4ce8f728b7"
