@@ -12,7 +12,7 @@ Use the same Git remote on macOS and Windows. Pull the completed commit before e
 | RiseSync alarm/permission UI | `apps/screenshots/risesync_1.png`, visually inspected | Development screenshot, no current release claim |
 | Reminder schedule/reminders/widgets | `apps/everytime-reminder/index.html` | Existing product description, Android test recruitment; functionality not rerun |
 | SECOM search/filter/report | `apps/secom/index.html` | Existing project description, no current provider/model assertion |
-| Notes / habits / quiz / timers | `dev-portfolio/index.html` | Consultation capability categories, not unlimited fixed-price promise |
+| Notes / habits / quiz / timers | `dev-portfolio/index.html` | Consultation capability categories; exact scope agreed in writing |
 
 The file `apps/screenshots/harugirok_1.png` actually depicts RiseSync's permission prompt. Do not reuse it as a diary screenshot. The RiseSync app page contains `id000000000` store placeholder, so the new page deliberately links the developer portfolio instead. Current root metadata also makes broader App Store claims; those are pre-existing and not treated as evidence here.
 
@@ -22,7 +22,7 @@ Native form validation → deterministic draft → clipboard or mailto. No API/n
 Developer participation uses the same composer with its own subject and questions, explicitly marked as interest inquiry. It is not an account registration or matching backend.
 
 ## Go-live gaps
-The owner must establish concrete scope and tax/external-cost terms before accepting payment. Backend intake, delivery tracking, AI persona, developer accounts and marketplace matching are separate follow-ups. No routine, outreach, payment or secret configuration is changed by this site update.
+The owner's offer is KRW 35,000 per project through launch. Features, revision scope, schedule and release method are agreed in writing at consultation. Third-party actual costs, if any, are disclosed in advance. No feature exclusions or upsell policy is imposed by this page. Store approval/timing is not guaranteed. Backend intake, delivery tracking, AI persona, developer accounts and marketplace matching are separate follow-ups. No routine, outreach, payment or secret configuration is changed by this site update.
 
 ## Validation on 2026-09-17
 Headless Chromium against local HTTP passed at 1440, 390 and 320 CSS pixels: horizontal overflow absent, all images loaded, all seven local link destinations returned success, no JavaScript errors. Interactive checks passed for client draft generation, lossless mailto body encoding, Windows clipboard copy (CRLF normalized in the test), draft invalidation after edits, developer inquiry branching and invalid email rejection. Full-page desktop/mobile screenshots reviewed. This is browser emulation, not a physical iPhone/Safari test. Email delivery was not attempted; public deployment not performed in this stage.
