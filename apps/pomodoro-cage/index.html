@@ -1,121 +1,164 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Auto Pomodoro (포모도로 타이머) — 재택근무 집중·강제 휴식 타이머 앱 | Geungho Lee</title>
-  <meta name="description" content="Auto Pomodoro는 재택근무자와 개발자가 스스로 쉬는 것을 잊지 않게 돕는 포모도로 타이머 앱입니다. 25분 집중·5분 휴식 사이클을 기기 간 동기화하고, 맥 서버와 연결해 강제로 휴식을 알립니다. iOS App Store에서 다운로드.">
-  <meta name="keywords" content="포모도로 타이머, pomodoro timer, 집중 앱, 재택근무, 강제 휴식, focus timer, productivity app, 맥 동기화 타이머, 개발자 타이머, Auto Pomodoro">
-  <meta name="author" content="Geungho Lee">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="쉼을 미루는 직장인, 1인 개발자, 학생을 위한 Auto Pomodoro 사용법과 기능 안내. 집중 시간은 지키고 휴식은 잊지 않게 돕습니다.">
+  <meta name="theme-color" content="#eef0e8">
   <link rel="canonical" href="https://delight0517.github.io/releasepilot-reports/apps/pomodoro-cage/">
   <link rel="icon" type="image/png" href="icon.png">
-
-  <!-- Open Graph -->
+  <title>Auto Pomodoro — 쉼을 놓치지 않는 집중 타이머</title>
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Auto Pomodoro — 잊지 않게 쉬는 포모도로 타이머">
-  <meta property="og:description" content="재택근무자와 개발자를 위한 집중·강제 휴식 타이머. 맥과 아이폰이 같이 쉰다.">
+  <meta property="og:title" content="Auto Pomodoro — 쉼을 놓치지 않는 집중 타이머">
+  <meta property="og:description" content="집중과 휴식을 분리해, 바쁜 하루에도 다음 쉼을 남겨 둡니다.">
   <meta property="og:image" content="https://delight0517.github.io/releasepilot-reports/apps/pomodoro-cage/icon-180.png">
   <meta property="og:url" content="https://delight0517.github.io/releasepilot-reports/apps/pomodoro-cage/">
-
-  <!-- Twitter -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Auto Pomodoro — 잊지 않게 쉬는 포모도로 타이머">
-  <meta name="twitter:description" content="재택근무자와 개발자를 위한 집중·강제 휴식 타이머.">
-
-  <!-- JSON-LD: SoftwareApplication (AI 서치/검색엔진 훅) -->
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "Auto Pomodoro",
-    "operatingSystem": "iOS",
-    "applicationCategory": "ProductivityApplication",
-    "applicationSubCategory": "Pomodoro Timer",
-    "url": "https://delight0517.github.io/releasepilot-reports/apps/pomodoro-cage/",
-    "downloadUrl": "https://apps.apple.com/app/auto-pomodoro/id000000000",
-    "softwareVersion": "1.0",
-    "author": {"@type": "Person", "name": "Geungho Lee", "url": "https://delight0517.github.io/releasepilot-reports/"},
-    "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
-    "aggregateRating": {"@type": "AggregateRating", "ratingValue": "5.0", "ratingCount": "1"},
-    "description": "재택근무자와 개발자가 스스로 쉬는 것을 잊지 않게 돕는 포모도로 타이머. 25분 집중·5분 휴식 사이클을 맥 서버와 기기 간 동기화하고 강제 휴식 알림을 보낸다.",
-    "featureList": ["25분 포모도로 사이클", "맥 서버 연동 강제 휴식", "아이폰·맥 기기 간 타이머 동기화", "오프라인 우선 개인정보 보호"]
-  }
+  {"@context":"https://schema.org","@type":"SoftwareApplication","name":"Auto Pomodoro","applicationCategory":"ProductivityApplication","applicationSubCategory":"Pomodoro Timer","url":"https://delight0517.github.io/releasepilot-reports/apps/pomodoro-cage/","description":"집중과 휴식의 리듬을 지키도록 돕는 포모도로 타이머.","featureList":["집중·짧은 휴식·긴 휴식","시간대별 타이머 설정","휴식 잠금 모드","통계와 태그 목표","계정 기반 타이머 동기화 지원"]}
   </script>
-
-  <!-- JSON-LD: FAQ (AI 답변에 잡히도록) -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {"@type": "Question", "name": "Auto Pomodoro는 어떤 앱인가요?",
-       "acceptedAnswer": {"@type": "Answer", "text": "Auto Pomodoro는 재택근무자와 개발자가 스스로 쉬는 것을 잊지 않게 돕는 포모도로 타이머 앱입니다. 25분 집중과 5분 휴식 사이클을 맥 서버와 동기화해 강제로 휴식을 알립니다."}},
-      {"@type": "Question", "name": "포모도로 타이머란 무엇인가요?",
-       "acceptedAnswer": {"@type": "Answer", "text": "포모도로 기법은 25분 집중 작업과 5분 휴식을 반복하는 시간 관리 방법입니다. Auto Pomodoro는 이를 자동화하고 기기 간 동기화합니다."}},
-      {"@type": "Question", "name": "맥과 아이폰이 함께 동기화되나요?",
-       "acceptedAnswer": {"@type": "Answer", "text": "네. 같은 Wi-Fi의 개인 맥 서버와만 통신하며, 아이폰과 맥의 타이머 상태를 실시간으로 동기화합니다."}}
-    ]
-  }
-  </script>
-
+  <!-- impeccable-disable dark-glow -- the sun/moon scene uses a purposeful atmospheric shadow -->
   <style>
-    :root{--bg:#0f1115;--card:#1a1d24;--ink:#e8eaed;--faint:#9aa0a6;--accent:#ff6b4a;--line:#2a2e37}
-    *{box-sizing:border-box}
-    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
-    .wrap{max-width:720px;margin:0 auto;padding:48px 20px}
-    .hero{text-align:center;padding:40px 0}
-    .icon{width:120px;height:120px;border-radius:26px;box-shadow:0 12px 40px rgba(255,107,74,.35)}
-    h1{font-size:34px;margin:20px 0 8px}
-    .tag{color:var(--accent);font-weight:700;letter-spacing:.5px}
-    .desc{color:var(--faint);font-size:17px;max-width:520px;margin:0 auto}
-    .badge{display:inline-block;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:13px;color:var(--faint);margin:6px 4px}
-    .cta{display:block;margin:32px auto;padding:16px 28px;background:var(--accent);color:#fff;text-decoration:none;font-weight:700;border-radius:14px;max-width:280px;text-align:center}
-    .feats{display:grid;gap:16px;margin-top:40px}
-    .feat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}
-    .feat h3{margin:0 0 6px;font-size:18px}
-    .feat p{margin:0;color:var(--faint);font-size:15px}
-    footer{text-align:center;color:var(--faint);font-size:13px;margin-top:60px}
-    a.link{color:var(--accent)}
+    @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap');
+    :root{--paper:#eef0e8;--ink:#17221d;--muted:#66716a;--line:#cbd2c8;--leaf:#1b5d47;--leaf-dark:#123a2c;--tomato:#de5b3d;--cream:#fffef9;--sun:#edc85c}
+    *{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;background:var(--paper);color:var(--ink);font-family:"Noto Sans KR",system-ui,sans-serif;line-height:1.65} a{color:inherit} button{font:inherit} ::selection{background:var(--sun);color:var(--ink)}
+    .shell{width:min(1120px,calc(100% - 40px));margin:auto}.nav{height:80px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}.brand{font-weight:800;letter-spacing:-.04em;text-decoration:none}.brand i{display:inline-block;width:11px;height:11px;margin-right:7px;background:var(--tomato);border-radius:50%}.nav-links{display:flex;gap:24px;font-size:14px;color:var(--muted)}.nav-links a{text-decoration:none}.nav-links a:hover{color:var(--leaf)}
+    .hero{padding:92px 0 72px;display:grid;grid-template-columns:minmax(0,1.08fr) minmax(300px,.92fr);gap:72px;align-items:center}.hero h1{margin:0;max-width:660px;font-size:clamp(40px,4.3vw,54px);letter-spacing:-.075em;line-height:1.12;font-weight:800;word-break:keep-all}.hero h1 em{font-style:normal;color:var(--leaf)}.hero-copy{max-width:570px;margin:26px 0 0;color:#3e4a43;font-size:18px;word-break:keep-all}.actions{display:flex;gap:12px;align-items:center;margin-top:34px;flex-wrap:wrap}.button{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:0 20px;border:1px solid var(--leaf);border-radius:999px;background:var(--leaf);color:#fff;text-decoration:none;font-size:15px;font-weight:700;transition:transform .2s,background .2s}.button:hover{background:var(--leaf-dark);transform:translateY(-2px)}.button.ghost{background:transparent;color:var(--leaf)}.button.ghost:hover{background:#dfe7dc}.quiet{font-size:13px;color:var(--muted)}
+    .timer{position:relative;overflow:hidden;min-height:405px;padding:29px;border:1px solid var(--leaf-dark);background:var(--leaf-dark);color:#fff;box-shadow:12px 12px 0 var(--sun)}.timer:after{content:"";position:absolute;width:210px;height:210px;right:-68px;bottom:-84px;border:1px solid rgba(255,255,255,.35);border-radius:50%;box-shadow:0 0 0 30px rgba(255,255,255,.04),0 0 0 60px rgba(255,255,255,.04)}.timer-top,.timer-footer{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:center;font:12px "DM Mono",monospace;letter-spacing:.04em;color:#c7ded2}.timer-time{position:relative;z-index:1;margin-top:73px;font:clamp(66px,8vw,102px)/1 "DM Mono",monospace;letter-spacing:-.1em;font-variant-numeric:tabular-nums}.timer-label{position:relative;z-index:1;margin:19px 0 32px;color:#d7e6dc;font-size:15px}.timer-controls{position:relative;z-index:1;display:flex;gap:10px}.timer button{padding:11px 17px;border:0;border-radius:0;background:var(--cream);color:var(--leaf-dark);font-weight:800;cursor:pointer}.timer button:hover{background:var(--sun)}.timer button.secondary{background:transparent;border:1px solid rgba(255,255,255,.4);color:#fff}.timer-footer{margin-top:37px;border-top:1px solid rgba(255,255,255,.25);padding-top:14px}
+    .statement{padding:92px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);display:grid;grid-template-columns:1fr 2fr;gap:48px}.statement h2,.section-heading h2{margin:0;font-size:clamp(28px,4vw,45px);letter-spacing:-.06em;line-height:1.2}.statement p{max-width:690px;margin:0;font-size:21px;letter-spacing:-.035em;word-break:keep-all}.statement strong{color:var(--leaf)}
+    .daywalk{min-height:188vh;padding:0;position:relative}.daywalk-stage{position:sticky;top:13vh;height:74vh;min-height:430px;max-height:650px;overflow:hidden;background:#d7e8ea;color:#173b42;isolation:isolate;transition:background .25s ease}.daywalk-stage:before{content:"";position:absolute;inset:auto 0 0;height:34%;background:#9fc6b0;clip-path:polygon(0 42%,14% 28%,29% 44%,43% 18%,58% 41%,72% 23%,87% 43%,100% 27%,100% 100%,0 100%);z-index:-1}.daywalk-sky{position:absolute;inset:0;overflow:hidden;z-index:-2;background:linear-gradient(180deg,#afd9e5 0%,#dceee7 68%,#9fc6b0 100%);transition:background .2s ease}.daywalk-sky:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,28,53,.68),rgba(28,55,73,.1) 68%,rgba(10,23,28,.18));opacity:var(--night,0);transition:opacity .2s ease}.daywalk-orb{position:absolute;width:80px;height:80px;top:calc(15% + var(--orb-y,0px));left:calc(14% + var(--orb-x,0px));border-radius:50%;background:var(--sun);box-shadow:0 14px 55px rgba(237,200,92,.42);transition:top .2s,left .2s,background .2s,box-shadow .2s}.daywalk-orb:after{content:"";position:absolute;inset:17px;border-radius:50%;background:#f9f5cf;opacity:var(--moon,0);transition:opacity .2s}.daywalk-city{position:absolute;inset:auto 0 28%;height:38%;display:flex;align-items:end;gap:12px;padding:0 5%;opacity:1;transform:translateY(var(--city-y,0px));transition:opacity .2s,transform .2s}.daywalk-city i{display:block;width:clamp(38px,6vw,78px);height:92px;background:#629489;box-shadow:inset 10px 0 rgba(255,255,255,.12);position:relative}.daywalk-city i:nth-child(2n){height:132px;background:#527a7a}.daywalk-city i:nth-child(3n){height:164px;background:#476b70}.daywalk-city i:after{content:"";position:absolute;inset:16px 10px;background:repeating-linear-gradient(180deg,rgba(242,220,139,.75) 0 5px,transparent 5px 17px);opacity:var(--windows,0);transition:opacity .2s}.daywalk-road{position:absolute;left:0;right:0;bottom:0;height:28%;background:#304d52;clip-path:polygon(0 25%,100% 0,100% 100%,0 100%)}.daywalk-road:after{content:"";position:absolute;top:52%;left:0;width:100%;height:3px;background:repeating-linear-gradient(90deg,rgba(255,255,255,.45) 0 64px,transparent 64px 126px);transform:skewY(-1deg)}.daywalk-copy{position:absolute;top:12%;left:6%;z-index:3;max-width:350px}.daywalk-kicker{margin:0 0 12px;color:var(--tomato);font:13px "DM Mono",monospace;letter-spacing:.08em}.daywalk-copy h2{margin:0;font-size:clamp(30px,4vw,52px);line-height:1.12;letter-spacing:-.07em;word-break:keep-all}.daywalk-copy p{max-width:330px;margin:18px 0 0;color:#3d5a5c;font-size:15px;word-break:keep-all}.daywalk-label{position:absolute;right:6%;top:12%;z-index:3;color:#254a4d;font:13px "DM Mono",monospace;text-align:right}.daywalk-label strong{display:block;margin-top:8px;font:700 clamp(20px,3vw,32px) "Noto Sans KR",sans-serif;letter-spacing:-.06em}.walker{position:absolute;z-index:4;left:var(--walker-x,5%);bottom:calc(20% + var(--walker-y,0px));width:68px;height:144px;transform:translateX(-50%);filter:drop-shadow(0 7px 4px rgba(6,26,27,.18));transition:left .2s,bottom .2s}.walker-head{position:absolute;left:25px;top:0;width:28px;height:28px;border-radius:50%;background:#f0b38f;border:2px solid #173b42}.walker-head:after{content:"";position:absolute;left:1px;top:-5px;width:24px;height:11px;border-radius:18px 18px 4px 4px;background:#23372e}.walker-body{position:absolute;left:22px;top:29px;width:34px;height:58px;border-radius:15px 15px 8px 8px;background:var(--tomato);border:2px solid #173b42}.walker-body:after{content:"";position:absolute;left:7px;top:14px;width:16px;height:3px;background:#ffd9b9;box-shadow:0 9px #ffd9b9}.walker-arm,.walker-leg{position:absolute;display:block;background:#f0b38f;border:2px solid #173b42;transform-origin:top center}.walker-arm{left:22px;top:38px;width:9px;height:49px;border-radius:8px;transform:rotate(var(--arm-a,18deg))}.walker-arm.arm-b{left:47px;transform:rotate(var(--arm-b,-18deg))}.walker-leg{left:26px;top:82px;width:11px;height:59px;border-radius:8px;transform:rotate(var(--leg-a,18deg))}.walker-leg.leg-b{left:40px;transform:rotate(var(--leg-b,-18deg))}.walker-leg:after{content:"";position:absolute;bottom:-4px;left:-7px;width:25px;height:8px;border-radius:8px;background:#183f43}.daywalk-note{position:absolute;z-index:3;right:6%;bottom:11%;margin:0;color:#d6ece0;font-size:13px;text-align:right}.daywalk-note b{color:#fff;font-weight:700}.daywalk[data-phase="night"] .daywalk-stage{background:#23384b}.daywalk[data-phase="night"] .daywalk-copy,.daywalk[data-phase="night"] .daywalk-label{color:#e6efe8}.daywalk[data-phase="night"] .daywalk-copy p{color:#bbd2cc}.daywalk[data-phase="night"] .daywalk-orb{background:#f1ecce;box-shadow:0 12px 40px rgba(240,236,206,.3)}.daywalk[data-phase="night"] .daywalk-city{--windows:1}.daywalk[data-phase="night"] .daywalk-sky{background:linear-gradient(180deg,#1c2d49,#304c5a 70%,#315960)}.daywalk[data-phase="night"] .daywalk-stage:before{background:#355f69}.daywalk[data-phase="night"] .daywalk-note{color:#b9d5ce}.daywalk[data-phase="evening"] .daywalk-sky{background:linear-gradient(180deg,#df906f,#e9bf84 68%,#9bb696)}.daywalk[data-phase="evening"] .daywalk-orb{background:#f4a65f}.daywalk[data-phase="evening"] .daywalk-stage:before{background:#a2b28b}.daywalk[data-phase="break"] .walker-body{background:var(--leaf)}.daywalk[data-phase="break"] .daywalk-note b{color:var(--sun)}
+    section{padding:92px 0}.section-heading{display:flex;justify-content:space-between;gap:30px;align-items:end;margin-bottom:42px}.section-heading p{max-width:430px;margin:0;color:var(--muted);font-size:15px;word-break:keep-all}.steps{border-top:2px solid var(--ink)}.step{display:grid;grid-template-columns:110px 1fr 1.15fr;gap:24px;padding:28px 0;border-bottom:1px solid var(--line)}.step-num{font:13px "DM Mono",monospace;color:var(--tomato)}.step h3{margin:0;font-size:22px;letter-spacing:-.05em}.step p{margin:0;color:#4b5850;word-break:keep-all}.step p b{color:var(--leaf)}
+    .feature-grid{display:grid;grid-template-columns:1.3fr .7fr .7fr;gap:1px;background:var(--line);border:1px solid var(--line)}.feature{min-height:224px;padding:28px;background:var(--cream)}.feature.wide{grid-row:span 2;background:var(--leaf);color:#fff}.feature h3{margin:0 0 14px;font-size:22px;letter-spacing:-.055em}.feature p{margin:0;color:#526058;font-size:15px;word-break:keep-all}.feature.wide p{max-width:350px;color:#d4e5dc}.feature .mark{display:block;margin-bottom:55px;color:var(--sun);font:14px "DM Mono",monospace}.status{margin-top:19px;padding-top:13px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}.feature.wide .status{border-color:rgba(255,255,255,.25);color:#cae0d4}
+    .trust{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line)}.trust article{padding:34px;background:var(--cream)}.trust h3{margin:0 0 12px;font-size:23px;letter-spacing:-.055em}.trust p{margin:0;color:#526058;word-break:keep-all}.trust ul{margin:20px 0 0;padding:0;list-style:none}.trust li{padding:9px 0;border-top:1px solid var(--line);font-size:14px}.trust li:before{content:"✓";margin-right:9px;color:var(--leaf);font-weight:800}
+    .persona{padding:82px 0;background:var(--tomato);color:#fff}.persona-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:70px}.persona h2{margin:0;font-size:clamp(34px,4.7vw,56px);line-height:1.14;letter-spacing:-.07em}.persona p{margin:20px 0 0;max-width:440px;color:#fff1e9;word-break:keep-all}.rules{border-top:1px solid rgba(255,255,255,.45)}.rule{display:grid;grid-template-columns:44px 1fr;gap:12px;padding:18px 0;border-bottom:1px solid rgba(255,255,255,.35)}.rule span{font:13px "DM Mono",monospace;color:#ffe0d3}.rule b{display:block;font-size:17px;letter-spacing:-.035em}.rule small{display:block;margin-top:4px;color:#fff1e9;font-size:13px;line-height:1.55}
+    .closing{padding:96px 0;text-align:center}.closing h2{margin:0;font-size:clamp(34px,5vw,58px);letter-spacing:-.075em;line-height:1.15}.closing p{max-width:560px;margin:22px auto;color:var(--muted);word-break:keep-all}.footer{padding:27px 0;border-top:1px solid var(--line);color:var(--muted);font-size:13px}.footer-row{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}.footer a{color:var(--leaf)}
+    .daywalk-city{opacity:1;transform:translateY(var(--city-y,0px))}.daywalk-city i{height:92px}.daywalk-city i:nth-child(2n){height:132px}.daywalk-city i:nth-child(3n){height:164px}.walker{left:var(--walker-x,5%)}
+    .use-showcase{padding:82px 0;border-bottom:1px solid var(--line)}.use-head{display:flex;justify-content:space-between;gap:32px;align-items:end;margin-bottom:34px}.use-head h2{margin:0;font-size:clamp(30px,4vw,48px);line-height:1.14;letter-spacing:-.07em;word-break:keep-all}.use-head p{max-width:390px;margin:0;color:var(--muted);font-size:15px;word-break:keep-all}.use-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(260px,.75fr);gap:34px;align-items:stretch}.demo-window{position:relative;min-height:420px;padding:24px;border:1px solid #183c36;background:#183c36;color:#f4f5ed;box-shadow:14px 14px 0 var(--sun);overflow:hidden}.demo-window:after{content:"";position:absolute;width:280px;height:280px;right:-85px;bottom:-110px;border:1px solid rgba(255,255,255,.2);border-radius:50%;box-shadow:0 0 0 32px rgba(255,255,255,.04),0 0 0 64px rgba(255,255,255,.03)}.demo-bar{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,.18);padding-bottom:16px;color:#d6e5db;font:12px "DM Mono",monospace}.demo-dot{display:inline-flex;gap:5px}.demo-dot i{width:7px;height:7px;border-radius:50%;background:var(--tomato)}.demo-dot i:nth-child(2){background:var(--sun)}.demo-dot i:nth-child(3){background:#89c79b}.demo-status{position:relative;z-index:1;margin:37px 0 10px;color:#9ed1b0;font:13px "DM Mono",monospace;letter-spacing:.08em}.demo-time{position:relative;z-index:1;font:clamp(62px,8vw,98px)/1 "DM Mono",monospace;letter-spacing:-.1em;font-variant-numeric:tabular-nums}.demo-task{position:relative;z-index:1;margin:14px 0 29px;color:#f7f6e9;font-size:18px;font-weight:700}.demo-progress{position:relative;z-index:1;height:7px;background:rgba(255,255,255,.16);border-radius:99px;overflow:hidden}.demo-progress i{display:block;width:100%;height:100%;background:var(--sun);border-radius:inherit;transform:scaleX(var(--progress-scale,.18));transform-origin:left;transition:transform .35s ease}.demo-actions{position:relative;z-index:1;display:flex;gap:10px;margin-top:26px}.demo-actions button{padding:11px 16px;border:1px solid #f4f5ed;background:#f4f5ed;color:#183c36;font-weight:800;cursor:pointer}.demo-actions button:hover{background:var(--sun);border-color:var(--sun)}.demo-note{position:relative;z-index:1;margin:34px 0 0;padding-top:15px;border-top:1px solid rgba(255,255,255,.18);color:#c8ddd1;font-size:13px}.demo-steps{display:grid;gap:0;border-top:2px solid var(--ink)}.demo-step{display:grid;grid-template-columns:37px 1fr;gap:12px;padding:20px 0;border-bottom:1px solid var(--line);background:none;border-left:0;border-right:0;border-top:0;text-align:left;color:var(--ink);cursor:pointer}.demo-step:hover,.demo-step[aria-selected="true"]{color:var(--leaf)}.demo-step-index{font:13px "DM Mono",monospace;color:var(--tomato)}.demo-step strong{display:block;font-size:18px;letter-spacing:-.045em}.demo-step span{display:block;margin-top:4px;color:var(--muted);font-size:13px;line-height:1.55;word-break:keep-all}.demo-window[data-mode="break"] .demo-status{color:#f5d77d}.demo-window[data-mode="break"] .demo-progress i{background:#7fd1bd}.demo-window[data-mode="break"] .demo-task:after{content:" · 지금은 몸을 쉬게 할 차례";color:#f5d77d}.demo-window[data-mode="next"] .demo-status{color:#c6b6f1}.demo-window[data-mode="next"] .demo-progress i{background:#b59be8}.demo-window[data-mode="next"] .demo-task:after{content:" · 다음 한 단위 준비";color:#d8cafa}
+    @media (max-width:760px){.shell{width:min(100% - 32px,560px)}.nav{height:68px}.nav-links{display:none}.hero{padding:62px 0;grid-template-columns:1fr;gap:42px}.hero-copy{font-size:16px}.timer{min-height:350px}.statement,.persona-grid{grid-template-columns:1fr;gap:28px}.statement p{font-size:18px}.use-showcase{padding:68px 0}.use-head{display:block}.use-head p{margin-top:15px}.use-grid{grid-template-columns:1fr;gap:28px}.demo-window{min-height:390px;box-shadow:8px 8px 0 var(--sun)}.demo-time{font-size:76px}.section-heading{display:block}.section-heading p{margin-top:15px}.step{grid-template-columns:54px 1fr;gap:9px}.step p{grid-column:2}.feature-grid{grid-template-columns:1fr 1fr}.feature.wide{grid-column:span 2;grid-row:auto;min-height:255px}.trust{grid-template-columns:1fr}.daywalk{min-height:170vh}.daywalk-stage{top:8vh;height:77vh;min-height:510px}.daywalk-copy{top:8%;left:7%;right:7%;max-width:none}.daywalk-copy h2{font-size:clamp(34px,10vw,48px)}.daywalk-copy p{max-width:280px;font-size:14px}.daywalk-label{top:8%;right:7%}.daywalk-city{bottom:28%;height:28%;gap:7px;padding:0 3%}.daywalk-road{height:28%}.walker{transform:translateX(-50%) scale(.78);transform-origin:bottom center}.daywalk-note{right:7%;bottom:9%;font-size:12px}section{padding:68px 0}.persona{padding:66px 0}.closing{padding:72px 0}}
+    @media (max-width:420px){.feature-grid{grid-template-columns:1fr}.feature.wide{grid-column:auto}.timer-time{font-size:74px}.actions{align-items:stretch}.button{width:100%}}
+    @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.button{transition:none}.daywalk-stage,.daywalk-sky,.daywalk-orb,.daywalk-city,.walker{transition:none}.daywalk{min-height:auto;padding:68px 0}.daywalk-stage{position:relative;top:auto;height:540px}.walker{left:50%;--leg-a:12deg;--leg-b:-12deg;--arm-a:12deg;--arm-b:-12deg}}
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="hero">
-      <img class="icon" src="icon.png" alt="Auto Pomodoro 앱 아이콘 — 토마토와 시계가 결합된 포모도로 타이머 심볼">
-      <div class="tag">POMODORO TIMER · FOCUS APP</div>
-      <h1>Auto Pomodoro</h1>
-      <p class="desc">재택근무자와 개발자가 <strong>스스로 쉬는 것을 잊지 않게</strong> 돕는 포모도로 타이머. 맥과 아이폰이 함께 쉽니다.</p>
-      <div>
-        <span class="badge">🍅 25분 집중 / 5분 휴식</span>
-        <span class="badge">🔄 맥·아이폰 동기화</span>
-        <span class="badge">🛡️ 오프라인 우선</span>
-      </div>
-      <a class="cta" href="https://apps.apple.com/app/auto-pomodoro/id000000000">App Store에서 받기</a>
-    </div>
-
-    <div class="feats">
-      <div class="feat">
-        <h3>🍅 진짜 포모도로 사이클</h3>
-        <p>25분 집중과 5분 휴식을 자동 반복. 알림이 오면 반드시 쉽니다 — 앉아있는 시간을 강제로 끊어줍니다.</p>
-      </div>
-      <div class="feat">
-        <h3>🔄 맥 서버 연동 강제 휴식</h3>
-        <p>같은 Wi-Fi의 개인 맥 서버와만 통신해, 아이폰과 맥의 타이머 상태를 실시간 동기화합니다. 한쪽에서 쉬면 다른 쪽도 쉽니다.</p>
-      </div>
-      <div class="feat">
-        <h3>🛡️ 개인정보는 기기에만</h3>
-        <p>모든 타이머 기록은 기기에만 저장되고 외부 서버로 전송되지 않습니다. 개인 맥 서버 통신도 인터넷을 거치지 않습니다.</p>
-      </div>
-    </div>
-
-    <p style="text-align:center;margin-top:40px">
-      <a class="link" href="https://delight0517.github.io/releasepilot-reports/">← 릴리저 웹사이트로</a>
-    </p>
-
-    <footer>
-      Auto Pomodoro by Geungho Lee · <a class="link" href="https://delight0517.github.io/releasepilot-reports/privacy-policy/">개인정보 처리방침</a><br>
-      © 2026 Geungho Lee. All rights reserved.
-    </footer>
+  <div class="shell">
+    <nav class="nav" aria-label="주요 메뉴"><a class="brand" href="#top"><i></i>Auto Pomodoro</a><div class="nav-links"><a href="#use">사용 모습</a><a href="#features">기능</a><a href="#promise">운영 약속</a></div></nav>
+    <main id="top">
+      <header class="hero">
+        <div>
+          <h1>오늘의 일을 끝내려다<br><em>나를 놓치지 않도록.</em></h1>
+          <p class="hero-copy">Auto Pomodoro는 쉼을 미루기 쉬운 직장인, 1인 개발자, 학생을 위한 집중 타이머입니다. 해야 할 일은 선명하게, 다음 휴식은 놓치지 않게 정리합니다.</p>
+          <div class="actions"><a class="button" href="#how">3분 안에 시작하기</a><a class="button ghost" href="#features">기능 한눈에 보기</a></div>
+          <p class="quiet">다운로드·실기기 동작은 플랫폼별 검증이 끝난 뒤 안내합니다.</p>
+        </div>
+        <aside class="timer" aria-label="포모도로 타이머 미리 보기"><div class="timer-top"><span>집중 세션</span><span id="timerState">준비됨</span></div><div class="timer-time" id="timerTime">25:00</div><p class="timer-label">작은 한 단위가 끝나면, 다음 일보다 먼저 쉬는 시간을 확인합니다.</p><div class="timer-controls"><button id="startTimer" type="button">집중 시작</button><button id="resetTimer" class="secondary" type="button">처음으로</button></div><div class="timer-footer"><span>포모도로 미리 보기</span><span>25 / 5</span></div></aside>
+      </header>
+      <section class="use-showcase" id="use" aria-labelledby="use-title">
+        <div class="use-head"><h2 id="use-title">실제로는 이렇게<br>한 단위를 보냅니다.</h2><p>설명만 읽지 말고, 오른쪽 단계 버튼을 눌러 보세요. 집중 중인 화면과 휴식 알림이 어떻게 바뀌는지 바로 확인할 수 있습니다.</p></div>
+        <div class="use-grid">
+          <div class="demo-window" id="demoWindow" data-mode="focus" aria-live="polite">
+            <div class="demo-bar"><span class="demo-dot"><i></i><i></i><i></i></span><span>Auto Pomodoro / 오늘</span><span>Mac · iPhone</span></div>
+            <p class="demo-status" id="demoStatus">FOCUS / 집중 중</p><div class="demo-time" id="demoTime">25:00</div><p class="demo-task" id="demoTask">지금 할 일 하나에 머뭅니다.</p><div class="demo-progress"><i id="demoProgress"></i></div><div class="demo-actions"><button id="demoStart" type="button">집중 시작</button><button id="demoReset" type="button">초기화</button></div><p class="demo-note" id="demoNote">25분이 끝나면 다음 화면에서 휴식이 먼저 나타납니다.</p>
+          </div>
+          <div class="demo-steps" role="tablist" aria-label="사용 단계">
+            <button class="demo-step" type="button" role="tab" aria-selected="true" data-demo-mode="focus"><span class="demo-step-index">01</span><span><strong>집중 시작</strong><span>할 일을 하나 고르고 타이머를 시작합니다.</span></span></button>
+            <button class="demo-step" type="button" role="tab" aria-selected="false" data-demo-mode="break"><span class="demo-step-index">02</span><span><strong>휴식 알림</strong><span>알림이 오면 물을 마시고 화면에서 잠시 멀어집니다.</span></span></button>
+            <button class="demo-step" type="button" role="tab" aria-selected="false" data-demo-mode="next"><span class="demo-step-index">03</span><span><strong>다음 세션</strong><span>기록을 남기고 다음 한 단위를 가볍게 시작합니다.</span></span></button>
+          </div>
+        </div>
+      </section>
+      <div class="statement"><h2>휴식은<br>보상이 아닙니다.</h2><p>집중은 오래 버티는 힘이 아니라, <strong>다시 돌아올 여지를 남기는 리듬</strong>에 가깝습니다. 이 앱은 “잠깐만 더”가 습관이 된 하루에서 다음 쉼을 보이게 합니다.</p></div>
+      <section class="daywalk" id="daywalk" data-phase="morning" aria-label="출근부터 퇴근까지, 낮과 밤을 따라 걷는 직장인 장면">
+        <div class="daywalk-stage">
+          <div class="daywalk-sky"><div class="daywalk-orb" aria-hidden="true"></div></div>
+          <div class="daywalk-copy"><p class="daywalk-kicker">A DAY WITH ENOUGH AIR</p><h2>하루가 바뀌어도<br>걸음은 이어집니다.</h2><p>스크롤을 천천히 내려 보세요. 출근하는 아침부터 집중하는 낮, 쉬어 가는 저녁과 집으로 돌아가는 밤까지 이어집니다.</p></div>
+          <div class="daywalk-label" aria-live="polite"><span>오늘의 장면</span><strong id="daywalkPhase">아침 — 출근</strong></div>
+          <div class="daywalk-city" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="daywalk-road" aria-hidden="true"></div>
+          <div class="walker" aria-hidden="true"><i class="walker-head"></i><i class="walker-body"></i><i class="walker-arm"></i><i class="walker-arm arm-b"></i><i class="walker-leg"></i><i class="walker-leg leg-b"></i></div>
+          <p class="daywalk-note"><b>잠깐 멈춰도</b><br>하루는 계속됩니다.</p>
+        </div>
+      </section>
+      <section id="how"><div class="section-heading"><h2>포모도로, 이렇게 쓰세요.</h2><p>정답은 25분이 아닙니다. 먼저 기본 리듬으로 시작하고, 업무와 몸의 반응에 맞춰 시간을 조절하면 됩니다.</p></div><div class="steps"><article class="step"><div class="step-num">01</div><h3>하나만 고릅니다.</h3><p>지금 할 일을 <b>한 문장</b>으로 정합니다. “기획서 1쪽 초안”, “버그 재현”처럼 끝을 알아볼 수 있게요.</p></article><article class="step"><div class="step-num">02</div><h3>25분 동안 시작합니다.</h3><p>알림과 다른 할 일을 잠시 치우고 한 가지에만 머뭅니다. 필요하면 집중·휴식 시간을 직접 바꿀 수 있습니다.</p></article><article class="step"><div class="step-num">03</div><h3>5분은 자리를 비웁니다.</h3><p>물 한 잔, 먼 곳 보기, 가벼운 스트레칭. 휴식도 타이머의 일부입니다. 네 번의 집중 뒤에는 긴 휴식으로 이어갑니다.</p></article></div></section>
+      <section id="features"><div class="section-heading"><h2>지금 재현된 기능을<br>한 장에 모았습니다.</h2><p>이미 코드에 있는 기능과 아직 실기기 검증이 필요한 기능을 구분해 적었습니다. 기대보다 정확한 안내를 먼저 드립니다.</p></div><div class="feature-grid"><article class="feature wide"><span class="mark">01 / FOCUS RHYTHM</span><h3>집중·짧은 휴식·긴 휴식을<br>하루의 흐름으로</h3><p>기본 사이클을 시작점으로 삼고, 시간대별 길이와 자동 진행을 조절합니다. 휴식 음악, 태그 목표, 통계도 같은 흐름 안에서 관리합니다.</p><p class="status">코드 확인: 시간대별 설정 · 휴식 음악 · 태그 목표 · 통계 UI</p></article><article class="feature"><h3>휴식을 지키는 잠금</h3><p>빡센 Lock 모드에서는 휴식 건너뛰기와 숨기기를 같은 정책으로 막습니다. 버튼만 가리는 방식이 아닙니다.</p><p class="status">코드 확인 · 외부 앱 차단의 실효성은 별도 검증</p></article><article class="feature"><h3>기기 사이 타이머</h3><p>계정 기반 동기화와 수동 맞추기 경로를 제공합니다. 한 기기에서 바뀐 타이머를 다른 기기에도 이어 가는 구조입니다.</p><p class="status">코드 확인 · Mac·Windows·iPhone 실사용 왕복은 계속 검증 중</p></article><article class="feature"><h3>나에게 맞춘 설정</h3><p>집중·휴식 길이, 예외 앱, 사용 금지 시간, 자동 실행과 휴식 중 일시정지 정책을 설정합니다.</p><p class="status">코드 확인 · OS별 적용 범위는 다를 수 있음</p></article><article class="feature"><h3>대화로 조정하는 도움</h3><p>앱 안의 AI 대화는 타이머와 잠금 설정을 구조화된 명령으로 바꾸며, 일반 UI와 같은 잠금 안전장치를 지납니다.</p><p class="status">코드 확인 · AI 응답 품질과 외부 제공 상태는 별도</p></article></div></section>
+      <section><div class="section-heading"><h2>신뢰는 기능표보다<br>경계를 밝히는 데서 시작됩니다.</h2><p>무엇이 실제로 되는지, 무엇이 아직 증명되지 않았는지를 함께 보여 드립니다.</p></div><div class="trust"><article><h3>지키는 것</h3><p>앱이 말하는 잠금과 실제 명령 처리가 어긋나지 않도록 같은 안전 경로를 사용합니다. 동기화는 오래된 변경과 충돌을 다루는 계약을 갖고 있습니다.</p><ul><li>휴식 중 우회 시도는 실제 정책에서 다시 확인</li><li>설정과 타이머 상태를 별도로 다루는 동기화 구조</li><li>선택 앱 목록·비밀번호는 피드백 진단에서 제외</li></ul></article><article><h3>아직 말하지 않는 것</h3><p>실기기에서 권한을 받은 iPhone 차단, 외부 앱 차단 성공, 모든 기기의 실시간 동기화는 코드가 있다고 해서 완료가 아닙니다. 확인 전에는 완료라고 부르지 않습니다.</p><ul><li>iPhone Screen Time 권한과 실제 shield 동작</li><li>Mac·Windows·iPhone 양방향 실사용 왕복</li><li>스토어 공개와 결제·매출 성과</li></ul></article></div></section>
+    </main>
   </div>
+  <section class="persona" id="promise"><div class="shell persona-grid"><div><h2>매출보다 먼저,<br>사람을 해치지 않는<br>운영 원칙.</h2><p>AI 운영 페르소나 ‘루프’는 월 매출 목표를 향한 실험을 돕되, 실패를 자해나 파괴의 조건으로 삼지 않습니다. 멈춤도 판단이고, 사람의 승인도 기능입니다.</p></div><div class="rules"><div class="rule"><span>01</span><div><b>검증 가능한 한 번의 실험</b><small>가설, 대상, 비용 상한, 성공 기준을 남기고 실행합니다.</small></div></div><div class="rule"><span>02</span><div><b>목표 미달은 해체가 아니라 정리</b><small>지표가 부족하면 즉시 원인·비용·다음 선택지를 보고하고, 사용자가 계속·수정·중단을 고릅니다.</small></div></div><div class="rule"><span>03</span><div><b>매출 주장은 결제 증거 뒤에</b><small>방문·관심·설치·결제·반복 매출을 같은 것으로 부풀리지 않습니다.</small></div></div></div></div></section>
+  <div class="shell"><section class="closing"><h2>오늘의 집중이 끝날 때,<br>다음 쉼도 남겨 두세요.</h2><p>아직 공개 설치 링크를 안내할 단계는 아닙니다. 업데이트와 검증 소식이 필요하면 메일로 알려 주세요.</p><div class="actions" style="justify-content:center"><a class="button" href="mailto:rogan2534@gmail.com?subject=Auto%20Pomodoro%20%EC%97%85%EB%8D%B0%EC%9D%B4%ED%8A%B8%20%EC%95%8C%EB%A6%BC%20%EC%8B%A0%EC%B2%AD">업데이트 알림 받기</a></div></section><footer class="footer"><div class="footer-row"><span>Auto Pomodoro · 웹 안내 개정 2026-09-23</span><span><a href="https://delight0517.github.io/releasepilot-reports/privacy-policy/">개인정보 처리방침</a> · <a href="https://delight0517.github.io/releasepilot-reports/">릴리저 웹사이트</a></span></div></footer></div>
+  <script>
+    (() => {
+      const initial = 25 * 60; let seconds = initial; let timer = null;
+      const time = document.querySelector('#timerTime'); const state = document.querySelector('#timerState'); const start = document.querySelector('#startTimer');
+      const draw = () => { const minutes = Math.floor(seconds / 60); const rest = String(seconds % 60).padStart(2, '0'); time.textContent = `${minutes}:${rest}`; };
+      start.addEventListener('click', () => { if (timer) return; state.textContent = '집중 중'; start.textContent = '집중 중…'; timer = window.setInterval(() => { seconds = Math.max(0, seconds - 1); draw(); if (!seconds) { clearInterval(timer); timer = null; state.textContent = '휴식 시간'; start.textContent = '5분 쉬기'; } }, 1000); });
+      document.querySelector('#resetTimer').addEventListener('click', () => { clearInterval(timer); timer = null; seconds = initial; draw(); state.textContent = '준비됨'; start.textContent = '집중 시작'; });
+    })();
+  </script>
+  <script>
+    (() => {
+      const section = document.querySelector('#daywalk');
+      const stage = section?.querySelector('.daywalk-stage');
+      const label = document.querySelector('#daywalkPhase');
+      if (!section || !stage || !label || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const phases = [
+        ['morning', '아침 — 출근'],
+        ['day', '낮 — 집중'],
+        ['break', '오후 — 잠깐 쉬기'],
+        ['night', '밤 — 집으로']
+      ];
+      let queued = false;
+      const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+      const update = () => {
+        queued = false;
+        const start = section.offsetTop - window.innerHeight * .2;
+        const end = section.offsetTop + section.offsetHeight - window.innerHeight * .8;
+        const progress = clamp((window.scrollY - start) / Math.max(1, end - start), 0, 1);
+        const phaseIndex = Math.min(phases.length - 1, Math.floor(progress * phases.length));
+        const phase = phases[phaseIndex];
+        const stride = Math.sin(progress * Math.PI * 22) * 22;
+        section.dataset.phase = phase[0];
+        section.style.setProperty('--progress', progress.toFixed(4));
+        section.style.setProperty('--walker-x', `${(5 + progress * 86).toFixed(2)}%`);
+        section.style.setProperty('--city-y', `${Math.round(progress * -8)}px`);
+        section.style.setProperty('--orb-x', `${Math.round(progress * 60)}px`);
+        section.style.setProperty('--orb-y', `${Math.round(Math.sin(progress * Math.PI) * 110)}px`);
+        section.style.setProperty('--night', Math.max(0, (progress - .68) * 3.1).toFixed(3));
+        section.style.setProperty('--moon', progress > .72 ? '1' : '0');
+        section.style.setProperty('--windows', progress > .72 ? '1' : '0');
+        section.style.setProperty('--walker-y', `${Math.round(Math.sin(progress * Math.PI * 14) * 4)}px`);
+        section.style.setProperty('--leg-a', `${Math.round(stride)}deg`);
+        section.style.setProperty('--leg-b', `${Math.round(-stride)}deg`);
+        section.style.setProperty('--arm-a', `${Math.round(-stride * .7)}deg`);
+        section.style.setProperty('--arm-b', `${Math.round(stride * .7)}deg`);
+        label.textContent = phase[1];
+      };
+      const requestUpdate = () => { if (!queued) { queued = true; window.requestAnimationFrame(update); } };
+      window.addEventListener('scroll', requestUpdate, { passive: true });
+      window.addEventListener('resize', requestUpdate, { passive: true });
+      update();
+    })();
+  </script>
+  <script>
+    (() => {
+      const demo = document.querySelector('#demoWindow');
+      const status = document.querySelector('#demoStatus');
+      const task = document.querySelector('#demoTask');
+      const note = document.querySelector('#demoNote');
+      const time = document.querySelector('#demoTime');
+      const progress = document.querySelector('#demoProgress');
+      const modes = {
+        focus: ['FOCUS / 집중 중', '지금 할 일 하나에 머뭅니다.', '25분이 끝나면 다음 화면에서 휴식이 먼저 나타납니다.', '25:00', '18%'],
+        break: ['BREAK / 휴식 시간', '화면에서 눈을 떼고 몸을 움직입니다.', '5분의 쉼도 완료한 세션으로 기록됩니다.', '05:00', '42%'],
+        next: ['NEXT / 다음 세션', '다음 한 단위를 가볍게 시작합니다.', '기록을 남기고 다시 집중할 준비가 됐습니다.', '25:00', '67%']
+      };
+      const setMode = (mode) => {
+        const next = modes[mode] || modes.focus;
+        demo.dataset.mode = mode; status.textContent = next[0]; task.textContent = next[1]; note.textContent = next[2]; time.textContent = next[3]; progress.style.setProperty('--progress-scale', parseFloat(next[4]) / 100);
+        document.querySelectorAll('[data-demo-mode]').forEach((button) => button.setAttribute('aria-selected', String(button.dataset.demoMode === mode)));
+      };
+      document.querySelectorAll('[data-demo-mode]').forEach((button) => button.addEventListener('click', () => setMode(button.dataset.demoMode)));
+      document.querySelector('#demoStart').addEventListener('click', () => { setMode('focus'); status.textContent = 'FOCUS / 실행 중'; note.textContent = '지금은 한 가지에만 머무는 시간입니다. 실제 앱은 종료 시 휴식으로 전환합니다.'; });
+      document.querySelector('#demoReset').addEventListener('click', () => setMode('focus'));
+    })();
+  </script>
 </body>
 </html>
