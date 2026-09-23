@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="쉼을 미루는 직장인, 1인 개발자, 학생을 위한 Auto Pomodoro 사용법과 기능 안내. 집중 시간은 지키고 휴식은 잊지 않게 돕습니다.">
+  <meta name="keywords" content="포모도로 타이머, 집중 타이머, 휴식 알림, 직장인 집중, 1인 개발자 생산성, 학생 공부 타이머">
   <meta name="theme-color" content="#eef0e8">
   <link rel="canonical" href="https://delight0517.github.io/releasepilot-reports/apps/pomodoro-cage/">
   <link rel="icon" type="image/png" href="icon.png">
@@ -13,6 +14,11 @@
   <meta property="og:description" content="집중과 휴식을 분리해, 바쁜 하루에도 다음 쉼을 남겨 둡니다.">
   <meta property="og:image" content="https://delight0517.github.io/releasepilot-reports/apps/pomodoro-cage/icon-180.png">
   <meta property="og:url" content="https://delight0517.github.io/releasepilot-reports/apps/pomodoro-cage/">
+  <meta property="og:site_name" content="Auto Pomodoro">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Auto Pomodoro — 쉼을 놓치지 않는 집중 타이머">
+  <meta name="twitter:description" content="집중과 휴식을 분리해, 바쁜 하루에도 다음 쉼을 남겨 두는 포모도로 타이머입니다.">
+  <meta name="twitter:image" content="https://delight0517.github.io/releasepilot-reports/apps/pomodoro-cage/icon-180.png">
   <script type="application/ld+json">
   {"@context":"https://schema.org","@type":"SoftwareApplication","name":"Auto Pomodoro","applicationCategory":"ProductivityApplication","applicationSubCategory":"Pomodoro Timer","url":"https://delight0517.github.io/releasepilot-reports/apps/pomodoro-cage/","description":"집중과 휴식의 리듬을 지키도록 돕는 포모도로 타이머.","featureList":["집중·짧은 휴식·긴 휴식","시간대별 타이머 설정","휴식 잠금 모드","통계와 태그 목표","계정 기반 타이머 동기화 지원"]}
   </script>
@@ -83,16 +89,24 @@
     </main>
   </div>
   <section class="persona" id="promise"><div class="shell persona-grid"><div><h2>매출보다 먼저,<br>사람을 해치지 않는<br>운영 원칙.</h2><p>AI 운영 페르소나 ‘루프’는 월 매출 목표를 향한 실험을 돕되, 실패를 자해나 파괴의 조건으로 삼지 않습니다. 멈춤도 판단이고, 사람의 승인도 기능입니다.</p></div><div class="rules"><div class="rule"><span>01</span><div><b>검증 가능한 한 번의 실험</b><small>가설, 대상, 비용 상한, 성공 기준을 남기고 실행합니다.</small></div></div><div class="rule"><span>02</span><div><b>목표 미달은 해체가 아니라 정리</b><small>지표가 부족하면 즉시 원인·비용·다음 선택지를 보고하고, 사용자가 계속·수정·중단을 고릅니다.</small></div></div><div class="rule"><span>03</span><div><b>매출 주장은 결제 증거 뒤에</b><small>방문·관심·설치·결제·반복 매출을 같은 것으로 부풀리지 않습니다.</small></div></div></div></div></section>
-  <div class="shell"><section class="closing"><h2>오늘의 집중이 끝날 때,<br>다음 쉼도 남겨 두세요.</h2><p>아직 공개 설치 링크를 안내할 단계는 아닙니다. 업데이트와 검증 소식이 필요하면 메일로 알려 주세요.</p><div class="actions" style="justify-content:center"><a class="button" href="mailto:rogan2534@gmail.com?subject=Auto%20Pomodoro%20%EC%97%85%EB%8D%B0%EC%9D%B4%ED%8A%B8%20%EC%95%8C%EB%A6%BC%20%EC%8B%A0%EC%B2%AD">업데이트 알림 받기</a></div></section><footer class="footer"><div class="footer-row"><span>Auto Pomodoro · 웹 안내 개정 2026-09-23</span><span><a href="https://delight0517.github.io/releasepilot-reports/privacy-policy/">개인정보 처리방침</a> · <a href="https://delight0517.github.io/releasepilot-reports/">릴리저 웹사이트</a></span></div></footer></div>
+  <div class="shell"><section class="closing"><h2>오늘의 집중이 끝날 때,<br>다음 쉼도 남겨 두세요.</h2><p>아직 공개 설치 링크를 안내할 단계는 아닙니다. 업데이트와 검증 소식이 필요하면 메일로 알려 주세요.</p><div class="actions" style="justify-content:center"><a class="button" href="mailto:rogan2534@gmail.com?subject=Auto%20Pomodoro%20%EC%97%85%EB%8D%B0%EC%9D%B4%ED%8A%B8%20%EC%95%8C%EB%A6%BC%20%EC%8B%A0%EC%B2%AD">업데이트 알림 받기</a><button class="button ghost" id="sharePage" type="button">친구에게 공유하기</button></div></section><footer class="footer"><div class="footer-row"><span>Auto Pomodoro · 웹 안내 개정 2026-09-23</span><span><a href="https://delight0517.github.io/releasepilot-reports/privacy-policy/">개인정보 처리방침</a> · <a href="https://delight0517.github.io/releasepilot-reports/">릴리저 웹사이트</a></span></div></footer></div>
   <script>
-    (() => {
+  (() => {
       const initial = 25 * 60; let seconds = initial; let timer = null;
       const time = document.querySelector('#timerTime'); const state = document.querySelector('#timerState'); const start = document.querySelector('#startTimer');
       const draw = () => { const minutes = Math.floor(seconds / 60); const rest = String(seconds % 60).padStart(2, '0'); time.textContent = `${minutes}:${rest}`; };
       start.addEventListener('click', () => { if (timer) return; state.textContent = '집중 중'; start.textContent = '집중 중…'; timer = window.setInterval(() => { seconds = Math.max(0, seconds - 1); draw(); if (!seconds) { clearInterval(timer); timer = null; state.textContent = '휴식 시간'; start.textContent = '5분 쉬기'; } }, 1000); });
       document.querySelector('#resetTimer').addEventListener('click', () => { clearInterval(timer); timer = null; seconds = initial; draw(); state.textContent = '준비됨'; start.textContent = '집중 시작'; });
-    })();
-  </script>
+  })();
+  (() => {
+    const share = document.querySelector('#sharePage');
+    share?.addEventListener('click', async () => {
+      const data = { title: document.title, text: '집중과 휴식을 함께 챙기는 Auto Pomodoro', url: location.href };
+      if (navigator.share) await navigator.share(data);
+      else { await navigator.clipboard?.writeText(location.href); share.textContent = '링크가 복사됐어요'; }
+    });
+  })();
+</script>
   <script>
     (() => {
       const section = document.querySelector('#daywalk');
