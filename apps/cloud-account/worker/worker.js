@@ -51,6 +51,9 @@ function safeAnalyticsText(v, max = 120) {
   if (typeof v !== "string") return "";
   return v.replace(/[^\p{L}\p{N}\s._:/#?=&-]/gu, "").slice(0, max);
 }
+function safeAnalyticsTag(v) {
+  return typeof v === "string" && /^[a-z0-9._-]{1,64}$/i.test(v) ? v.toLowerCase() : "";
+}
 
 async function getAccount(env, username) {
   const raw = await env.CLOUD_ACCOUNT_KV.get(`account:${username}`);
@@ -291,6 +294,11 @@ async function handleAnalyticsEvent(env, req) {
   const section = safeAnalyticsText(body.section, 80);
   const path = safeAnalyticsText(body.path, 160) || "/";
   const referrer = safeAnalyticsText(body.referrer, 160);
+  const country = safeAnalyticsTag(req.cf?.country);
+  const region = safeAnalyticsTag(req.cf?.regionCode);
+  const source = safeAnalyticsTag(body.source);
+  const medium = safeAnalyticsTag(body.medium);
+  const campaign = safeAnalyticsTag(body.campaign);
   const userAgent = req.headers.get("User-Agent") || "";
   const device =
     /Mobile|Android|iPhone|iPad|iPod/i.test(userAgent) ? "mobile" : "desktop";
@@ -308,6 +316,11 @@ async function handleAnalyticsEvent(env, req) {
     devices: {},
     paths: {},
     referrers: {},
+    countries: {},
+    regions: {},
+    sources: {},
+    mediums: {},
+    campaigns: {},
     updatedAt: null,
   };
 
@@ -318,9 +331,21 @@ async function handleAnalyticsEvent(env, req) {
   data.devices[device] = (data.devices[device] || 0) + 1;
   data.paths[path] = (data.paths[path] || 0) + 1;
   if (referrer) data.referrers[referrer] = (data.referrers[referrer] || 0) + 1;
+  if (country) data.countries[country] = (data.countries[country] || 0) + 1;
+  if (country && region) {
+    const regionKey = `${country}-${region}`;
+    data.regions[regionKey] = (data.regions[regionKey] || 0) + 1;
+  }
+  if (source) data.sources[source] = (data.sources[source] || 0) + 1;
+  if (medium) data.mediums[medium] = (data.mediums[medium] || 0) + 1;
+  if (campaign) data.campaigns[campaign] = (data.campaigns[campaign] || 0) + 1;
   data.updatedAt = now.toISOString();
 
-  await env.CLOUD_ACCOUNT_KV.put(key, JSON.stringify(data));
+  if (appId === "app-development") {
+    await env.CLOUD_ACCOUNT_KV.put(key, JSON.stringify(data), { expirationTtl: 15552000 });
+  } else {
+    await env.CLOUD_ACCOUNT_KV.put(key, JSON.stringify(data));
+  }
   return json({ ok: true });
 }
 
@@ -339,6 +364,11 @@ async function handleAnalyticsSummary(env, url) {
     devices: {},
     paths: {},
     referrers: {},
+    countries: {},
+    regions: {},
+    sources: {},
+    mediums: {},
+    campaigns: {},
     daily: [],
   };
   const visitors = {};
@@ -361,6 +391,11 @@ async function handleAnalyticsSummary(env, url) {
       devices: data.devices,
       paths: data.paths,
       referrers: data.referrers,
+      countries: data.countries,
+      regions: data.regions,
+      sources: data.sources,
+      mediums: data.mediums,
+      campaigns: data.campaigns,
     })) {
       for (const [name, count] of Object.entries(values || {})) {
         totals[bucket][name] = (totals[bucket][name] || 0) + count;
