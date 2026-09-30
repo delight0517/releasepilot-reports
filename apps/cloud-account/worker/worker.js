@@ -291,6 +291,7 @@ async function handleAnalyticsEvent(env, req) {
   if (!isValidEventName(event)) return json({ error: "event 형식이 올바르지 않습니다." }, 400);
 
   const visitorId = safeAnalyticsText(body.visitorId, 80) || "anonymous";
+  const monthlyVisitorId = safeAnalyticsText(body.monthlyVisitorId, 80);
   const section = safeAnalyticsText(body.section, 80);
   const path = safeAnalyticsText(body.path, 160) || "/";
   const referrer = safeAnalyticsText(body.referrer, 160);
@@ -311,6 +312,7 @@ async function handleAnalyticsEvent(env, req) {
     day,
     totalEvents: 0,
     uniqueVisitors: {},
+    monthlyVisitors: {},
     events: {},
     sections: {},
     devices: {},
@@ -324,21 +326,26 @@ async function handleAnalyticsEvent(env, req) {
     updatedAt: null,
   };
 
-  data.totalEvents += 1;
+  const monthlyVisitors = data.monthlyVisitors || (data.monthlyVisitors = {});
+  const backfillOnly = appId === "selah" && !!data.uniqueVisitors[visitorId] && !!monthlyVisitorId && !monthlyVisitors[monthlyVisitorId];
   data.uniqueVisitors[visitorId] = true;
-  data.events[event] = (data.events[event] || 0) + 1;
-  if (section) data.sections[section] = (data.sections[section] || 0) + 1;
-  data.devices[device] = (data.devices[device] || 0) + 1;
-  data.paths[path] = (data.paths[path] || 0) + 1;
-  if (referrer) data.referrers[referrer] = (data.referrers[referrer] || 0) + 1;
-  if (country) data.countries[country] = (data.countries[country] || 0) + 1;
-  if (country && region) {
-    const regionKey = `${country}-${region}`;
-    data.regions[regionKey] = (data.regions[regionKey] || 0) + 1;
+  if (monthlyVisitorId) monthlyVisitors[monthlyVisitorId] = true;
+  if (!backfillOnly) {
+    data.totalEvents += 1;
+    data.events[event] = (data.events[event] || 0) + 1;
+    if (section) data.sections[section] = (data.sections[section] || 0) + 1;
+    data.devices[device] = (data.devices[device] || 0) + 1;
+    data.paths[path] = (data.paths[path] || 0) + 1;
+    if (referrer) data.referrers[referrer] = (data.referrers[referrer] || 0) + 1;
+    if (country) data.countries[country] = (data.countries[country] || 0) + 1;
+    if (country && region) {
+      const regionKey = `${country}-${region}`;
+      data.regions[regionKey] = (data.regions[regionKey] || 0) + 1;
+    }
+    if (source) data.sources[source] = (data.sources[source] || 0) + 1;
+    if (medium) data.mediums[medium] = (data.mediums[medium] || 0) + 1;
+    if (campaign) data.campaigns[campaign] = (data.campaigns[campaign] || 0) + 1;
   }
-  if (source) data.sources[source] = (data.sources[source] || 0) + 1;
-  if (medium) data.mediums[medium] = (data.mediums[medium] || 0) + 1;
-  if (campaign) data.campaigns[campaign] = (data.campaigns[campaign] || 0) + 1;
   data.updatedAt = now.toISOString();
 
   if (appId === "app-development") {
@@ -351,12 +358,15 @@ async function handleAnalyticsEvent(env, req) {
 
 async function handleAnalyticsSummary(env, url, request) {
   const appId = url.searchParams.get("appId") || "everytime-reminder";
-  const days = Math.max(1, Math.min(90, Number(url.searchParams.get("days") || 30)));
+  const now = new Date();
+  const period = url.searchParams.get("period") || "";
+  const days = period === "month" ? now.getUTCDate() : Math.max(1, Math.min(90, Number(url.searchParams.get("days") || 30)));
   if (!isValidAppId(appId)) return json({ error: "appId 형식이 올바르지 않습니다." }, 400);
 
   const totals = {
     appId,
     days,
+    period: period === "month" ? "utc-calendar-month" : "rolling-days",
     totalEvents: 0,
     uniqueVisitors: 0,
     events: {},
@@ -372,7 +382,6 @@ async function handleAnalyticsSummary(env, url, request) {
     daily: [],
   };
   const visitors = {};
-  const now = new Date();
   for (let i = 0; i < days; i += 1) {
     const d = new Date(now);
     d.setUTCDate(now.getUTCDate() - i);
@@ -384,7 +393,7 @@ async function handleAnalyticsSummary(env, url, request) {
     }
     const data = JSON.parse(raw);
     totals.totalEvents += data.totalEvents || 0;
-    Object.assign(visitors, data.uniqueVisitors || {});
+    Object.assign(visitors, period === "month" ? data.monthlyVisitors || {} : data.uniqueVisitors || {});
     for (const [bucket, values] of Object.entries({
       events: data.events,
       sections: data.sections,
