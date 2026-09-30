@@ -349,7 +349,7 @@ async function handleAnalyticsEvent(env, req) {
   return json({ ok: true });
 }
 
-async function handleAnalyticsSummary(env, url) {
+async function handleAnalyticsSummary(env, url, request) {
   const appId = url.searchParams.get("appId") || "everytime-reminder";
   const days = Math.max(1, Math.min(90, Number(url.searchParams.get("days") || 30)));
   if (!isValidAppId(appId)) return json({ error: "appId 형식이 올바르지 않습니다." }, 400);
@@ -409,6 +409,7 @@ async function handleAnalyticsSummary(env, url) {
   }
   totals.uniqueVisitors = Object.keys(visitors).length;
   totals.daily.reverse();
+  totals.viewerCountry = safeAnalyticsTag(request.cf?.country).toUpperCase();
   return json(totals);
 }
 
@@ -423,7 +424,7 @@ export default {
       if (url.pathname === "/api/save" && request.method === "POST") return await handleSave(env, request);
       if (url.pathname === "/api/get" && request.method === "GET") return await handleGet(env, url);
       if (url.pathname === "/analytics/event" && request.method === "POST") return await handleAnalyticsEvent(env, request);
-      if (url.pathname === "/analytics/summary" && request.method === "GET") return await handleAnalyticsSummary(env, url);
+      if (url.pathname === "/analytics/summary" && request.method === "GET") return await handleAnalyticsSummary(env, url, request);
       return json({ error: "Not found" }, 404);
     } catch (e) {
       return json({ error: `서버 오류: ${e.message}` }, 500);
