@@ -45,6 +45,16 @@
   h1 { font-family: var(--serif); font-weight: 400; font-size: 24px; margin: 0; }
   .handle { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; color: var(--ink-faint); margin: 3px 0 0; }
 
+  .selah-link { display: flex; align-items: center; justify-content: space-between; gap: 18px;
+    margin: 0 0 16px; padding: 19px 22px; border: 1px solid var(--hot);
+    border-radius: 16px; background: linear-gradient(115deg, var(--hot-soft), var(--card) 75%); }
+  .selah-link:hover { transform: translateY(-2px); }
+  .selah-link:focus-visible { outline: 3px solid var(--cyan); outline-offset: 3px; }
+  .selah-link .eyebrow { margin: 0 0 3px; color: var(--hot); font: 10px var(--mono); letter-spacing: .08em; }
+  .selah-link .title { margin: 0; font-family: var(--serif); font-size: 18px; }
+  .selah-link .description { margin: 3px 0 0; color: var(--ink-dim); font-size: 12px; }
+  .selah-link .arrow { flex: none; color: var(--hot); font-size: 22px; }
+
   .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
   .tile { position: relative; border-radius: 16px; overflow: hidden; border: 1px solid var(--line);
     background: var(--card); aspect-ratio: 1 / 1; transition: transform .15s ease, border-color .15s ease; }
@@ -86,6 +96,15 @@
       <p class="handle">자체 호스팅 링크 허브 · rogankimwashere</p>
     </div>
   </div>
+
+  <a class="selah-link" href="https://delight0517.github.io/selah-bible-meditation/?utm_source=instagram&amp;utm_medium=profile&amp;utm_campaign=selah_ko_oct2026" target="_blank" rel="noopener" aria-label="Selah 말씀 묵상 앱 열기">
+    <div>
+      <p class="eyebrow">Selah · 말씀 묵상</p>
+      <p class="title">마태복음부터, 오늘의 묵상을 시작해요</p>
+      <p class="description">말씀을 읽고 묵상과 기도를 기록하는 무료 웹 앱</p>
+    </div>
+    <span class="arrow" aria-hidden="true">↗</span>
+  </a>
 
   <div class="grid" id="listMount">
     <p class="empty">불러오는 중...</p>
