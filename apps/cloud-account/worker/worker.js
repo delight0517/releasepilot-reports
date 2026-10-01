@@ -301,9 +301,10 @@ async function handleAnalyticsEvent(env, req) {
   const medium = safeAnalyticsTag(body.medium);
   const campaign = safeAnalyticsTag(body.campaign);
   const userAgent = req.headers.get("User-Agent") || "";
-  const device = /iPad|Tablet/i.test(userAgent) || (/Android/i.test(userAgent) && !/Mobile/i.test(userAgent))
+  const isTablet = /iPad|Tablet/i.test(userAgent) || (/Android/i.test(userAgent) && !/Mobile/i.test(userAgent));
+  const device = appId === "selah" && isTablet
     ? "tablet"
-    : /Mobile|Android|iPhone|iPod/i.test(userAgent) ? "mobile" : "desktop";
+    : /Mobile|Android|iPhone|iPad|iPod/i.test(userAgent) ? "mobile" : "desktop";
   const now = new Date();
   const day = dayKeyFromDate(now);
   const key = `analytics:${appId}:${day}`;
