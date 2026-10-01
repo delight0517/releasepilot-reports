@@ -22,7 +22,7 @@ const JSON_HEADERS = { "Content-Type": "application/json; charset=utf-8" };
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  "Access-Control-Allow-Headers": "Content-Type",
 };
 
 function json(body, status = 200) {
@@ -373,7 +373,7 @@ async function handleAnalyticsEvent(env, req) {
   return json({ ok: true });
 }
 
-async function handleAnalyticsSummary(env, url, request, developer = false) {
+async function handleAnalyticsSummary(env, url, request) {
   const appId = url.searchParams.get("appId") || "everytime-reminder";
   const now = new Date();
   const period = url.searchParams.get("period") || "";
@@ -409,19 +409,17 @@ async function handleAnalyticsSummary(env, url, request, developer = false) {
     const day = dayKeyFromDate(d);
     const raw = await env.CLOUD_ACCOUNT_KV.get(`analytics:${appId}:${day}`);
     if (!raw) {
-      totals.daily.push({ day, totalEvents: 0, uniqueVisitors: 0, pageViews: 0, ...(developer ? { uniqueVisitorsByDevice: {} } : {}) });
+      totals.daily.push({ day, totalEvents: 0, uniqueVisitors: 0, pageViews: 0, uniqueVisitorsByDevice: {} });
       continue;
     }
     const data = JSON.parse(raw);
-    if (developer) {
-      for (const id of Object.keys(data.monthlyVisitors || {})) {
-        const seenDays = monthlyVisitorDays[id] || (monthlyVisitorDays[id] = {});
-        seenDays[day] = true;
-      }
-      for (const [kind, ids] of Object.entries(data.uniqueVisitorsByDevice || {})) {
-        const seen = deviceVisitors[kind] || (deviceVisitors[kind] = {});
-        Object.assign(seen, ids || {});
-      }
+    for (const id of Object.keys(data.monthlyVisitors || {})) {
+      const seenDays = monthlyVisitorDays[id] || (monthlyVisitorDays[id] = {});
+      seenDays[day] = true;
+    }
+    for (const [kind, ids] of Object.entries(data.uniqueVisitorsByDevice || {})) {
+      const seen = deviceVisitors[kind] || (deviceVisitors[kind] = {});
+      Object.assign(seen, ids || {});
     }
     totals.totalEvents += data.totalEvents || 0;
     Object.assign(visitors, period === "month" ? data.monthlyVisitors || {} : data.uniqueVisitors || {});
@@ -449,7 +447,7 @@ async function handleAnalyticsSummary(env, url, request, developer = false) {
       uniqueVisitors: Object.keys(data.uniqueVisitors || {}).length,
       pageViews: data.events?.["page:view"] || 0,
     };
-    if (developer) daily.uniqueVisitorsByDevice = Object.fromEntries(
+    daily.uniqueVisitorsByDevice = Object.fromEntries(
       Object.entries(data.uniqueVisitorsByDevice || {}).map(([kind, ids]) => [kind, Object.keys(ids || {}).length])
     );
     totals.daily.push(daily);
@@ -458,16 +456,14 @@ async function handleAnalyticsSummary(env, url, request, developer = false) {
   totals.pageViews = totals.events["page:view"] || 0;
   totals.daily.reverse();
   totals.viewerCountry = safeAnalyticsTag(request.cf?.country).toUpperCase();
-  if (developer) {
-    const returningVisitors = Object.values(monthlyVisitorDays).filter(seenDays => Object.keys(seenDays).length > 1).length;
-    const dailyVisitorSum = totals.daily.reduce((sum, item) => sum + item.uniqueVisitors, 0);
-    totals.developerStats = {
-      returningVisitors,
-      returnRate: totals.uniqueVisitors ? returningVisitors / totals.uniqueVisitors : 0,
-      averageDailyVisitors: days ? dailyVisitorSum / days : 0,
-      uniqueVisitorsByDevice: Object.fromEntries(Object.entries(deviceVisitors).map(([kind, ids]) => [kind, Object.keys(ids).length])),
-    };
-  }
+  const returningVisitors = Object.values(monthlyVisitorDays).filter(seenDays => Object.keys(seenDays).length > 1).length;
+  const dailyVisitorSum = totals.daily.reduce((sum, item) => sum + item.uniqueVisitors, 0);
+  totals.developerStats = {
+    returningVisitors,
+    returnRate: totals.uniqueVisitors ? returningVisitors / totals.uniqueVisitors : 0,
+    averageDailyVisitors: days ? dailyVisitorSum / days : 0,
+    uniqueVisitorsByDevice: Object.fromEntries(Object.entries(deviceVisitors).map(([kind, ids]) => [kind, Object.keys(ids).length])),
+  };
   return json(totals);
 }
 async function handleAnalyticsDeveloperSummary(env, url, request) {
@@ -502,7 +498,6 @@ export default {
       if (url.pathname === "/api/get" && request.method === "GET") return await handleGet(env, url);
       if (url.pathname === "/analytics/event" && request.method === "POST") return await handleAnalyticsEvent(env, request);
       if (url.pathname === "/analytics/summary" && request.method === "GET") return await handleAnalyticsSummary(env, url, request);
-      if (url.pathname === "/analytics/developer-summary" && request.method === "GET") return await handleAnalyticsDeveloperSummary(env, url, request);
       return json({ error: "Not found" }, 404);
     } catch (e) {
       return json({ error: `서버 오류: ${e.message}` }, 500);
