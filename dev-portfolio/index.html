@@ -83,6 +83,15 @@
       "operatingSystem": "Windows, macOS",
       "softwareVersion": "1.0.1",
       "description": "Electron 기반 데스크톱 상시형 뽀모도로 타이머."
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "Selah · 말씀 묵상",
+      "author": { "@type": "Person", "name": "김근후" },
+      "url": "https://delight0517.github.io/selah-bible-meditation/",
+      "applicationCategory": "LifestyleApplication",
+      "operatingSystem": "Web",
+      "description": "마태복음부터 시작하는 다국어 성경 묵상 웹앱. 개인 묵상·기도 기록, 직접 만든 복습 퀴즈, 구절 공유 흐름을 제공하며 필리핀어 리더에는 Ang Biblia (1905) 66권과 기기 내 메모·하이라이트·북마크가 있습니다."
     }
   ]
 }
@@ -183,6 +192,8 @@
   .case-body { flex: 1; min-width: 0; }
   .case-top { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
   .case-name { font-family: var(--serif); font-size: 17px; font-weight: 400; }
+  .case-live-link { color: var(--accent-ink); text-underline-offset: 3px; }
+  .case-live-link:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
   .case-stage { font-family: var(--mono); font-size: 10px; color: var(--ink-faint); margin-left: auto; }
   .case-problem { font-size: 13.5px; color: var(--ink-dim); margin: 8px 0 0; line-height: 1.6; }
   .case-problem b { color: var(--ink); }
@@ -293,6 +304,12 @@
 // "촬영 예정"으로 정직하게 표시하고, 아이콘이 서로 중복된 파일이면 그것도 숨기지 않는다.
 const CASES = [
   {
+    slug: 'selah', name: 'Selah · 말씀 묵상', glyph: '✳', url: 'https://delight0517.github.io/selah-bible-meditation/',
+    problem: '<b>목표</b>: 성경 읽기와 개인 묵상을 한 흐름으로 잇는다. <b>구현</b>: 마태복음부터 시작하는 다국어 웹앱으로 묵상·기도 노트, 직접 만든 복습 퀴즈, 구절 공유를 제공한다. 필리핀어 리더에는 Ang Biblia (1905) 66권과 기기에 저장되는 메모·하이라이트·북마크가 있다.',
+    stack: ['Web', 'HTML / CSS / JavaScript', 'Bible meditation', 'Localization'],
+    hasIcon: false, shotNote: null
+  },
+  {
     slug: '4vpn-blocker', name: '4VPN Blocker', glyph: null,
     problem: '<b>문제</b>: 스스로 만든 규칙을 스스로 우회하는 게 자기통제 앱의 근본적 약점이다. <b>해결</b>: 강제종료·확장 삭제·스케줄 잠금 우회를 막는 방어적 설계를 macOS 네이티브(Swift)로 구현, Windows 포팅 진행 중.',
     stack: ['Swift', 'macOS 시스템 API', 'Chrome/Firefox 확장'],
@@ -331,9 +348,9 @@ const CASES = [
   {
     // 2026-08-10 사용자 지시: 이 포트폴리오는 "지금 개발중인 앱들"에 대한 포트폴리오여야
     // 하고, 이 도구 자신(ReleasePilot)의 기능 소개가 되면 안 됨 — 맨 뒤로 내리고
-    // "개발 도구"로 명확히 구분. 위 6개(실제 출시 대상 앱)가 먼저 보이는 순서로 재배치.
+    // "개발 도구"로 명확히 구분. 위 7개(실제 출시 대상 앱)가 먼저 보이는 순서로 재배치.
     slug: 'releasepilot', name: 'ReleasePilot (개발용 내부 도구, 출시 앱 아님)', glyph: '🛠️',
-    problem: '<b>문제</b>: 여러 앱을 혼자 만들다 보니 "출시까지 뭐가 남았는지", "어느 컴퓨터에 뭐가 있는지"를 매번 기억에 의존했다. <b>해결</b>: 앱 등록→분석→MVP 메타데이터→진행 트래킹을 하나의 Flutter 데스크톱 앱으로 통합, API 토큰 없이 git을 "공유 디스크"로 쓰는 동기화 아키텍처를 직접 설계. 위 6개 앱을 만드는 과정에서 반복된 문제를 해결하려고 만든 사내 도구이지, 그 자체가 출시 제품은 아님.',
+    problem: '<b>문제</b>: 여러 앱을 혼자 만들다 보니 "출시까지 뭐가 남았는지", "어느 컴퓨터에 뭐가 있는지"를 매번 기억에 의존했다. <b>해결</b>: 앱 등록→분석→MVP 메타데이터→진행 트래킹을 하나의 Flutter 데스크톱 앱으로 통합, API 토큰 없이 git을 "공유 디스크"로 쓰는 동기화 아키텍처를 직접 설계. 위 7개 앱을 만드는 과정에서 반복된 문제를 해결하려고 만든 사내 도구이지, 그 자체가 출시 제품은 아님.',
     stack: ['Flutter', 'Dart CLI (dart:io)', 'Git-as-DB', 'Claude API(claude -p) 연동'],
     hasIcon: false, shotNote: '데스크톱 앱 UI 스크린샷 촬영 예정 — 기술 면접에서 "왜 이 도구를 만들었는지" 설명할 때 참고용'
   },
@@ -397,12 +414,16 @@ Promise.all([
       const iconHtml = c.hasIcon
         ? `<img class="case-icon" src="assets/icons/${c.slug}.png" alt="${c.name} 아이콘">`
         : `<div class="case-icon placeholder">${c.glyph || '📱'}</div>`;
+      const nameHtml = c.url
+        ? `<a class="case-name case-live-link" href="${c.url}" aria-label="${c.name} 실제 웹앱 열기">${c.name} ↗</a>`
+        : `<span class="case-name">${c.name}</span>`;
       el.innerHTML = `
         ${iconHtml}
         <div class="case-body">
           <div class="case-top">
-            <span class="case-name">${c.name}</span>
+            ${nameHtml}
             ${p ? `<span class="case-stage">${p.stageLabel} · ${p.percentTotal}%${p.version ? ' · v' + p.version : ''}</span>` : ''}
+            ${c.url ? `<span class="case-stage">웹 공개</span>` : ''}
           </div>
           <p class="case-problem">${c.problem}</p>
           <div class="case-stack">${c.stack.map(s => `<span class="case-tag" data-tag="${s.replace(/"/g,'&quot;')}">${s}</span>`).join('')}</div>
@@ -436,12 +457,12 @@ Promise.all([
 
   const chloe = document.getElementById('chloeList');
   const points = [
-    '<b>스크린샷이 거의 없다</b> — 지금 7개 프로젝트 중 실제 화면 스크린샷이 있는 건 0개. 채용 담당자는 코드보다 화면을 먼저 본다. 시뮬레이터/실기기로 5~10장씩만 찍어도 이 페이지가 완전히 달라진다.',
+    '<b>스크린샷이 거의 없다</b> — 지금 8개 프로젝트 중 실제 화면 스크린샷이 있는 건 0개. 채용 담당자는 코드보다 화면을 먼저 본다. 시뮬레이터/실기기로 5~10장씩만 찍어도 이 페이지가 완전히 달라진다.',
     '<b>ox-quiz와 harugirok 앱 아이콘이 완전히 같은 파일</b> — 둘 중 하나(혹은 둘 다)가 Flutter 기본 아이콘을 안 바꾼 채로 남아있다는 뜻. 최소 하나는 실제로 디자인해서 교체할 것.',
     '<b>"임팩트"를 말할 수 있는 프로젝트가 아직 없다</b> — 사용자 수/리뷰/수익 같은 숫자를 지어내지 말고, 대신 "왜 이 설계를 택했는지"(예: git-as-DB, pmset 로그 파싱 같은 기술적 판단)를 케이스 스터디에 한 단락씩 더 쓰면 숫자 없이도 설득력이 생긴다.',
     '<b>GitHub 링크가 없다</b> — 코드를 실제로 보고 싶어하는 채용 담당자가 많다. 공개 가능한 저장소(최소 ox-quiz, ReleasePilot 자체 CLI 툴)는 README 정리 후 링크를 이 페이지에 추가할 것.',
     '<b>연락처/이력서 링크가 없다</b> — 포트폴리오는 보고 끝나면 의미가 없다. 이메일 또는 이력서 PDF 링크를 hero 영역에 추가해야 실제로 "다음 행동"으로 이어진다.',
-    '<b>2026-08-10 정정 — ReleasePilot을 대표작으로 미는 방향은 철회</b> — 사용자 지시: 이 포트폴리오는 "지금 개발중인 앱들"에 대한 포트폴리오여야지, 개발 도구(ReleasePilot) 자신의 기능 소개가 되면 안 된다. 그래서 이전 조언("ReleasePilot을 대표작으로 밀 것")은 취소하고, 6개 실제 출시 대상 앱을 목록 상단으로 올리고 ReleasePilot은 맨 뒤에 "개발용 내부 도구, 출시 앱 아님"으로 명확히 구분해뒀다. 다만 기술 면접에서 "왜 이 도구를 만들었는지"는 여전히 좋은 소재이니 완전히 지우지는 않았다.',
+    '<b>2026-08-10 정정 — ReleasePilot을 대표작으로 미는 방향은 철회</b> — 사용자 지시: 이 포트폴리오는 "지금 개발중인 앱들"에 대한 포트폴리오여야지, 개발 도구(ReleasePilot) 자신의 기능 소개가 되면 안 된다. 그래서 이전 조언("ReleasePilot을 대표작으로 밀 것")은 취소하고, 7개 실제 출시 대상 앱을 목록 상단으로 올리고 ReleasePilot은 맨 뒤에 "개발용 내부 도구, 출시 앱 아님"으로 명확히 구분해뒀다. 다만 기술 면접에서 "왜 이 도구를 만들었는지"는 여전히 좋은 소재이니 완전히 지우지는 않았다.',
     '<b>2026-08-10 추가</b> — 검색·태그 필터 탐색 UI를 붙였다(사용자 요청: "explore 및 검색하는 재밌는 웹사이트"). 다만 탐색 기능은 콘텐츠가 없으면 의미가 없다 — 위 스크린샷·GitHub·이력서 공백을 채우는 게 여전히 우선순위 1번이다.',
   ];
   chloe.innerHTML = points.map(p => `<li>${p}</li>`).join('');
