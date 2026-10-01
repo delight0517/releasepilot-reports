@@ -336,7 +336,7 @@ async function handleAnalyticsEvent(env, req) {
   const backfillOnly = appId === "selah" && !!data.uniqueVisitors[visitorId] && !!monthlyVisitorId && !monthlyVisitors[monthlyVisitorId];
   data.uniqueVisitors[visitorId] = true;
   if (monthlyVisitorId) monthlyVisitors[monthlyVisitorId] = true;
-  if (event === "page:view" && monthlyVisitorId) {
+  if (appId === "selah" && event === "page:view" && monthlyVisitorId) {
     const byDevice = data.uniqueVisitorsByDevice || (data.uniqueVisitorsByDevice = {});
     const deviceVisitors = byDevice[device] || (byDevice[device] = {});
     deviceVisitors[monthlyVisitorId] = true;
@@ -409,15 +409,15 @@ async function handleAnalyticsSummary(env, url, request) {
     const day = dayKeyFromDate(d);
     const raw = await env.CLOUD_ACCOUNT_KV.get(`analytics:${appId}:${day}`);
     if (!raw) {
-      totals.daily.push({ day, totalEvents: 0, uniqueVisitors: 0, pageViews: 0, uniqueVisitorsByDevice: {} });
+      totals.daily.push({ day, totalEvents: 0, uniqueVisitors: 0, pageViews: 0, ...(appId === "selah" ? { uniqueVisitorsByDevice: {} } : {}) });
       continue;
     }
     const data = JSON.parse(raw);
-    for (const id of Object.keys(data.monthlyVisitors || {})) {
+    if (appId === "selah") for (const id of Object.keys(data.monthlyVisitors || {})) {
       const seenDays = monthlyVisitorDays[id] || (monthlyVisitorDays[id] = {});
       seenDays[day] = true;
     }
-    for (const [kind, ids] of Object.entries(data.uniqueVisitorsByDevice || {})) {
+    if (appId === "selah") for (const [kind, ids] of Object.entries(data.uniqueVisitorsByDevice || {})) {
       const seen = deviceVisitors[kind] || (deviceVisitors[kind] = {});
       Object.assign(seen, ids || {});
     }
@@ -447,7 +447,7 @@ async function handleAnalyticsSummary(env, url, request) {
       uniqueVisitors: Object.keys(data.uniqueVisitors || {}).length,
       pageViews: data.events?.["page:view"] || 0,
     };
-    daily.uniqueVisitorsByDevice = Object.fromEntries(
+    if (appId === "selah") daily.uniqueVisitorsByDevice = Object.fromEntries(
       Object.entries(data.uniqueVisitorsByDevice || {}).map(([kind, ids]) => [kind, Object.keys(ids || {}).length])
     );
     totals.daily.push(daily);
@@ -456,36 +456,18 @@ async function handleAnalyticsSummary(env, url, request) {
   totals.pageViews = totals.events["page:view"] || 0;
   totals.daily.reverse();
   totals.viewerCountry = safeAnalyticsTag(request.cf?.country).toUpperCase();
-  const returningVisitors = Object.values(monthlyVisitorDays).filter(seenDays => Object.keys(seenDays).length > 1).length;
-  const dailyVisitorSum = totals.daily.reduce((sum, item) => sum + item.uniqueVisitors, 0);
-  totals.developerStats = {
-    returningVisitors,
-    returnRate: totals.uniqueVisitors ? returningVisitors / totals.uniqueVisitors : 0,
-    averageDailyVisitors: days ? dailyVisitorSum / days : 0,
-    uniqueVisitorsByDevice: Object.fromEntries(Object.entries(deviceVisitors).map(([kind, ids]) => [kind, Object.keys(ids).length])),
-  };
+  if (appId === "selah") {
+    const returningVisitors = Object.values(monthlyVisitorDays).filter(seenDays => Object.keys(seenDays).length > 1).length;
+    const dailyVisitorSum = totals.daily.reduce((sum, item) => sum + item.uniqueVisitors, 0);
+    totals.developerStats = {
+      returningVisitors,
+      returnRate: totals.uniqueVisitors ? returningVisitors / totals.uniqueVisitors : 0,
+      averageDailyVisitors: days ? dailyVisitorSum / days : 0,
+      uniqueVisitorsByDevice: Object.fromEntries(Object.entries(deviceVisitors).map(([kind, ids]) => [kind, Object.keys(ids).length])),
+    };
+  }
   return json(totals);
 }
-async function handleAnalyticsDeveloperSummary(env, url, request) {
-  if (url.searchParams.get("appId") !== "selah") return json({ error: "Invalid appId." }, 400);
-  const authorization = request.headers.get("Authorization") || "";
-  if (!/^Bearer\s+\S+$/i.test(authorization)) return json({ error: "Developer access required." }, 403);
-  try {
-    const proofResponse = await fetch("https://brainwire-f2gf.onrender.com/api/feedback/developer-proof", {
-      headers: { Authorization: authorization },
-    });
-    if (proofResponse.status === 401 || proofResponse.status === 403) return json({ error: "Developer access required." }, 403);
-    if (!proofResponse.ok) return json({ error: "Developer verification unavailable." }, 503);
-    const proof = await proofResponse.json().catch(() => ({}));
-    if (!proof.proof) return json({ error: "Developer access required." }, 403);
-  } catch {
-    return json({ error: "Developer verification unavailable." }, 503);
-  }
-  const monthUrl = new URL(url);
-  monthUrl.searchParams.set("period", "month");
-  return handleAnalyticsSummary(env, monthUrl, request, true);
-}
-
 export default {
   async fetch(request, env) {
     if (request.method === "OPTIONS") {
