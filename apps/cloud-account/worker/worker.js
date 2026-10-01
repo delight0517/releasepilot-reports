@@ -22,7 +22,7 @@ const JSON_HEADERS = { "Content-Type": "application/json; charset=utf-8" };
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
 };
 
 function json(body, status = 200) {
@@ -301,8 +301,9 @@ async function handleAnalyticsEvent(env, req) {
   const medium = safeAnalyticsTag(body.medium);
   const campaign = safeAnalyticsTag(body.campaign);
   const userAgent = req.headers.get("User-Agent") || "";
-  const device =
-    /Mobile|Android|iPhone|iPad|iPod/i.test(userAgent) ? "mobile" : "desktop";
+  const device = /iPad|Tablet/i.test(userAgent) || (/Android/i.test(userAgent) && !/Mobile/i.test(userAgent))
+    ? "tablet"
+    : /Mobile|Android|iPhone|iPod/i.test(userAgent) ? "mobile" : "desktop";
   const now = new Date();
   const day = dayKeyFromDate(now);
   const key = `analytics:${appId}:${day}`;
@@ -313,6 +314,7 @@ async function handleAnalyticsEvent(env, req) {
     totalEvents: 0,
     uniqueVisitors: {},
     monthlyVisitors: {},
+    uniqueVisitorsByDevice: {},
     events: {},
     sections: {},
     devices: {},
@@ -334,6 +336,11 @@ async function handleAnalyticsEvent(env, req) {
   const backfillOnly = appId === "selah" && !!data.uniqueVisitors[visitorId] && !!monthlyVisitorId && !monthlyVisitors[monthlyVisitorId];
   data.uniqueVisitors[visitorId] = true;
   if (monthlyVisitorId) monthlyVisitors[monthlyVisitorId] = true;
+  if (event === "page:view" && monthlyVisitorId) {
+    const byDevice = data.uniqueVisitorsByDevice || (data.uniqueVisitorsByDevice = {});
+    const deviceVisitors = byDevice[device] || (byDevice[device] = {});
+    deviceVisitors[monthlyVisitorId] = true;
+  }
   if (!backfillOnly) {
     data.totalEvents += 1;
     data.events[event] = (data.events[event] || 0) + 1;
@@ -366,7 +373,7 @@ async function handleAnalyticsEvent(env, req) {
   return json({ ok: true });
 }
 
-async function handleAnalyticsSummary(env, url, request) {
+async function handleAnalyticsSummary(env, url, request, developer = false) {
   const appId = url.searchParams.get("appId") || "everytime-reminder";
   const now = new Date();
   const period = url.searchParams.get("period") || "";
@@ -394,16 +401,28 @@ async function handleAnalyticsSummary(env, url, request) {
     daily: [],
   };
   const visitors = {};
+  const monthlyVisitorDays = {};
+  const deviceVisitors = {};
   for (let i = 0; i < days; i += 1) {
     const d = new Date(now);
     d.setUTCDate(now.getUTCDate() - i);
     const day = dayKeyFromDate(d);
     const raw = await env.CLOUD_ACCOUNT_KV.get(`analytics:${appId}:${day}`);
     if (!raw) {
-      totals.daily.push({ day, totalEvents: 0, uniqueVisitors: 0, pageViews: 0 });
+      totals.daily.push({ day, totalEvents: 0, uniqueVisitors: 0, pageViews: 0, ...(developer ? { uniqueVisitorsByDevice: {} } : {}) });
       continue;
     }
     const data = JSON.parse(raw);
+    if (developer) {
+      for (const id of Object.keys(data.monthlyVisitors || {})) {
+        const seenDays = monthlyVisitorDays[id] || (monthlyVisitorDays[id] = {});
+        seenDays[day] = true;
+      }
+      for (const [kind, ids] of Object.entries(data.uniqueVisitorsByDevice || {})) {
+        const seen = deviceVisitors[kind] || (deviceVisitors[kind] = {});
+        Object.assign(seen, ids || {});
+      }
+    }
     totals.totalEvents += data.totalEvents || 0;
     Object.assign(visitors, period === "month" ? data.monthlyVisitors || {} : data.uniqueVisitors || {});
     for (const [bucket, values] of Object.entries({
@@ -424,18 +443,51 @@ async function handleAnalyticsSummary(env, url, request) {
         totals[bucket][name] = (totals[bucket][name] || 0) + count;
       }
     }
-    totals.daily.push({
+    const daily = {
       day,
       totalEvents: data.totalEvents || 0,
       uniqueVisitors: Object.keys(data.uniqueVisitors || {}).length,
       pageViews: data.events?.["page:view"] || 0,
-    });
+    };
+    if (developer) daily.uniqueVisitorsByDevice = Object.fromEntries(
+      Object.entries(data.uniqueVisitorsByDevice || {}).map(([kind, ids]) => [kind, Object.keys(ids || {}).length])
+    );
+    totals.daily.push(daily);
   }
   totals.uniqueVisitors = Object.keys(visitors).length;
   totals.pageViews = totals.events["page:view"] || 0;
   totals.daily.reverse();
   totals.viewerCountry = safeAnalyticsTag(request.cf?.country).toUpperCase();
+  if (developer) {
+    const returningVisitors = Object.values(monthlyVisitorDays).filter(seenDays => Object.keys(seenDays).length > 1).length;
+    const dailyVisitorSum = totals.daily.reduce((sum, item) => sum + item.uniqueVisitors, 0);
+    totals.developerStats = {
+      returningVisitors,
+      returnRate: totals.uniqueVisitors ? returningVisitors / totals.uniqueVisitors : 0,
+      averageDailyVisitors: days ? dailyVisitorSum / days : 0,
+      uniqueVisitorsByDevice: Object.fromEntries(Object.entries(deviceVisitors).map(([kind, ids]) => [kind, Object.keys(ids).length])),
+    };
+  }
   return json(totals);
+}
+async function handleAnalyticsDeveloperSummary(env, url, request) {
+  if (url.searchParams.get("appId") !== "selah") return json({ error: "Invalid appId." }, 400);
+  const authorization = request.headers.get("Authorization") || "";
+  if (!/^Bearer\s+\S+$/i.test(authorization)) return json({ error: "Developer access required." }, 403);
+  try {
+    const proofResponse = await fetch("https://brainwire-f2gf.onrender.com/api/feedback/developer-proof", {
+      headers: { Authorization: authorization },
+    });
+    if (proofResponse.status === 401 || proofResponse.status === 403) return json({ error: "Developer access required." }, 403);
+    if (!proofResponse.ok) return json({ error: "Developer verification unavailable." }, 503);
+    const proof = await proofResponse.json().catch(() => ({}));
+    if (!proof.proof) return json({ error: "Developer access required." }, 403);
+  } catch {
+    return json({ error: "Developer verification unavailable." }, 503);
+  }
+  const monthUrl = new URL(url);
+  monthUrl.searchParams.set("period", "month");
+  return handleAnalyticsSummary(env, monthUrl, request, true);
 }
 
 export default {
@@ -450,6 +502,7 @@ export default {
       if (url.pathname === "/api/get" && request.method === "GET") return await handleGet(env, url);
       if (url.pathname === "/analytics/event" && request.method === "POST") return await handleAnalyticsEvent(env, request);
       if (url.pathname === "/analytics/summary" && request.method === "GET") return await handleAnalyticsSummary(env, url, request);
+      if (url.pathname === "/analytics/developer-summary" && request.method === "GET") return await handleAnalyticsDeveloperSummary(env, url, request);
       return json({ error: "Not found" }, 404);
     } catch (e) {
       return json({ error: `서버 오류: ${e.message}` }, 500);
