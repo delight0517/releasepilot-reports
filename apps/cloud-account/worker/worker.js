@@ -301,8 +301,9 @@ async function handleAnalyticsEvent(env, req) {
   const medium = safeAnalyticsTag(body.medium);
   const campaign = safeAnalyticsTag(body.campaign);
   const userAgent = req.headers.get("User-Agent") || "";
-  const device =
-    /Mobile|Android|iPhone|iPad|iPod/i.test(userAgent) ? "mobile" : "desktop";
+  const device = /iPad|Tablet/i.test(userAgent) || (/Android/i.test(userAgent) && !/Mobile/i.test(userAgent))
+    ? "tablet"
+    : /Mobile|Android|iPhone|iPod/i.test(userAgent) ? "mobile" : "desktop";
   const now = new Date();
   const day = dayKeyFromDate(now);
   const key = `analytics:${appId}:${day}`;
@@ -313,6 +314,7 @@ async function handleAnalyticsEvent(env, req) {
     totalEvents: 0,
     uniqueVisitors: {},
     monthlyVisitors: {},
+    uniqueVisitorsByDevice: {},
     events: {},
     sections: {},
     devices: {},
@@ -334,6 +336,11 @@ async function handleAnalyticsEvent(env, req) {
   const backfillOnly = appId === "selah" && !!data.uniqueVisitors[visitorId] && !!monthlyVisitorId && !monthlyVisitors[monthlyVisitorId];
   data.uniqueVisitors[visitorId] = true;
   if (monthlyVisitorId) monthlyVisitors[monthlyVisitorId] = true;
+  if (appId === "selah" && event === "page:view" && monthlyVisitorId) {
+    const byDevice = data.uniqueVisitorsByDevice || (data.uniqueVisitorsByDevice = {});
+    const deviceVisitors = byDevice[device] || (byDevice[device] = {});
+    deviceVisitors[monthlyVisitorId] = true;
+  }
   if (!backfillOnly) {
     data.totalEvents += 1;
     data.events[event] = (data.events[event] || 0) + 1;
@@ -394,16 +401,26 @@ async function handleAnalyticsSummary(env, url, request) {
     daily: [],
   };
   const visitors = {};
+  const monthlyVisitorDays = {};
+  const deviceVisitors = {};
   for (let i = 0; i < days; i += 1) {
     const d = new Date(now);
     d.setUTCDate(now.getUTCDate() - i);
     const day = dayKeyFromDate(d);
     const raw = await env.CLOUD_ACCOUNT_KV.get(`analytics:${appId}:${day}`);
     if (!raw) {
-      totals.daily.push({ day, totalEvents: 0, uniqueVisitors: 0, pageViews: 0 });
+      totals.daily.push({ day, totalEvents: 0, uniqueVisitors: 0, pageViews: 0, ...(appId === "selah" ? { uniqueVisitorsByDevice: {} } : {}) });
       continue;
     }
     const data = JSON.parse(raw);
+    if (appId === "selah") for (const id of Object.keys(data.monthlyVisitors || {})) {
+      const seenDays = monthlyVisitorDays[id] || (monthlyVisitorDays[id] = {});
+      seenDays[day] = true;
+    }
+    if (appId === "selah") for (const [kind, ids] of Object.entries(data.uniqueVisitorsByDevice || {})) {
+      const seen = deviceVisitors[kind] || (deviceVisitors[kind] = {});
+      Object.assign(seen, ids || {});
+    }
     totals.totalEvents += data.totalEvents || 0;
     Object.assign(visitors, period === "month" ? data.monthlyVisitors || {} : data.uniqueVisitors || {});
     for (const [bucket, values] of Object.entries({
@@ -424,20 +441,33 @@ async function handleAnalyticsSummary(env, url, request) {
         totals[bucket][name] = (totals[bucket][name] || 0) + count;
       }
     }
-    totals.daily.push({
+    const daily = {
       day,
       totalEvents: data.totalEvents || 0,
       uniqueVisitors: Object.keys(data.uniqueVisitors || {}).length,
       pageViews: data.events?.["page:view"] || 0,
-    });
+    };
+    if (appId === "selah") daily.uniqueVisitorsByDevice = Object.fromEntries(
+      Object.entries(data.uniqueVisitorsByDevice || {}).map(([kind, ids]) => [kind, Object.keys(ids || {}).length])
+    );
+    totals.daily.push(daily);
   }
   totals.uniqueVisitors = Object.keys(visitors).length;
   totals.pageViews = totals.events["page:view"] || 0;
   totals.daily.reverse();
   totals.viewerCountry = safeAnalyticsTag(request.cf?.country).toUpperCase();
+  if (appId === "selah") {
+    const returningVisitors = Object.values(monthlyVisitorDays).filter(seenDays => Object.keys(seenDays).length > 1).length;
+    const dailyVisitorSum = totals.daily.reduce((sum, item) => sum + item.uniqueVisitors, 0);
+    totals.developerStats = {
+      returningVisitors,
+      returnRate: totals.uniqueVisitors ? returningVisitors / totals.uniqueVisitors : 0,
+      averageDailyVisitors: days ? dailyVisitorSum / days : 0,
+      uniqueVisitorsByDevice: Object.fromEntries(Object.entries(deviceVisitors).map(([kind, ids]) => [kind, Object.keys(ids).length])),
+    };
+  }
   return json(totals);
 }
-
 export default {
   async fetch(request, env) {
     if (request.method === "OPTIONS") {
