@@ -320,11 +320,15 @@ async function handleAnalyticsEvent(env, req) {
     referrers: {},
     countries: {},
     regions: {},
+    pageViewCountries: {},
+    pageViewRegions: {},
     sources: {},
     mediums: {},
     campaigns: {},
     updatedAt: null,
   };
+  data.pageViewCountries ||= {};
+  data.pageViewRegions ||= {};
 
   const monthlyVisitors = data.monthlyVisitors || (data.monthlyVisitors = {});
   const backfillOnly = appId === "selah" && !!data.uniqueVisitors[visitorId] && !!monthlyVisitorId && !monthlyVisitors[monthlyVisitorId];
@@ -341,6 +345,12 @@ async function handleAnalyticsEvent(env, req) {
     if (country && region) {
       const regionKey = `${country}-${region}`;
       data.regions[regionKey] = (data.regions[regionKey] || 0) + 1;
+      if (event === "page:view") {
+        data.pageViewRegions[regionKey] = (data.pageViewRegions[regionKey] || 0) + 1;
+      }
+    }
+    if (event === "page:view" && country) {
+      data.pageViewCountries[country] = (data.pageViewCountries[country] || 0) + 1;
     }
     if (source) data.sources[source] = (data.sources[source] || 0) + 1;
     if (medium) data.mediums[medium] = (data.mediums[medium] || 0) + 1;
@@ -376,6 +386,8 @@ async function handleAnalyticsSummary(env, url, request) {
     referrers: {},
     countries: {},
     regions: {},
+    pageViewCountries: {},
+    pageViewRegions: {},
     sources: {},
     mediums: {},
     campaigns: {},
@@ -388,7 +400,7 @@ async function handleAnalyticsSummary(env, url, request) {
     const day = dayKeyFromDate(d);
     const raw = await env.CLOUD_ACCOUNT_KV.get(`analytics:${appId}:${day}`);
     if (!raw) {
-      totals.daily.push({ day, totalEvents: 0, uniqueVisitors: 0 });
+      totals.daily.push({ day, totalEvents: 0, uniqueVisitors: 0, pageViews: 0 });
       continue;
     }
     const data = JSON.parse(raw);
@@ -402,6 +414,8 @@ async function handleAnalyticsSummary(env, url, request) {
       referrers: data.referrers,
       countries: data.countries,
       regions: data.regions,
+      pageViewCountries: data.pageViewCountries,
+      pageViewRegions: data.pageViewRegions,
       sources: data.sources,
       mediums: data.mediums,
       campaigns: data.campaigns,
@@ -414,9 +428,11 @@ async function handleAnalyticsSummary(env, url, request) {
       day,
       totalEvents: data.totalEvents || 0,
       uniqueVisitors: Object.keys(data.uniqueVisitors || {}).length,
+      pageViews: data.events?.["page:view"] || 0,
     });
   }
   totals.uniqueVisitors = Object.keys(visitors).length;
+  totals.pageViews = totals.events["page:view"] || 0;
   totals.daily.reverse();
   totals.viewerCountry = safeAnalyticsTag(request.cf?.country).toUpperCase();
   return json(totals);
