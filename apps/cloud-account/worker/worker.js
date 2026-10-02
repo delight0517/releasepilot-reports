@@ -25,6 +25,8 @@ const CORS_HEADERS = {
   "Access-Control-Allow-Headers": "Content-Type",
 };
 
+const SELAH_LOCALES = new Set(["ko", "en", "ja", "zh-CN", "zh-TW", "fil", "es", "pt-BR"]);
+
 function json(body, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
@@ -294,6 +296,8 @@ async function handleAnalyticsEvent(env, req) {
   const monthlyVisitorId = safeAnalyticsText(body.monthlyVisitorId, 80);
   const section = safeAnalyticsText(body.section, 80);
   const path = safeAnalyticsText(body.path, 160) || "/";
+  const locale = appId === "selah" && SELAH_LOCALES.has(body.locale) ? body.locale : "unknown";
+  const pagePath = appId === "selah" ? (path.split(/[?#]/, 1)[0] || "/") : path;
   const referrer = safeAnalyticsText(body.referrer, 160);
   const country = safeAnalyticsTag(req.cf?.country);
   const region = safeAnalyticsTag(req.cf?.regionCode);
@@ -326,6 +330,7 @@ async function handleAnalyticsEvent(env, req) {
     regions: {},
     pageViewCountries: {},
     pageViewRegions: {},
+    pageViewsByCountryLocalePath: {},
     sources: {},
     mediums: {},
     campaigns: {},
@@ -333,6 +338,7 @@ async function handleAnalyticsEvent(env, req) {
   };
   data.pageViewCountries ||= {};
   data.pageViewRegions ||= {};
+  data.pageViewsByCountryLocalePath ||= {};
   data.pageViewVisitors ||= {};
 
   const monthlyVisitors = data.monthlyVisitors || (data.monthlyVisitors = {});
@@ -364,6 +370,10 @@ async function handleAnalyticsEvent(env, req) {
     }
     if (event === "page:view" && country) {
       data.pageViewCountries[country] = (data.pageViewCountries[country] || 0) + 1;
+      if (appId === "selah") {
+        const key = `${country}|${locale}|${pagePath}`;
+        data.pageViewsByCountryLocalePath[key] = (data.pageViewsByCountryLocalePath[key] || 0) + 1;
+      }
     }
     if (source) data.sources[source] = (data.sources[source] || 0) + 1;
     if (medium) data.mediums[medium] = (data.mediums[medium] || 0) + 1;
@@ -401,6 +411,7 @@ async function handleAnalyticsSummary(env, url, request) {
     regions: {},
     pageViewCountries: {},
     pageViewRegions: {},
+    pageViewsByCountryLocalePath: {},
     sources: {},
     mediums: {},
     campaigns: {},
@@ -446,6 +457,7 @@ async function handleAnalyticsSummary(env, url, request) {
       regions: data.regions,
       pageViewCountries: allEventsAreSelahPageViews ? data.countries : data.pageViewCountries,
       pageViewRegions: allEventsAreSelahPageViews ? data.regions : data.pageViewRegions,
+      pageViewsByCountryLocalePath: data.pageViewsByCountryLocalePath,
       sources: data.sources,
       mediums: data.mediums,
       campaigns: data.campaigns,
