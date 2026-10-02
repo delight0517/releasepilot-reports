@@ -315,6 +315,7 @@ async function handleAnalyticsEvent(env, req) {
     totalEvents: 0,
     uniqueVisitors: {},
     monthlyVisitors: {},
+    pageViewVisitors: {},
     uniqueVisitorsByDevice: {},
     events: {},
     sections: {},
@@ -332,6 +333,7 @@ async function handleAnalyticsEvent(env, req) {
   };
   data.pageViewCountries ||= {};
   data.pageViewRegions ||= {};
+  data.pageViewVisitors ||= {};
 
   const monthlyVisitors = data.monthlyVisitors || (data.monthlyVisitors = {});
   const backfillOnly = appId === "selah" && !!data.uniqueVisitors[visitorId] && !!monthlyVisitorId && !monthlyVisitors[monthlyVisitorId];
@@ -345,6 +347,9 @@ async function handleAnalyticsEvent(env, req) {
   if (!backfillOnly) {
     data.totalEvents += 1;
     data.events[event] = (data.events[event] || 0) + 1;
+    if (appId === "app-development" && event === "page:view") {
+      data.pageViewVisitors = { ...data.pageViewVisitors, [visitorId]: true };
+    }
     if (section) data.sections[section] = (data.sections[section] || 0) + 1;
     data.devices[device] = (data.devices[device] || 0) + 1;
     data.paths[path] = (data.paths[path] || 0) + 1;
@@ -404,16 +409,20 @@ async function handleAnalyticsSummary(env, url, request) {
   const visitors = {};
   const monthlyVisitorDays = {};
   const deviceVisitors = {};
+  const appDevPageViewDays = new Map();
   for (let i = 0; i < days; i += 1) {
     const d = new Date(now);
     d.setUTCDate(now.getUTCDate() - i);
     const day = dayKeyFromDate(d);
     const raw = await env.CLOUD_ACCOUNT_KV.get(`analytics:${appId}:${day}`);
     if (!raw) {
-      totals.daily.push({ day, totalEvents: 0, uniqueVisitors: 0, pageViews: 0, ...(appId === "selah" ? { uniqueVisitorsByDevice: {} } : {}) });
+      totals.daily.push({ day, totalEvents: 0, uniqueVisitors: 0, pageViews: 0, ...(appId === "selah" ? { uniqueVisitorsByDevice: {} } : {}), ...(appId === "app-development" ? { pageViewUniqueVisitors: 0 } : {}) });
       continue;
     }
     const data = JSON.parse(raw);
+    if (appId === "app-development") for (const id of Object.keys(data.pageViewVisitors || {})) {
+      appDevPageViewDays.set(id, (appDevPageViewDays.get(id) || 0) + 1);
+    }
     if (appId === "selah") for (const id of Object.keys(data.monthlyVisitors || {})) {
       const seenDays = monthlyVisitorDays[id] || (monthlyVisitorDays[id] = {});
       seenDays[day] = true;
@@ -448,6 +457,7 @@ async function handleAnalyticsSummary(env, url, request) {
       uniqueVisitors: Object.keys(data.uniqueVisitors || {}).length,
       pageViews: data.events?.["page:view"] || 0,
     };
+    if (appId === "app-development") daily.pageViewUniqueVisitors = Object.keys(data.pageViewVisitors || {}).length;
     if (appId === "selah") daily.uniqueVisitorsByDevice = Object.fromEntries(
       Object.entries(data.uniqueVisitorsByDevice || {}).map(([kind, ids]) => [kind, Object.keys(ids || {}).length])
     );
@@ -465,6 +475,17 @@ async function handleAnalyticsSummary(env, url, request) {
       returnRate: totals.uniqueVisitors ? returningVisitors / totals.uniqueVisitors : 0,
       averageDailyVisitors: days ? dailyVisitorSum / days : 0,
       uniqueVisitorsByDevice: Object.fromEntries(Object.entries(deviceVisitors).map(([kind, ids]) => [kind, Object.keys(ids).length])),
+    };
+  }
+  if (appId === "app-development") {
+    const pageViewUniqueVisitors = appDevPageViewDays.size;
+    const returningVisitors = [...appDevPageViewDays.values()].filter(activeDays => activeDays >= 2).length;
+    totals.developerStats = {
+      pageViewUniqueVisitors,
+      returningVisitors,
+      returnRate: pageViewUniqueVisitors
+        ? Math.round((returningVisitors / pageViewUniqueVisitors) * 1000) / 10
+        : null,
     };
   }
   return json(totals);
