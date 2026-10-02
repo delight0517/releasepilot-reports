@@ -433,6 +433,9 @@ async function handleAnalyticsSummary(env, url, request) {
     }
     totals.totalEvents += data.totalEvents || 0;
     Object.assign(visitors, period === "month" ? data.monthlyVisitors || {} : data.uniqueVisitors || {});
+    const allEventsAreSelahPageViews = appId === "selah"
+      && Number(data.totalEvents || 0) > 0
+      && Number(data.totalEvents || 0) === Number(data.events?.["page:view"] || 0);
     for (const [bucket, values] of Object.entries({
       events: data.events,
       sections: data.sections,
@@ -441,8 +444,8 @@ async function handleAnalyticsSummary(env, url, request) {
       referrers: data.referrers,
       countries: data.countries,
       regions: data.regions,
-      pageViewCountries: data.pageViewCountries,
-      pageViewRegions: data.pageViewRegions,
+      pageViewCountries: allEventsAreSelahPageViews ? data.countries : data.pageViewCountries,
+      pageViewRegions: allEventsAreSelahPageViews ? data.regions : data.pageViewRegions,
       sources: data.sources,
       mediums: data.mediums,
       campaigns: data.campaigns,
