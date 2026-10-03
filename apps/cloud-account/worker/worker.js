@@ -56,6 +56,15 @@ function safeAnalyticsText(v, max = 120) {
 function safeAnalyticsTag(v) {
   return typeof v === "string" && /^[a-z0-9._-]{1,64}$/i.test(v) ? v.toLowerCase() : "";
 }
+function safeAnalyticsOrigin(v) {
+  if (typeof v !== "string") return "";
+  try {
+    const url = new URL(v);
+    return ["https:", "http:"].includes(url.protocol) ? safeAnalyticsTag(url.hostname) : "";
+  } catch {
+    return "";
+  }
+}
 
 async function getAccount(env, username) {
   const raw = await env.CLOUD_ACCOUNT_KV.get(`account:${username}`);
@@ -298,6 +307,7 @@ async function handleAnalyticsEvent(env, req) {
   const path = safeAnalyticsText(body.path, 160) || "/";
   const locale = appId === "selah" && SELAH_LOCALES.has(body.locale) ? body.locale : "unknown";
   const pagePath = appId === "selah" ? (path.split(/[?#]/, 1)[0] || "/") : path;
+  const originHost = appId === "selah" ? safeAnalyticsOrigin(req.headers.get("Origin")) : "";
   const referrer = safeAnalyticsText(body.referrer, 160);
   const country = safeAnalyticsTag(req.cf?.country);
   const region = safeAnalyticsTag(req.cf?.regionCode);
@@ -331,6 +341,7 @@ async function handleAnalyticsEvent(env, req) {
     pageViewCountries: {},
     pageViewRegions: {},
     pageViewsByCountryLocalePath: {},
+    pageViewsByOriginCountryLocalePath: {},
     sources: {},
     mediums: {},
     campaigns: {},
@@ -339,6 +350,7 @@ async function handleAnalyticsEvent(env, req) {
   data.pageViewCountries ||= {};
   data.pageViewRegions ||= {};
   data.pageViewsByCountryLocalePath ||= {};
+  data.pageViewsByOriginCountryLocalePath ||= {};
   data.pageViewVisitors ||= {};
 
   const monthlyVisitors = data.monthlyVisitors || (data.monthlyVisitors = {});
@@ -374,6 +386,10 @@ async function handleAnalyticsEvent(env, req) {
         const key = `${country}|${locale}|${pagePath}`;
         data.pageViewsByCountryLocalePath[key] = (data.pageViewsByCountryLocalePath[key] || 0) + 1;
       }
+    }
+    if (appId === "selah" && event === "page:view") {
+      const key = `${originHost || "unknown"}|${country || "unknown"}|${locale}|${pagePath}`;
+      data.pageViewsByOriginCountryLocalePath[key] = (data.pageViewsByOriginCountryLocalePath[key] || 0) + 1;
     }
     if (source) data.sources[source] = (data.sources[source] || 0) + 1;
     if (medium) data.mediums[medium] = (data.mediums[medium] || 0) + 1;
@@ -412,6 +428,7 @@ async function handleAnalyticsSummary(env, url, request) {
     pageViewCountries: {},
     pageViewRegions: {},
     pageViewsByCountryLocalePath: {},
+    pageViewsByOriginCountryLocalePath: {},
     sources: {},
     mediums: {},
     campaigns: {},
@@ -458,6 +475,7 @@ async function handleAnalyticsSummary(env, url, request) {
       pageViewCountries: allEventsAreSelahPageViews ? data.countries : data.pageViewCountries,
       pageViewRegions: allEventsAreSelahPageViews ? data.regions : data.pageViewRegions,
       pageViewsByCountryLocalePath: data.pageViewsByCountryLocalePath,
+      pageViewsByOriginCountryLocalePath: data.pageViewsByOriginCountryLocalePath,
       sources: data.sources,
       mediums: data.mediums,
       campaigns: data.campaigns,
