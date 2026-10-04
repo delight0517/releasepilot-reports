@@ -340,6 +340,10 @@ async function handleAnalyticsEvent(env, req) {
     regions: {},
     pageViewCountries: {},
     pageViewRegions: {},
+    selahPageViewVisitors: {},
+    selahPageViewVisitorsByCountry: {},
+    selahPageViewVisitorsByRegion: {},
+    selahPageViewVisitorCoverage: false,
     pageViewsByCountryLocalePath: {},
     pageViewsByOriginCountryLocalePath: {},
     sources: {},
@@ -352,6 +356,12 @@ async function handleAnalyticsEvent(env, req) {
   data.pageViewsByCountryLocalePath ||= {};
   data.pageViewsByOriginCountryLocalePath ||= {};
   data.pageViewVisitors ||= {};
+  if (appId === "selah") {
+    data.selahPageViewVisitors ||= {};
+    data.selahPageViewVisitorsByCountry ||= {};
+    data.selahPageViewVisitorsByRegion ||= {};
+    data.selahPageViewVisitorCoverage ||= false;
+  }
 
   const monthlyVisitors = data.monthlyVisitors || (data.monthlyVisitors = {});
   const backfillOnly = appId === "selah" && !!data.uniqueVisitors[visitorId] && !!monthlyVisitorId && !monthlyVisitors[monthlyVisitorId];
@@ -383,6 +393,16 @@ async function handleAnalyticsEvent(env, req) {
     if (event === "page:view" && country) {
       data.pageViewCountries[country] = (data.pageViewCountries[country] || 0) + 1;
       if (appId === "selah") {
+        data.selahPageViewVisitorCoverage = true;
+        if (!data.selahPageViewVisitors[visitorId]) {
+          data.selahPageViewVisitors[visitorId] = true;
+          const countryVisitors = data.selahPageViewVisitorsByCountry[country] || (data.selahPageViewVisitorsByCountry[country] = {});
+          countryVisitors[visitorId] = true;
+          if (region) {
+            const regionVisitors = data.selahPageViewVisitorsByRegion[`${country}-${region}`] || (data.selahPageViewVisitorsByRegion[`${country}-${region}`] = {});
+            regionVisitors[visitorId] = true;
+          }
+        }
         const key = `${country}|${locale}|${pagePath}`;
         data.pageViewsByCountryLocalePath[key] = (data.pageViewsByCountryLocalePath[key] || 0) + 1;
       }
@@ -427,6 +447,10 @@ async function handleAnalyticsSummary(env, url, request) {
     regions: {},
     pageViewCountries: {},
     pageViewRegions: {},
+    pageViewUniqueVisitors: null,
+    pageViewUniqueVisitorsByCountry: {},
+    pageViewUniqueVisitorsByRegion: {},
+    pageViewUniqueVisitorCoverage: false,
     pageViewsByCountryLocalePath: {},
     pageViewsByOriginCountryLocalePath: {},
     sources: {},
@@ -444,7 +468,7 @@ async function handleAnalyticsSummary(env, url, request) {
     const day = dayKeyFromDate(d);
     const raw = await env.CLOUD_ACCOUNT_KV.get(`analytics:${appId}:${day}`);
     if (!raw) {
-      totals.daily.push({ day, totalEvents: 0, uniqueVisitors: 0, pageViews: 0, ...(appId === "selah" ? { uniqueVisitorsByDevice: {} } : {}), ...(appId === "app-development" ? { pageViewUniqueVisitors: 0 } : {}) });
+      totals.daily.push({ day, totalEvents: 0, uniqueVisitors: 0, pageViews: 0, ...(appId === "selah" ? { uniqueVisitorsByDevice: {}, pageViewUniqueVisitors: 0, pageViewUniqueVisitorsByCountry: {}, pageViewUniqueVisitorsByRegion: {}, pageViewUniqueVisitorCoverage: true } : {}), ...(appId === "app-development" ? { pageViewUniqueVisitors: 0 } : {}) });
       continue;
     }
     const data = JSON.parse(raw);
@@ -458,6 +482,16 @@ async function handleAnalyticsSummary(env, url, request) {
     if (appId === "selah") for (const [kind, ids] of Object.entries(data.uniqueVisitorsByDevice || {})) {
       const seen = deviceVisitors[kind] || (deviceVisitors[kind] = {});
       Object.assign(seen, ids || {});
+    }
+    if (appId === "selah" && data.selahPageViewVisitors) {
+      const visitors = new Set([...Object.keys(totals.pageViewUniqueVisitorIds || {}), ...Object.keys(data.selahPageViewVisitors)]);
+      totals.pageViewUniqueVisitorIds = Object.fromEntries([...visitors].map(id => [id, true]));
+      for (const [bucket, groups] of [["pageViewUniqueVisitorsByCountry", data.selahPageViewVisitorsByCountry], ["pageViewUniqueVisitorsByRegion", data.selahPageViewVisitorsByRegion]]) {
+        for (const [name, ids] of Object.entries(groups || {})) {
+          const seen = totals[bucket][name] || (totals[bucket][name] = {});
+          Object.assign(seen, ids || {});
+        }
+      }
     }
     totals.totalEvents += data.totalEvents || 0;
     Object.assign(visitors, period === "month" ? data.monthlyVisitors || {} : data.uniqueVisitors || {});
@@ -494,9 +528,23 @@ async function handleAnalyticsSummary(env, url, request) {
     if (appId === "selah") daily.uniqueVisitorsByDevice = Object.fromEntries(
       Object.entries(data.uniqueVisitorsByDevice || {}).map(([kind, ids]) => [kind, Object.keys(ids || {}).length])
     );
+    if (appId === "selah") {
+      daily.pageViewUniqueVisitors = data.selahPageViewVisitorCoverage ? Object.keys(data.selahPageViewVisitors || {}).length : null;
+      daily.pageViewUniqueVisitorsByCountry = data.selahPageViewVisitorCoverage ? Object.fromEntries(Object.entries(data.selahPageViewVisitorsByCountry || {}).map(([name, ids]) => [name, Object.keys(ids || {}).length])) : {};
+      daily.pageViewUniqueVisitorsByRegion = data.selahPageViewVisitorCoverage ? Object.fromEntries(Object.entries(data.selahPageViewVisitorsByRegion || {}).map(([name, ids]) => [name, Object.keys(ids || {}).length])) : {};
+      daily.pageViewUniqueVisitorCoverage = !!data.selahPageViewVisitorCoverage;
+    }
     totals.daily.push(daily);
   }
   totals.uniqueVisitors = Object.keys(visitors).length;
+  if (appId === "selah") {
+    totals.pageViewUniqueVisitors = totals.pageViewUniqueVisitorIds ? Object.keys(totals.pageViewUniqueVisitorIds).length : null;
+    for (const bucket of ["pageViewUniqueVisitorsByCountry", "pageViewUniqueVisitorsByRegion"]) {
+      totals[bucket] = Object.fromEntries(Object.entries(totals[bucket]).map(([name, ids]) => [name, Object.keys(ids || {}).length]));
+    }
+    totals.pageViewUniqueVisitorCoverage = totals.daily.every(item => item.pageViewUniqueVisitorCoverage !== false);
+    delete totals.pageViewUniqueVisitorIds;
+  }
   totals.pageViews = totals.events["page:view"] || 0;
   totals.daily.reverse();
   totals.viewerCountry = safeAnalyticsTag(request.cf?.country).toUpperCase();
