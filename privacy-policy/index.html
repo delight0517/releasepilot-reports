@@ -16,38 +16,36 @@
 <body>
 
 <h1>Privacy Policy</h1>
-<p class="lang-note">Effective August 26, 2026. (한국어 버전은 아래에 있습니다 / Korean version below.)</p>
+<p class="lang-note">Effective October 5, 2026. (한국어 버전은 아래에 있습니다 / Korean version below.)</p>
 <p>This policy explains how personal data is collected and used by the applications
 provided by vivid_wave / Geungho Lee (the "Developer"), including <strong>Vintage
 Pomodoro</strong> (Windows), PomodoroCage / Auto Pomodoro (iOS), RiseSync, 사계기록
 (Harugirok), Brainwire, and 35Closer (collectively, the "Apps").</p>
 
 <h2>1. Information We Collect</h2>
-<p>The Apps process only the minimal information below, and only on the user's own device.
-No personal data is transmitted to any server operated by the Developer.</p>
+<p>Data handling differs by app and by the optional features a user enables. Timer history and settings are stored on the device by default. When Auto Pomodoro's account sync, cross-device timer sync, AI interpretation, or feedback features are used, the app sends the information described below to the services needed for that feature.</p>
 <ul>
-  <li><strong>Collected data:</strong> app usage/session history, focus/break timer session
-  records, and timer/lock settings — all stored only on the user's device (Windows local app
-  storage, iOS Documents, or Android internal storage).</li>
-  <li><strong>External transmission:</strong> None. Some apps (e.g. cross-device Pomodoro
-  sync) only communicate with a personal Mac server on the user's own local Wi-Fi network that
-  the user explicitly configures; that communication never leaves the local network.</li>
+  <li><strong>On-device data:</strong> focus and break session history, timer and lock settings, and app preferences are stored locally for app features.</li>
+  <li><strong>Auto Pomodoro account sync:</strong> When the user signs in or enables account sync, account identifiers and authentication data, plus the timer/session snapshot selected for sync, are sent to the Brainwire service at <code>brainwire-f2gf.onrender.com</code>. This is an internet service, not a LAN-only connection.</li>
+  <li><strong>Auto Pomodoro timer sync:</strong> When configured, the app sends the account name, four-digit PIN, and timer-state payload to a Cloudflare Worker at <code>cloud-account-storage.imdisablebutgodisable.workers.dev</code> so the user's devices can exchange timer state.</li>
+  <li><strong>AI interpretation:</strong> If the user asks the AI feature to interpret a message, the message and recent conversation history are sent to the Brainwire service, which routes the request to an AI provider. The provider may process the request under its own terms. Provider-specific retention is not controlled by the app and has not been established here; do not include passwords or sensitive personal information in AI messages.</li>
+  <li><strong>Feedback:</strong> When feedback is submitted, the feedback text and app/OS diagnostic details are sent to the support service. Optional contact information, screenshots, or recent chat context are sent only when the user selects and submits them.</li>
 </ul>
 
 <h2>2. Purpose of Use</h2>
 <ul>
   <li>Running the focus/break timer and displaying today's session statistics.</li>
-  <li>Syncing timer state across a user's own devices (e.g. Mac/iPhone), where applicable.</li>
+  <li>Syncing account data and timer state across the user's own devices when the user enables the relevant Auto Pomodoro feature.</li>
+  <li>Routing user-requested AI interpretation and responding to submitted support feedback.</li>
   <li>Optional break-lock features (e.g. Vintage Pomodoro's strict lock) that keep the app
   active during a scheduled break — this setting is stored locally and never leaves the device.</li>
 </ul>
 
 <h2>3. Storage and Deletion</h2>
-<p>All data is stored only on the user's device and is removed when the app is uninstalled.
-The Developer does not collect or retain any personal data on any server.</p>
+<p>On-device data is removed when the app is uninstalled, subject to the operating system's backup behavior. Data sent for Auto Pomodoro sync or support is processed by the named services; uninstalling the app does not delete server-side copies. The app does not publish a verified retention period for those services. Contact the Developer below to ask about a deletion request.</p>
 
 <h2>4. Third-Party Sharing</h2>
-<p>The Developer does not share user personal data with any third party.</p>
+<p>Auto Pomodoro sends feature data to the Brainwire service and Cloudflare Worker described above. AI interpretation requests are routed by Brainwire to an AI provider; the provider may process those requests to return a response. These transfers support the feature requested by the user. No advertising or cross-app tracking is used by Auto Pomodoro.</p>
 
 <h2>5. Your Rights</h2>
 <p>You may uninstall any app at any time to remove all data stored on your device. For any
@@ -62,32 +60,34 @@ and Google Play submissions.</footer>
 <hr>
 
 <h1>개인정보 처리방침</h1>
-<p class="lang-note">2026년 8월 26일부터 적용됩니다.</p>
+<p class="lang-note">2026년 10월 5일부터 적용됩니다.</p>
 <p>본 방침은 vivid_wave / Geungho Lee(이하 "개발자")가 제공하는 애플리케이션
 (<strong>Vintage Pomodoro</strong>(Windows), PomodoroCage / Auto Pomodoro(iOS), RiseSync,
 사계기록, Brainwire, 35Closer 등, 이하 "앱")의 개인정보 수집·이용에 관한 사항을 안내합니다.</p>
 
 <h2>1. 수집하는 개인정보</h2>
-<p>앱은 다음과 같이 최소한의 정보만을 기기 내에서 처리하며, 별도의 서버로 개인정보를 전송하지 않습니다.</p>
+<p>앱별 기능과 이용자가 켠 선택 기능에 따라 처리 방식이 다릅니다. 타이머 기록과 설정은 기본적으로 기기에 저장됩니다. Auto Pomodoro에서 계정 동기화, 기기 간 타이머 동기화, AI 해석 또는 피드백 기능을 이용하면 해당 기능에 필요한 정보가 아래 설명한 서비스로 전송됩니다.</p>
 <ul>
-  <li><strong>수집 항목:</strong> 앱 실행 기록, 포모도로/집중 세션 기록, 타이머·잠금 설정값 —
-  모두 사용자 기기(Windows 로컬 저장소 / iOS Documents / Android 내부 저장소)에만 저장됩니다.</li>
-  <li><strong>외부 전송:</strong> 없음. 일부 앱(포모도로 동기화 등)은 사용자가 직접 지정한 같은
-  Wi-Fi 네트워크 내의 개인 Mac 서버와만 통신하며, 그 통신은 외부 인터넷으로 전송되지 않습니다.</li>
+  <li><strong>기기 내 정보:</strong> 집중·휴식 세션 기록, 타이머와 잠금 설정, 앱 환경설정은 앱 기능을 위해 기기에 저장됩니다.</li>
+  <li><strong>Auto Pomodoro 계정 동기화:</strong> 이용자가 로그인하거나 계정 동기화를 켜면 계정 식별자와 인증 정보, 동기화 대상으로 선택된 타이머·세션 상태가 Brainwire 서비스(<code>brainwire-f2gf.onrender.com</code>)로 전송됩니다. 이 연결은 인터넷 서비스이며 LAN 안에서만 통신하지 않습니다.</li>
+  <li><strong>Auto Pomodoro 타이머 동기화:</strong> 설정된 경우 기기 간 타이머 상태를 교환하기 위해 계정 이름, 4자리 PIN, 타이머 상태 데이터가 Cloudflare Worker(<code>cloud-account-storage.imdisablebutgodisable.workers.dev</code>)로 전송됩니다.</li>
+  <li><strong>AI 해석:</strong> 이용자가 AI에 문장 해석을 요청하면 해당 문장과 최근 대화 내역이 Brainwire 서비스로 전송되고, Brainwire가 요청을 AI 제공자로 전달합니다. 제공자는 자체 조건에 따라 요청을 처리할 수 있습니다. 제공자별 보관 기간은 앱이 관리하지 않으며 여기서 확인되지 않았습니다. AI 메시지에 비밀번호나 민감한 개인정보를 입력하지 마세요.</li>
+  <li><strong>피드백:</strong> 피드백을 제출하면 본문과 앱·OS 진단 정보가 지원 서비스로 전송됩니다. 선택 연락처, 스크린샷, 최근 대화 내용은 이용자가 선택해 함께 제출한 경우에만 전송됩니다.</li>
 </ul>
 
 <h2>2. 개인정보의 이용 목적</h2>
 <ul>
   <li>집중·휴식 타이머 동작 및 오늘의 통계 표시</li>
-  <li>기기 간(맥/아이폰) 타이머 상태 동기화(사용자 소유 기기 간에 한정)</li>
+  <li>이용자가 Auto Pomodoro의 관련 기능을 켠 경우 본인 기기 간 계정 데이터와 타이머 상태 동기화</li>
+  <li>이용자가 요청한 AI 해석 전달과 제출한 지원 피드백 처리</li>
   <li>Vintage Pomodoro의 "실제 잠금(strict lock)" 등 선택적 휴식 강제 기능 — 설정값은 기기에만 저장됩니다.</li>
 </ul>
 
 <h2>3. 개인정보의 보관 및 파기</h2>
-<p>모든 데이터는 사용자 기기 내에 저장되며, 앱 삭제 시 함께 삭제됩니다. 개발자가 수집·보관하는 개인정보는 없습니다.</p>
+<p>기기 내 데이터는 운영체제 백업 동작에 따라 달라질 수 있으며, 앱을 삭제하면 기기의 앱 데이터가 제거됩니다. Auto Pomodoro 동기화나 지원을 위해 전송한 데이터는 위 서비스에서 처리되며 앱을 삭제해도 서버 사본이 삭제되지는 않습니다. 해당 서비스의 보관 기간은 검증된 공개 정보로 확인되지 않았습니다. 삭제 요청은 아래 개발자 연락처로 문의할 수 있습니다.</p>
 
 <h2>4. 제3자 제공</h2>
-<p>개발자는 이용자의 개인정보를 제3자에게 제공하지 않습니다.</p>
+<p>Auto Pomodoro는 위에 설명한 Brainwire 서비스와 Cloudflare Worker로 기능 데이터를 전송합니다. AI 해석 요청은 Brainwire를 통해 AI 제공자에게 전달되며, 응답을 만드는 동안 해당 제공자가 요청을 처리할 수 있습니다. 이는 이용자가 요청한 기능을 제공하기 위한 전송입니다. Auto Pomodoro는 광고나 앱 간 추적을 사용하지 않습니다.</p>
 
 <h2>5. 이용자의 권리</h2>
 <p>언제든 앱을 삭제하여 기기 내 데이터를 제거할 수 있습니다. 기타 문의는 아래 이메일로 연락주시기 바랍니다.</p>
