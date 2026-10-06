@@ -303,6 +303,7 @@ async function handleAnalyticsEvent(env, req) {
 
   const visitorId = safeAnalyticsText(body.visitorId, 80) || "anonymous";
   const monthlyVisitorId = safeAnalyticsText(body.monthlyVisitorId, 80);
+  const weeklyVisitorId = appId === "selah" ? safeAnalyticsText(body.weeklyVisitorId, 80) : "";
   const section = safeAnalyticsText(body.section, 80);
   const path = safeAnalyticsText(body.path, 160) || "/";
   const locale = appId === "selah" && SELAH_LOCALES.has(body.locale) ? body.locale : "unknown";
@@ -340,6 +341,12 @@ async function handleAnalyticsEvent(env, req) {
     regions: {},
     pageViewCountries: {},
     pageViewRegions: {},
+    selahPageViewVisitors: {},
+    selahPageViewVisitorsByCountry: {},
+    selahPageViewVisitorsByRegion: {},
+    selahPageViewVisitorCoverage: false,
+    selahWeeklyActiveVisitors: {},
+    selahWeeklyActiveVisitorCoverage: false,
     pageViewsByCountryLocalePath: {},
     pageViewsByOriginCountryLocalePath: {},
     sources: {},
@@ -352,6 +359,15 @@ async function handleAnalyticsEvent(env, req) {
   data.pageViewsByCountryLocalePath ||= {};
   data.pageViewsByOriginCountryLocalePath ||= {};
   data.pageViewVisitors ||= {};
+  if (appId === "selah") {
+    data.selahPageViewVisitors ||= {};
+    data.selahPageViewVisitorsByCountry ||= {};
+    data.selahPageViewVisitorsByRegion ||= {};
+    data.selahPageViewVisitorCoverage ||= false;
+    data.selahWeeklyActiveVisitors ||= {};
+    data.selahWeeklyActiveVisitorCoverage ||= false;
+    if (!raw) data.selahWeeklyActiveVisitorCoverage = true;
+  }
 
   const monthlyVisitors = data.monthlyVisitors || (data.monthlyVisitors = {});
   const backfillOnly = appId === "selah" && !!data.uniqueVisitors[visitorId] && !!monthlyVisitorId && !monthlyVisitors[monthlyVisitorId];
@@ -362,6 +378,7 @@ async function handleAnalyticsEvent(env, req) {
     const deviceVisitors = byDevice[device] || (byDevice[device] = {});
     deviceVisitors[monthlyVisitorId] = true;
   }
+  if (appId === "selah" && event === "page:view" && !weeklyVisitorId) data.selahWeeklyActiveVisitorCoverage = false;
   if (!backfillOnly) {
     data.totalEvents += 1;
     data.events[event] = (data.events[event] || 0) + 1;
@@ -383,6 +400,19 @@ async function handleAnalyticsEvent(env, req) {
     if (event === "page:view" && country) {
       data.pageViewCountries[country] = (data.pageViewCountries[country] || 0) + 1;
       if (appId === "selah") {
+        data.selahPageViewVisitorCoverage = true;
+        if (data.selahWeeklyActiveVisitorCoverage && weeklyVisitorId) {
+          data.selahWeeklyActiveVisitors[weeklyVisitorId] = { country, region };
+        }
+        if (!data.selahPageViewVisitors[visitorId]) {
+          data.selahPageViewVisitors[visitorId] = true;
+          const countryVisitors = data.selahPageViewVisitorsByCountry[country] || (data.selahPageViewVisitorsByCountry[country] = {});
+          countryVisitors[visitorId] = true;
+          if (region) {
+            const regionVisitors = data.selahPageViewVisitorsByRegion[`${country}-${region}`] || (data.selahPageViewVisitorsByRegion[`${country}-${region}`] = {});
+            regionVisitors[visitorId] = true;
+          }
+        }
         const key = `${country}|${locale}|${pagePath}`;
         data.pageViewsByCountryLocalePath[key] = (data.pageViewsByCountryLocalePath[key] || 0) + 1;
       }
@@ -427,6 +457,14 @@ async function handleAnalyticsSummary(env, url, request) {
     regions: {},
     pageViewCountries: {},
     pageViewRegions: {},
+    pageViewUniqueVisitors: null,
+    pageViewUniqueVisitorsByCountry: {},
+    pageViewUniqueVisitorsByRegion: {},
+    pageViewUniqueVisitorCoverage: false,
+    weeklyActiveVisitors: null,
+    weeklyActiveVisitorsByCountry: {},
+    weeklyActiveVisitorsByRegion: {},
+    weeklyActiveVisitorCoverage: false,
     pageViewsByCountryLocalePath: {},
     pageViewsByOriginCountryLocalePath: {},
     sources: {},
@@ -438,16 +476,19 @@ async function handleAnalyticsSummary(env, url, request) {
   const monthlyVisitorDays = {};
   const deviceVisitors = {};
   const appDevPageViewDays = new Map();
+  const dayRecords = new Map();
   for (let i = 0; i < days; i += 1) {
     const d = new Date(now);
     d.setUTCDate(now.getUTCDate() - i);
     const day = dayKeyFromDate(d);
     const raw = await env.CLOUD_ACCOUNT_KV.get(`analytics:${appId}:${day}`);
     if (!raw) {
-      totals.daily.push({ day, totalEvents: 0, uniqueVisitors: 0, pageViews: 0, ...(appId === "selah" ? { uniqueVisitorsByDevice: {} } : {}), ...(appId === "app-development" ? { pageViewUniqueVisitors: 0 } : {}) });
+      dayRecords.set(day, null);
+      totals.daily.push({ day, totalEvents: 0, uniqueVisitors: 0, pageViews: 0, ...(appId === "selah" ? { uniqueVisitorsByDevice: {}, pageViewUniqueVisitors: 0, pageViewUniqueVisitorsByCountry: {}, pageViewUniqueVisitorsByRegion: {}, pageViewUniqueVisitorCoverage: true, weeklyActiveVisitorCoverage: true, weeklyActiveVisitors: {} } : {}), ...(appId === "app-development" ? { pageViewUniqueVisitors: 0 } : {}) });
       continue;
     }
     const data = JSON.parse(raw);
+    dayRecords.set(day, data);
     if (appId === "app-development") for (const id of Object.keys(data.pageViewVisitors || {})) {
       appDevPageViewDays.set(id, (appDevPageViewDays.get(id) || 0) + 1);
     }
@@ -458,6 +499,16 @@ async function handleAnalyticsSummary(env, url, request) {
     if (appId === "selah") for (const [kind, ids] of Object.entries(data.uniqueVisitorsByDevice || {})) {
       const seen = deviceVisitors[kind] || (deviceVisitors[kind] = {});
       Object.assign(seen, ids || {});
+    }
+    if (appId === "selah" && data.selahPageViewVisitors) {
+      const visitors = new Set([...Object.keys(totals.pageViewUniqueVisitorIds || {}), ...Object.keys(data.selahPageViewVisitors)]);
+      totals.pageViewUniqueVisitorIds = Object.fromEntries([...visitors].map(id => [id, true]));
+      for (const [bucket, groups] of [["pageViewUniqueVisitorsByCountry", data.selahPageViewVisitorsByCountry], ["pageViewUniqueVisitorsByRegion", data.selahPageViewVisitorsByRegion]]) {
+        for (const [name, ids] of Object.entries(groups || {})) {
+          const seen = totals[bucket][name] || (totals[bucket][name] = {});
+          Object.assign(seen, ids || {});
+        }
+      }
     }
     totals.totalEvents += data.totalEvents || 0;
     Object.assign(visitors, period === "month" ? data.monthlyVisitors || {} : data.uniqueVisitors || {});
@@ -494,9 +545,58 @@ async function handleAnalyticsSummary(env, url, request) {
     if (appId === "selah") daily.uniqueVisitorsByDevice = Object.fromEntries(
       Object.entries(data.uniqueVisitorsByDevice || {}).map(([kind, ids]) => [kind, Object.keys(ids || {}).length])
     );
+    if (appId === "selah") {
+      daily.pageViewUniqueVisitors = data.selahPageViewVisitorCoverage ? Object.keys(data.selahPageViewVisitors || {}).length : null;
+      daily.pageViewUniqueVisitorsByCountry = data.selahPageViewVisitorCoverage ? Object.fromEntries(Object.entries(data.selahPageViewVisitorsByCountry || {}).map(([name, ids]) => [name, Object.keys(ids || {}).length])) : {};
+      daily.pageViewUniqueVisitorsByRegion = data.selahPageViewVisitorCoverage ? Object.fromEntries(Object.entries(data.selahPageViewVisitorsByRegion || {}).map(([name, ids]) => [name, Object.keys(ids || {}).length])) : {};
+      daily.pageViewUniqueVisitorCoverage = !!data.selahPageViewVisitorCoverage;
+      daily.weeklyActiveVisitorCoverage = !!data.selahWeeklyActiveVisitorCoverage || !(data.events?.["page:view"] > 0);
+      daily.weeklyActiveVisitors = data.selahWeeklyActiveVisitorCoverage ? (data.selahWeeklyActiveVisitors || {}) : {};
+    }
     totals.daily.push(daily);
   }
   totals.uniqueVisitors = Object.keys(visitors).length;
+  if (appId === "selah") {
+    totals.pageViewUniqueVisitors = totals.pageViewUniqueVisitorIds ? Object.keys(totals.pageViewUniqueVisitorIds).length : null;
+    for (const bucket of ["pageViewUniqueVisitorsByCountry", "pageViewUniqueVisitorsByRegion"]) {
+      totals[bucket] = Object.fromEntries(Object.entries(totals[bucket]).map(([name, ids]) => [name, Object.keys(ids || {}).length]));
+    }
+    totals.pageViewUniqueVisitorCoverage = totals.daily.every(item => item.pageViewUniqueVisitorCoverage !== false);
+    let weeklyCoverage = true;
+    const latestLocationByVisitor = new Map();
+    for (let offset = 0; offset < 7; offset += 1) {
+      const d = new Date(now);
+      d.setUTCDate(now.getUTCDate() - offset);
+      const day = dayKeyFromDate(d);
+      let data = dayRecords.get(day);
+      if (!dayRecords.has(day)) {
+        const raw = await env.CLOUD_ACCOUNT_KV.get(`analytics:${appId}:${day}`);
+        data = raw ? JSON.parse(raw) : null;
+        dayRecords.set(day, data);
+      }
+      if (!data) continue;
+      if (Number(data.events?.["page:view"] || 0) > 0 && data.selahWeeklyActiveVisitorCoverage !== true) {
+        weeklyCoverage = false;
+        continue;
+      }
+      for (const [id, location] of Object.entries(data.selahWeeklyActiveVisitors || {})) {
+        if (!latestLocationByVisitor.has(id)) latestLocationByVisitor.set(id, location);
+      }
+    }
+    totals.weeklyActiveVisitorCoverage = weeklyCoverage;
+    if (totals.weeklyActiveVisitorCoverage) {
+      totals.weeklyActiveVisitors = latestLocationByVisitor.size;
+      for (const location of latestLocationByVisitor.values()) {
+        if (location.country) totals.weeklyActiveVisitorsByCountry[location.country] = (totals.weeklyActiveVisitorsByCountry[location.country] || 0) + 1;
+        if (location.country && location.region) {
+          const key = `${location.country}-${location.region}`;
+          totals.weeklyActiveVisitorsByRegion[key] = (totals.weeklyActiveVisitorsByRegion[key] || 0) + 1;
+        }
+      }
+    }
+    for (const item of totals.daily) delete item.weeklyActiveVisitors;
+    delete totals.pageViewUniqueVisitorIds;
+  }
   totals.pageViews = totals.events["page:view"] || 0;
   totals.daily.reverse();
   totals.viewerCountry = safeAnalyticsTag(request.cf?.country).toUpperCase();
