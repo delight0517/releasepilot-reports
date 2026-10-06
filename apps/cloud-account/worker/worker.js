@@ -303,6 +303,7 @@ async function handleAnalyticsEvent(env, req) {
 
   const visitorId = safeAnalyticsText(body.visitorId, 80) || "anonymous";
   const monthlyVisitorId = safeAnalyticsText(body.monthlyVisitorId, 80);
+  const weeklyVisitorId = appId === "selah" ? safeAnalyticsText(body.weeklyVisitorId, 80) : "";
   const section = safeAnalyticsText(body.section, 80);
   const path = safeAnalyticsText(body.path, 160) || "/";
   const locale = appId === "selah" && SELAH_LOCALES.has(body.locale) ? body.locale : "unknown";
@@ -344,6 +345,8 @@ async function handleAnalyticsEvent(env, req) {
     selahPageViewVisitorsByCountry: {},
     selahPageViewVisitorsByRegion: {},
     selahPageViewVisitorCoverage: false,
+    selahWeeklyActiveVisitors: {},
+    selahWeeklyActiveVisitorCoverage: false,
     pageViewsByCountryLocalePath: {},
     pageViewsByOriginCountryLocalePath: {},
     sources: {},
@@ -361,6 +364,9 @@ async function handleAnalyticsEvent(env, req) {
     data.selahPageViewVisitorsByCountry ||= {};
     data.selahPageViewVisitorsByRegion ||= {};
     data.selahPageViewVisitorCoverage ||= false;
+    data.selahWeeklyActiveVisitors ||= {};
+    data.selahWeeklyActiveVisitorCoverage ||= false;
+    if (!raw) data.selahWeeklyActiveVisitorCoverage = true;
   }
 
   const monthlyVisitors = data.monthlyVisitors || (data.monthlyVisitors = {});
@@ -372,6 +378,7 @@ async function handleAnalyticsEvent(env, req) {
     const deviceVisitors = byDevice[device] || (byDevice[device] = {});
     deviceVisitors[monthlyVisitorId] = true;
   }
+  if (appId === "selah" && event === "page:view" && !weeklyVisitorId) data.selahWeeklyActiveVisitorCoverage = false;
   if (!backfillOnly) {
     data.totalEvents += 1;
     data.events[event] = (data.events[event] || 0) + 1;
@@ -394,6 +401,9 @@ async function handleAnalyticsEvent(env, req) {
       data.pageViewCountries[country] = (data.pageViewCountries[country] || 0) + 1;
       if (appId === "selah") {
         data.selahPageViewVisitorCoverage = true;
+        if (data.selahWeeklyActiveVisitorCoverage && weeklyVisitorId) {
+          data.selahWeeklyActiveVisitors[weeklyVisitorId] = { country, region };
+        }
         if (!data.selahPageViewVisitors[visitorId]) {
           data.selahPageViewVisitors[visitorId] = true;
           const countryVisitors = data.selahPageViewVisitorsByCountry[country] || (data.selahPageViewVisitorsByCountry[country] = {});
@@ -451,6 +461,10 @@ async function handleAnalyticsSummary(env, url, request) {
     pageViewUniqueVisitorsByCountry: {},
     pageViewUniqueVisitorsByRegion: {},
     pageViewUniqueVisitorCoverage: false,
+    weeklyActiveVisitors: null,
+    weeklyActiveVisitorsByCountry: {},
+    weeklyActiveVisitorsByRegion: {},
+    weeklyActiveVisitorCoverage: false,
     pageViewsByCountryLocalePath: {},
     pageViewsByOriginCountryLocalePath: {},
     sources: {},
@@ -468,7 +482,7 @@ async function handleAnalyticsSummary(env, url, request) {
     const day = dayKeyFromDate(d);
     const raw = await env.CLOUD_ACCOUNT_KV.get(`analytics:${appId}:${day}`);
     if (!raw) {
-      totals.daily.push({ day, totalEvents: 0, uniqueVisitors: 0, pageViews: 0, ...(appId === "selah" ? { uniqueVisitorsByDevice: {}, pageViewUniqueVisitors: 0, pageViewUniqueVisitorsByCountry: {}, pageViewUniqueVisitorsByRegion: {}, pageViewUniqueVisitorCoverage: true } : {}), ...(appId === "app-development" ? { pageViewUniqueVisitors: 0 } : {}) });
+      totals.daily.push({ day, totalEvents: 0, uniqueVisitors: 0, pageViews: 0, ...(appId === "selah" ? { uniqueVisitorsByDevice: {}, pageViewUniqueVisitors: 0, pageViewUniqueVisitorsByCountry: {}, pageViewUniqueVisitorsByRegion: {}, pageViewUniqueVisitorCoverage: true, weeklyActiveVisitorCoverage: true, weeklyActiveVisitors: {} } : {}), ...(appId === "app-development" ? { pageViewUniqueVisitors: 0 } : {}) });
       continue;
     }
     const data = JSON.parse(raw);
@@ -533,6 +547,8 @@ async function handleAnalyticsSummary(env, url, request) {
       daily.pageViewUniqueVisitorsByCountry = data.selahPageViewVisitorCoverage ? Object.fromEntries(Object.entries(data.selahPageViewVisitorsByCountry || {}).map(([name, ids]) => [name, Object.keys(ids || {}).length])) : {};
       daily.pageViewUniqueVisitorsByRegion = data.selahPageViewVisitorCoverage ? Object.fromEntries(Object.entries(data.selahPageViewVisitorsByRegion || {}).map(([name, ids]) => [name, Object.keys(ids || {}).length])) : {};
       daily.pageViewUniqueVisitorCoverage = !!data.selahPageViewVisitorCoverage;
+      daily.weeklyActiveVisitorCoverage = !!data.selahWeeklyActiveVisitorCoverage || !(data.events?.["page:view"] > 0);
+      daily.weeklyActiveVisitors = data.selahWeeklyActiveVisitorCoverage ? (data.selahWeeklyActiveVisitors || {}) : {};
     }
     totals.daily.push(daily);
   }
@@ -543,6 +559,24 @@ async function handleAnalyticsSummary(env, url, request) {
       totals[bucket] = Object.fromEntries(Object.entries(totals[bucket]).map(([name, ids]) => [name, Object.keys(ids || {}).length]));
     }
     totals.pageViewUniqueVisitorCoverage = totals.daily.every(item => item.pageViewUniqueVisitorCoverage !== false);
+    totals.weeklyActiveVisitorCoverage = totals.daily.every(item => item.weeklyActiveVisitorCoverage !== false);
+    if (totals.weeklyActiveVisitorCoverage) {
+      const latestLocationByVisitor = new Map();
+      for (const item of totals.daily) {
+        for (const [id, location] of Object.entries(item.weeklyActiveVisitors || {})) {
+          if (!latestLocationByVisitor.has(id)) latestLocationByVisitor.set(id, location);
+        }
+      }
+      totals.weeklyActiveVisitors = latestLocationByVisitor.size;
+      for (const location of latestLocationByVisitor.values()) {
+        if (location.country) totals.weeklyActiveVisitorsByCountry[location.country] = (totals.weeklyActiveVisitorsByCountry[location.country] || 0) + 1;
+        if (location.country && location.region) {
+          const key = `${location.country}-${location.region}`;
+          totals.weeklyActiveVisitorsByRegion[key] = (totals.weeklyActiveVisitorsByRegion[key] || 0) + 1;
+        }
+      }
+    }
+    for (const item of totals.daily) delete item.weeklyActiveVisitors;
     delete totals.pageViewUniqueVisitorIds;
   }
   totals.pageViews = totals.events["page:view"] || 0;
