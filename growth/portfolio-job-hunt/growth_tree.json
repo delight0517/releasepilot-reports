@@ -1,0 +1,186 @@
+{
+  "schemaVersion": 1,
+  "person": "김근후",
+  "slug": "portfolio-job-hunt",
+  "topic": "포트폴리오 사이트 — 채용 담당자 도달/전환 마케팅",
+  "sourceReport": {
+    "title": "포트폴리오 마케팅/채용 유입 진단 보고서 v1",
+    "date": "2026-08-25",
+    "file": "source_report.md"
+  },
+  "generatedAt": "2026-08-25",
+  "guide": "차차차",
+  "note": "각 노드의 successEffect/failureCost/why는 source_report.md의 실제 확인 사실을 근거로 한다 — 트래픽/팔로워/전환율 수치를 지어내지 않았다. 애널리틱스가 아직 설치되지 않아 방문자 수 자체를 알 수 없다는 사실도 그대로 반영했다. 화면에 보이는 유일한 숫자형 %는 '완료한 노드의 weight 합 ÷ 100'인 진행도뿐이다.",
+  "nodes": [
+    {
+      "id": "analytics_activate",
+      "tier": 1,
+      "weight": 14,
+      "title": "GoatCounter 실제 코드 발급 + 연결",
+      "category": "측정",
+      "requires": [],
+      "status": "todo",
+      "sourceSection": "§2",
+      "why": "analytics-config.js의 GOATCOUNTER_CODE가 아직 'YOUR_CODE' placeholder라, count.js가 조용히 실패하고 있다 — 지금까지 방문자 수·유입 경로 데이터가 하나도 쌓이지 않았다.",
+      "action": "goatcounter.com에서 무료 가입 → 사이트 코드 발급 → analytics-config.js 한 파일의 GOATCOUNTER_CODE 값만 교체 → 커밋/push. 이 파일 하나만 고치면 about/portfolio/dev-portfolio 등 이 파일을 불러오는 모든 페이지에 자동 반영된다(docs/goatcounter_setup_walkthrough.md 참고).",
+      "successEffect": "이후 모든 개선(LinkedIn 연결, 스크린샷 추가 등)이 실제로 방문자를 늘렸는지 데이터로 확인할 수 있게 된다.",
+      "failureCost": "다른 걸 아무리 고쳐도 '효과가 있었는지'를 계속 감으로만 판단해야 한다.",
+      "whySimple": "가게 앞에 <b>손님 세는 기계</b>를 설치하는 것과 같아요. 지금은 이 기계 자체가 꺼져 있어서, 오늘 손님이 몇 명 왔는지조차 몰라요. 이걸 켜야 다음에 뭘 바꿨을 때 손님이 늘었는지 알 수 있어요.",
+      "journeyContext": "1단계(tier 1) 다섯 칸 중 하나로, 이 트리 전체의 측정 기반이에요. tier 4의 '재확인' 칸이 바로 이 데이터를 근거로 삼아요.",
+      "glossary": {
+        "GoatCounter": "쿠키 없이 방문자 수만 세는 무료 분석 도구 — 이 사이트가 이미 골라둔 방식이고, 코드 발급만 하면 바로 붙일 수 있어요"
+      }
+    },
+    {
+      "id": "gsc_index_verify",
+      "tier": 1,
+      "weight": 10,
+      "title": "Search Console에서 실제 색인 상태 재확인",
+      "category": "측정",
+      "requires": [],
+      "status": "todo",
+      "sourceSection": "§4, 갱신 기록 2026-08-31",
+      "why": "루트에 소유권 인증 파일(googlee344d90eaf3c6edd.html)은 있고 이전 리포트는 '인증·제출 완료(본인 진행)'라 적었지만, 2026-08-31 재확인한 WebSearch로도 이 사이트를 가리키는 결과를 하나도 찾지 못했다. 게다가 별도 SEO 점검(2026-08-27, reports/2026-08-27-portfolio-seo-audit.html)이 밝힌 대로 GitHub Pages는 크롤러가 도메인 루트(delight0517.github.io/robots.txt)만 읽는데 이 사이트는 서브경로라 robots.txt의 Sitemap 선언 자체가 검색엔진에 보이지 않는다 — 지난 회차가 '인프라는 끝났다'고 본 근거 중 robots.txt 경로가 구조적으로 무력화되어 있었다.",
+      "action": "Google Search Console(search.google.com/search-console)과 네이버 서치어드바이저에 sitemap.xml(https://delight0517.github.io/releasepilot-reports/sitemap.xml)을 직접 제출한다 — robots.txt를 통한 자동 발견은 이 사이트 구조상 작동하지 않으므로 직접 제출이 사실상 유일한 경로다. 제출 후 '적용 범위(Coverage)'/'색인 생성 요청' 탭에서 about/portfolio/dev-portfolio 세 URL의 실제 상태를 확인.",
+      "successEffect": "'인증했다고 알고 있다'가 아니라 실제 색인 상태를 근거로 다음 단계를 판단할 수 있다.",
+      "failureCost": "이전 리포트의 '완료' 기록만 믿고 넘어가면, 실제로는 검색에 안 뜨는 상태가 계속 방치될 수 있다.",
+      "whySimple": "우편함에 편지를 넣었다고 <b>상대방이 실제로 읽었는지는 다른 문제</b>예요. 인증 파일을 만든 것과 구글이 실제로 이 페이지들을 찾아서 목록에 올린 것은 다른 단계라서, 직접 들어가서 확인해봐야 해요.",
+      "journeyContext": "1단계(tier 1) 다섯 칸 중 하나예요. 여기서 확인한 실제 상태가 tier 4 재확인 칸의 출발점이 돼요.",
+      "glossary": {
+        "색인(index)": "구글이 어떤 페이지의 존재를 인식하고 검색 결과 후보 목록에 올려둔 상태 — 색인이 안 되면 그 페이지는 검색으로 절대 안 나와요"
+      }
+    },
+    {
+      "id": "linkedin_profile_link",
+      "tier": 1,
+      "weight": 14,
+      "title": "LinkedIn 프로필 만들고 사이트 전역에 연결",
+      "category": "채널",
+      "requires": [],
+      "status": "todo",
+      "sourceSection": "§5",
+      "why": "links/links.json 전체를 확인한 결과 ArtStation·브런치·이메일·전화·카카오톡 오픈채팅 다섯 개뿐, LinkedIn은 어디에도 없다 — 채용 담당자가 후보자를 검증할 때 가장 먼저 찾는 채널이 비어 있다.",
+      "action": "LinkedIn 프로필을 실제 경력/프로젝트 기준으로 채운 뒤, links/links.json에 항목 추가(pinned:true 권장) + about/dev-portfolio 상단에도 링크 추가.",
+      "successEffect": "채용 담당자가 이름으로 검색했을 때 확인할 수 있는 표준 채널이 처음 생긴다.",
+      "failureCost": "관심을 가진 채용 담당자가 있어도 LinkedIn에서 이 사람을 찾지 못해 그대로 흘러간다.",
+      "whySimple": "채용 담당자가 지원자를 확인할 때 <b>제일 먼저 켜보는 창</b>이 LinkedIn이에요. 지금은 그 창 자체가 없어서, 확인하고 싶어도 확인할 방법이 없어요.",
+      "journeyContext": "1단계(tier 1) 다섯 칸 중 하나예요. tier 2의 hero CTA 칸과 tier 3 백링크 칸이 이 링크가 열려 있어야 의미가 생겨요.",
+      "glossary": {}
+    },
+    {
+      "id": "github_profile_link",
+      "tier": 1,
+      "weight": 8,
+      "title": "GitHub 개인 프로필/공개 저장소 링크 추가",
+      "category": "채널",
+      "requires": [],
+      "status": "todo",
+      "sourceSection": "§5, §3",
+      "why": "저장소 전체(about/portfolio/dev-portfolio/links.json)에서 github.com/delight0517을 검색해도 개인 GitHub 링크가 없다 — dev-portfolio 자체 평가(§3)에서도 2026-08-10에 이미 같은 문제를 지적했지만 아직 반영되지 않았다.",
+      "action": "공개 가능한 저장소(dev-portfolio 자체 평가가 예로 든 ox-quiz, ReleasePilot CLI 등) README를 정리한 뒤, dev-portfolio 페이지와 links.json에 GitHub 프로필 링크 추가.",
+      "successEffect": "코드를 직접 보고 싶어하는 채용 담당자가 실제로 코드를 확인할 수 있는 경로가 생긴다(§3).",
+      "failureCost": "코드 품질로 평가받을 기회 자체가 원천적으로 없다.",
+      "whySimple": "개발자 채용에서는 <b>실제로 짠 코드</b>를 보고 싶어하는 담당자가 많아요. 지금은 그 코드로 가는 문이 아예 없어서, 글로만 설명하고 있는 셈이에요.",
+      "journeyContext": "1단계(tier 1) 다섯 칸 중 하나예요. tier 2의 스크린샷 칸과 함께 dev-portfolio 자체 평가가 지적한 항목을 채워요.",
+      "glossary": {}
+    },
+    {
+      "id": "positioning_signal_for_recruiters",
+      "tier": 1,
+      "weight": 10,
+      "title": "채용 유입 경로에서 개발자 정체성 신호 명확히",
+      "category": "포지셔닝",
+      "requires": [],
+      "status": "todo",
+      "sourceSection": "§6",
+      "why": "links/links.json은 영상편집·3D게임아트·배우·무대·디자인·번역 등 10개 카테고리를 동일 비중으로 나열한다 — geunhoo 트리(§3-1)가 지적한 것과 같은 유형의 문제로, 개발자 채용 담당자가 도달했을 때 정체성이 흐려질 수 있다.",
+      "action": "links.json 안에서 '앱 개발' 항목을 pinned로 올리거나 about/링크 페이지에 '지금 개발자로서 이력서를 보고 계신가요 → dev-portfolio' 같은 명시적 분기 문구 추가.",
+      "successEffect": "개발자 채용 목적으로 도달한 사람이 다른 9개 정체성 사이에서 헤매지 않고 바로 dev-portfolio로 이동한다.",
+      "failureCost": "관심을 갖고 링크 페이지까지 온 채용 담당자가 어느 링크를 눌러야 할지 몰라 이탈한다(geunhoo 트리와 동일 패턴, §3-1).",
+      "whySimple": "손님이 왔는데 <b>가게 간판에 파는 물건이 10가지나 적혀 있으면</b> 뭘 사야 할지 헷갈려요. 개발자를 찾는 손님에게는 '여기로 오세요'라고 바로 가리키는 화살표가 필요해요.",
+      "journeyContext": "1단계(tier 1) 다섯 칸 중 하나예요. 이후 모든 채널 연결(LinkedIn, GitHub)이 결국 이 진입점을 거쳐가기 때문에 먼저 정리해두는 게 좋아요.",
+      "glossary": {}
+    },
+    {
+      "id": "dev_portfolio_screenshots",
+      "tier": 2,
+      "weight": 10,
+      "title": "프로젝트 7개 화면 스크린샷 채우기",
+      "category": "콘텐츠",
+      "requires": [
+        "github_profile_link"
+      ],
+      "status": "todo",
+      "sourceSection": "§3",
+      "why": "dev-portfolio 페이지 자체의 클로이 박 평가(2026-08-10)가 '7개 프로젝트 중 실제 화면 스크린샷이 있는 건 0개'라고 지적했고, dev-portfolio/assets/에는 지금도 icons/ 폴더 하나뿐이라 15일째 그대로다.",
+      "action": "시뮬레이터/실기기로 프로젝트마다 5~10장씩 촬영해 dev-portfolio/assets/에 추가, 각 케이스 스터디 카드에 연결.",
+      "successEffect": "채용 담당자가 코드보다 먼저 보는 화면이 생겨 첫인상이 완전히 달라진다(§3, dev-portfolio 자체 평가 원문).",
+      "failureCost": "글로만 설명된 포트폴리오로 남아, 실제로 뭘 만들었는지 한눈에 안 보인다.",
+      "whySimple": "이력서에 <b>글만 있고 사진이 없는 것</b>과 같아요. '이런 앱을 만들었다'는 말보다 실제 화면 한 장이 훨씬 빨리, 훨씬 많이 전달돼요.",
+      "journeyContext": "GitHub 링크가 열려야(tier 1) 코드와 화면을 같이 보여줄 준비가 끝나는 tier 2 칸이에요.",
+      "glossary": {}
+    },
+    {
+      "id": "dev_portfolio_hero_cta",
+      "tier": 2,
+      "weight": 10,
+      "title": "dev-portfolio hero에 이메일/이력서 링크 추가",
+      "category": "전환",
+      "requires": [
+        "linkedin_profile_link"
+      ],
+      "status": "todo",
+      "sourceSection": "§3",
+      "why": "dev-portfolio 자체 평가(2026-08-10)가 '연락처/이력서 링크가 없다 — 포트폴리오는 보고 끝나면 의미가 없다'고 이미 지적했고, 지금도 hero 영역에 반영되지 않았다.",
+      "action": "dev-portfolio hero 영역에 이메일(mailto) 또는 이력서 PDF 링크, 그리고 새로 만든 LinkedIn 링크를 함께 배치.",
+      "successEffect": "포트폴리오를 다 본 사람이 바로 다음 행동(연락)으로 넘어갈 경로가 생긴다(§3 원문: '다음 행동으로 이어져야 한다').",
+      "failureCost": "관심을 갖고 끝까지 다 봐도 연락할 방법을 못 찾아 그냥 닫는다.",
+      "whySimple": "가게를 다 둘러본 손님에게 <b>계산대가 어디 있는지</b> 안 알려주는 것과 같아요. 마음에 들어도 어떻게 연락해야 할지 모르면 그냥 나가버려요.",
+      "journeyContext": "LinkedIn 링크(tier 1)가 있어야 이 CTA에 넣을 채널이 생기는 tier 2 칸이에요.",
+      "glossary": {}
+    },
+    {
+      "id": "backlink_existing_channels",
+      "tier": 3,
+      "weight": 12,
+      "title": "기존 채널(브런치·아트스테이션·카톡)에 허브 URL 언급",
+      "category": "확산",
+      "requires": [
+        "linkedin_profile_link",
+        "github_profile_link"
+      ],
+      "status": "todo",
+      "sourceSection": "§6",
+      "why": "2026-08-13 이전 리포트도 백링크를 '미착수'로 적었고, 오늘 WebSearch로도 이 사이트를 언급하는 외부 페이지를 하나도 찾지 못했다 — 12일 전과 상태가 그대로다.",
+      "action": "브런치 프로필/글, ArtStation 프로필, 카카오톡 오픈채팅 소개, 새로 만든 LinkedIn 프로필 각각에 릴리저 허브 URL을 실제로 추가.",
+      "successEffect": "이 사이트를 가리키는 외부 링크가 처음으로 생겨, 검색엔진이 '진짜 존재하는 사이트'로 판단할 신호가 쌓이기 시작한다(§6, 이전 SEO 리포트의 백링크 필요성 설명과 동일 원리).",
+      "failureCost": "메타태그·사이트맵이 아무리 완비돼도, 백링크 없이는 신생 도메인 페널티가 계속 유지된다(reports/rogan-static_site_seo_necessity 원문 근거).",
+      "whySimple": "이미 사람들이 보는 <b>다른 가게(브런치·아트스테이션)에 우리 가게 명함</b>을 놓아두는 거예요. 아무도 링크를 안 걸어주면, 새로 생긴 가게는 아무리 잘 꾸며도 발견되기 어려워요.",
+      "journeyContext": "LinkedIn·GitHub 채널(tier 1)이 열려 있어야 실제로 언급할 링크가 준비되는 tier 3 칸이에요. 여기서 만든 백링크가 tier 4 재확인의 근거가 돼요.",
+      "glossary": {
+        "백링크": "다른 사이트가 이 사이트로 걸어주는 링크 — 검색엔진이 '이 사이트가 신뢰할 만한가'를 판단하는 핵심 신호 중 하나예요"
+      }
+    },
+    {
+      "id": "reindex_recheck",
+      "tier": 4,
+      "weight": 12,
+      "title": "몇 주 뒤, 실데이터로 색인·유입 재확인",
+      "category": "측정",
+      "requires": [
+        "analytics_activate",
+        "gsc_index_verify",
+        "backlink_existing_channels"
+      ],
+      "status": "todo",
+      "sourceSection": "§7",
+      "why": "이번 리포트는 애널리틱스 부재와 색인 여부 불확실성 때문에 실제 도달률을 확인하지 못했다 — 위 조치들이 반영된 뒤에는 그 데이터로 다시 확인할 수 있다.",
+      "action": "GoatCounter 실데이터 확인, site: 검색 재실행, Search Console 적용 범위 재확인 — 세 가지를 모두 다시 점검하고 source_report.md에 갱신 기록으로 남긴다.",
+      "successEffect": "추측이 아니라 실제 방문자·색인 데이터를 근거로 다음 회차의 우선순위를 정할 수 있다.",
+      "failureCost": "측정 인프라를 켜놓고도 다시 확인하지 않으면, 여전히 '효과가 있었는지 모른다'는 상태가 반복된다.",
+      "whySimple": "손님 세는 기계를 켜놓고 <b>몇 주 뒤에 숫자를 실제로 읽어보는</b> 단계예요. 켜두기만 하고 안 읽으면 켠 의미가 없어요.",
+      "journeyContext": "tier 1의 측정 인프라와 tier 3의 백링크 작업이 모두 끝나야 의미 있게 확인할 수 있는, 이 트리의 마지막 칸이에요.",
+      "glossary": {}
+    }
+  ]
+}
