@@ -476,16 +476,19 @@ async function handleAnalyticsSummary(env, url, request) {
   const monthlyVisitorDays = {};
   const deviceVisitors = {};
   const appDevPageViewDays = new Map();
+  const dayRecords = new Map();
   for (let i = 0; i < days; i += 1) {
     const d = new Date(now);
     d.setUTCDate(now.getUTCDate() - i);
     const day = dayKeyFromDate(d);
     const raw = await env.CLOUD_ACCOUNT_KV.get(`analytics:${appId}:${day}`);
     if (!raw) {
+      dayRecords.set(day, null);
       totals.daily.push({ day, totalEvents: 0, uniqueVisitors: 0, pageViews: 0, ...(appId === "selah" ? { uniqueVisitorsByDevice: {}, pageViewUniqueVisitors: 0, pageViewUniqueVisitorsByCountry: {}, pageViewUniqueVisitorsByRegion: {}, pageViewUniqueVisitorCoverage: true, weeklyActiveVisitorCoverage: true, weeklyActiveVisitors: {} } : {}), ...(appId === "app-development" ? { pageViewUniqueVisitors: 0 } : {}) });
       continue;
     }
     const data = JSON.parse(raw);
+    dayRecords.set(day, data);
     if (appId === "app-development") for (const id of Object.keys(data.pageViewVisitors || {})) {
       appDevPageViewDays.set(id, (appDevPageViewDays.get(id) || 0) + 1);
     }
@@ -559,14 +562,29 @@ async function handleAnalyticsSummary(env, url, request) {
       totals[bucket] = Object.fromEntries(Object.entries(totals[bucket]).map(([name, ids]) => [name, Object.keys(ids || {}).length]));
     }
     totals.pageViewUniqueVisitorCoverage = totals.daily.every(item => item.pageViewUniqueVisitorCoverage !== false);
-    totals.weeklyActiveVisitorCoverage = totals.daily.every(item => item.weeklyActiveVisitorCoverage !== false);
-    if (totals.weeklyActiveVisitorCoverage) {
-      const latestLocationByVisitor = new Map();
-      for (const item of totals.daily) {
-        for (const [id, location] of Object.entries(item.weeklyActiveVisitors || {})) {
-          if (!latestLocationByVisitor.has(id)) latestLocationByVisitor.set(id, location);
-        }
+    let weeklyCoverage = true;
+    const latestLocationByVisitor = new Map();
+    for (let offset = 0; offset < 7; offset += 1) {
+      const d = new Date(now);
+      d.setUTCDate(now.getUTCDate() - offset);
+      const day = dayKeyFromDate(d);
+      let data = dayRecords.get(day);
+      if (!dayRecords.has(day)) {
+        const raw = await env.CLOUD_ACCOUNT_KV.get(`analytics:${appId}:${day}`);
+        data = raw ? JSON.parse(raw) : null;
+        dayRecords.set(day, data);
       }
+      if (!data) continue;
+      if (Number(data.events?.["page:view"] || 0) > 0 && data.selahWeeklyActiveVisitorCoverage !== true) {
+        weeklyCoverage = false;
+        continue;
+      }
+      for (const [id, location] of Object.entries(data.selahWeeklyActiveVisitors || {})) {
+        if (!latestLocationByVisitor.has(id)) latestLocationByVisitor.set(id, location);
+      }
+    }
+    totals.weeklyActiveVisitorCoverage = weeklyCoverage;
+    if (totals.weeklyActiveVisitorCoverage) {
       totals.weeklyActiveVisitors = latestLocationByVisitor.size;
       for (const location of latestLocationByVisitor.values()) {
         if (location.country) totals.weeklyActiveVisitorsByCountry[location.country] = (totals.weeklyActiveVisitorsByCountry[location.country] || 0) + 1;
