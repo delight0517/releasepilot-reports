@@ -33341,7 +33341,7 @@ ahn:function ahn(a){this.a=a},
 aho:function aho(a,b){this.a=a
 this.b=b},
 boV(a,b,c){var s,r,q,p,o,n
-A.mo("[\uc0ac\uacc4\uae30\ub85d (Season Diary) \xb7 v2.15.3+43] ["+new A.ao(Date.now(),0,!1).cl()+"] ("+c+") "+A.w(a))
+A.mo("[\uc0ac\uacc4\uae30\ub85d (Season Diary) \xb7 v2.16.1+36] ["+new A.ao(Date.now(),0,!1).cl()+"] ("+c+") "+A.w(a))
 s=J.o_(a)
 $.Uc().vA("ERROR("+c+")",s.k(a))
 r=$.ed()
@@ -33350,7 +33350,7 @@ p=A.lr(a)
 o=Date.now()
 s=s.k(a)
 n=b==null?null:b.k(0)
-r.z6("\uc0ac\uacc4\uae30\ub85d (Season Diary) \xb7 v2.15.3+43",new A.ao(o,0,!1),"err:"+q+":"+p,s,c,n)},
+r.z6("\uc0ac\uacc4\uae30\ub85d (Season Diary) \xb7 v2.16.1+36",new A.ao(o,0,!1),"err:"+q+":"+p,s,c,n)},
 zW(){var s=0,r=A.n(t.H),q,p,o,n,m,l,k
 var $async$zW=A.o(function(a,b){if(a===1)return A.k(b,r)
 for(;;)switch(s){case 0:if($.ag==null)A.beU()
@@ -121257,7 +121257,7 @@ $0(){return $.afS().vs()},
 $S:2}
 A.bbm.prototype={
 $1(a){var s=null
-return A.eD(!1,B.N,!0,s,A.f5(new A.a3(B.dS,A.au(A.a([B.a3i,B.C,B.aDo,B.a2,A.z(a.abF(),s,s,s,s,B.kF,B.aG,s,s),B.a2,A.z("\uc0ac\uacc4\uae30\ub85d (Season Diary) \xb7 v2.15.3+43",s,s,s,s,B.QJ,B.aG,s,s)],t.p),B.p,B.h,B.aj),s),s,s),B.m,B.bK,0,s,s,s,s,s,B.c6)},
+return A.eD(!1,B.N,!0,s,A.f5(new A.a3(B.dS,A.au(A.a([B.a3i,B.C,B.aDo,B.a2,A.z(a.abF(),s,s,s,s,B.kF,B.aG,s,s),B.a2,A.z("\uc0ac\uacc4\uae30\ub85d (Season Diary) \xb7 v2.16.1+36",s,s,s,s,B.QJ,B.aG,s,s)],t.p),B.p,B.h,B.aj),s),s,s),B.m,B.bK,0,s,s,s,s,s,B.c6)},
 $S:819}
 A.a2M.prototype={
 C(a){var s=t.o
@@ -122663,7 +122663,7 @@ for(;;)switch(s){case 0:q=$.ed()
 p=new A.ao(Date.now(),0,!1).cl()
 o=A.lr(c)
 s=2
-return A.d(q.z4("\uc0ac\uacc4\uae30\ub85d (Season Diary) \xb7 v2.15.3+43",new A.ao(Date.now(),0,!1),a,b,"ailog:"+p+":"+o,c,d),$async$Ci)
+return A.d(q.z4("\uc0ac\uacc4\uae30\ub85d (Season Diary) \xb7 v2.16.1+36",new A.ao(Date.now(),0,!1),a,b,"ailog:"+p+":"+o,c,d),$async$Ci)
 case 2:return A.l(null,r)}})
 return A.m($async$Ci,r)},
 ku(){var s=0,r=A.n(t.H),q,p=2,o=[],n=[],m=this,l,k,j,i,h,g,f,e,d,c,b,a,a0,a1
@@ -131267,7 +131267,7 @@ s=7
 return A.d(n.oR(),$async$vA)
 case 7:m=d
 if(m==null){s=1
-break}l=A.a([new A.ao(Date.now(),0,!1).cl(),"\uc0ac\uacc4\uae30\ub85d (Season Diary) \xb7 v2.15.3+43",a],t.s)
+break}l=A.a([new A.ao(Date.now(),0,!1).cl(),"\uc0ac\uacc4\uae30\ub85d (Season Diary) \xb7 v2.16.1+36",a],t.s)
 if(b!=null)J.cB(l,b)
 k=J.GC(l," | ")
 s=8
@@ -131627,7 +131627,7 @@ case 8:s=9
 return A.d($.Uc().zG(20),$async$n8)
 case 9:k=a2
 g=t.N
-j=A.aa(["appId","harugirok","appName","\ud558\ub8e8\uae30\ub85d","message",e,"kind","complaint","appVersion","\uc0ac\uacc4\uae30\ub85d (Season Diary) \xb7 v2.15.3+43","platform",n.aEh(),"deviceId",l,"clientSubmissionId",B.ej.q0(),"diagnosticSummary",A.aa(["screen",a0,"recentLogs",k],g,t.K)],g,t.z)
+j=A.aa(["appId","harugirok","appName","\ud558\ub8e8\uae30\ub85d","message",e,"kind","complaint","appVersion","\uc0ac\uacc4\uae30\ub85d (Season Diary) \xb7 v2.16.1+36","platform",n.aEh(),"deviceId",l,"clientSubmissionId",B.ej.q0(),"diagnosticSummary",A.aa(["screen",a0,"recentLogs",k],g,t.K)],g,t.z)
 if(a!=null&&a.length!==0)J.j3(j,"attachedImage",a)
 s=10
 return A.d(n.xo(),$async$n8)
