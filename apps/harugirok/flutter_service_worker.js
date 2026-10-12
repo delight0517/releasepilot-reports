@@ -1,7 +1,7 @@
 'use strict';
 
 self.addEventListener('install', () => {
-  self.ski[REDACTED]
+  self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {

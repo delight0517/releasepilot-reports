@@ -1,11 +1,11 @@
 {
-    "name": "vow_tracker",
-    "short_name": "vow_tracker",
+    "name": "사계기록 — 일기 & 체크인 다이어리",
+    "short_name": "사계기록",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#4A90E2",
+    "theme_color": "#4A90E2",
+    "description": "사계기록 — 일기 + 체크인 기반 자기개발 다이어리 앱",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
