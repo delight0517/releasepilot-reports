@@ -1,0 +1,206 @@
+{
+  "schemaVersion": 1,
+  "person": "김근후",
+  "slug": "portfolio-job-hunt",
+  "topic": "취업용 포트폴리오 사이트 — 홍보/도달 점검 (portfolio · about · dev-portfolio)",
+  "sourceReport": {
+    "title": "취업용 포트폴리오 사이트 — 홍보/도달 점검 보고서",
+    "date": "2026-09-07",
+    "file": "source_report.md"
+  },
+  "generatedAt": "2026-09-07",
+  "guide": "차차차",
+  "note": "각 노드는 저장소 내 실제 파일(analytics-config.js, robots.txt, sitemap.xml, HTML 소스)과 git log, 그리고 이번에 시도한 WebSearch 결과만 근거로 한다 — 트래픽 수·팔로워 수·전환율 등 확인 못한 숫자는 지어내지 않았다. 화면에 보이는 유일한 숫자형 %는 '완료한 노드의 weight 합 ÷ 100'인 진행도뿐이다.",
+  "nodes": [
+    {
+      "id": "enable_real_analytics",
+      "tier": 1,
+      "weight": 20,
+      "title": "GoatCounter 애널리틱스 실제로 켜기",
+      "category": "측정",
+      "requires": [],
+      "status": "todo",
+      "sourceSection": "§3",
+      "why": "analytics-config.js의 GOATCOUNTER_CODE가 아직 플레이스홀더 \"YOUR_CODE\"라서 portfolio/about/dev-portfolio를 포함한 사이트 전체에서 방문자 수·유입 경로·체류 시간이 단 한 건도 기록되고 있지 않다. 이 값이 켜지기 전까지는 이후의 모든 개선이 효과가 있었는지 검증할 방법이 없다.",
+      "action": "GoatCounter(https://www.goatcounter.com)에 무료 가입해 사이트 코드를 정하고, analytics-config.js의 window.GOATCOUNTER_CODE 값을 \"YOUR_CODE\" 대신 그 코드로 교체 후 commit+push. 가입 자체는 사용자 계정이 필요해 이 저장소 세션이 대신 할 수 없는 유일한 단계.",
+      "successEffect": "이후 처음으로 '이 사이트에 실제로 누가 언제 어디서 들어왔는지'를 확인할 수 있게 된다 — 이후 모든 개선의 효과 측정이 가능해진다.",
+      "failureCost": "지금처럼 채용 담당자가 실제로 이 사이트를 클릭해서 들어왔는지, 어느 페이지에서 이탈했는지 계속 알 수 없는 상태가 유지된다.",
+      "whySimple": "지금은 <b>손님이 몇 명 왔는지 세는 카운터 자체가 꺼져 있는 가게</b> 같은 상태예요. 카운터를 켜야 '오늘 손님이 늘었나 줄었나'를 알 수 있죠 — 이걸 켜기 전엔 다른 걸 아무리 고쳐도 효과가 있었는지 확인할 방법이 없어요.",
+      "journeyContext": "이 트리의 첫 관문이에요. 나머지 노드들(색인, 구조화 데이터, 콘텐츠, 링크)은 전부 '결과를 나중에 이 카운터로 확인한다'는 전제 위에 있어요.",
+      "glossary": {
+        "GoatCounter": "방문자 수를 세어주는 무료 애널리틱스 서비스 — 구글 애널리틱스보다 가볍고 개인정보를 덜 수집해요"
+      }
+    },
+    {
+      "id": "fix_og_image_hotlink",
+      "tier": 1,
+      "weight": 10,
+      "title": "about/portfolio의 og:image를 자체 호스팅으로 교체",
+      "category": "인프라",
+      "requires": [],
+      "status": "todo",
+      "sourceSection": "§6",
+      "why": "portfolio/index.html과 about/index.html의 og:image가 아직도 브런치 카카오 CDN(img1.kakaocdn.net, URL 안에 http://가 섞임)을 가리킨다 — dev-portfolio는 이미 icons/icon-1024.png 자체 호스팅으로 고쳐졌는데 이 두 페이지만 남의 서비스에 계속 의존하고 있다.",
+      "action": "dev-portfolio/index.html이 쓰는 것과 같은 패턴으로, portfolio/index.html과 about/index.html의 og:image를 저장소 내 icons/ 폴더의 이미지(예: icons/icon-1024.png 또는 이 두 페이지 전용 이미지)로 교체.",
+      "successEffect": "카톡·슬랙·링크드인 등에 이 두 페이지 링크를 공유했을 때 미리보기 이미지가 남의 서비스 장애와 무관하게 항상 뜬다.",
+      "failureCost": "브런치 CDN이 이미지 경로를 바꾸거나 막으면 이 두 페이지의 링크 미리보기가 예고 없이 깨진다.",
+      "whySimple": "지금 이 두 페이지의 <b>대표 사진을 남의 서버에서 빌려 쓰고 있는 상태</b>예요. 그 서버가 사진을 치워버리면 내 링크 미리보기도 같이 사라져요. 내 저장소 안에 있는 사진으로 바꿔두면 그럴 일이 없어요.",
+      "journeyContext": "1단계 세 칸 중 하나로, dev-portfolio에서 이미 검증된 방법을 그대로 옮기기만 하면 되는 낮은 위험의 작업이에요.",
+      "glossary": {
+        "og:image": "카톡·슬랙·트위터 등에 링크를 붙여넣었을 때 자동으로 뜨는 미리보기 이미지를 지정하는 태그"
+      }
+    },
+    {
+      "id": "verify_search_console_submission",
+      "tier": 1,
+      "weight": 15,
+      "title": "Search Console에 사이트맵 제출 여부 확인",
+      "category": "색인",
+      "requires": [],
+      "status": "todo",
+      "sourceSection": "§4-1",
+      "why": "GitHub Pages 서브패스 구조상 크롤러가 releasepilot-reports/robots.txt를 기본적으로 못 찾는다 — 2026-08-27 감사가 이미 지적한 문제. 구글 소유권 확인 파일(googlee344d90eaf3c6edd.html)은 2026-08-19부터 있지만, 그것만으로는 사이트맵을 실제로 제출했는지 알 수 없다.",
+      "action": "사용자가 Google Search Console(https://search.google.com/search-console)에 로그인해 이 속성의 사이트맵 제출 상태를 확인하고, 안 되어 있으면 https://delight0517.github.io/releasepilot-reports/sitemap.xml을 직접 제출. 이 세션은 콘솔 화면에 접근할 수 없어 대신 확인 불가 — 사용자 액션 필요.",
+      "successEffect": "robots.txt가 안 읽히는 구조를 우회해 검색엔진이 실제로 이 사이트의 페이지들을 찾아갈 수 있는 유일한 통로가 확보된다.",
+      "failureCost": "사이트맵이 제출되지 않은 채라면 구글이 이 사이트의 존재 자체를 모를 수 있다 — 아무리 콘텐츠를 개선해도 검색에 걸릴 방법이 없다.",
+      "whySimple": "이 사이트는 <b>정문에 문패가 없는 집</b>과 비슷해요(도메인 루트가 아니라 서브폴더에 있어서). 그래서 우편함 위치(사이트맵)를 우체국(Search Console)에 직접 알려줘야 우편(검색 노출)이 와요.",
+      "journeyContext": "1단계의 세 번째 칸이에요. 이게 안 되어 있으면 이후 콘텐츠나 구조화 데이터를 아무리 개선해도 검색엔진이 애초에 방문하지 않을 수 있어요.",
+      "resources": [
+        {
+          "label": "Google Search Console",
+          "url": "https://search.google.com/search-console"
+        },
+        {
+          "label": "네이버 서치어드바이저",
+          "url": "https://searchadvisor.naver.com/"
+        }
+      ],
+      "glossary": {
+        "Search Console": "구글이 제공하는 무료 도구 — 내 사이트를 구글 검색에 등록하고, 실제로 검색에 잡히고 있는지 확인할 수 있어요",
+        "사이트맵": "이 사이트에 어떤 페이지들이 있는지 목록으로 정리한 파일 — 검색엔진에게 '여기 다 있으니 와서 확인하라'고 알려주는 역할"
+      }
+    },
+    {
+      "id": "add_jsonld_about_portfolio",
+      "tier": 2,
+      "weight": 15,
+      "title": "about/portfolio에 Person 구조화 데이터(JSON-LD) 추가",
+      "category": "색인",
+      "requires": [
+        "enable_real_analytics"
+      ],
+      "status": "todo",
+      "sourceSection": "§5",
+      "why": "dev-portfolio/index.html은 이미 Person/BreadcrumbList/SoftwareApplication JSON-LD가 붙어 있는데(2026-08-25), about/index.html과 portfolio/index.html은 아직 0건이다. about은 스스로를 '전체 소개 허브'로 규정하는 페이지인데 정작 Person 스키마가 없다.",
+      "action": "dev-portfolio/index.html에 이미 있는 JSON-LD 블록 구조를 참고해, about/index.html에는 Person 스키마(이름·직함·소셜 링크), portfolio/index.html에는 CreativeWork/Person 스키마를 추가.",
+      "successEffect": "구글이 이 사람을 '누구인지' 구조적으로 이해하게 되어, 이름 검색이나 리치 결과(지식 패널류) 노출 가능성이 생긴다.",
+      "failureCost": "가장 정보량이 많은 소개 페이지(about, 601단어)가 검색엔진 입장에서는 구조 없는 텍스트 덩어리로만 남는다.",
+      "whySimple": "구조화 데이터는 <b>이력서에 붙이는 색인표</b> 같은 거예요. 글로만 '저는 개발자입니다'라고 쓰는 것보다, '이름: 김근후 / 직업: 개발자'처럼 항목별로 딱 정리해주면 구글이 훨씬 정확하게 이해해요.",
+      "journeyContext": "측정(tier 1)이 켜진 뒤에 진행하는 tier 2 콘텐츠 보강 칸 중 하나예요 — dev-portfolio에서 이미 검증된 패턴을 재사용하는 낮은 위험의 작업이에요.",
+      "glossary": {
+        "JSON-LD": "웹페이지 안에 '이 사람은 누구고 이 조직은 뭐다'를 검색엔진이 읽을 수 있는 형식으로 적어두는 코드 — 화면에는 안 보이고 검색엔진만 읽어요",
+        "Person 스키마": "구조화 데이터 중 '이 페이지가 소개하는 사람'의 이름·직업·링크 등을 표준 형식으로 적는 항목"
+      }
+    },
+    {
+      "id": "expand_portfolio_crawlable_text",
+      "tier": 2,
+      "weight": 10,
+      "title": "portfolio 페이지 크롤러용 텍스트 보강",
+      "category": "콘텐츠",
+      "requires": [
+        "enable_real_analytics"
+      ],
+      "status": "todo",
+      "sourceSection": "§7",
+      "why": "portfolio/index.html의 크롤러가 읽는 순수 텍스트가 141단어로 세 페이지 중 가장 적다 — 검색·필터가 JS로 렌더링되는 구조라 실제 작품 목록이 정적 HTML엔 거의 안 보이기 때문으로 보인다.",
+      "action": "대표작 몇 개는 JS 필터에 의존하지 않는 정적 텍스트(제목+한 줄 설명)로 페이지 초기 HTML에 포함시켜, 크롤러와 스크린리더 둘 다 최소한의 작품 정보를 바로 읽을 수 있게 한다.",
+      "successEffect": "검색엔진이 이 페이지를 열었을 때 '빈 페이지에 가까운 JS 껍데기'가 아니라 실제 작품 정보가 있는 페이지로 인식하게 된다.",
+      "failureCost": "지금처럼 141단어 수준으로 남으면, 사이트맵에 등록되어 있어도 검색엔진이 이 페이지의 가치를 낮게 평가할 수 있다.",
+      "whySimple": "지금 이 페이지는 <b>진열장 유리가 코팅되어 안이 잘 안 보이는 가게</b> 같아요. 안에 물건(작품)은 많은데, 그게 전부 자바스크립트 뒤에 숨어 있어서 검색엔진(손님)이 지나가면서 봤을 때 텅 비어 보여요.",
+      "journeyContext": "tier 2 콘텐츠 보강 칸이에요 — 측정이 켜진 뒤에 이 작업의 효과(체류시간·이탈률 변화)를 실제로 비교할 수 있어요.",
+      "glossary": {}
+    },
+    {
+      "id": "strengthen_internal_links_to_about",
+      "tier": 2,
+      "weight": 8,
+      "title": "about 페이지로 들어가는 내부 링크 늘리기",
+      "category": "구조",
+      "requires": [
+        "enable_real_analytics"
+      ],
+      "status": "todo",
+      "sourceSection": "§8",
+      "why": "about은 스스로 '전체 소개 허브'라고 규정하지만, 저장소 전체에서 about/으로 들어가는 링크가 있는 페이지는 index.html과 worklog/index.html 2곳뿐이다 — portfolio(7곳)·dev-portfolio(5곳)보다 훨씬 적다.",
+      "action": "portfolio/, dev-portfolio/ 등 공개 페이지 하단이나 헤더에 '김근후 소개' 형태로 about/ 링크를 추가.",
+      "successEffect": "채용 담당자가 작품이나 앱을 먼저 보고 '이 사람이 누군지' 알고 싶을 때, 클릭 한 번으로 소개 페이지에 닿을 수 있게 된다.",
+      "failureCost": "포트폴리오 작품을 본 방문자가 이 사람이 누구인지 알아보려면 홈으로 되돌아가야 해서 이탈 가능성이 커진다.",
+      "whySimple": "지금은 <b>상품(작품)은 잘 보이는데 명함(소개 페이지)으로 가는 길이 딱 두 곳뿐</b>인 상태예요. 상품을 구경하다가 바로 명함을 볼 수 있게 길을 몇 개 더 내주는 거예요.",
+      "journeyContext": "tier 2의 구조 개선 칸이에요. enable_real_analytics 이후에 진행해야 '링크를 늘렸더니 about 방문이 실제로 늘었는지' 확인할 수 있어요.",
+      "glossary": {}
+    },
+    {
+      "id": "add_llms_txt",
+      "tier": 3,
+      "weight": 7,
+      "title": "llms.txt 신설 — AI 검색 인용 대응",
+      "category": "확장",
+      "requires": [
+        "add_jsonld_about_portfolio"
+      ],
+      "status": "todo",
+      "sourceSection": "§9",
+      "why": "2026-08-27 감사가 지적한 llms.txt 부재가 이번 점검에서도 그대로 확인됐다(저장소 전체에 0건) — ChatGPT·Perplexity 등이 이 사이트를 인용할 근거 파일이 없다.",
+      "action": "사이트 루트에 llms.txt를 만들어 사이트 목적, 주요 페이지(about/portfolio/dev-portfolio) 링크, 한 줄 소개를 정리.",
+      "successEffect": "채용 담당자가 AI 검색(챗GPT 등)으로 '3D 게임 아티스트 개발자 포트폴리오'류를 물어봤을 때 이 사이트가 인용될 근거가 생긴다.",
+      "failureCost": "AI 검색이 점점 늘어나는 채용 리서치 흐름에서 이 사이트가 인용될 방법이 계속 없다.",
+      "whySimple": "llms.txt는 <b>AI 비서에게 주는 자기소개 카드</b> 같은 거예요. 사람은 홈페이지를 직접 보고 이해하지만, AI는 이런 요약 파일이 있으면 더 정확하게 소개할 수 있어요.",
+      "journeyContext": "구조화 데이터가 먼저 붙은 뒤 진행하는 tier 3 확장 칸이에요 — 사람용 검색(구글)과 AI용 검색(챗GPT류) 두 채널을 나눠 다루는 마지막 색인 작업이에요.",
+      "glossary": {
+        "llms.txt": "AI 모델이 이 사이트를 더 잘 이해하고 인용할 수 있도록, 사이트 개요와 주요 페이지를 정리해두는 표준 제안 파일 형식"
+      }
+    },
+    {
+      "id": "review_weekly_referrers",
+      "tier": 3,
+      "weight": 8,
+      "title": "매주 애널리틱스 유입 경로 확인",
+      "category": "측정",
+      "requires": [
+        "enable_real_analytics"
+      ],
+      "status": "todo",
+      "sourceSection": "§10",
+      "why": "측정이 켜진 뒤에도 데이터를 아무도 안 보면 의미가 없다 — 어느 채널(브런치·카톡·검색·직접 링크)에서 실제로 사람이 왔는지 확인해야 다음 홍보 노력을 어디에 집중할지 판단할 수 있다.",
+      "action": "GoatCounter 대시보드에서 매주 referrer(유입 경로)와 페이지별 방문 수를 확인해 기록.",
+      "successEffect": "몇 주 뒤에는 '어느 채널이 실제로 방문을 만드는지'에 대해 추측이 아니라 근거 있는 답을 갖게 된다.",
+      "failureCost": "측정 장치를 켜놓고도 아무도 안 보면 켜지 않은 것과 실질적으로 같아진다.",
+      "whySimple": "카운터를 켰다고 끝이 아니에요. <b>매주 한 번씩 숫자를 들여다봐야</b> '이번 주엔 브런치에서 사람이 많이 왔네' 같은 걸 알 수 있어요.",
+      "journeyContext": "tier 3의 반복 작업 칸이에요. 몇 주치가 쌓여야 tier 4의 '검증된 채널에 집중'을 의미 있게 할 수 있어요.",
+      "glossary": {
+        "유입 경로(referrer)": "방문자가 이 사이트로 들어오기 직전에 있었던 곳 — 검색결과, 카톡 링크, 브런치 글 등"
+      }
+    },
+    {
+      "id": "iterate_on_validated_channels",
+      "tier": 4,
+      "weight": 7,
+      "title": "몇 주 데이터 뒤, 검증된 채널에 집중",
+      "category": "확장",
+      "requires": [
+        "review_weekly_referrers",
+        "expand_portfolio_crawlable_text"
+      ],
+      "status": "todo",
+      "sourceSection": "§10",
+      "why": "측정 없이 홍보 노력을 늘리면 어디에 힘을 더 줘야 할지 알 수 없다 — 몇 주간 쌓인 실제 유입 데이터가 있어야 감이 아니라 근거로 다음 홍보 방향을 정할 수 있다.",
+      "action": "review_weekly_referrers로 몇 주 쌓은 데이터를 보고, 실제로 방문·체류를 만든 채널(예: 브런치 글, 특정 SNS 공유)에 다음 콘텐츠나 링크 배치를 집중.",
+      "successEffect": "추측이 아니라 실제 데이터를 근거로 홍보 자원을 배분하게 된다.",
+      "failureCost": "몇 주가 지나도 여전히 감으로 홍보 방향을 정하게 되어, 애초에 측정을 켠 의미가 사라진다.",
+      "whySimple": "몇 주 동안 모은 기록을 보고 <b>진짜 효과 있었던 채널에만 더 힘을 주는</b> 마지막 단계예요. 추측이 아니라 그동안 쌓은 진짜 숫자로 결정하는 거죠.",
+      "journeyContext": "이 트리의 마지막 칸이에요 — tier 1의 측정 켜기에서 시작해 tier 3의 반복 확인을 거쳐야만 의미 있게 도달하는 지점이에요.",
+      "glossary": {}
+    }
+  ]
+}
