@@ -1,0 +1,99 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3D 도구, 지금까지 무엇이 나아졌을까?</title><style>
+  :root {
+    --ink: #1c2333; --ink-soft: #2a3348; --parchment: #f6f1e6; --parchment-card: #fffdf7;
+    --line: #ded2b8; --accent: #4f7cac; --accent-strong: #34597a;
+    --text: #241f14; --text-soft: #5c5644; --text-faint: #8b8368;
+    --tag-bg: #eef2f7; --tag-text: #34597a;
+    --muted: #898781; --baseline: #c3c2b7;
+    --series-free: #eb6834; --series-paid: #2a78d6; --good: #1baf7a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink: #0f1420; --parchment: #171c26; --parchment-card: #1f2532; --line: #333c4d;
+      --accent: #7fa8d6; --accent-strong: #a9c6e8;
+      --text: #ece6d8; --text-soft: #b8b19c; --text-faint: #7b7663;
+      --tag-bg: #22293a; --tag-text: #a9c6e8;
+      --muted: #898781; --baseline: #383835;
+      --series-free: #d95926; --series-paid: #3987e5; --good: #199e70;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ink: #0f1420; --parchment: #171c26; --parchment-card: #1f2532; --line: #333c4d;
+    --accent: #7fa8d6; --accent-strong: #a9c6e8;
+    --text: #ece6d8; --text-soft: #b8b19c; --text-faint: #7b7663;
+    --tag-bg: #22293a; --tag-text: #a9c6e8;
+    --muted: #898781; --baseline: #383835;
+    --series-free: #d95926; --series-paid: #3987e5; --good: #199e70;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--parchment); color: var(--text); font-family: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", "Segoe UI", sans-serif; line-height: 1.6; }
+  .page { max-width: 700px; margin: 0 auto; padding: 0 0 64px; }
+  .masthead { background: linear-gradient(180deg, var(--ink) 0%, var(--ink-soft) 100%); color: #eef3f8; padding: 28px 20px 24px; }
+  .eyebrow { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #c3d3e6; margin: 0 0 6px; font-weight: 600; }
+  .masthead h1 { font-family: Georgia, serif; font-size: 26px; margin: 0 0 8px; text-wrap: balance; }
+  .masthead p.sub { margin: 0; font-size: 14px; color: #c9d6e4; max-width: 55ch; }
+  .wrap { padding: 0 20px; }
+  section { background: var(--parchment-card); border: 1px solid var(--line); border-radius: 12px; padding: 18px 16px; margin: 18px 0; }
+  h2 { font-family: Georgia, serif; font-size: 19px; margin: 0 0 4px; color: var(--text); }
+  h2 + .lede { margin: 0 0 14px; color: var(--text-soft); font-size: 13.5px; }
+  p { margin: 0 0 12px; font-size: 14.5px; }
+  code { background: var(--tag-bg); color: var(--tag-text); padding: 1px 5px; border-radius: 4px; font-size: 13px; }
+  .hero { text-align: center; padding: 22px 16px 18px; }
+  .hero .big { font-family: Georgia, serif; font-size: 40px; line-height: 1.1; color: var(--series-paid); font-weight: 700; }
+  .hero .big .from { color: var(--series-free); }
+  .hero .arrow { color: var(--text-faint); font-size: 24px; }
+  .hero .cap { font-size: 13px; color: var(--text-soft); margin-top: 8px; }
+  figure { margin: 0; }
+  figcaption { font-size: 12.5px; color: var(--text-soft); margin-top: 10px; }
+  .legend { display: flex; gap: 16px; flex-wrap: wrap; margin: 0 0 12px; font-size: 12.5px; color: var(--text-soft); }
+  .legend i { display: inline-block; width: 11px; height: 11px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+  .scroll { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; min-width: 440px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--text-soft); font-weight: 600; font-size: 12.5px; }
+  td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  ul { margin: 0 0 12px; padding-left: 20px; font-size: 14.5px; }
+  li { margin-bottom: 6px; }
+  .callout { border-left: 3px solid var(--accent); background: var(--tag-bg); padding: 12px 14px; border-radius: 0 8px 8px 0; margin: 14px 0; font-size: 14px; }
+  .callout.warn { border-left-color: var(--series-free); }
+  .callout strong { color: var(--accent-strong); }
+  .step { display: flex; gap: 12px; margin-bottom: 14px; }
+  .step .n { flex: 0 0 26px; height: 26px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .step .n.done { background: var(--good); }
+  .step .b { flex: 1; }
+  .step .b b { display: block; font-size: 14.5px; margin-bottom: 2px; }
+  .step .b span { font-size: 13.5px; color: var(--text-soft); }
+  .foot { text-align: center; font-size: 12px; color: var(--text-faint); padding: 8px 20px 0; }
+</style>
+<div class="page"><div class="masthead"><p class="eyebrow">SPATIAL LEARNING LAB · 2026-10-24 KST</p><h1>3D 도구, 지금까지 무엇이 나아졌을까?</h1><p class="sub">카메라 점검 도구의 진전과, 아직 못 한 일을 나누어 봅니다.</p></div><div class="wrap">
+<section><h2>한 줄 결론</h2><p><b>이미 만든 3D 장면을 더 잘 살펴보는 도구가 생겼습니다.</b> 사진 한 장을 완벽한 3D 배경으로 바꾸는 기능은 아직 검증하지 못했습니다.</p><div class="callout">쉽게 말하면: <b>어디에 카메라를 놓아야 물체가 안 가려지고 크게 보이는지 돕는 도구</b>입니다.</div></section>
+<section class="hero"><div class="big"><span class="from">20개</span> <span class="arrow">→</span> 51개</div><div class="cap">같은 장면의 51개 물체 중, 필요한 화면 크기 조건을 만족한 수</div></section>
+<section><h2>1. 작아서 안 보이던 물체를 더 크게 찍어요</h2><p class="lede">[실측] 사용자 Blender 장면 1개, 같은 51개 물체의 전후 비교입니다.</p><svg viewBox="0 0 660 355" width="100%" role="img" aria-label="화면 크기 조건을 통과한 물체 수: 이전 20개, 세부 카메라 추가 후 51개, 총 51개">
+<title>충분히 크게 찍힌 물체 수 — 같은 장면 전후 비교</title>
+<text x="8" y="38" font-size="26" fill="var(--text)">이전: 전체 장면 중심으로 촬영</text>
+<rect x="8" y="55" width="620" height="44" fill="var(--baseline)"/>
+<rect x="8" y="55" width="243.14" height="44" fill="var(--series-free)"/>
+<text x="20" y="85" font-size="24" fill="#fff">20개 / 51개</text>
+<text x="8" y="153" font-size="26" fill="var(--text)">현재: 작은 물체에 세부 카메라 추가</text>
+<rect x="8" y="171" width="620" height="44" fill="var(--series-paid)"/>
+<text x="20" y="202" font-size="24" fill="#fff">51개 / 51개</text>
+<line x1="8" y1="258" x2="628" y2="258" stroke="var(--baseline)"/>
+<g font-size="22" fill="var(--text-soft)" text-anchor="middle"><text x="8" y="290" text-anchor="start">0</text><text x="251" y="290">20</text><text x="494" y="290">40</text><text x="628" y="290" text-anchor="end">51</text><text x="330" y="336">물체 수 (개)</text></g></svg><figcaption>가로축은 물체 수입니다. <b>31개가 개선</b>됐고, 이전에 통과한 물체가 실패로 바뀐 경우는 0개였습니다.</figcaption><div class="callout warn"><b>51/51은 AI 인식 정확도 100%가 아닙니다.</b> 표면 일부가 계측에 필요한 크기로 찍혔는지 검사한 숫자입니다. 물체가 무엇인지 알아보거나 원본 그림과 닮았는지는 다른 시험입니다.</div></section>
+<section><h2>칸 하나를 물체 하나라고 생각해 보세요</h2><svg viewBox="0 0 660 344" width="100%" role="img" aria-label="칸 하나는 물체 하나. 이전에는 20칸, 지금은 51칸 모두가 크기 조건 통과"><title>칸 하나는 물체 하나</title><rect x="8" y="20" width="28" height="28" rx="3" fill="var(--series-free)" opacity="1"/><rect x="45" y="20" width="28" height="28" rx="3" fill="var(--series-free)" opacity="1"/><rect x="82" y="20" width="28" height="28" rx="3" fill="var(--series-free)" opacity="1"/><rect x="119" y="20" width="28" height="28" rx="3" fill="var(--series-free)" opacity="1"/><rect x="156" y="20" width="28" height="28" rx="3" fill="var(--series-free)" opacity="1"/><rect x="193" y="20" width="28" height="28" rx="3" fill="var(--series-free)" opacity="1"/><rect x="230" y="20" width="28" height="28" rx="3" fill="var(--series-free)" opacity="1"/><rect x="267" y="20" width="28" height="28" rx="3" fill="var(--series-free)" opacity="1"/><rect x="304" y="20" width="28" height="28" rx="3" fill="var(--series-free)" opacity="1"/><rect x="341" y="20" width="28" height="28" rx="3" fill="var(--series-free)" opacity="1"/><rect x="378" y="20" width="28" height="28" rx="3" fill="var(--series-free)" opacity="1"/><rect x="415" y="20" width="28" height="28" rx="3" fill="var(--series-free)" opacity="1"/><rect x="452" y="20" width="28" height="28" rx="3" fill="var(--series-free)" opacity="1"/><rect x="489" y="20" width="28" height="28" rx="3" fill="var(--series-free)" opacity="1"/><rect x="526" y="20" width="28" height="28" rx="3" fill="var(--series-free)" opacity="1"/><rect x="563" y="20" width="28" height="28" rx="3" fill="var(--series-free)" opacity="1"/><rect x="600" y="20" width="28" height="28" rx="3" fill="var(--series-free)" opacity="1"/><rect x="8" y="57" width="28" height="28" rx="3" fill="var(--series-free)" opacity="1"/><rect x="45" y="57" width="28" height="28" rx="3" fill="var(--series-free)" opacity="1"/><rect x="82" y="57" width="28" height="28" rx="3" fill="var(--series-free)" opacity="1"/><rect x="119" y="57" width="28" height="28" rx="3" fill="var(--series-free)" opacity="0.13"/><rect x="156" y="57" width="28" height="28" rx="3" fill="var(--series-free)" opacity="0.13"/><rect x="193" y="57" width="28" height="28" rx="3" fill="var(--series-free)" opacity="0.13"/><rect x="230" y="57" width="28" height="28" rx="3" fill="var(--series-free)" opacity="0.13"/><rect x="267" y="57" width="28" height="28" rx="3" fill="var(--series-free)" opacity="0.13"/><rect x="304" y="57" width="28" height="28" rx="3" fill="var(--series-free)" opacity="0.13"/><rect x="341" y="57" width="28" height="28" rx="3" fill="var(--series-free)" opacity="0.13"/><rect x="378" y="57" width="28" height="28" rx="3" fill="var(--series-free)" opacity="0.13"/><rect x="415" y="57" width="28" height="28" rx="3" fill="var(--series-free)" opacity="0.13"/><rect x="452" y="57" width="28" height="28" rx="3" fill="var(--series-free)" opacity="0.13"/><rect x="489" y="57" width="28" height="28" rx="3" fill="var(--series-free)" opacity="0.13"/><rect x="526" y="57" width="28" height="28" rx="3" fill="var(--series-free)" opacity="0.13"/><rect x="563" y="57" width="28" height="28" rx="3" fill="var(--series-free)" opacity="0.13"/><rect x="600" y="57" width="28" height="28" rx="3" fill="var(--series-free)" opacity="0.13"/><rect x="8" y="94" width="28" height="28" rx="3" fill="var(--series-free)" opacity="0.13"/><rect x="45" y="94" width="28" height="28" rx="3" fill="var(--series-free)" opacity="0.13"/><rect x="82" y="94" width="28" height="28" rx="3" fill="var(--series-free)" opacity="0.13"/><rect x="119" y="94" width="28" height="28" rx="3" fill="var(--series-free)" opacity="0.13"/><rect x="156" y="94" width="28" height="28" rx="3" fill="var(--series-free)" opacity="0.13"/><rect x="193" y="94" width="28" height="28" rx="3" fill="var(--series-free)" opacity="0.13"/><rect x="230" y="94" width="28" height="28" rx="3" fill="var(--series-free)" opacity="0.13"/><rect x="267" y="94" width="28" height="28" rx="3" fill="var(--series-free)" opacity="0.13"/><rect x="304" y="94" width="28" height="28" rx="3" fill="var(--series-free)" opacity="0.13"/><rect x="341" y="94" width="28" height="28" rx="3" fill="var(--series-free)" opacity="0.13"/><rect x="378" y="94" width="28" height="28" rx="3" fill="var(--series-free)" opacity="0.13"/><rect x="415" y="94" width="28" height="28" rx="3" fill="var(--series-free)" opacity="0.13"/><rect x="452" y="94" width="28" height="28" rx="3" fill="var(--series-free)" opacity="0.13"/><rect x="489" y="94" width="28" height="28" rx="3" fill="var(--series-free)" opacity="0.13"/><rect x="526" y="94" width="28" height="28" rx="3" fill="var(--series-free)" opacity="0.13"/><rect x="563" y="94" width="28" height="28" rx="3" fill="var(--series-free)" opacity="0.13"/><rect x="600" y="94" width="28" height="28" rx="3" fill="var(--series-free)" opacity="0.13"/><text x="8" y="157" font-size="24" fill="var(--text)">이전: 20개가 충분히 크게 보였어요.</text><rect x="8" y="190" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="45" y="190" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="82" y="190" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="119" y="190" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="156" y="190" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="193" y="190" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="230" y="190" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="267" y="190" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="304" y="190" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="341" y="190" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="378" y="190" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="415" y="190" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="452" y="190" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="489" y="190" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="526" y="190" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="563" y="190" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="600" y="190" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="8" y="227" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="45" y="227" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="82" y="227" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="119" y="227" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="156" y="227" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="193" y="227" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="230" y="227" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="267" y="227" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="304" y="227" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="341" y="227" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="378" y="227" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="415" y="227" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="452" y="227" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="489" y="227" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="526" y="227" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="563" y="227" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="600" y="227" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="8" y="264" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="45" y="264" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="82" y="264" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="119" y="264" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="156" y="264" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="193" y="264" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="230" y="264" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="267" y="264" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="304" y="264" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="341" y="264" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="378" y="264" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="415" y="264" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="452" y="264" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="489" y="264" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="526" y="264" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="563" y="264" width="28" height="28" rx="3" fill="var(--series-paid)"/><rect x="600" y="264" width="28" height="28" rx="3" fill="var(--series-paid)"/><text x="8" y="328" font-size="24" fill="var(--text)">현재: 51개 모두 크기 조건을 통과했어요.</text></svg><p>단체사진에서 작게 나온 얼굴을 가까이 찍으면 살펴보기 쉬워지는 것과 비슷합니다. 얼굴을 알아보는 시험까지 통과했다는 뜻은 아닙니다.</p></section>
+<section><h2>2. 같은 일을 두 번 찍지 않아요</h2><p>[실측] 세부 카메라 <b>31쌍</b>으로 이미지 <b>62장</b>을 만들었습니다. 같은 입력으로 다시 실행했을 때 새로 찍은 이미지는 <b>0장</b>이었고, 기존 62장의 내용도 그대로였습니다.</p><div class="callout"><b>교차검증:</b> 51 − 20 = 31개. 실제로 개선된 물체 이름 목록 31개와, 생성된 세부 카메라 대상 31개가 일치했습니다. 단순히 보고서에 적힌 숫자만 읽은 것이 아닙니다.</div><p>파일럿의 새 산출물은 약 <b>18.9MB</b>입니다. 이 수치는 전체 연구 폴더 용량이 아니라 이번 파일럿 출력 용량입니다.</p></section>
+<section><h2>3. 카메라와 단위가 틀어지는지 검사해요</h2><p>[실측] 정답 위치를 아는 3D 표면점으로 계산 시험을 했고, 최대 위치 차이는 <b>5.26mm</b>였습니다. 렌즈 값·미터/센티미터·좌표축을 일부러 틀리게 넣었을 때도 오류를 잡았습니다.</p><p><b>Blender용 카메라 84개</b>를 작은 라이브러리로 만들었고, 새 Blender 세션에서 다시 가져와 위치와 렌즈를 대조했습니다. 모델 메쉬는 0개여서 기존 건물을 복제하지 않습니다.</p><div class="callout warn">5.26mm는 <b>이미 정답과 카메라를 아는 계산 시험</b>의 오차입니다. 원본 사진 속 산까지의 거리를 5.26mm 정확도로 알아냈다는 뜻은 아닙니다.</div></section>
+<section><h2>4. Unreal로 가져오는 첫 관문도 시험했어요</h2><p>[실측 · 별도 격리 실험] 기존 블록아웃 메쉬 51개를 FBX로 내보내고 Unreal 5.8에서 <b>메쉬 자산 51개와 재질 자산 1개</b>로 가져왔습니다. 최종 가져오기 로그는 오류 0건·경고 0건이었습니다.</p><p>이 실험은 <b>자산이 들어오는 단계</b>까지입니다. Unreal 맵에서 원래 위치에 조립하기, 카메라·재질·조명 일치, 게임에서 걷기는 이 결과로 확인되지 않았습니다.</p></section>
+<section><h2>지금 객관적으로 어디에 쓸 수 있나요?</h2><div class="scroll"><table><thead><tr><th>하고 싶은 일</th><th>현재 판정</th><th>실무에서의 의미</th></tr></thead><tbody>
+<tr><td>작성된 Blender 장면 점검</td><td>실측 확인</td><td>작거나 가려진 물체를 찾아, 살펴볼 카메라를 마련합니다.</td></tr>
+<tr><td>카메라를 Blender로 전달</td><td>실측 확인</td><td>카메라 컬렉션을 가져와 여러 시점에서 검토할 수 있습니다.</td></tr>
+<tr><td>동일 입력 반복 실행</td><td>실측 확인</td><td>결과를 재사용해 불필요한 촬영을 줄입니다.</td></tr>
+<tr><td>사진만 보고 정확한 미터 거리 찾기</td><td>미검증</td><td>아직 이 도구의 수치를 사진의 실측값으로 쓰면 안 됩니다.</td></tr>
+<tr><td>사진과 똑같은 배경 자동 제작</td><td>미검증</td><td>레퍼런스와의 최종 일치도는 측정하지 못했습니다.</td></tr>
+<tr><td>Unreal·Luanti에서 동일하게 보이기</td><td>미검증</td><td>별도의 실제 엔진 장면·카메라·재질 검증이 필요합니다.</td></tr>
+</tbody></table></div></section>
+<section><h2>아직 완성품으로 믿으면 안 되는 이유</h2><ul><li>현재 실무 파일럿의 전후 비교는 <b>사용자 장면 1개</b>입니다. 다른 장면에도 같은 효과가 나는지는 더 시험해야 합니다.</li><li>3D 표면점의 이름과 위치를 프로그램이 이미 아는 시험입니다. <b>사진에서 스스로 같은 점을 찾는 능력은 미검증</b>입니다.</li><li>표면의 한 점이 보이는 것과, 주변 픽셀 전체가 가리지 않는 것은 다릅니다.</li><li>이번 개선은 카메라 선택·계측 프로그램의 개선입니다. 학습된 AI의 3D 이해력이 얼마나 올랐는지를 측정한 점수는 없습니다.</li><li>이번 단계에서 원래 배경 모델을 레퍼런스처럼 더 예쁘게 완성했다는 증거는 없습니다.</li></ul></section>
+<section><h2>그래서, 다음엔 무엇을 하나요?</h2><div class="step"><div class="n done">1</div><div class="b"><b>현재 도구로 블록아웃을 실제 점검</b><span>기준 카메라의 전체 구도와 세부 카메라의 물체 크기를 함께 확인합니다.</span></div></div><div class="step"><div class="n">2</div><div class="b"><b>실제 이미지에서 같은 점을 찾는 시험</b><span>정답 이름을 알려주지 않아도 가림·크기 차이를 견디는지 측정합니다.</span></div></div><div class="step"><div class="n">3</div><div class="b"><b>레퍼런스와 실제 게임 장면을 대조</b><span>카메라·좌표·재질을 전달하고 실제 엔진 화면으로 확인해야 합니다.</span></div></div></section>
+<section><h2>숫자의 출처와 읽는 법</h2><p>[실측] <code>pixel_support.json</code>의 개선 전·후 개별 물체 목록, <code>batch_manifest.json</code>의 31개 대상, 캐시 재실행 결과와 62개 PNG의 해시를 교차검증했습니다.</p><p>[실측] <code>metric_validation.json</code>, <code>BlackLion_CameraRig.validation.json</code>, 별도 <code>FBX_TRANSFER_VALIDATION.md</code>를 읽었습니다. 원본 장면 SHA-256 시작값: <code>F492E2A1</code>.</p><p>화면 크기 조건: 양쪽 이미지에서 같은 삼각형 표면점이 보이고, 해당 삼각형 면적이 9픽셀² 이상이며 그 점에서 삼각형 변까지 1픽셀 이상입니다. 실제 픽셀 가림이나 질감 특징점의 인식 성공을 보증하지 않습니다.</p><p><a href="spatial-camera-progress-1792836270817.png">요약 그래프 이미지 열기</a></p></section>
+<p class="foot">측정 2026-10-24 KST · 같은 사용자 장면 1개 · 실측과 미검증을 구분한 보고서</p></div></div>
