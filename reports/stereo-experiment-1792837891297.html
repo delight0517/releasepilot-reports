@@ -1,0 +1,67 @@
+<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>실제 사진 대응 실험</title><style>
+  :root {
+    --ink: #1c2333; --ink-soft: #2a3348; --parchment: #f6f1e6; --parchment-card: #fffdf7;
+    --line: #ded2b8; --accent: #4f7cac; --accent-strong: #34597a;
+    --text: #241f14; --text-soft: #5c5644; --text-faint: #8b8368;
+    --tag-bg: #eef2f7; --tag-text: #34597a;
+    --muted: #898781; --baseline: #c3c2b7;
+    --series-free: #eb6834; --series-paid: #2a78d6; --good: #1baf7a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink: #0f1420; --parchment: #171c26; --parchment-card: #1f2532; --line: #333c4d;
+      --accent: #7fa8d6; --accent-strong: #a9c6e8;
+      --text: #ece6d8; --text-soft: #b8b19c; --text-faint: #7b7663;
+      --tag-bg: #22293a; --tag-text: #a9c6e8;
+      --muted: #898781; --baseline: #383835;
+      --series-free: #d95926; --series-paid: #3987e5; --good: #199e70;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ink: #0f1420; --parchment: #171c26; --parchment-card: #1f2532; --line: #333c4d;
+    --accent: #7fa8d6; --accent-strong: #a9c6e8;
+    --text: #ece6d8; --text-soft: #b8b19c; --text-faint: #7b7663;
+    --tag-bg: #22293a; --tag-text: #a9c6e8;
+    --muted: #898781; --baseline: #383835;
+    --series-free: #d95926; --series-paid: #3987e5; --good: #199e70;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--parchment); color: var(--text); font-family: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", "Segoe UI", sans-serif; line-height: 1.6; }
+  .page { max-width: 700px; margin: 0 auto; padding: 0 0 64px; }
+  .masthead { background: linear-gradient(180deg, var(--ink) 0%, var(--ink-soft) 100%); color: #eef3f8; padding: 28px 20px 24px; }
+  .eyebrow { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #c3d3e6; margin: 0 0 6px; font-weight: 600; }
+  .masthead h1 { font-family: Georgia, serif; font-size: 26px; margin: 0 0 8px; text-wrap: balance; }
+  .masthead p.sub { margin: 0; font-size: 14px; color: #c9d6e4; max-width: 55ch; }
+  .wrap { padding: 0 20px; }
+  section { background: var(--parchment-card); border: 1px solid var(--line); border-radius: 12px; padding: 18px 16px; margin: 18px 0; }
+  h2 { font-family: Georgia, serif; font-size: 19px; margin: 0 0 4px; color: var(--text); }
+  h2 + .lede { margin: 0 0 14px; color: var(--text-soft); font-size: 13.5px; }
+  p { margin: 0 0 12px; font-size: 14.5px; }
+  code { background: var(--tag-bg); color: var(--tag-text); padding: 1px 5px; border-radius: 4px; font-size: 13px; }
+  .hero { text-align: center; padding: 22px 16px 18px; }
+  .hero .big { font-family: Georgia, serif; font-size: 40px; line-height: 1.1; color: var(--series-paid); font-weight: 700; }
+  .hero .big .from { color: var(--series-free); }
+  .hero .arrow { color: var(--text-faint); font-size: 24px; }
+  .hero .cap { font-size: 13px; color: var(--text-soft); margin-top: 8px; }
+  figure { margin: 0; }
+  figcaption { font-size: 12.5px; color: var(--text-soft); margin-top: 10px; }
+  .legend { display: flex; gap: 16px; flex-wrap: wrap; margin: 0 0 12px; font-size: 12.5px; color: var(--text-soft); }
+  .legend i { display: inline-block; width: 11px; height: 11px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+  .scroll { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; min-width: 440px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--text-soft); font-weight: 600; font-size: 12.5px; }
+  td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  ul { margin: 0 0 12px; padding-left: 20px; font-size: 14.5px; }
+  li { margin-bottom: 6px; }
+  .callout { border-left: 3px solid var(--accent); background: var(--tag-bg); padding: 12px 14px; border-radius: 0 8px 8px 0; margin: 14px 0; font-size: 14px; }
+  .callout.warn { border-left-color: var(--series-free); }
+  .callout strong { color: var(--accent-strong); }
+  .step { display: flex; gap: 12px; margin-bottom: 14px; }
+  .step .n { flex: 0 0 26px; height: 26px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .step .n.done { background: var(--good); }
+  .step .b { flex: 1; }
+  .step .b b { display: block; font-size: 14.5px; margin-bottom: 2px; }
+  .step .b span { font-size: 13.5px; color: var(--text-soft); }
+  .foot { text-align: center; font-size: 12px; color: var(--text-faint); padding: 8px 20px 0; }
+</style><main><h1>실제 사진 대응 실험</h1><p>정답을 입력으로 주지 않고 실제 좌우 사진에서 대응을 계산했습니다.</p><img style="width:100%;height:auto" src="stereo-experiment-1792837891297.png" alt="오차 2픽셀 이내 비율 19.1%에서82.8%"><p>고정 시차 범위0–112px, 641×555 반해상도, 같은275,003개 픽셀 평가입니다. 단일 픽셀 SAD와7×7 SAD의 비교이며 평균 절대 시차 오차는20.61→4.59px, 중앙값14.5→0.5px입니다. 임계값2px는 원본 해상도의4px에 해당합니다.</p><p>정답0과 공통 경계를 제외했으며 별도 가림 정답 마스크는 사용하지 않았습니다. 이 결과는 한 실내 식물 장면의 비교이며 학습된 지능, 도시 일반화, 미터 거리 복원을 의미하지 않습니다. 다음은 좌우 왕복 일치 검사와 보정된 도시 쌍 검증입니다.</p><p>자료: <a href="https://github.com/opencv/opencv/tree/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data">OpenCV 공식 Aloe 샘플</a>. 원본 사진은 외부 게시하지 않고 집계 그래프만 게시했습니다.</p></main></html>
