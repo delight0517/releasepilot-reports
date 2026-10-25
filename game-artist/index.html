@@ -58,7 +58,15 @@
   .topnav .links a { font-size: 13.5px; color: var(--ink-dim); text-decoration: none; }
   .topnav .links a:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 4px; }
   .topnav .mail { color: var(--accent) !important; font-weight: 600; }
-  @media (max-width: 680px) { .topnav .role, .topnav .links a:not(.mail) { display: none; } }
+  @media (max-width: 680px) { .topnav .role, .topnav .links a:not(.mail):not(.journey-link) { display: none; } }
+  .topnav .links .journey-link { color: var(--accent); font-weight: 700; }
+  .journey-feature { padding-top: 54px; }
+  .journey-card { display: grid; grid-template-columns: 1.35fr 1fr; gap: 28px; align-items: center; padding: 20px; margin-top: 22px; background: var(--card); border: 1px solid var(--line); }
+  .journey-card img { display: block; width: 100%; height: auto; }
+  .journey-card h3 { font-family: var(--serif); font-size: clamp(22px, 3vw, 32px); line-height: 1.3; margin: 8px 0; }
+  .journey-card p { color: var(--ink-dim); }
+  .journey-card .journal-cta { display: inline-block; padding: 10px 15px; margin-top: 6px; background: var(--accent); color: white; text-decoration: none; font-weight: 650; }
+  @media (max-width: 680px) { .journey-card { grid-template-columns: 1fr; gap: 12px; padding: 14px; } }
 
   /* ───────── hero : 이름 → 한 줄 정의 → 대표작 ───────── */
   .hero { padding: 84px 0 40px; }
@@ -232,6 +240,7 @@
     <div class="links">
       <a href="#works">작업</a>
       <a href="#process">프로세스</a>
+      <a class="journey-link" href="journey-desert/">사막 개발기</a>
       <a href="#about">소개</a>
       <a class="mail" href="mailto:delight0517@hongik.ac.kr">문의하기</a>
     </div>
@@ -331,6 +340,23 @@
       <span>전체 공개 작업은 <a href="https://www.artstation.com/kaito_ren" target="_blank" rel="noopener">ArtStation 프로필</a>에서 확인할 수 있습니다.</span>
       <span id="sync-note"></span>
     </div>
+  </section>
+
+  <!-- ══════════ Journey 사막 월드 개발 기록 ══════════ -->
+  <section class="wrap journey-feature">
+    <div class="sec-head fade">
+      <h2>게임 월드 개발 기록</h2>
+      <span class="aside">Journey Desert · Luanti</span>
+    </div>
+    <article class="journey-card fade">
+      <a href="journey-desert/" aria-label="Journey 사막 월드 개발 기록 보기"><img src="journey-desert/assets/native-haze-v09.jpg" alt="Luanti에서 거리 안개를 적용해 확인한 사막 폐허 개발 캡처" loading="lazy"></a>
+      <div>
+        <p class="kicker">WORLD BUILDING · DEVLOG</p>
+        <h3>사막과 폐허를 게임 안에서 만들며</h3>
+        <p>참고 이미지, 실제 엔진 캡처, 채굴 상호작용, 그리고 폐기한 시도까지 시간순으로 정리했습니다. 완성작과 실험을 구분해 볼 수 있습니다.</p>
+        <a class="journal-cta" href="journey-desert/">개발 여정 보기 →</a>
+      </div>
+    </article>
   </section>
 
   <!-- ══════════ 프로세스 ══════════ -->

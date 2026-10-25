@@ -10,3 +10,12 @@
 
 ## Spatial idea-board delivery 2026-10-24
 Project: releasepilot-reports document site, main. Publish aggregate verified tool progress only; no private assets. Source: spatial-learning-app report_evidence.json. QA: generated image and public HTTPS.
+
+## 2026-10-25 — Journey 사막 개발 저널 (공개 포트폴리오)
+
+- Project ID/type: `releasepilot-reports` / static public portfolio site.
+- Canonical root/source/version: `%LocalAppData%\LaunchPad\hub\releasepilot-reports`, `main`, starting HEAD `2eb98158b9b0617aff70a84a81a898b65834ec1e`, clean; remote `https://github.com/delight0517/releasepilot-reports`. Do not edit the Desktop Google Drive mirror or the similarly named `releasepilot-hub` app repository.
+- Objective/current focus: add an image-first, long-scroll Journey desert world development journal under the existing 3D game-artist portfolio. Preserve the reference-to-iteration chronology, brief captions, dates, and explicit WIP/failure/verified status; make future entries data-driven.
+- Allowed QA target: local static page at `game-artist/journey-desert/`, its parent portfolio link, and public HTTPS page/images after the user-requested publication. Do not change or publish unrelated apps, game worlds, private logs, credentials, personal conversation screenshots, or full project archives.
+- Dependencies: images and captions from canonical OASIS Journey Desert project `C:\Users\delig\Documents\Codex\2026-10-20\new-chat\work\luanti_resume\tools\journey-desert\mesh-scene-v02` and its authorized QA captures/references only. Retain original source images and QA evidence; copy only selected public-view images into this website. Dune Survival remains a separate project; no Dune source/world edits.
+- User-state/publication: no user account state touched. Request explicitly asks that viewers see the journey on the public development site, so publishing this dedicated page and selected relevant images is within scope; no other assets are authorized.

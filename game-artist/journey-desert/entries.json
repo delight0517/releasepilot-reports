@@ -1,0 +1,10 @@
+[
+  {"date":"2026-10-25","title":"참고 장면","status":"reference","label":"REFERENCE","image":"assets/reference-desert-ruins.jpg","alt":"안개 낀 모래 사막과 무너진 석조 탑, 산을 담은 참고 장면","text":"목표는 인물 없는 사막 폐허 장면입니다. 낮은 다각형의 지형 실루엣, 따뜻한 갈색 암석 탑, 먼 거리의 자연스러운 안개를 기준으로 삼았습니다."},
+  {"date":"2026-10-24","title":"모래 지형 첫 적용 · v03","status":"wip","label":"WIP","image":"assets/native-dunes-v03.jpg","alt":"Luanti 게임 화면에서 확인한 초기 계단형 모래 지형","text":"엔진 안에서 모래 재질과 사구를 처음 배치했습니다. 지형이 계단처럼 읽히고 표면이 평평해 보여 참고 장면의 부드러운 사구와 차이가 남았습니다."},
+  {"date":"2026-10-25","title":"먼 거리 안개 점검 · v09","status":"wip","label":"WIP · NOT ACCEPTED","image":"assets/native-haze-v09.jpg","alt":"Luanti 게임에서 거리별 안개를 확인한 사막 폐허 장면","text":"거리 안개를 적용해 먼 구조물이 배경에 묻히도록 확인했습니다. 지형 단차가 여전히 두드러지고, 탑과 능선의 형태도 계속 조정해야 합니다."},
+  {"date":"2026-10-25","title":"지형 메시 실험 · v25","status":"wip","label":"WIP · DIAGNOSTIC","image":"assets/native-terrain-v25.jpg","alt":"Luanti 네이티브 장면의 지형 메시 및 탑 배치 진단 캡처","text":"블록만 쌓는 접근을 넘어서 지형 메시를 실험한 진단 캡처입니다. 최종 아트가 아니며 카메라와 메시 형태에 눈에 띄는 수정점이 남아 있습니다."},
+  {"date":"2026-10-25","title":"채굴 상호작용 확인 · v19","status":"verified","label":"MECHANIC VERIFIED","image":"assets/native-mining-v19.jpg","alt":"Luanti에서 곡괭이와 암석 블록 채굴을 확인한 화면","text":"월드 안의 암석을 실제로 채굴하고 빈 공간이 생기는 동작을 확인했습니다. 조작 입력과 시각 완성도는 별도 과제로 남겨 두고, 여기서는 게임 내 상호작용 증거로만 기록합니다."},
+  {"date":"2026-10-25","title":"동굴 천장 높이 실험 · v06","status":"rejected","label":"REJECTED","image":"assets/native-cave-v06-rejected.jpg","alt":"천장이 낮고 상자처럼 보여 폐기한 동굴 실험","text":"천장이 낮고 내부가 단조로워 참고 방향에 맞지 않았습니다. 실패 사례도 다음 설계에서 반복하지 않도록 보존합니다."},
+  {"date":"2026-10-25","title":"동굴 시야와 이벤트 공간 · v07","status":"wip","label":"WIP · BOXY","image":"assets/native-cave-v07-wip.jpg","alt":"시야를 높여 확인한 상자형 동굴 공간 실험","text":"공간을 넓혀 내부 이벤트를 담을 여지를 확인했지만, 동굴 형태가 아직 상자처럼 보입니다. 탐험 공간으로서의 실루엣과 오브젝트 구성이 더 필요합니다."},
+  {"date":"2026-10-25","title":"면 분할 지형 실험 · v08","status":"rejected","label":"REJECTED · ARTIFACT","image":"assets/native-faceted-v08-rejected.jpg","alt":"면 분할 지형에서 메시 아티팩트가 드러난 실험 캡처","text":"채굴로 공간이 바뀌는 방향은 확인했지만 지형 표면에 큰 메시 아티팩트가 생겨 시각 후보로는 기각했습니다. 원본 QA 캡처는 그대로 두고 이 웹용 사본만 기록합니다."}
+]
